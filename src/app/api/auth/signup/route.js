@@ -3,11 +3,11 @@ import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 
-export async function POST(req) {
+export async function POST(request) {
   
-  await connectMongoDB();
-
-  const { phone, name } = await req.json();
+  // await connectMongoDB();
+console.log("request server .....",request);
+  const { phone, name } = await request.json();
   console.log( "POST /api/auth/signup",phone,name);
 
   if (!phone || !name) {

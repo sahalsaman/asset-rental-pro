@@ -1,33 +1,49 @@
 "use client";
 
+import api, { signUp } from "@/lib/api";
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 import { useState } from "react";
 
+
+
 export default function LoginPage() {
+ 
   const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [otp, setOtp] = useState("");
 
   const sendOtp = async () => {
-    const res = await fetch("/api/auth/signup", {
-      method: "POST",
-      body: JSON.stringify({ phone, name }),
-    });
-
-    if (res.ok){ setStep("otp")};
+    console.log(phone,name);
+    
+    try {
+      await signUp(phone,name)
+      setStep("otp");
+      redirect(`?phone=${phone}`)
+    } catch (err) {
+      console.error("Signup error:", err);
+    }
   };
 
   const verifyOtp = async () => {
-    const res = await fetch("/api/auth/verify-otp", {
-      method: "POST",
-      body: JSON.stringify({ phone, otp }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      if (data.role === "admin") location.href = "/admin/dashboard";
-      if (data.role === "owner") location.href = "/owner/dashboard";
-      if (data.role === "user") location.href = "/user/dashboard";
+    try {
+      const res = await api.post("/auth/verify-otp", { phone, otp });
+      const role = res.data.role;
+      if (role === "admin") location.href = "/admin/dashboard";
+      else if (role === "owner") location.href = "/owner/dashboard";
+      else location.href = "/user/dashboard";
+      const response = NextResponse.json({ role: role });
+      response.cookies.set("ARP_Token", "your-jwt-or-session-token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+      });
+      return response
+    } catch (err) {
+      console.error("OTP verify error:", err);
     }
   };
 

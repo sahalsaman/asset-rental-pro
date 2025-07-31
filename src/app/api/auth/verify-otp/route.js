@@ -2,6 +2,7 @@ import AuthModel from "@/../models/Auth";
 import jwt from "jsonwebtoken";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function POST(req) {
   await connectMongoDB();
@@ -29,9 +30,15 @@ export async function POST(req) {
     role: auth.role,
   };
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET ?? "arp_authTokenKey", {
-    expiresIn: "7d",
-  });
+
+  // const token = jwt.sign(payload, process.env.JWT_SECRET ?? "arp_authTokenKey", {
+  //   expiresIn: "7d",
+  // });
+  const token = 'mock-jwt-token';
+  const role = 'user'; // or admin, owner
+
+  cookies().set('token', token, { httpOnly: true, path: '/' });
+  cookies().set('role', role, { httpOnly: true, path: '/' });
 
   return new NextResponse(JSON.stringify({ message: "Login successful", role: auth.role }), {
     status: 200,

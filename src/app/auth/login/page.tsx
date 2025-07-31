@@ -1,44 +1,52 @@
 "use client";
 
+import api, { sendOtpApi, verifyOtpApi } from "@/lib/api";
+import { Metadata } from "next";
+import { NextResponse } from "next/server";
 import { useState } from "react";
+
 
 export default function LoginPage() {
   const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
 
+  
+
   const sendOtp = async () => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ phone }),
-    });
-  
-    if (res.ok) {
+    try {
+      await sendOtpApi(phone);
       setStep("otp");
-    } else {
-      const errorData = await res.json();
-      setMobileNumberValidationMessage(errorData.message || "Something went wrong");
+      setError("");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Something went wrong");
     }
   };
   
-
   const verifyOtp = async () => {
-    const res = await fetch("/api/auth/verify-otp", {
-      method: "POST",
-      body: JSON.stringify({ phone, otp }),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      if (data.role === "admin") location.href = "/admin/dashboard";
-      if (data.role === "owner") location.href = "/owner/dashboard";
-      if (data.role === "user") location.href = "/user/dashboard";
+    try {
+      const res = await verifyOtpApi(phone, otp);
+      const role = res.data.role;
+  
+      if (role === "admin") window.location.href = "/admin/dashboard";
+      else if (role === "owner") window.location.href = "/owner/dashboard";
+      else window.location.href = "/user/dashboard";
+      const response = NextResponse.json({ role: role });
+      response.cookies.set("ARP_Token", "your-jwt-or-session-token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+        path: "/",
+      });
+      return response
+    } catch (err: any) {
+      console.error("OTP verification failed", err);
+      setError(err.response?.data?.message || "Invalid OTP");
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-00 to-green-50">
