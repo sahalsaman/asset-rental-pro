@@ -1,11 +1,16 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 
 const UserSchema = new Schema(
-  {
+  {    
     firstName: { type: String, required: true },
     lastName: { type: String },
-    // email: { type: String },
-    disabled: { type: Boolean, default: false },
+    phone: { type: String, required: true,unique: true },
+    otp: { type: String },
+    role: { type: String, enum: ['owner', 'manager', 'user', 'admin'], required: true ,default:"user"},
+    otpExpireTime: { type: Date },
+    onboardingCompleted: { type: Boolean, required: true, default: false },
+    lastLogin: { type: Date },
+    disabled: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

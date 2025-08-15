@@ -1,22 +1,13 @@
-
-export interface IAuth {
-  _id?: string;
-  phone: string;
-  otp?: string;
-  role: 'owner' | 'tenant' | 'admin';
-  otpExpireTime?: Date;
-  userId?: string; 
-  disabled: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
 export interface IUser {
   _id?: string;
   firstName: string;
   lastName?: string;
-  email?: string;
-  role: 'owner' | 'tenant' | 'admin';
+  phone: string;
+  otp?: string;
+  role: 'owner' | 'manager' | 'user' | 'admin';
+  otpExpireTime?: Date;
+  signupCompleted?: boolean;
+  lastLogin?: Date;
   disabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -25,6 +16,7 @@ export interface IUser {
 export interface IProperty {
   _id?: string;
   name: string;
+  description: string;
   address: string;
   city: string;
   state: string;
@@ -32,18 +24,13 @@ export interface IProperty {
   zipCode: string;
   category: 'Room' | 'Hotel' | 'Hostel';
   images: string[];
-  amount: number;
-  rentType: 'Day' | 'Week' | 'Month' | 'Year';
-  status: 'active' | 'inactive';
-  advance: number;
-  advanceDescription: string;
   currency: string;
-  userId?: string;
-  ownerId: string;
+  userId?: string; 
   disabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
+
 export interface ISpace {
   _id?: string;
   propertyId: string;
@@ -51,41 +38,47 @@ export interface ISpace {
   type: string; // e.g. 2BHK, 4 bed
   amount: number;
   description: string;
-  floor: number;
   images: string[];
   rentType: 'Day' | 'Week' | 'Month' | 'Year';
   status: 'available' | 'booked' | 'maintenance';
-  advance: number;
-  advanceDescription: string;
-  currency: string;
+  advanceAmount?: number; // renamed in schema
+  noOfSlots: number;
+  bookingsCount?: number; // added to track bookings
   createdAt?: Date;
   updatedAt?: Date;
 }
+
 export interface IBooking {
   _id?: string;
-  userId: string;
   propertyId: string;
   spaceId: string;
-  checkIn: Date;
-  checkOut: Date;
-  amount: number;
-  advance: number;
-  currency: string;
-  bookingType: 'single' | 'recurring';
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  disabled: boolean;
-  createdAt?: Date;
+  fullName: string;
+  phone: string;
+  address: string;
+  vericationIdCard?: string;
+  vericationIdCardNumber?: string;
+  checkIn?: string;
+  checkOut?: string;
+  amount?: number;
+  advanceAmount?: number;
+  status?: string;
+  disabled?: boolean;
+    createdAt?: Date;
   updatedAt?: Date;
 }
+
 export interface IInvoice {
   _id?: string;
-  bookingId: string;
-  amount: number;
-  type: 'Advance' | 'Rent';
-  transactionType: 'online' | 'cash' | 'upi' | 'card';
+  bookingId: string; // Required in schema
+  propertyId: string; // Required in schema
+  spaceId: string; // Required in schema
+  amount?: number;
+  type: "Advance" | "Rent";
+  transactionType: "online" | "cash" | "upi" | "card";
   transactionId?: string;
-  status: 'paid' | 'unpaid' | 'failed';
-  due?: Date;
+  status: "paid" | "unpaid" | "failed";
+  recivedDate?: Date; // Present in schema, optional in interface
+  dueDate?: Date;     // Schema uses `dueDate`
   disabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;

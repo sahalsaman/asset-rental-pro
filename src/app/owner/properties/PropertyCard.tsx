@@ -1,7 +1,9 @@
 'use client';
 
-import { Pencil, Trash2 } from 'lucide-react';
+import { ArrowRight, Pencil, Trash2 } from 'lucide-react';
 import { IProperty } from '@/app/types';
+import { useRouter } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
 
 interface Props {
   property: IProperty;
@@ -10,8 +12,12 @@ interface Props {
 }
 
 export default function PropertyCard({ property, onEdit, onDelete }: Props) {
+
+  const router = useRouter();
+
   return (
-    <div className="bg-white rounded-xl shadow p-4 border hover:shadow-md transition">
+    <div className="bg-white rounded-xl shadow p-4 border hover:shadow-md transition"
+    >
       <div className='flex gap-2'>
         {property.images && property.images[0] && (
           <div className="w-32 h-32 overflow-hidden rounded-md">
@@ -24,37 +30,41 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
         )}
 
         <div className='w-full flex flex-col justify-between'>
-      
-            <div className='flex justify-between mt-2'>
-            <p className="text-sm">{property.category}</p>
-              <div className='flex gap-2'>
-                <button
-                  onClick={() => onEdit(property)}
-                >
-                  <Pencil size={14} />
-                </button>
-                <button
-                  onClick={() => onDelete(property._id!)}
-                >
-                  <Trash2 size={14} />
-                </button>   <div className="text-xs w-fit rounded bg-green-700 text-white px-2 py-1 ">{property.status}</div>
 
-              </div>
+          <div className='flex justify-between'>
+              <Badge variant="default">{property.category}</Badge>
+            <div className='flex  gap-3'>
+              <button
+                onClick={() => onEdit(property)}
+              >
+                <Pencil size={16} />
+              </button>
+              <button
+                onClick={() => onDelete(property._id!)}
+              >
+                <Trash2 size={16} />
+              </button>
+              {/* <div className="text-xs w-fit rounded bg-green-700 text-white px-2 py-1 ">{property.status}</div> */}
 
             </div>
-          <div>
-            <h2 className="text-lg font-semibold">{property.name}</h2>
-            <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
-              <p className="text-sm"> ₹{property.amount} / {property.rentType}</p>
+
           </div>
-       
+          <div>
+            <h2 className="text-lg font-semibold mt-1">{property.name}</h2>
+            <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
+            {/* <p className="text-sm"> ₹{property.amount} / {property.rentType}</p> */}
+          </div>
+          <div className='flex justify-end  '>
+          
+            <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
+              onClick={() => router.push(`/owner/properties/${property._id}`)}
+            >  <span className="text-sm">View Details</span>
+              <ArrowRight size={18} />
+            </button>
+          </div>
+
         </div>
-
       </div>
-
-
-
-
     </div>
   );
 }

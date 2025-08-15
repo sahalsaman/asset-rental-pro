@@ -205,7 +205,10 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
+      {/* Footer */}
+      <footer className="py-6 text-center text-sm text-gray-500 bg-white">
+        © {new Date().getFullYear()} AssetRentalPro. All rights reserved.
+      </footer>
     </main>
   );
 }

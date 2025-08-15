@@ -3,7 +3,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ClientWrapper from "./clientWraper";
+import { Toaster } from 'react-hot-toast'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >{children}
-
-      {/* Footer */}
-      <footer className="py-6 text-center text-sm text-gray-500 bg-white">
-        © {new Date().getFullYear()} AssetRentalPro. All rights reserved.
-      </footer>
+            <Toaster /> 
       </body>
     </html>
   );

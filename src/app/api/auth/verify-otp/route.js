@@ -1,50 +1,34 @@
-import AuthModel from "@/../models/Auth";
+import UserModel from "@/../models/User";
 import jwt from "jsonwebtoken";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { setTokenValue } from "@/utils/tokenHandler";
 
 export async function POST(req) {
   await connectMongoDB();
 
   const { phone, otp } = await req.json();
+  console.log( phone, otp);
 
-  const auth = await AuthModel.findOne({ phone }).populate("userId");
+  const user = await UserModel.findOne({ phone });
 
-  if (!auth) {
+  if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  console.log(auth, phone, otp);
-
-
-  const isOtpExpired = new Date() > new Date(auth.otpExpireTime || 0);
-  if (auth.otp !== otp || isOtpExpired) {
+  const isOtpExpired = new Date() > new Date(user.otpExpireTime || 0);
+  if (user.otp !== otp&&isOtpExpired ) {
     return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
   }
 
-  const payload = {
-    id: auth._id,
-    userId: auth.userId?._id || null,
-    phone: auth.phone,
-    role: auth.role,
-  };
+setTokenValue(user);
 
-
-  // const token = jwt.sign(payload, process.env.JWT_SECRET ?? "arp_authTokenKey", {
-  //   expiresIn: "7d",
-  // });
-  const token = 'mock-jwt-token';
-  const role = 'user'; // or admin, owner
-
-  cookies().set('token', token, { httpOnly: true, path: '/' });
-  cookies().set('role', role, { httpOnly: true, path: '/' });
-
-  return new NextResponse(JSON.stringify({ message: "Login successful", role: auth.role }), {
+  return new NextResponse(JSON.stringify({ message: "Login successful", role: user.role }), {
     status: 200,
-    headers: {
-      "Set-Cookie": `ARP_Token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`,
-    },
+    // headers: {
+    //   "Set-Cookie": `ARP_Token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`,
+    // },
   });
 }
 
