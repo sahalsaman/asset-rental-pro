@@ -8,8 +8,13 @@ import InvoiceFormModal from "./InvoiceFormModal";
 import InvoiceCard from "./InvoiceCard";
 
 export default function BookingDetailPage() {
-  const { bookingId } = useParams();
+  const params = useParams();
   const router = useRouter();
+
+  // Safely extract bookingId
+  const bookingId = Array.isArray(params?.bookingId)
+    ? params.bookingId[0]
+    : params?.bookingId;
 
   const [booking, setBooking] = useState<IBooking | null>(null);
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
@@ -22,18 +27,22 @@ export default function BookingDetailPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!bookingId) return router.push("/owner/bookings");
+    if (!bookingId) {
+      router.push("/owner/bookings");
+      return;
+    }
 
-    fetch(`/api/booking/${bookingId}`, { credentials: "include" })
-      .then(res => res.json())
+    fetch(`/api/booking?bookingId=${bookingId}`, { credentials: "include" })
+      .then((res) => res.json())
       .then(setBooking);
 
     fetchInvoices();
   }, [bookingId]);
 
   const fetchInvoices = () => {
+    if (!bookingId) return;
     fetch(`/api/invoice?bookingId=${bookingId}`, { credentials: "include" })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(setInvoices);
   };
 
@@ -69,24 +78,49 @@ export default function BookingDetailPage() {
   if (!booking) return <p className="p-6">Loading booking details...</p>;
 
   return (
-    <div className="p-6 space-y-6">
+    <div >
       {/* Booking Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5">
         <div>
-          <h1 className="text-2xl font-bold">Booking #{booking._id}</h1>
-          <p className="text-gray-600">
-            {booking.fullName} — {booking.phone}
-          </p>
-          <p className="text-gray-600">
-            {/* {new Date(booking?.checkIn).toLocaleDateString()} →{" "}
-            {new Date(booking?.checkOut).toLocaleDateString()} */}
-          </p>
+          <div className="flex items-center gap-4">
+            {/* Logo (first 2 letters of fullName) */}
+            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-green-600 text-white text-3xl font-semibold">
+
+              {booking.fullName?.slice(0, 2).toUpperCase()}
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold">{booking.fullName}</h1>
+              <p className="text-gray-600">
+                {booking.phone}
+              </p>
+              {booking.checkIn && booking.checkOut && (
+                <p className="text-gray-500 text-sm">
+                  {new Date(booking.checkIn).toLocaleDateString()} →{" "}
+                  {new Date(booking.checkOut).toLocaleDateString()}
+                </p>
+              )}
+              {booking.status && (
+                <span
+                  className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${booking.status === "confirmed"
+                    ? "bg-green-100 text-green-700"
+                    : booking.status === "cancelled"
+                      ? "bg-red-100 text-red-700"
+                      : "bg-yellow-100 text-yellow-700"
+                    }`}
+                >
+                  {booking.status}
+                </span>
+              )}
+            </div>
+          </div>
+
         </div>
         <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
       </div>
 
+
       {/* Invoice List */}
-      <div>
+      <div className="pt-10 md:px-32 px-5">
         <h2 className="text-xl font-semibold mb-3">Invoices</h2>
         <div className="space-y-3">
           {invoices.length > 0 ? (
@@ -120,13 +154,6 @@ export default function BookingDetailPage() {
         onSave={handleSaveInvoice}
         editData={editInvoiceData}
       />
-
-      {/* Delete Dialog */}
-      {/* <InvoiceDeleteDialog
-        open={showDelete}
-        onClose={() => setShowDelete(false)}
-        onConfirm={handleDeleteInvoice}
-      /> */}
     </div>
   );
 }

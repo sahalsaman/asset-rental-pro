@@ -22,13 +22,13 @@ export async function POST(req) {
     return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
   }
 
-setTokenValue(user);
+const token=setTokenValue(user);
 
   return new NextResponse(JSON.stringify({ message: "Login successful", role: user.role }), {
     status: 200,
-    // headers: {
-    //   "Set-Cookie": `ARP_Token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`,
-    // },
+    headers: {
+      "Set-Cookie": `ARP_Token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`,
+    },
   });
 }
 

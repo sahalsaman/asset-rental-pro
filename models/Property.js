@@ -2,16 +2,16 @@ import mongoose, { Schema } from 'mongoose';
 
 const PropertySchema = new Schema(
   {
-    name: String,
+    name: { type: String, required: true },
     description: String,
-    address: String,
-    city: String,
-    state: String,
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    state: { type: String, required: true },
     country: String,
     zipCode: String,
-    category: { type: String, enum: ['Room', 'Hotel', 'Hostel'] },
+    category: { type: String, required: true },
     images: [String],
-    currency: String,
+    currency: { type: String, required: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

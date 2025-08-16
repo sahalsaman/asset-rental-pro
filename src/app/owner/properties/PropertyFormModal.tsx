@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; // fixed "Inut" typo
 import { Label } from '@radix-ui/react-label';
+import { CurrencyType, PropertyTypes } from '@/utils/contants';
 
 interface PropertyFormModalProps {
   open: boolean;
@@ -83,7 +84,7 @@ export default function PropertyFormModal({
             placeholder="Property name"
             required
           />
-                <Label>Description</Label>
+          <Label>Description</Label>
           <Input
             name="description"
             value={formData.description}
@@ -99,6 +100,14 @@ export default function PropertyFormModal({
             placeholder="Address"
             required
           />
+             <Label>State</Label>
+          <Input
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            placeholder="State"
+            required
+          />
           <Label>City</Label>
           <Input
             name="city"
@@ -107,24 +116,38 @@ export default function PropertyFormModal({
             placeholder="City"
             required
           />
-    
+
 
           <Label>Category</Label>
           <select
             name="category"
-            value={formData.category}
+            value={formData.category || ""}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           >
-            <option value="Room">Room</option>
-            <option value="Hotel">Hotel</option>
-            <option value="Hostel">Hostel</option>
+            <option value="">Select a category</option>
+            {Object.values(PropertyTypes).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
           </select>
 
-         
           <Label>Currency</Label>
-          <Input name="currency" placeholder="Currency" value={formData.currency || "INR"} onChange={handleChange} />
+          <select
+            name="currency"
+            value={formData.currency || "₹"}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          >
+            {Object.entries(CurrencyType).map(([code, symbol]) => (
+              <option key={code} value={symbol}>
+                {code} - {symbol}
+              </option>
+            ))}
+          </select>
 
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>

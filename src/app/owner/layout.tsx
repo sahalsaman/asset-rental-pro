@@ -10,7 +10,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Properties', path: '/owner/properties' },
     { title: 'Bookings', path: '/owner/bookings' },
-    { title: 'Invoices', path: '/owner/invoice' },
+    { title: 'Invoices', path: '/owner/invoices' },
+    { title: 'Managers', path: '/owner/managers' },
   ]
 
   const logout = async () => {
@@ -28,9 +29,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen">
       {/* Navbar */}
-      <div className="flex justify-between items-center mb-8 bg-green-800 md:px-32 p-5">
-        <div className='flex items-center gap-4'>
+      <div className="flex justify-between items-center bg-green-800 md:px-32 p-5">
           <h1 className="text-lg md:text-2xl font-bold text-white">AssetRentalPro</h1>
+        <div className='flex items-center gap-4'>
           {options.map((card, idx) => (
             <div
               key={idx}
@@ -49,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           Logout
         </button>
       </div>
-      <main className='pt-10 md:px-32 px-5 mb-10'>{children}</main>
+      <main >{children}</main>
     </div>
   );
 }

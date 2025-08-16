@@ -10,7 +10,7 @@ import { getTokenValue } from "@/utils/tokenHandler";
 export async function GET(request) {
   try {
     const user = getTokenValue(request);
-    console.log(user);
+    console.log("user data ..........",user);
 
     if (!user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

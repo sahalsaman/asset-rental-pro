@@ -49,7 +49,7 @@ export default function PropertiesPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="pt-10 md:px-32 px-5 mb-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
         <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }}>
@@ -58,7 +58,7 @@ export default function PropertiesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {properties.map((property:any) => (
+        {properties.length&&properties?.map((property:any) => (
           <PropertyCard
             key={property?._id}
             property={property}

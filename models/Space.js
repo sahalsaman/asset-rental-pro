@@ -18,7 +18,7 @@ const SpaceSchema = new Schema(
     description: String,
     images: [String],
     rentType: { type: String, enum: ['Day', 'Week', 'Month', 'Year'] },
-    status: { type: String, enum: ['available', 'booked', 'maintenance'], default: 'available' },
+    status: { type: String, default: 'available' },
     advanceAmount: Number,
     noOfSlots: { type: Number, required: true, default: 1 },
     disabled: { type: Boolean, required: true, default: false },

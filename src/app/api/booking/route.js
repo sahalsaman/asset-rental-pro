@@ -13,6 +13,15 @@ export async function GET(request) {
   try {
     await connectMongoDB();
     const { searchParams } = new URL(request.url);
+    const bookingId = searchParams.get("bookingId");
+
+    if(bookingId){
+      const bookings = await BookingModel.findById(bookingId)
+
+    return NextResponse.json(bookings);
+    }
+
+
     const propertyId = searchParams.get("propertyId");
     const spaceId = searchParams.get("spaceId");
 

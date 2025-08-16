@@ -20,8 +20,7 @@ const InvoiceSchema = new Schema(
     amount: Number,
     balance: Number,
     carryForwerded: Number,
-    type: { type: String, enum: ['Advance', 'Rent'] },
-    transactionType: { type: String, enum: ['online', 'cash', 'upi', 'card'] },
+    type: { type: String, enum: ['Advance', 'Rent','Other'] },
     payments: [
       {
         date: Date,

@@ -8,6 +8,7 @@ import SpaceCard from "./SpaceCard";
 import SpaceAddEditModal from "./SpaceFormModal";
 import SpaceDeleteDialog from "./SpaceDeleteConfirmModal";
 import BookingAddEditModal from "./BookingFormModal";
+import { Badge } from "@/components/ui/badge";
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
@@ -90,38 +91,74 @@ export default function PropertyDetailPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       {/* Property Header */}
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">{property?.name}</h1>
-        <Button onClick={() => setShowSpaceModal(true)}>Add Space</Button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-100 p-14 md:px-32 px-5 shadow-sm">
+        <div className="flex items-center gap-4">
+          {/* Logo / First Image */}
+          {property?.images?.length > 0 ? (
+            <img
+              src={property.images[0]}
+              alt={`${property.name} logo`}
+              className="w-20 h-20 object-cover rounded-md border"
+            />
+          ) : (
+            <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+              No Logo
+            </div>
+          )}
+
+          {/* Property Info */}
+          <div>
+            <h1 className="text-3xl font-bold">{property?.name}</h1>
+            <p className="text-sm text-gray-600">
+              {property?.address}, {property?.city}, {property?.state} {property?.zipCode}, {property?.country}
+            </p>
+            <Badge variant="default">{property?.category}</Badge>
+            {/* {property?.description && (
+              <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                {property.description}
+              </p>
+            )} */}
+          </div>
+        </div>
+
+        {/* Add Space Button */}
+        <Button onClick={() => setShowSpaceModal(true)} className="whitespace-nowrap">
+          Add Space
+        </Button>
+      </div>
+      <div className="pt-10 md:px-32 px-5 mb-10">
+        <h1 className="text-2xl font-bold mb-5">Spaces</h1>
+        {/* Spaces Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {spaces.map(space => (
+            <SpaceCard
+              key={space._id}
+              space={space}
+              property={property}
+              onEdit={(space) => {
+                setEditSpaceData(space);
+                setShowSpaceModal(true);
+              }}
+              onDelete={(id) => {
+                setDeleteId(id);
+                setShowDelete(true);
+              }}
+              onBook={(space) => {
+                setSelectedSpace(space);
+                setShowBookingModal(true);
+              }}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Spaces Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {spaces.map(space => (
-          <SpaceCard
-            key={space._id}
-            space={space}
-            property={property}
-            onEdit={(space) => {
-              setEditSpaceData(space);
-              setShowSpaceModal(true);
-            }}
-            onDelete={(id) => {
-              setDeleteId(id);
-              setShowDelete(true);
-            }}
-            onBook={(space) => {
-              setSelectedSpace(space);
-              setShowBookingModal(true);
-            }}
-          />
-        ))}
-      </div>
+
 
       {/* Space Modals */}
       <SpaceAddEditModal
+      property={property}
         open={showSpaceModal}
         onClose={() => {
           setShowSpaceModal(false);
