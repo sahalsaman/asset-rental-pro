@@ -7,16 +7,18 @@ import { ISpace, IInvoice } from "@/app/types";
 import InvoiceCard from "../properties/[id]/[spaceId]/[bookingId]/InvoiceCard";
 import InvoiceFormModal from "../properties/[id]/[spaceId]/[bookingId]/InvoiceFormModal";
 
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 export default function SpaceDetailPage() {
-    const data = useParams();
-    
-  
+  const data = useParams();
+
+
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
 
   // Invoice modals state
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);
-  
+
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -60,7 +62,7 @@ export default function SpaceDetailPage() {
     fetchInvoices();
   };
 
-    useEffect(() => {
+  useEffect(() => {
     fetchInvoices();
   }, []);
 
@@ -69,7 +71,7 @@ export default function SpaceDetailPage() {
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">
       {/* Space Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Invoices</h1>
           {/* <p className="text-gray-600">Capacity: {space.capacity}</p>
@@ -80,27 +82,29 @@ export default function SpaceDetailPage() {
 
       {/* Invoices List */}
       <div>
-        {/* <h2 className="text-xl font-semibold mb-3">Invoices</h2> */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {invoices.length > 0 ? (
-            invoices.map((invoice) => (
-              <InvoiceCard
-                key={invoice._id}
-                invoice={invoice}
-                onEdit={(b) => {
-                  setEditInvoiceData(b);
-                  setShowInvoiceModal(true);
-                }}
-                onDelete={(id) => {
-                  setDeleteId(id);
-                  setShowDelete(true);
-                }}
-              />
-            ))
-          ) : (
-            <p className="text-gray-500">No invoices yet for this space.</p>
-          )}
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Invoice</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Proprty and space</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {invoices.length && invoices.map((invoice) => (
+              <TableRow key={invoice._id}>
+                <TableCell>{invoice._id}</TableCell>
+                <TableCell className="font-medium">{invoice.bookingId}</TableCell>
+                <TableCell>{invoice.propertyId}</TableCell>
+                <TableCell>{invoice.status}</TableCell>
+                <TableCell className="text-right">{invoice.amount}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
       </div>
 
       {/* Invoice Modal */}

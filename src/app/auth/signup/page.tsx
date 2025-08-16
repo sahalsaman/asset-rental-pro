@@ -9,11 +9,12 @@ export default function LoginPage() {
 
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
+  const [organisationName, setOrganisationName] = useState("");
   const router = useRouter();
   // In sendOtp:
   const sendOtp = async () => {
     try {
-      const res = await signUp(phone, name)
+      const res = await signUp(phone, name,organisationName)
       router.push(`/auth/verify-otp?phone=${phone}`);
     } catch (err:any) {
         if(err?.response?.data?.error) {
@@ -34,7 +35,17 @@ export default function LoginPage() {
         <h2 className="text-3xl font-bold text-center text-green-700 mb-6">
           Signup
         </h2>
-        <>
+        <> <label className="block text-sm font-medium text-gray-700 mb-1">
+        Organisation Name
+          </label>
+          <input
+            type="text"
+            placeholder="e.g. Hilite"
+            value={organisationName}
+            onChange={(e) => setOrganisationName(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
+            required
+          />
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Full Name
           </label>
@@ -46,6 +57,7 @@ export default function LoginPage() {
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
             required
           />
+
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Phone Number
           </label>

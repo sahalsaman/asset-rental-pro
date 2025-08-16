@@ -2,14 +2,14 @@ import mongoose, { Schema } from 'mongoose';
 
 const SpaceSchema = new Schema(
   {
+    organisationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organisation",
+      required: true,
+    },
     propertyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Property",
-      required: true,
-    },
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
       required: true,
     },
     name: String,

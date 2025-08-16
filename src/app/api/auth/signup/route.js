@@ -1,4 +1,5 @@
 import UserModel from "@/../models/User";
+import OrganisationModel from "@/../models/Organisation";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 
@@ -6,7 +7,7 @@ export async function POST(request) {
   await connectMongoDB();
 
   const body = await request.json(); 
-  const { phone, name } = body;
+  const { phone, name ,organisationName} = body;
 
   if (!name) {
     return NextResponse.json({ error: "User Name is required" }, { status: 400 });
@@ -24,7 +25,7 @@ export async function POST(request) {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const otpExpireTime = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-  await UserModel.create({    
+  const newUser=await UserModel.create({    
     firstName: name,
     phone,
     otp,
@@ -32,6 +33,13 @@ export async function POST(request) {
     role: "owner",
     disabled: false,
   });
+
+  const org=await OrganisationModel.create({    
+    name: organisationName,
+    owner: newUser._id
+  });
+
+  await UserModel.findByIdAndUpdate(newUser._id,{organisationId:org?._id})
 
   console.log(`✅ OTP for ${phone}: ${otp}`);
 

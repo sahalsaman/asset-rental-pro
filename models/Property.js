@@ -2,6 +2,11 @@ import mongoose, { Schema } from 'mongoose';
 
 const PropertySchema = new Schema(
   {
+    organisationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organisation",
+      required: true,
+    },
     name: { type: String, required: true },
     description: String,
     address: { type: String, required: true },
@@ -12,11 +17,6 @@ const PropertySchema = new Schema(
     category: { type: String, required: true },
     images: [String],
     currency: { type: String, required: true },
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     disabled: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }

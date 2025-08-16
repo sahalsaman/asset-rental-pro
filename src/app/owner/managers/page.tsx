@@ -55,7 +55,7 @@ export default function SpaceDetailPage() {
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">
       {/* Space Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Managers</h1>
           {/* <p className="text-gray-600">Capacity: {space.capacity}</p>
@@ -65,13 +65,13 @@ export default function SpaceDetailPage() {
       </div>
 
       <Table>
-      <TableCaption>A list of your recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px]">Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="w-[100px]">no</TableHead>
+          <TableHead>Manager</TableHead>
+          <TableHead>Property</TableHead>
+          <TableHead >Status</TableHead>
+          <TableHead className="text-right">Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -79,6 +79,7 @@ export default function SpaceDetailPage() {
           <TableRow key={invoice.invoice}>
             <TableCell className="font-medium">{invoice.invoice}</TableCell>
             <TableCell>{invoice.paymentStatus}</TableCell>
+            <TableCell>{invoice.paymentMethod}</TableCell>
             <TableCell>{invoice.paymentMethod}</TableCell>
             <TableCell className="text-right">{invoice.totalAmount}</TableCell>
           </TableRow>

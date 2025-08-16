@@ -5,7 +5,7 @@ const api = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
-export const signUp = (phone: string, name: string) => api.post('/auth/signup', { phone, name });
+export const signUp = (phone: string, name: string,organisationName:string) => api.post('/auth/signup', { phone, name,organisationName });
 
 export const registerPhone = (phone: string) => api.post('/auth/register', { phone });
 

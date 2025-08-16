@@ -2,12 +2,17 @@ import mongoose, { Schema } from 'mongoose';
 
 const InvoiceSchema = new Schema(
   {
+    organisationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organisation",
+      required: true,
+    },
     bookingId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Booking",
       required: true,
     },
-      propertyId: {
+    propertyId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Property",
       required: true,
@@ -20,7 +25,7 @@ const InvoiceSchema = new Schema(
     amount: Number,
     balance: Number,
     carryForwerded: Number,
-    type: { type: String, enum: ['Advance', 'Rent','Other'] },
+    type: { type: String, enum: ['Advance', 'Rent', 'Other'] },
     payments: [
       {
         date: Date,
@@ -29,7 +34,7 @@ const InvoiceSchema = new Schema(
         transactionType: { type: String, enum: ['online', 'cash', 'upi', 'card'] },
       },
     ],
-    status: { type: String, enum: ['paid', 'unpaid', 'failed','balance','carry forworded'], default: 'unpaid' },
+    status: { type: String, enum: ['paid', 'unpaid', 'failed', 'balance', 'carry forworded'], default: 'unpaid' },
     dueDate: Date,
     disabled: { type: Boolean, required: true, default: false },
   },

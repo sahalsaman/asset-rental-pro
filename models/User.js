@@ -10,6 +10,11 @@ const UserSchema = new Schema(
     otpExpireTime: { type: Date },
     onboardingCompleted: { type: Boolean, required: true, default: false },
     lastLogin: { type: Date },
+    properties: [{ type: Types.ObjectId, ref: "Property" }],
+    organisationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organisation",
+    },
     disabled: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }

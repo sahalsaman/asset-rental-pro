@@ -70,7 +70,7 @@ export default function SpaceDetailPage() {
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">
       {/* Space Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Bookings</h1>
           {/* <p className="text-gray-600">Capacity: {space.capacity}</p>

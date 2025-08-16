@@ -30,8 +30,8 @@ export default function OwnerDashboard() {
   }, []);
 
   return (
-    <main className=" bg-white text-gray-800 p-6">
-      <h1 className="text-2xl font-bold mb-6">Owner Dashboard</h1>
+    <main className=" bg-white text-gray-800 pt-10 md:px-32 px-5 mb-10">
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <DashboardCard title="Properties" value={stats.properties} icon={Building2} />
