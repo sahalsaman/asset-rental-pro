@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import PropertyCard from "./PropertyCard";
-import PropertyFormModsl from "./PropertyFormModal";
-import DeleteConfirmModal from "./PropertyDeleteConfirmModal";
+import PropertyCard from "../../../components/PropertyCard";
+import PropertyFormModsl from "../../../components/PropertyFormModal";
+import DeleteConfirmModal from "../../../components/PropertyDeleteConfirmModal";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);

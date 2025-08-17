@@ -4,7 +4,7 @@ import { Building2, Users, QrCode, DollarSign, Plus } from "lucide-react";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import DashboardCard from "./card";
+import DashboardCard from "../../../components/card";
 import { useRouter } from "next/navigation";
 
 

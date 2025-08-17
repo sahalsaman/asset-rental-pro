@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {  IInvoice } from "@/app/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import InvoiceFormModal from "../properties/[id]/[spaceId]/[bookingId]/InvoiceFormModal";
+import InvoiceFormModal from "../../../components/InvoiceFormModal";
 
 export default function SpaceDetailPage() {
   const data = useParams();

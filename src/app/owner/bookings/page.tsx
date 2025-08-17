@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ISpace, IBooking } from "@/app/types";
-import BookingCard from "../properties/[id]/[spaceId]/BookingCard";
-import BookingAddEditModal from "../properties/[id]/BookingFormModal";
-import BookingDeleteDialog from "../properties/[id]/[spaceId]/BookingDelete";
+import BookingCard from "../../../components/BookingCard";
+import BookingAddEditModal from "../../../components/BookingFormModal";
+import BookingDeleteDialog from "../../../components/BookingDelete";
 
 export default function SpaceDetailPage() {
     const data = useParams();

@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ISpace } from "@/app/types";
-import SpaceCard from "./SpaceCard";
-import SpaceAddEditModal from "./SpaceFormModal";
-import SpaceDeleteDialog from "./SpaceDeleteConfirmModal";
-import BookingAddEditModal from "./BookingFormModal";
+import SpaceCard from "../../../../components/SpaceCard";
+import SpaceAddEditModal from "../../../../components/SpaceFormModal";
+import SpaceDeleteDialog from "../../../../components/SpaceDeleteConfirmModal";
+import BookingAddEditModal from "../../../../components/BookingFormModal";
 import { Badge } from "@/components/ui/badge";
 
 export default function PropertyDetailPage() {

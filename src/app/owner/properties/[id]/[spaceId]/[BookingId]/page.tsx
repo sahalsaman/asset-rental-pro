@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { IBooking, IInvoice } from "@/app/types";
-import InvoiceFormModal from "./InvoiceFormModal";
-import InvoiceCard from "./InvoiceCard";
+import InvoiceFormModal from "../../../../../../components/InvoiceFormModal";
+import InvoiceCard from "../../../../../../components/InvoiceCard";
 
 export default function BookingDetailPage() {
   const params = useParams();
