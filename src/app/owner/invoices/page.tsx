@@ -1,13 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ISpace, IInvoice } from "@/app/types";
-import InvoiceCard from "../properties/[id]/[spaceId]/[bookingId]/InvoiceCard";
+import {  IInvoice } from "@/app/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import InvoiceFormModal from "../properties/[id]/[spaceId]/[bookingId]/InvoiceFormModal";
-
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function SpaceDetailPage() {
   const data = useParams();
