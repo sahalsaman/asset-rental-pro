@@ -10,12 +10,11 @@ export async function GET(request) {
     try {
   
        const user = getTokenValue(request);
-      console.log(user);
   
-      if (!user.id) {
+      if (!user.organisationId) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
       }
-      const userId = user.id;
+      const organisationId = user.organisationId;
   
       const { searchParams } = new URL(request.url);
       const page = searchParams.get("page");
@@ -24,7 +23,7 @@ export async function GET(request) {
       let filter = {};
       if (page === "booking") {
         // Get properties owned by the logged-in user
-        const properties = await PropertyModel.find({ userId }).select("_id");
+        const properties = await PropertyModel.find({ organisationId }).select("_id");
         const propertyIds = properties.map((p) => p._id);
         filter.propertyId = { $in: propertyIds };
       }

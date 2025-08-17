@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("ARP_Token")?.value;
-console.log("Token:", token);
 
   if (!token) return NextResponse.redirect(new URL("/auth/login", request.url));
 

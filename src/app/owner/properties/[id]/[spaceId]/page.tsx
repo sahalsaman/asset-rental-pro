@@ -10,7 +10,6 @@ import BookingDeleteDialog from "./BookingDelete";
 
 export default function SpaceDetailPage() {
   const data = useParams();
-  console.log("Params:", data);
 
   const { id, spaceId } = useParams();
   const router = useRouter();

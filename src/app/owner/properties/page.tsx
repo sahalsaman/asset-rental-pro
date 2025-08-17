@@ -58,14 +58,16 @@ export default function PropertiesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {properties.length&&properties?.map((property:any) => (
+        {properties.length?properties?.map((property:any) => (
           <PropertyCard
             key={property?._id}
             property={property}
             onEdit={(p:any) => { setSelectedProperty(p); setAddEditOpen(true); }}
             onDelete={(p:any) => { setSelectedProperty(p); setDeleteOpen(true); }}
           />
-        ))}
+        ))   : (
+          <p className="text-gray-500">No properties.</p>
+        )}
       </div>
 
       <PropertyFormModsl

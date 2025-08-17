@@ -13,15 +13,15 @@ interface DashboardCardProps {
 export default function DashboardCard({ title, value, icon: Icon, onClick }: DashboardCardProps) {
   return (
     <Card
-      className="hover:shadow-lg transition cursor-pointer"
+      className="hover:shadow-lg transition cursor-pointer max-sm:p-2 max-sm:px-3"
       onClick={onClick}
     >
-      <CardHeader className="flex items-center justify-between">
-        <CardTitle className="text-lg font-semibold">{title}</CardTitle>
-        {Icon && <Icon className="h-6 w-6 text-gray-500" />}
-      </CardHeader>
-      <CardContent>
-        <p className="text-2xl font-bold">{value}</p>
+      <CardContent className=" max-sm:p-0">
+        <div className="flex items-center justify-between md:mb-4">
+          {Icon && <Icon className="md:h-6 md:w-6 w-4 h-4 text-gray-500" />}
+          <p className="sm:text-2xl font-bold">{value}</p>
+        </div>
+        <CardTitle className="sm:text-lg text-sm font-extralight">{title}</CardTitle>
       </CardContent>
     </Card>
   );

@@ -68,7 +68,7 @@ export async function POST(request) {
 
   const body = await request.json();
   await connectMongoDB();
-  const space = await SpaceModel.create({ ...body, userId: user.id });
+  const space = await SpaceModel.create({ ...body, organisationId: user.organisationId });
   return NextResponse.json(space, { status: 201 });
 }
 
@@ -80,7 +80,7 @@ export async function PUT(request) {
   const id = new URL(request.url).searchParams.get("id");
   const body = await request.json();
   await connectMongoDB();
-  const updated = await SpaceModel.findOneAndUpdate({ _id: id, userId: user.id }, body, { new: true });
+  const updated = await SpaceModel.findOneAndUpdate({ _id: id, organisationId: user.organisationId }, body, { new: true });
   return NextResponse.json(updated);
 }
 
@@ -91,6 +91,6 @@ export async function DELETE(request) {
 
   const id = new URL(request.url).searchParams.get("id");
   await connectMongoDB();
-  await SpaceModel.findOneAndDelete({ _id: id, userId: user.id });
+  await SpaceModel.findOneAndDelete({ _id: id, organisationId: user.organisationId });
   return NextResponse.json({ message: "Space deleted" });
 }

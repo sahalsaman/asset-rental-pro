@@ -9,10 +9,9 @@ export async function POST(req) {
   await connectMongoDB();
 
   const { phone, otp } = await req.json();
-  console.log(phone, otp);
 
   const user = await UserModel.findOne({ phone }).populate()
-
+  console.log("user.......0000", user);
   if (!user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }

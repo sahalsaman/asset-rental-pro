@@ -10,7 +10,6 @@ import { getTokenValue } from "@/utils/tokenHandler";
 export async function GET(request) {
   try {
     const user = getTokenValue(request);
-    console.log("user data ..........",user);
 
     if (!user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,7 +18,7 @@ export async function GET(request) {
 
     await connectMongoDB();
     if (propertyId) {
-      const property = await PropertyModel.find({ _id: propertyId, userId: user.id });
+      const property = await PropertyModel.find({ _id: propertyId, organisationId: user.organisationId });
       return NextResponse.json(property[0] || null);
     } else {
       const properties = await PropertyModel.find({ userId: user.id });
@@ -45,7 +44,7 @@ export async function POST(request) {
   try {
     const property = await PropertyModel.create({
       ...body,
-      userId: user.id,
+      organisationId: user.organisationId,
     });
     return NextResponse.json(
       { message: "Property added", property },

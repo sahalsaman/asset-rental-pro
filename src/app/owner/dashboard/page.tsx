@@ -5,10 +5,11 @@ import { Building2, Users, QrCode, DollarSign, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import DashboardCard from "./card";
+import { useRouter } from "next/navigation";
 
 
 export default function OwnerDashboard() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
 
   const [stats, setStats] = useState({
@@ -29,23 +30,42 @@ export default function OwnerDashboard() {
     });
   }, []);
 
+  const options = [
+    { title: 'Properties', path: '/owner/properties' },
+    { title: 'Bookings', path: '/owner/bookings' },
+    { title: 'Invoices', path: '/owner/invoices' },
+    { title: 'Managers', path: '/owner/managers' },
+  ];
+
   return (
     <main className=" bg-white text-gray-800 pt-10 md:px-32 px-5 mb-10">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <DashboardCard title="Properties" value={stats.properties} icon={Building2} />
         <DashboardCard title="Available Spaces" value={stats.spaces} icon={Building2} />
         <DashboardCard title="Enrollments" value={stats.enrollments} icon={Users} />
         <DashboardCard title="Monthly Received" value={`₹${stats.monthlyReceived}`} icon={DollarSign} />
       </div>
 
-      <div className="flex gap-4 mt-6">
-        <Button onClick={() => alert("Add Enrollment Clicked")} className="flex items-center gap-2">
+      <div className=" md:hidden grid grid-cols-4 gap-4 mt-8">
+      {options.map((card, idx) => (
+        <div key={idx} className="flex flex-col justify-center items-center gap-1" 
+        onClick={() => router.push(card.path)}>
+          <Button onClick={() => alert("Add Enrollment Clicked")} className="h-15 w-15">
+            <Plus className="w-12 h-12" />
+          </Button>
+         <span className="text-xs text-nowrap">{card.title}</span>
+        </div>
+      ))}
+      </div>
+
+      <div className="flex justify-center items-center gap-4 mt-6">
+        <Button variant="outline" onClick={() => alert("Add Enrollment Clicked")} className="flex items-center gap-2 h-18 ">
           <Plus className="w-4 h-4" /> Add Enrollment
         </Button>
 
-        <Button variant="outline" onClick={() => setQrOpen(true)} className="flex items-center gap-2">
+        <Button variant="outline" onClick={() => setQrOpen(true)} className="flex items-center gap-2 h-18 ">
           <QrCode className="w-4 h-4" /> Show QR Code
         </Button>
       </div>

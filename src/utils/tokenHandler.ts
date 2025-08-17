@@ -5,6 +5,7 @@ export function setTokenValue(user:any){
   const payload = {
     id: user._id,
     role: user.role,
+    organisationId:user.organisationId
   };
 
   return  jwt.sign(payload, process.env.JWT_SECRET ?? "arp_userTokenKey", {
