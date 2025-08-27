@@ -18,8 +18,8 @@ export default function LoginPage() {
       await sendOtpApi(phone);
       router.push(`/auth/verify-otp?phone=${phone}`);
     } catch (err: any) {
-        if (err?.response?.data?.error) {
-        toast.error(err?.response?.data?.error)
+        if (err?.response?.data?.message) {
+        toast.error(err?.response?.data?.message)
         return;
       }
       console.error("Login error:", err);

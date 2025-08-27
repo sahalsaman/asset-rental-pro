@@ -19,4 +19,19 @@ export const getSession = () => api.get('/auth/session');
 
 export const logout = () => api.post('/auth/logout');
 
+export async function apiFetch(url: string, options: RequestInit = {}) {
+  const res = await fetch(url, {
+    ...options,
+    credentials: "include", // send cookies
+  });
+
+  if (res.status === 401) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/auth/login";
+    }
+  }
+
+  return res;
+}
+
 export default api;

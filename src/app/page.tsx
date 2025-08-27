@@ -59,7 +59,7 @@ export default function Home() {
             />
             <button className="bg-green-600 text-white px-6">Search</button>
           </div>
-          <Link href="/register">
+          <Link href="/auth/signup">
             <button className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition">
               Start Free
             </button>

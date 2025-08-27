@@ -1,37 +1,71 @@
-// utils/constants.ts
-export const Roles = {
-  ADMIN: "admin",
-  OWNER: "owner",
-  USER: "user",
-};
+export const USER_ROLES = ['owner', 'manager', 'user', 'admin'];
+ 
 
-export const SpaceStatus = {
-  AVAILABLE: "available",
-  RENTED: "rented",
-  MAINTENANCE: "maintenance",
-};
-          
+export enum PropertyType  {
+  SHOP_BUILDING= "Shop Building",
+  HOTEL= "Hotel",
+  LODGE_ROOM="Lodge/Room",
+  PG_HOSTEL= "PG/Hostel",
+  HOUSE= "House",
+  FLAT_APARTMENT= "Flat/Apartment",
+  TURF= "Turf",
+  CONFERENCE_HALL= "Conference Hall",
+  AUDITORIUM= "Auditorium",
+  GODOWN= "Godown",
+  OFFICE_SPACE= "Office Space",
+  CO_WORKING_SPACE= "Co-Working Space",
+  LAND_SPACE= "Land Space",
+  REST_SPACE= "Rest Space",
+  RESORT= "Resort",
+}
 
 
-export const PropertyTypes = {
-  SHOP_BUILDING: "Shop Building",
-  HOTEL: "Hotel",
-  LODGE_ROOM:"Lodge/Room",
-  PG_HOSTEL: "PG/Hostel",
-  HOUSE: "House",
-  FLAT_APARTMENT: "Flat/Apartment",
-  TURF: "Turf",
-  CONFERENCE_HALL: "Conference Hall",
-  AUDITORIUM: "Auditorium",
-  GODOWN: "Godown",
-  OFFICE_SPACE: "Office Space",
-  CO_WORKING_SPACE: "Co-Working Space",
-  LAND_SPACE: "Land Space",
-  REST_SPACE: "Rest Space",
-  RESORT: "Resort",
-} as const;
+// 📌 Property Status
+export enum PropertyStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
+  PENDING = "Pending",
+  DRAFT = "Draft",
+}
 
-export type PropertyType = typeof PropertyTypes[keyof typeof PropertyTypes];
+// 📌 Space Status (inside property: room, bed, hall, etc.)
+export enum SpaceStatus {
+  AVAILABLE = "Available",
+  PARTIALLYOCCUPIED = "Partially Occupied",
+  OCCUPIED = "Occupied",
+  MAINTENANCE = "Maintenance",
+  RESERVED = "Reserved",
+}
+
+// 📌 Booking Status
+export enum BookingStatus {
+  PENDING = "Pending",
+  CONFIRMED = "Confirmed",
+  CANCELLED = "Cancelled",
+  CHECKED_IN = "Checked-In",
+  CHECKED_OUT = "Checked-Out",
+}
+
+// 📌 Invoice Status
+export enum InvoiceStatus {
+  PENDING = "Pending",
+  PAID = "Paid",
+  OVERDUE = "Overdue",
+  BALANCE = "Balance",
+  CANCELLED = "Cancelled",
+  REFUNDED = "Refunded",
+  CARRYFORWORDED  = "carry forworded",
+}
+
+// 📌 Transaction Type
+export enum TransactionType {
+  CREDIT = "Credit",
+  DEBIT = "Debit",
+  UPI = "UPI",
+  INHAND = "In hand",
+}
+
+
 
 export enum CurrencyType {
   INR = '₹',

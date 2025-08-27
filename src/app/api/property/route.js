@@ -11,7 +11,7 @@ export async function GET(request) {
   try {
     const user = getTokenValue(request);
 
-    if (!user.id) {
+    if (!user.organisationId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const propertyId = new URL(request.url).searchParams.get("propertyId");
@@ -21,7 +21,7 @@ export async function GET(request) {
       const property = await PropertyModel.find({ _id: propertyId, organisationId: user.organisationId });
       return NextResponse.json(property[0] || null);
     } else {
-      const properties = await PropertyModel.find({ userId: user.id });
+      const properties = await PropertyModel.find({ organisationId: user.organisationId });
       return NextResponse.json(properties);
     }
   } catch (err) {
@@ -35,7 +35,7 @@ export async function GET(request) {
 // POST new property
 export async function POST(request) {
   const user = getTokenValue(request);
-  if (!user?.id) {
+  if (!user?.organisationId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -74,7 +74,7 @@ export async function PUT(request) {
   const body = await request.json();
   try {
     const updated = await PropertyModel.findOneAndUpdate(
-      { _id: id, userId: user.id }, // ensure ownership
+      { _id: id, organisationId: user.organisationId }, // ensure ownership
       body,
       { new: true }
     );
@@ -106,7 +106,7 @@ export async function DELETE(request) {
     await connectMongoDB();
     const deleted = await PropertyModel.findOneAndDelete({
       _id: id,
-      userId: user.id, // ensure ownership
+      organisationId: user.organisationId, // ensure ownership
     });
     if (!deleted) {
       return NextResponse.json({ error: "Not found or not authorized" }, { status: 404 });

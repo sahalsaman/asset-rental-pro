@@ -1,45 +1,32 @@
 import mongoose, { Schema } from 'mongoose';
+import { InvoiceStatus, TransactionType } from '@/utils/contants';
 
 const InvoiceSchema = new Schema(
   {
-    organisationId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Organisation",
-      required: true,
-    },
-    bookingId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Booking",
-      required: true,
-    },
-    propertyId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Property",
-      required: true,
-    },
-    spaceId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Space",
-      required: true,
-    },
+    organisationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organisation", required: true },
+    bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "Booking", required: true },
+    propertyId: { type: mongoose.Schema.Types.ObjectId, ref: "Property", required: true },
+    spaceId: { type: mongoose.Schema.Types.ObjectId, ref: "Space", required: true },
+    invoiceId: { type: String, require: true },
     amount: Number,
     balance: Number,
     carryForwerded: Number,
-    type: { type: String, enum: ['Advance', 'Rent', 'Other'] },
+    type: { type: String },
     payments: [
       {
         date: Date,
         amount: Number,
         transactionId: String,
-        transactionType: { type: String, enum: ['online', 'cash', 'upi', 'card'] },
+        transactionType: { type: String, default: TransactionType.INHAND },
       },
     ],
-    status: { type: String, enum: ['paid', 'unpaid', 'failed', 'balance', 'carry forworded'], default: 'unpaid' },
+    status: { type: String, default: InvoiceStatus.PENDING },
     dueDate: Date,
     disabled: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );
+
 
 const InvoiceModel = mongoose.models.Invoice || mongoose.model('Invoice', InvoiceSchema);
 export default InvoiceModel;

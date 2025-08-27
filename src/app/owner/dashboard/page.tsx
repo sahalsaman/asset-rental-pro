@@ -1,11 +1,12 @@
 "use client";
 
-import { Building2, Users, QrCode, DollarSign, Plus } from "lucide-react";
+import { Building2, Users, QrCode, DollarSign, Plus, Calendar, NotepadTextDashed } from "lucide-react";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import DashboardCard from "../../../components/card";
 import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
 
 export default function OwnerDashboard() {
@@ -19,22 +20,32 @@ export default function OwnerDashboard() {
     monthlyReceived: 0,
   });
 
+  // Fetch stats from backend API
+  const fetchStats = async () => {
+    try {
+      const res = await apiFetch("/api/dashboard"); // replace with your API route
+      if (!res.ok) throw new Error("Failed to fetch dashboard stats");
+      const data = await res.json();
+      setStats({
+        properties: data.properties,
+        spaces: data.availableSpaces,
+        enrollments: data.enrollments,
+        monthlyReceived: data.monthlyReceived,
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
-    // Fetch stats from API
-    // Example:
-    setStats({
-      properties: 5,
-      spaces: 12,
-      enrollments: 20,
-      monthlyReceived: 45000,
-    });
+    fetchStats();
   }, []);
 
   const options = [
-    { title: 'Properties', path: '/owner/properties' },
-    { title: 'Bookings', path: '/owner/bookings' },
-    { title: 'Invoices', path: '/owner/invoices' },
-    { title: 'Managers', path: '/owner/managers' },
+    { title: 'Properties', path: '/owner/properties' ,icon: <Building2 className="w-6 h-6 min-w-6 min-h-6" />},
+    { title: 'Bookings', path: '/owner/bookings',icon: <Calendar className="w-6 h-6 min-w-6 min-h-6"  /> },
+    { title: 'Invoices', path: '/owner/invoices' ,icon: <NotepadTextDashed className="w-6 h-6 min-w-6 min-h-6" />},
+    { title: 'Managers', path: '/owner/managers',icon: <Users className="w-6 h-6 min-w-6 min-h-6"  /> },
   ];
 
   return (
@@ -52,20 +63,20 @@ export default function OwnerDashboard() {
       {options.map((card, idx) => (
         <div key={idx} className="flex flex-col justify-center items-center gap-1" 
         onClick={() => router.push(card.path)}>
-          <Button onClick={() => alert("Add Enrollment Clicked")} className="h-15 w-15">
-            <Plus className="w-12 h-12" />
+          <Button  className="h-15 w-15 bg-green-900">
+           {card.icon}
           </Button>
          <span className="text-xs text-nowrap">{card.title}</span>
         </div>
       ))}
       </div>
 
-      <div className="flex justify-center items-center gap-4 mt-6">
-        <Button variant="outline" onClick={() => alert("Add Enrollment Clicked")} className="flex items-center gap-2 h-18 ">
-          <Plus className="w-4 h-4" /> Add Enrollment
+      <div className="grid grid-cols-2 gap-4 mt-6">
+        <Button variant="outline" onClick={() => alert("Add Enrollment Clicked")} className="flex items-center gap-2 h-18 cursor-pointer">
+          <Plus className="w-4 h-4" /> Add Booking
         </Button>
 
-        <Button variant="outline" onClick={() => setQrOpen(true)} className="flex items-center gap-2 h-18 ">
+        <Button variant="outline" onClick={() => setQrOpen(true)} className="flex items-center gap-2 h-18 cursor-pointer">
           <QrCode className="w-4 h-4" /> Show QR Code
         </Button>
       </div>

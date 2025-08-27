@@ -22,6 +22,7 @@ export interface IProperty {
   state: string;
   country: string;
   zipCode: string;
+  status:string;
   category: 'Room' | 'Hotel' | 'Hostel';
   images: string[];
   currency: string;

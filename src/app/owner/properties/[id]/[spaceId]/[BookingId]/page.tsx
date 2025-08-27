@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { IBooking, IInvoice } from "@/app/types";
 import InvoiceFormModal from "../../../../../../components/InvoiceFormModal";
 import InvoiceCard from "../../../../../../components/InvoiceCard";
+import { apiFetch } from "@/lib/api";
 
 export default function BookingDetailPage() {
   const params = useParams();
@@ -32,7 +33,7 @@ export default function BookingDetailPage() {
       return;
     }
 
-    fetch(`/api/booking?bookingId=${bookingId}`, { credentials: "include" })
+    apiFetch(`/api/booking?bookingId=${bookingId}`)
       .then((res) => res.json())
       .then(setBooking);
 
@@ -41,7 +42,7 @@ export default function BookingDetailPage() {
 
   const fetchInvoices = () => {
     if (!bookingId) return;
-    fetch(`/api/invoice?bookingId=${bookingId}`, { credentials: "include" })
+    apiFetch(`/api/invoice?bookingId=${bookingId}`)
       .then((res) => res.json())
       .then(setInvoices);
   };

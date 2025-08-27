@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {  IInvoice } from "@/app/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import InvoiceFormModal from "../../../components/InvoiceFormModal";
+import { apiFetch } from "@/lib/api";
 
 export default function SpaceDetailPage() {
   const data = useParams();
@@ -22,7 +23,7 @@ export default function SpaceDetailPage() {
 
 
   const fetchInvoices = () => {
-    fetch(`/api/list?page=invoice`, { credentials: "include" })
+    apiFetch(`/api/list?page=invoice`)
       .then(res => res.json())
       .then(setInvoices);
   };
@@ -91,7 +92,7 @@ export default function SpaceDetailPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invoices.length && invoices.map((invoice) => (
+            {invoices.length ? invoices.map((invoice) => (
               <TableRow key={invoice._id}>
                 <TableCell>{invoice._id}</TableCell>
                 <TableCell className="font-medium">{invoice.bookingId}</TableCell>
@@ -99,7 +100,7 @@ export default function SpaceDetailPage() {
                 <TableCell>{invoice.status}</TableCell>
                 <TableCell className="text-right">{invoice.amount}</TableCell>
               </TableRow>
-            ))}
+            )):""}
           </TableBody>
         </Table>
 

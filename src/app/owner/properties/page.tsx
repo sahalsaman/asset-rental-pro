@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import PropertyCard from "../../../components/PropertyCard";
 import PropertyFormModsl from "../../../components/PropertyFormModal";
 import DeleteConfirmModal from "../../../components/PropertyDeleteConfirmModal";
+import { apiFetch } from "@/lib/api";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -13,7 +14,7 @@ export default function PropertiesPage() {
 
 
   const fetchProperties = async () => {
-    const res = await fetch("/api/property");
+    const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
   };
@@ -49,7 +50,7 @@ export default function PropertiesPage() {
   };
 
   return (
-    <div className="pt-10 md:px-32 px-5 mb-10">
+    <div className=" p-5 md:pt-10 md:px-32 mb-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
         <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }}>

@@ -7,6 +7,7 @@ import { ISpace, IBooking } from "@/app/types";
 import BookingCard from "../../../../../components/BookingCard";
 import BookingAddEditModal from "../../../../../components/BookingFormModal";
 import BookingDeleteDialog from "../../../../../components/BookingDelete";
+import { apiFetch } from "@/lib/api";
 
 export default function SpaceDetailPage() {
   const data = useParams();
@@ -28,7 +29,7 @@ export default function SpaceDetailPage() {
 
     if (!spaceId || !id) router.push(`/owner/properties/${id}`);
 
-    fetch(`/api/space?propertyId=${id}&spaceId=${spaceId}`, { credentials: "include" })
+    apiFetch(`/api/space?propertyId=${id}&spaceId=${spaceId}`)
       .then(res => res.json())
       .then(setSpace);
 
@@ -36,7 +37,7 @@ export default function SpaceDetailPage() {
   }, [id, spaceId]);
 
   const fetchBookings = () => {
-    fetch(`/api/booking?propertyId=${id}&spaceId=${spaceId}`, { credentials: "include" })
+    apiFetch(`/api/booking?propertyId=${id}&spaceId=${spaceId}`)
       .then(res => res.json())
       .then(setBookings);
   };
@@ -166,6 +167,7 @@ export default function SpaceDetailPage() {
         }}
         onSave={handleSaveBooking}
         editData={editBookingData}
+        spaceData={space}
       />
 
       {/* Booking Delete Dialog */}

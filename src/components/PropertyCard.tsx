@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 interface Props {
   property: IProperty;
   onEdit: (property: IProperty) => void;
-  onDelete: (id: string) => void;
+  onDelete: (property: IProperty) => void;
 }
 
 export default function PropertyCard({ property, onEdit, onDelete }: Props) {
@@ -40,7 +40,7 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
                 <Pencil size={16} />
               </button>
               <button
-                onClick={() => onDelete(property._id!)}
+                onClick={() => onDelete(property)}
               >
                 <Trash2 size={16} />
               </button>

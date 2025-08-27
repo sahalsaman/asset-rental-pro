@@ -7,7 +7,7 @@ import { getTokenValue } from "@/utils/tokenHandler";
 
 export async function GET(request) {
   const user = getTokenValue(request);
-  if (!user?.id) {
+  if (!user?.organisationId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

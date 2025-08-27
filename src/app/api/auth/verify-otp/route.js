@@ -20,8 +20,9 @@ export async function POST(req) {
   if (user.otp !== otp && isOtpExpired) {
     return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
   }
-
-  await UserModel.findByIdAndUpdate(user._id,{onboardingCompleted:true})
+  if (!user.onboardingCompleted) {
+    await UserModel.findByIdAndUpdate(user._id, { onboardingCompleted: true })
+  }
   const token = setTokenValue(user);
 
   return new NextResponse(JSON.stringify({ message: "Login successful", role: user.role }), {

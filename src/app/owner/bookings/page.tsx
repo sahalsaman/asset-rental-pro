@@ -7,8 +7,9 @@ import { ISpace, IBooking } from "@/app/types";
 import BookingCard from "../../../components/BookingCard";
 import BookingAddEditModal from "../../../components/BookingFormModal";
 import BookingDeleteDialog from "../../../components/BookingDelete";
+import { apiFetch } from "@/lib/api";
 
-export default function SpaceDetailPage() {
+export default function BookingListPage() {
     const data = useParams();
     
   
@@ -23,7 +24,7 @@ export default function SpaceDetailPage() {
 
 
   const fetchBookings = () => {
-    fetch(`/api/list?page=booking`, { credentials: "include" })
+    apiFetch(`/api/list?page=booking`)
       .then(res => res.json())
       .then(setBookings);
   };

@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; // fixed "Inut" typo
 import { Label } from '@radix-ui/react-label';
-import { CurrencyType, PropertyTypes } from '@/utils/contants';
+import { CurrencyType, PropertyStatus, PropertyType } from '@/utils/contants';
 
 interface PropertyFormModalProps {
   open: boolean;
@@ -32,11 +32,12 @@ export default function PropertyFormModal({
     address: '',
     city: '',
     category: 'Room',
-    state: '',
+    status: PropertyStatus.ACTIVE,
+    state:"",
     country: '',
     zipCode: '',
     images: [],
-    currency: 'INR',
+    currency: "₹",
     disabled: false,
   });
 
@@ -59,7 +60,7 @@ export default function PropertyFormModal({
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'amount' || name === 'advance' ? Number(value) : value,
+      [name]: value,
     }));
   };
 
@@ -100,7 +101,7 @@ export default function PropertyFormModal({
             placeholder="Address"
             required
           />
-             <Label>State</Label>
+          <Label>State</Label>
           <Input
             name="state"
             value={formData.state}
@@ -117,6 +118,22 @@ export default function PropertyFormModal({
             required
           />
 
+          <Label>Status</Label>
+          <select
+            name="status"
+            value={formData.status || ""}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          >
+            <option value="">Select a status</option>
+            {Object.values(PropertyStatus).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+
 
           <Label>Category</Label>
           <select
@@ -127,7 +144,7 @@ export default function PropertyFormModal({
             required
           >
             <option value="">Select a category</option>
-            {Object.values(PropertyTypes).map((type) => (
+            {Object.values(PropertyType).map((type) => (
               <option key={type} value={type}>
                 {type}
               </option>

@@ -9,6 +9,7 @@ import SpaceAddEditModal from "../../../../components/SpaceFormModal";
 import SpaceDeleteDialog from "../../../../components/SpaceDeleteConfirmModal";
 import BookingAddEditModal from "../../../../components/BookingFormModal";
 import { Badge } from "@/components/ui/badge";
+import { apiFetch } from "@/lib/api";
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
@@ -30,7 +31,7 @@ export default function PropertyDetailPage() {
   const [selectedSpace, setSelectedSpace] = useState<ISpace | null>(null);
 
   useEffect(() => {
-    fetch(`/api/property?propertyId=${id}`, { credentials: "include" })
+    apiFetch(`/api/property?propertyId=${id}`)
       .then(res => res.json())
       .then(setProperty);
 
@@ -38,7 +39,7 @@ export default function PropertyDetailPage() {
   }, [id]);
 
   const fetchSpaces = () => {
-    fetch(`/api/space?propertyId=${id}`, { credentials: "include" })
+    apiFetch(`/api/space?propertyId=${id}`)
       .then(res => res.json())
       .then(setSpaces);
   };
@@ -93,7 +94,7 @@ export default function PropertyDetailPage() {
   return (
     <div className="">
       {/* Property Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-100 p-14 md:px-32 px-5 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
         <div className="flex items-center gap-4">
           {/* Logo / First Image */}
           {property?.images?.length > 0 ? (
@@ -110,7 +111,7 @@ export default function PropertyDetailPage() {
 
           {/* Property Info */}
           <div>
-            <h1 className="text-3xl font-bold">{property?.name}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">{property?.name}</h1>
             <p className="text-sm text-gray-600">
               {property?.address}, {property?.city}, {property?.state} {property?.zipCode}, {property?.country}
             </p>
@@ -124,12 +125,17 @@ export default function PropertyDetailPage() {
         </div>
 
         {/* Add Space Button */}
-        <Button onClick={() => setShowSpaceModal(true)} className="whitespace-nowrap">
+        <Button onClick={() => setShowSpaceModal(true)} className="whitespace-nowrap hidden md:block">
           Add Space
         </Button>
       </div>
-      <div className="pt-10 md:px-32 px-5 mb-10">
-        <h1 className="text-2xl font-bold mb-5">Spaces</h1>
+      <div className="p-5 md:pt-10 md:px-32 mb-10">
+        <div className="flex justify-between  items-center">
+          <h1 className="text-2xl font-bold mb-5">Spaces</h1>
+          <Button onClick={() => setShowSpaceModal(true)} className="whitespace-nowrap md:hidden block">
+            Add Space
+          </Button>
+        </div>
         {/* Spaces Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {spaces.map(space => (
@@ -158,7 +164,7 @@ export default function PropertyDetailPage() {
 
       {/* Space Modals */}
       <SpaceAddEditModal
-      property={property}
+        property={property}
         open={showSpaceModal}
         onClose={() => {
           setShowSpaceModal(false);
@@ -184,6 +190,7 @@ export default function PropertyDetailPage() {
         }}
         onSave={handleSaveBooking}
         editData={editBookingData}
+        spaceData={selectedSpace}
       />
     </div>
   );

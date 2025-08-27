@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 
 export default function DeleteConfirmModal({ open, onClose, onConfirm, item }:any) {
   if (!item) return null;
+console.log(item);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Property</DialogTitle>
+          <DialogTitle className="text-left">Delete Property</DialogTitle>
         </DialogHeader>
         <p>Are you sure you want to delete <strong>{item.name}</strong>?</p>
         <div className="flex justify-end gap-2 mt-4">
