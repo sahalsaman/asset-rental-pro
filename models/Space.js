@@ -10,7 +10,7 @@ const SpaceSchema = new Schema(
     amount: Number,
     description: String,
     images: [String],
-    rentType: { type: String, enum: ['Day', 'Week', 'Month', 'Year'] },
+    frequency: { type: String, enum: ['Day', 'Week', 'Month', 'Year'] },
     status: { type: String, default: SpaceStatus.AVAILABLE },
     advanceAmount: Number,
     noOfSlots: { type: Number, required: true, default: 1 },

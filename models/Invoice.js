@@ -12,6 +12,9 @@ const InvoiceSchema = new Schema(
     balance: Number,
     carryForwerded: Number,
     type: { type: String },
+    status: { type: String, default: InvoiceStatus.PENDING },
+    dueDate: Date,
+    disabled: { type: Boolean, required: true, default: false },
     payments: [
       {
         date: Date,
@@ -20,9 +23,6 @@ const InvoiceSchema = new Schema(
         transactionType: { type: String, default: TransactionType.INHAND },
       },
     ],
-    status: { type: String, default: InvoiceStatus.PENDING },
-    dueDate: Date,
-    disabled: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

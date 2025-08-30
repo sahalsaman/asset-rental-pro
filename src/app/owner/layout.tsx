@@ -14,13 +14,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { title: 'Bookings', path: '/owner/bookings' },
     { title: 'Invoices', path: '/owner/invoices' },
     { title: 'Managers', path: '/owner/managers' },
+    { title: 'Announcement', path: '/owner/announcement' },
   ];
 
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={20} /> },
     { title: 'Property', path: '/owner/properties', icon: <Building2 size={20} /> },
     { title: 'Invoices', path: '/owner/invoices', icon: <Printer size={20} /> },
-    { title: 'Announcement', path: '/owner/bookings', icon: <Megaphone size={20} /> },
+    { title: 'Broadcast', path: '/owner/announcement', icon: <Megaphone size={20} /> },
   ];
 
   const logout = async () => {
@@ -36,14 +37,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-24">
       {/* Navbar */}
        <div
-        className={` bg-cover bg-center bg-green-800 md:px-32 p-5
+        className={`  w-full bg-cover bg-center bg-green-800 md:px-32 p-5
         ${ pathname === "/owner/dashboard" ? "bg-[url('/banner.png')] h-70 " : "h-20 "} transition-all duration-300`}
       >
         <div className="flex justify-between items-center">
           {/* Desktop Nav */}
+            <h1
+              onClick={() => router.push('/owner/dashboard')}
+              className="text-2xl font-bold text-white mr-5 cursor-pointer block md:hidden"
+            >
+              ARP
+            </h1>
           <div className="hidden md:flex items-center gap-4">
             <h1
               onClick={() => router.push('/owner/dashboard')}
@@ -73,7 +80,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
 
             {open && (
-              <div className="absolute md:right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
+              <div className="absolute right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
 
 
                 <button

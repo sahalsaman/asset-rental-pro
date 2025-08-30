@@ -52,7 +52,7 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
           <div>
             <h2 className="text-lg font-semibold mt-1">{property.name}</h2>
             <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
-            {/* <p className="text-sm"> ₹{property.amount} / {property.rentType}</p> */}
+            {/* <p className="text-sm"> ₹{property.amount} / {property.frequency}</p> */}
           </div>
           <div className='flex justify-end  '>
           

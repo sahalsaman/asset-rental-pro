@@ -20,6 +20,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData,sp
   const [formData, setFormData] = useState<Partial<IBooking>>({
     fullName: "",
     phone: "",
+    whatsappNumber: "",
     address: "",
     vericationIdCard: "",
     vericationIdCardNumber: "",
@@ -28,6 +29,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData,sp
     amount: spaceData?.amount || 0,
     advanceAmount: spaceData?.advanceAmount || 0,
   });
+console.log("spaceData",spaceData);
 
   useEffect(() => {
     if (editData) {
@@ -60,6 +62,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData,sp
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <Input name="fullName" placeholder="Full Name" value={formData.fullName || ""} onChange={handleChange} required />
           <Input name="phone" placeholder="Phone" value={formData.phone || ""} onChange={handleChange} required />
+          <Input name="whatsappNumber" placeholder="Whatsapp Number" value={formData.whatsappNumber || ""} onChange={handleChange} required />
           <Input name="address" placeholder="Address" value={formData.address || ""} onChange={handleChange} required />
 
           <Input name="vericationIdCard" placeholder="Verification ID Type" value={formData.vericationIdCard || ""} onChange={handleChange} />

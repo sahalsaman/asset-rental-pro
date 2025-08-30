@@ -43,7 +43,7 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onClose} >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{editData ? "Edit Invoice" : "Add Invoice"}</DialogTitle>
@@ -89,21 +89,21 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             <option value="failed">Failed</option>
           </select>
 
-          <label className="text-sm font-medium">Received Date</label>
-          <Input
-            name="recivedDate"
-            type="date"
-            value={formData.recivedDate ? formData.recivedDate.toString().split("T")[0] : ""}
-            onChange={handleChange}
-          />
+          <div>    <label className="text-sm font-medium">Received Date</label>
+            <Input
+              name="recivedDate"
+              type="date"
+              value={formData.recivedDate ? formData.recivedDate.toString().split("T")[0] : ""}
+              onChange={handleChange}
+            /></div>
 
-          <label className="text-sm font-medium">Due Date</label>
-          <Input
-            name="dueDate"
-            type="date"
-            value={formData.dueDate ? formData.dueDate.toString().split("T")[0] : ""}
-            onChange={handleChange}
-          />
+          <div>    <label className="text-sm font-medium ">Due Date</label>
+            <Input
+              name="dueDate"
+              type="date"
+              value={formData.dueDate ? formData.dueDate.toString().split("T")[0] : ""}
+              onChange={handleChange}
+            /></div>
 
           <div className="flex items-center gap-2">
             <input

@@ -10,6 +10,7 @@ import SpaceDeleteDialog from "../../../../components/SpaceDeleteConfirmModal";
 import BookingAddEditModal from "../../../../components/BookingFormModal";
 import { Badge } from "@/components/ui/badge";
 import { apiFetch } from "@/lib/api";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function PropertyDetailPage() {
   const { id } = useParams();
@@ -91,23 +92,25 @@ export default function PropertyDetailPage() {
     setSelectedSpace(null);
   };
 
+     const breadcrumbItems = [
+            { label: "Home", href: "/owner" },
+            { label: "Properties", href: "/owner/properties" },
+            { label: property?.name || "Property" },
+          ];
+
   return (
     <div className="">
       {/* Property Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
+         
+        
+                <Breadcrumbs items={breadcrumbItems}/>
         <div className="flex items-center gap-4">
-          {/* Logo / First Image */}
-          {property?.images?.length > 0 ? (
-            <img
-              src={property.images[0]}
-              alt={`${property.name} logo`}
-              className="w-20 h-20 object-cover rounded-md border"
-            />
-          ) : (
-            <div className="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
-              No Logo
+        
+            <div className="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center text-gray-500 text-2xl">
+              {property?.name?.charAt(0).toUpperCase()}
             </div>
-          )}
+        
 
           {/* Property Info */}
           <div>
@@ -137,7 +140,7 @@ export default function PropertyDetailPage() {
           </Button>
         </div>
         {/* Spaces Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
           {spaces.map(space => (
             <SpaceCard
               key={space._id}

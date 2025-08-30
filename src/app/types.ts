@@ -40,7 +40,7 @@ export interface ISpace {
   amount: number;
   description: string;
   images: string[];
-  rentType: 'Day' | 'Week' | 'Month' | 'Year';
+  frequency: 'Day' | 'Week' | 'Month' | 'Year';
   status: 'available' | 'booked' | 'maintenance';
   advanceAmount?: number; // renamed in schema
   noOfSlots: number;
@@ -53,8 +53,11 @@ export interface IBooking {
   _id?: string;
   propertyId: string;
   spaceId: string;
+  property?: IProperty;
+  space?: ISpace;
   fullName: string;
   phone: string;
+  whatsappNumber?: string;
   address: string;
   vericationIdCard?: string;
   vericationIdCardNumber?: string;
@@ -69,6 +72,7 @@ export interface IBooking {
 }
 
 export interface IInvoice {
+  invoiceId?: string; // Added for better invoice numbering
   _id?: string;
   bookingId: string; // Required in schema
   propertyId: string; // Required in schema
@@ -83,4 +87,17 @@ export interface IInvoice {
   disabled: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface IAnnouncement {
+  _id: string;
+  organisationId: string;
+  title: string;
+  message: string;
+  audience: "all" | "employees" | "customers";
+  disabled?: boolean;
+  attachments?: string[];
+  createdBy: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

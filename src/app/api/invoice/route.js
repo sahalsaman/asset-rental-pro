@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectMongoDB from "@/../database/db";
 import InvoiceModel from "@/../models/Invoice";
+import { getTokenValue } from "@/utils/tokenHandler";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -17,30 +18,29 @@ export async function GET(request) {
     const propertyId = searchParams.get("propertyId");
     const spaceId = searchParams.get("spaceId");
 
+      const user = getTokenValue(request);
+        if (!user?.organisationId) {
+          return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
     let filter= {};
     if (bookingId) {
-      if (!isValidObjectId(bookingId)) {
-        return NextResponse.json({ error: "Invalid bookingId" }, { status: 400 });
-      }
       filter.bookingId = bookingId;
     }
     if (propertyId) {
-      if (!isValidObjectId(propertyId)) {
-        return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
-      }
       filter.propertyId = propertyId;
     }
     if (spaceId) {
-      if (!isValidObjectId(spaceId)) {
-        return NextResponse.json({ error: "Invalid spaceId" }, { status: 400 });
-      }
       filter.spaceId = spaceId;
+    }
+    if (user?.organisationId) {
+      filter.organisationId = user.organisationId;
     }
 
     const invoices = await InvoiceModel.find(filter)
-      .populate("bookingId")
-      .populate("propertyId")
-      .populate("spaceId");
+      // .populate("bookingId")
+      // .populate("propertyId")
+      // .populate("spaceId");
 
     return NextResponse.json(invoices);
   } catch (err) {

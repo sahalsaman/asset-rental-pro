@@ -8,6 +8,7 @@ import BookingCard from "../../../../../components/BookingCard";
 import BookingAddEditModal from "../../../../../components/BookingFormModal";
 import BookingDeleteDialog from "../../../../../components/BookingDelete";
 import { apiFetch } from "@/lib/api";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function SpaceDetailPage() {
   const data = useParams();
@@ -77,10 +78,18 @@ export default function SpaceDetailPage() {
 
   if (!space) return <p className="p-6">Loading space details...</p>;
 
+       const breadcrumbItems = [
+            { label: "Home", href: "/owner" },
+            { label: "Properties", href: "/owner/properties" },
+            { label:  "Property", href: `/owner/properties/${id}` },
+            { label: space.name || "Space"},
+          ];
+
   return (
     <div >
       {/* Space Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8 pt-5 shadow-sm border md:px-32 px-5">
+                      <Breadcrumbs items={breadcrumbItems}/>
         <div className="flex items-center gap-4">
           {/* Space Image */}
           {space?.images?.length > 0 ? (
@@ -110,14 +119,14 @@ export default function SpaceDetailPage() {
               )}
          
               <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs">
-                ₹{space.amount?.toLocaleString()} {space?.rentType && ` / ${space.rentType}`}
+                ₹{space.amount?.toLocaleString()} {space?.frequency && ` / ${space.frequency}`}
               </span>
               {space?.advanceAmount && space?.advanceAmount > 0 ? (
                 <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-md text-xs">
                   Advance: ₹{space.advanceAmount?.toLocaleString()}
                 </span>
               ):""}
-              {space?.noOfSlots && (
+              {space?.noOfSlots>1 && (
                 <span className="px-2 py-1 bg-pink-100 text-pink-800 rounded-md text-xs">
                   Slots: {space.noOfSlots}
                 </span>
@@ -126,16 +135,18 @@ export default function SpaceDetailPage() {
           </div>
         </div>
 
-        {/* Booking Button */}
-        <Button onClick={() => setShowBookingModal(true)} className="whitespace-nowrap">
-          Add Booking
-        </Button>
       </div>
 
 
       {/* Bookings List */}
-      <div className="pt-10 md:px-32 px-5 ">
+      <div className=" md:px-32 px-5 ">
+        <div className="flex justify-between  items-center ">
         <h1 className="text-2xl font-bold mb-5">Bookings</h1>
+        {/* Booking Button */}
+        <Button onClick={() => setShowBookingModal(true)} className="whitespace-nowrap">
+          Add Booking
+        </Button>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {bookings.length > 0 ? (
             bookings.map((booking) => (

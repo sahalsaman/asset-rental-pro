@@ -55,7 +55,7 @@ export default function SpaceAddEditModal({ property, open, onClose, onSave, edi
           
           <Input
             name="name"
-            placeholder="Space Name"
+            placeholder="Space Number"
             value={formData.name || ""}
             onChange={handleChange}
             required
@@ -68,7 +68,6 @@ export default function SpaceAddEditModal({ property, open, onClose, onSave, edi
             onChange={handleChange}
           />
 
-          <div className="flex gap-2">
             <Input
               name="amount"
               type="number"
@@ -78,8 +77,8 @@ export default function SpaceAddEditModal({ property, open, onClose, onSave, edi
               required
             />
             <select
-              name="rentType"
-              value={formData.rentType || ""}
+              name="frequency"
+              value={formData.frequency || ""}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required
@@ -91,7 +90,7 @@ export default function SpaceAddEditModal({ property, open, onClose, onSave, edi
                 </option>
               ))}
             </select>
-          </div>
+       
 
           {isFlatOrApartment && (
             <select

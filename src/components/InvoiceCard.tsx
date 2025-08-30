@@ -14,11 +14,21 @@ interface Props {
 export default function InvoiceCard({ invoice, onEdit, onDelete }: Props) {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg font-semibold">
-          {/* Invoice #{invoice?.invoiceNumber || invoice._id} */}
-        </CardTitle>
-        <div className="space-x-2">
+      <CardContent >
+             <CardTitle className="text-lg font-semibold">
+            #{invoice?.invoiceId}
+          </CardTitle>
+        <div className="flex  justify-between items-end">
+
+        <div >
+     
+          <p className="text-gray-700">
+            Amount: <span className="font-medium">{invoice.amount}</span>
+          </p>
+          {/* <p className="text-gray-600">Date: {new Date(invoice?.date).toLocaleDateString()}</p> */}
+          <p className="text-gray-600">Status: {invoice.status}</p>
+        </div>
+        <div className="flex gap-2">
           <Button size="icon" variant="outline" onClick={() => onEdit(invoice)}>
             <Edit className="w-4 h-4" />
           </Button>
@@ -26,13 +36,7 @@ export default function InvoiceCard({ invoice, onEdit, onDelete }: Props) {
             <Trash className="w-4 h-4" />
           </Button>
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-gray-700">
-          Amount: <span className="font-medium">${invoice.amount}</span>
-        </p>
-        {/* <p className="text-gray-600">Date: {new Date(invoice?.date).toLocaleDateString()}</p> */}
-        <p className="text-gray-600">Status: {invoice.status}</p>
+        </div>
       </CardContent>
     </Card>
   );

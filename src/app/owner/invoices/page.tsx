@@ -7,6 +7,7 @@ import {  IInvoice } from "@/app/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import InvoiceFormModal from "../../../components/InvoiceFormModal";
 import { apiFetch } from "@/lib/api";
+import InvoiceCard from "@/components/InvoiceCard";
 
 export default function SpaceDetailPage() {
   const data = useParams();
@@ -79,32 +80,27 @@ export default function SpaceDetailPage() {
         <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
       </div>
 
-      {/* Invoices List */}
-      <div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Proprty and space</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {invoices.length ? invoices.map((invoice) => (
-              <TableRow key={invoice._id}>
-                <TableCell>{invoice._id}</TableCell>
-                <TableCell className="font-medium">{invoice.bookingId}</TableCell>
-                <TableCell>{invoice.propertyId}</TableCell>
-                <TableCell>{invoice.status}</TableCell>
-                <TableCell className="text-right">{invoice.amount}</TableCell>
-              </TableRow>
-            )):""}
-          </TableBody>
-        </Table>
-
-      </div>
+      {/* Invoice List */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             {invoices.length > 0 ? (
+               invoices.map((invoice) => (
+                 <InvoiceCard
+                   key={invoice._id}
+                   invoice={invoice}
+                   onEdit={(i) => {
+                     setEditInvoiceData(i);
+                     setShowInvoiceModal(true);
+                   }}
+                   onDelete={(id) => {
+                     setDeleteId(id);
+                     setShowDelete(true);
+                   }}
+                 />
+               ))
+             ) : (
+               <p className="text-gray-500">No invoices yet for this booking.</p>
+             )}
+           </div>
 
       {/* Invoice Modal */}
       <InvoiceFormModal

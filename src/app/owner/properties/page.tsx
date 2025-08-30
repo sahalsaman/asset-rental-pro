@@ -5,6 +5,7 @@ import PropertyCard from "../../../components/PropertyCard";
 import PropertyFormModsl from "../../../components/PropertyFormModal";
 import DeleteConfirmModal from "../../../components/PropertyDeleteConfirmModal";
 import { apiFetch } from "@/lib/api";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -49,8 +50,14 @@ export default function PropertiesPage() {
     fetchProperties();
   };
 
+    const breadcrumbItems = [
+    { label: "Home", href: "/owner" },
+    { label: "Properties"},
+  ];
+
   return (
     <div className=" p-5 md:pt-10 md:px-32 mb-10">
+        <Breadcrumbs items={breadcrumbItems}/>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
         <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }}>

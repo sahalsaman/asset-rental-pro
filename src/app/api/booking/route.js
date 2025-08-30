@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
+import { getTokenValue } from "@/utils/tokenHandler";
+import InvoiceModel from "@/../models/Invoice";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -15,10 +17,10 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
 
-    if(bookingId){
+    if (bookingId) {
       const bookings = await BookingModel.findById(bookingId)
 
-    return NextResponse.json(bookings);
+      return NextResponse.json(bookings);
     }
 
 
@@ -40,8 +42,8 @@ export async function GET(request) {
     }
 
     const bookings = await BookingModel.find(filter)
-      .populate("propertyId")
-      .populate("spaceId");
+      // .populate("property")
+      // .populate("space");
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(
@@ -52,10 +54,16 @@ export async function GET(request) {
 }
 
 // POST new booking
+// POST new booking
 export async function POST(request) {
   try {
     await connectMongoDB();
     const body = await request.json();
+
+    const user = getTokenValue(request);
+    if (!user?.organisationId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     if (!isValidObjectId(body.propertyId)) {
       return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
@@ -64,8 +72,58 @@ export async function POST(request) {
       return NextResponse.json({ error: "Invalid spaceId" }, { status: 400 });
     }
 
-    const booking = await BookingModel.create(body);
-    return NextResponse.json({ message: "Booking added", booking }, { status: 201 });
+    // 1️⃣ Create booking
+    const booking = await BookingModel.create({
+      ...body,
+      organisationId: user.organisationId,
+    });
+
+    // 2️⃣ Generate invoices for this booking
+    const invoices = [];
+
+    // --- Advance Payment Invoice ---
+    if (booking.advanceAmount && booking.advanceAmount > 0) {
+      invoices.push({
+        organisationId: user.organisationId,
+        bookingId: booking._id,
+        propertyId: booking.propertyId,
+        spaceId: booking.spaceId,
+        invoiceId: `INV-${Date.now()}-ADV`, // generate ID
+        amount: booking.advanceAmount,
+        balance: booking.advanceAmount,
+        type: "Advance",
+        dueDate: booking.checkIn || new Date(),
+      });
+    }
+
+    // --- First Rent Invoice ---
+    if (booking.amount && booking.amount > 0) {
+
+        invoices.push({
+          organisationId: user.organisationId,
+          bookingId: booking._id,
+          propertyId: booking.propertyId,
+          spaceId: booking.spaceId,
+          invoiceId: `INV-${Date.now()}-RENT`, // generate ID
+          amount: rentAmount,
+          balance: rentAmount,
+          type: "Rent",
+          dueDate: booking.checkIn || new Date(),
+        });
+      
+    }
+
+    console.log('invoices to create:', invoices);
+    
+
+    if (invoices.length > 0) {
+      await InvoiceModel.insertMany(invoices);
+    }
+
+    return NextResponse.json(
+      { message: "Booking & invoices created", booking, invoices },
+      { status: 201 }
+    );
   } catch (err) {
     return NextResponse.json(
       { error: "Failed to add booking", details: err.message },

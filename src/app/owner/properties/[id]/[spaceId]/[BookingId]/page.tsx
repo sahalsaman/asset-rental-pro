@@ -7,12 +7,15 @@ import { IBooking, IInvoice } from "@/app/types";
 import InvoiceFormModal from "../../../../../../components/InvoiceFormModal";
 import InvoiceCard from "../../../../../../components/InvoiceCard";
 import { apiFetch } from "@/lib/api";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default function BookingDetailPage() {
   const params = useParams();
   const router = useRouter();
 
   // Safely extract bookingId
+
+  const { id, spaceId } = useParams();
   const bookingId = Array.isArray(params?.bookingId)
     ? params.bookingId[0]
     : params?.bookingId;
@@ -78,10 +81,19 @@ export default function BookingDetailPage() {
 
   if (!booking) return <p className="p-6">Loading booking details...</p>;
 
+  const breadcrumbItems = [
+    { label: "Home", href: "/owner" },
+    { label: "Properties", href: "/owner/properties" },
+    { label: "Property", href: `/owner/properties/${id}` },
+    { label: "Space", href: `/owner/properties/${id}/${spaceId}` },
+    { label: booking.fullName || "Space", },
+  ];
+
   return (
     <div >
       {/* Booking Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5 pt-5">
+        <Breadcrumbs items={breadcrumbItems} />
         <div>
           <div className="flex items-center gap-4">
             {/* Logo (first 2 letters of fullName) */}
@@ -116,13 +128,15 @@ export default function BookingDetailPage() {
           </div>
 
         </div>
-        <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
       </div>
 
 
       {/* Invoice List */}
-      <div className="pt-10 md:px-32 px-5">
-        <h2 className="text-xl font-semibold mb-3">Invoices</h2>
+      <div className=" md:px-32 px-5">
+        <div className="flex justify-between items-center mb-5">
+          <h2 className="text-2xl font-bold">Invoices</h2>
+          <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
+        </div>
         <div className="space-y-3">
           {invoices.length > 0 ? (
             invoices.map((invoice) => (
