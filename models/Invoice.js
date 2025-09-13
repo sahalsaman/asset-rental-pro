@@ -6,7 +6,7 @@ const InvoiceSchema = new Schema(
     organisationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organisation", required: true },
     bookingId: { type: mongoose.Schema.Types.ObjectId, ref: "Booking", required: true },
     propertyId: { type: mongoose.Schema.Types.ObjectId, ref: "Property", required: true },
-    spaceId: { type: mongoose.Schema.Types.ObjectId, ref: "Space", required: true },
+    roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
     invoiceId: { type: String, require: true },
     amount: Number,
     balance: Number,

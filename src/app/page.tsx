@@ -28,7 +28,7 @@ export default function Home() {
 
       {/* Mobile Nav */}
       {menuOpen && (
-        <div className="md:hidden bg-white shadow-md px-6 py-4 space-y-4 text-sm">
+        <div className="md:hidden bg-white shadow-md px-6 py-4 space-x-4 text-sm">
           <Link href="#about" onClick={() => setMenuOpen(false)}>About</Link>
           <Link href="#services" onClick={() => setMenuOpen(false)}>Services</Link>
           <Link href="#features" onClick={() => setMenuOpen(false)}>Features</Link>
@@ -108,7 +108,7 @@ export default function Home() {
       <p className="text-lg text-gray-600 mb-6">
         Managing rental assets shouldn’t be complicated. AssetRentalPro is built for property owners, managers, and tenants to streamline everything — from listings to invoicing.
       </p>
-      <ul className="space-y-4 text-gray-700">
+      <ul className="space-x-4 text-gray-700">
         {[
           {
             icon: "🏠",
@@ -154,7 +154,7 @@ export default function Home() {
           <h2 className="text-4xl font-bold mb-12">Platform Highlights</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { title: "Space Management", icon: "📐" },
+              { title: "Room Management", icon: "📐" },
               { title: "Automated Invoicing", icon: "🧾" },
               { title: "Role-Based Dashboard", icon: "👤" },
               { title: "Mobile Optimized", icon: "📱" },

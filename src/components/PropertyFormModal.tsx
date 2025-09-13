@@ -16,14 +16,12 @@ import { CurrencyType, PropertyStatus, PropertyType } from '@/utils/contants';
 interface PropertyFormModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (data: IProperty) => void;
   initialData?: IProperty | null;
 }
 
 export default function PropertyFormModal({
   open,
   onClose,
-  onSave,
   initialData,
 }: PropertyFormModalProps) {
   const [formData, setFormData] = useState<IProperty>({
@@ -66,9 +64,25 @@ export default function PropertyFormModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    handleSave(formData);
     onClose();
   };
+
+    const handleSave = async (formData:any) => {
+      if (initialData?._id) {
+        await fetch(`/api/property?id=${initialData?._id}`, {
+          method: "PUT",
+          body: JSON.stringify(formData),
+          headers: {  "Content-Type": "application/json" },
+        });
+      } else {
+        await fetch("/api/property", {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+    };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -171,7 +185,7 @@ export default function PropertyFormModal({
               Cancel
             </Button>
             <Button type="submit">
-              {initialData ? 'Update' : 'Add'}
+              {initialData ? 'Update' : 'Submit'}
             </Button>
           </div>
         </form>

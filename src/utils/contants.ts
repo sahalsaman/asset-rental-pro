@@ -12,10 +12,10 @@ export enum PropertyType  {
   CONFERENCE_HALL= "Conference Hall",
   AUDITORIUM= "Auditorium",
   GODOWN= "Godown",
-  OFFICE_SPACE= "Office Space",
-  CO_WORKING_SPACE= "Co-Working Space",
-  LAND_SPACE= "Land Space",
-  REST_SPACE= "Rest Space",
+  OFFICE_SPACE= "Office Room",
+  CO_WORKING_SPACE= "Co-Working Room",
+  LAND_SPACE= "Land Room",
+  REST_SPACE= "Rest Room",
   RESORT= "Resort",
 }
 
@@ -28,8 +28,8 @@ export enum PropertyStatus {
   DRAFT = "Draft",
 }
 
-// 📌 Space Status (inside property: room, bed, hall, etc.)
-export enum SpaceStatus {
+// 📌 Room Status (inside property: room, bed, hall, etc.)
+export enum RoomStatus {
   AVAILABLE = "Available",
   PARTIALLYOCCUPIED = "Partially Occupied",
   OCCUPIED = "Occupied",

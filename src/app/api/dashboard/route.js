@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import PropertyModel from "@/../models/Property";
-import SpaceModel from "@/../models/Space";
+import RoomModel from "@/../models/Room";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { BookingStatus, InvoiceStatus, PropertyStatus, SpaceStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, PropertyStatus, RoomStatus } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -22,14 +22,14 @@ export async function GET(request) {
       status:PropertyStatus.ACTIVE
     });
 
-    const availableSpacesCount = await SpaceModel.countDocuments({
+    const availableRoomsCount = await RoomModel.countDocuments({
       organisationId: user.organisationId,
-      status:SpaceStatus.AVAILABLE
+      status:RoomStatus.AVAILABLE
     });
 
-    const partiallyAvailable = await SpaceModel.countDocuments({
+    const partiallyAvailable = await RoomModel.countDocuments({
       organisationId: user.organisationId,
-      status:SpaceStatus.PARTIALLYOCCUPIED
+      status:RoomStatus.PARTIALLYOCCUPIED
     });
 
     const enrollmentsCount = await BookingModel.countDocuments({
@@ -60,7 +60,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       properties: propertiesCount,
-      availableSpaces: availableSpacesCount,
+      availableRooms: availableRoomsCount,
       enrollments: enrollmentsCount,
       monthlyReceived,
     });

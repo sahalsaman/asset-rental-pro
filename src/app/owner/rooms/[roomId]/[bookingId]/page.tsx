@@ -4,18 +4,21 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { IBooking, IInvoice } from "@/app/types";
-import InvoiceFormModal from "../../../../../../components/InvoiceFormModal";
-import InvoiceCard from "../../../../../../components/InvoiceCard";
+import InvoiceFormModal from "../../../../../components/InvoiceFormModal";
+import InvoiceCard from "../../../../../components/InvoiceCard";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
+import { Pencil } from "lucide-react";
 
 export default function BookingDetailPage() {
   const params = useParams();
   const router = useRouter();
 
   // Safely extract bookingId
+  const id=localStorageServiceSelectedOptions.getItem()?.property?._id;
 
-  const { id, spaceId } = useParams();
+  const {  roomId } = useParams();
   const bookingId = Array.isArray(params?.bookingId)
     ? params.bookingId[0]
     : params?.bookingId;
@@ -83,18 +86,21 @@ export default function BookingDetailPage() {
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
-    { label: "Properties", href: "/owner/properties" },
     { label: "Property", href: `/owner/properties/${id}` },
-    { label: "Space", href: `/owner/properties/${id}/${spaceId}` },
-    { label: booking.fullName || "Space", },
+    { label: "Room", href: `/owner/properties/${id}/${roomId}` },
+    { label: booking.fullName || "Enrolment", },
   ];
+
+  function onEdit(){
+
+  }
 
   return (
     <div >
       {/* Booking Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5 pt-5">
         <Breadcrumbs items={breadcrumbItems} />
-        <div>
+        <div className="w-full flex justify-between">
           <div className="flex items-center gap-4">
             {/* Logo (first 2 letters of fullName) */}
             <div className="w-20 h-20 flex items-center justify-center rounded-full bg-green-600 text-white text-3xl font-semibold">
@@ -127,6 +133,7 @@ export default function BookingDetailPage() {
             </div>
           </div>
 
+        <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => onEdit()} />
         </div>
       </div>
 
@@ -137,7 +144,7 @@ export default function BookingDetailPage() {
           <h2 className="text-2xl font-bold">Invoices</h2>
           <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
         </div>
-        <div className="space-y-3">
+        <div className="space-x-3">
           {invoices.length > 0 ? (
             invoices.map((invoice) => (
               <InvoiceCard

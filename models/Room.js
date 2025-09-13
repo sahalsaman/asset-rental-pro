@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import { SpaceStatus } from '@/utils/contants';
+import { RoomStatus } from '@/utils/contants';
 
-const SpaceSchema = new Schema(
+const RoomSchema = new Schema(
   {
     organisationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organisation", required: true },
     propertyId: { type: mongoose.Schema.Types.ObjectId, ref: "Property", required: true },
@@ -11,7 +11,7 @@ const SpaceSchema = new Schema(
     description: String,
     images: [String],
     frequency: { type: String, enum: ['Day', 'Week', 'Month', 'Year'] },
-    status: { type: String, default: SpaceStatus.AVAILABLE },
+    status: { type: String, default: RoomStatus.AVAILABLE },
     advanceAmount: Number,
     noOfSlots: { type: Number, required: true, default: 1 },
     currentBooking: { type: Number, default: 0 },
@@ -22,5 +22,5 @@ const SpaceSchema = new Schema(
 );
 
 
-const SpaceModel = mongoose.models.Space || mongoose.model('Space', SpaceSchema);
-export default SpaceModel;
+const RoomModel = mongoose.models.Room || mongoose.model('Room', RoomSchema);
+export default RoomModel;

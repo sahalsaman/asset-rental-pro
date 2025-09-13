@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ISpace, IBooking } from "@/app/types";
+import { IRoom, IBooking } from "@/app/types";
 import BookingCard from "../../../components/BookingCard";
 import BookingAddEditModal from "../../../components/BookingFormModal";
 import BookingDeleteDialog from "../../../components/BookingDelete";
@@ -42,7 +42,7 @@ export default function BookingListPage() {
       body: JSON.stringify({
         ...data,
         // id,
-        // spaceId
+        // roomId
       }),
     });
 
@@ -70,12 +70,12 @@ export default function BookingListPage() {
 
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">
-      {/* Space Header */}
+      {/* Room Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Bookings</h1>
-          {/* <p className="text-gray-600">Capacity: {space.capacity}</p>
-          <p className="text-gray-600">Price: ${space.price}</p> */}
+          {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
+          <p className="text-gray-600">Price: ${room.price}</p> */}
         </div>
         <Button onClick={() => setShowBookingModal(true)}>Add Booking</Button>
       </div>
@@ -100,7 +100,7 @@ export default function BookingListPage() {
               />
             ))
           ) : (
-            <p className="text-gray-500">No bookings yet for this space.</p>
+            <p className="text-gray-500">No bookings yet for this room.</p>
           )}
         </div>
       </div>

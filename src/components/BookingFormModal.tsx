@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { IBooking, ISpace } from "@/app/types";
+import { IBooking, IRoom } from "@/app/types";
 
 
 
@@ -13,10 +13,10 @@ interface Props {
   onClose: () => void;
   onSave: (data: Partial<IBooking>) => void;
   editData?: IBooking | null;
-  spaceData?: ISpace | null;
+  roomData?: IRoom | null;
 }
 
-export default function BookingAddEditModal({ open, onClose, onSave, editData,spaceData }: Props) {
+export default function BookingAddEditModal({ open, onClose, onSave, editData,roomData }: Props) {
   const [formData, setFormData] = useState<Partial<IBooking>>({
     fullName: "",
     phone: "",
@@ -26,10 +26,10 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData,sp
     vericationIdCardNumber: "",
     checkIn: "",
     checkOut: "",
-    amount: spaceData?.amount || 0,
-    advanceAmount: spaceData?.advanceAmount || 0,
+    amount: roomData?.amount || 0,
+    advanceAmount: roomData?.advanceAmount || 0,
   });
-console.log("spaceData",spaceData);
+console.log("roomData",roomData);
 
   useEffect(() => {
     if (editData) {

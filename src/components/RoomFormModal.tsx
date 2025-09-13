@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IProperty, ISpace } from "@/app/types";
+import { IProperty, IRoom } from "@/app/types";
 import { useState, useEffect } from "react";
 import { FLAT_TYPES, RentDuration } from "@/utils/contants";
 
@@ -11,13 +11,13 @@ interface Props {
   property: IProperty | null;
   open: boolean;
   onClose: () => void;
-  onSave: (data: Partial<ISpace>) => void;
-  editData?: ISpace | null;
+  onSave: (data: Partial<IRoom>) => void;
+  editData?: IRoom | null;
 }
 
 
-export default function SpaceAddEditModal({ property, open, onClose, onSave, editData }: Props) {
-  const [formData, setFormData] = useState<Partial<ISpace>>({});
+export default function RoomAddEditModal({ property, open, onClose, onSave, editData }: Props) {
+  const [formData, setFormData] = useState<Partial<IRoom>>({});
 
   useEffect(() => {
     if (editData) {
@@ -49,13 +49,13 @@ export default function SpaceAddEditModal({ property, open, onClose, onSave, edi
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{editData ? "Edit Space" : "Add Space"}</DialogTitle>
+          <DialogTitle>{editData ? "Edit Room" : "Add Room"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           
           <Input
             name="name"
-            placeholder="Space Number"
+            placeholder="Room Number"
             value={formData.name || ""}
             onChange={handleChange}
             required

@@ -5,7 +5,7 @@ const BookingSchema = new Schema(
   {
     organisationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organisation", required: true },
     propertyId: { type: mongoose.Schema.Types.ObjectId, ref: "Property", required: true },
-    spaceId: { type: mongoose.Schema.Types.ObjectId, ref: "Space", required: true },
+    roomId: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true },
     fullName: { type: String, required: true }, 
     phone: { type: String, required: true },
     whatsappNumber: { type: String, required: true },

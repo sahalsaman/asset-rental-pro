@@ -32,7 +32,7 @@ export interface IProperty {
   updatedAt?: Date;
 }
 
-export interface ISpace {
+export interface IRoom {
   _id?: string;
   propertyId: string;
   name: string;
@@ -52,9 +52,9 @@ export interface ISpace {
 export interface IBooking {
   _id?: string;
   propertyId: string;
-  spaceId: string;
+  roomId: string;
   property?: IProperty;
-  space?: ISpace;
+  room?: IRoom;
   fullName: string;
   phone: string;
   whatsappNumber?: string;
@@ -76,7 +76,7 @@ export interface IInvoice {
   _id?: string;
   bookingId: string; // Required in schema
   propertyId: string; // Required in schema
-  spaceId: string; // Required in schema
+  roomId: string; // Required in schema
   amount?: number;
   type: "Advance" | "Rent";
   transactionType: "online" | "cash" | "upi" | "card";

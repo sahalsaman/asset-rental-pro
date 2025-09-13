@@ -10,7 +10,7 @@ function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-// GET bookings (optionally filter by propertyId and/or spaceId)
+// GET bookings (optionally filter by propertyId and/or roomId)
 export async function GET(request) {
   try {
     await connectMongoDB();
@@ -25,7 +25,7 @@ export async function GET(request) {
 
 
     const propertyId = searchParams.get("propertyId");
-    const spaceId = searchParams.get("spaceId");
+    const roomId = searchParams.get("roomId");
 
     let filter = {};
     if (propertyId) {
@@ -34,16 +34,16 @@ export async function GET(request) {
       }
       filter.propertyId = propertyId;
     }
-    if (spaceId) {
-      if (!isValidObjectId(spaceId)) {
-        return NextResponse.json({ error: "Invalid spaceId" }, { status: 400 });
+    if (roomId) {
+      if (!isValidObjectId(roomId)) {
+        return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
       }
-      filter.spaceId = spaceId;
+      filter.roomId = roomId;
     }
 
     const bookings = await BookingModel.find(filter)
       // .populate("property")
-      // .populate("space");
+      // .populate("room");
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(
@@ -68,8 +68,8 @@ export async function POST(request) {
     if (!isValidObjectId(body.propertyId)) {
       return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
     }
-    if (!isValidObjectId(body.spaceId)) {
-      return NextResponse.json({ error: "Invalid spaceId" }, { status: 400 });
+    if (!isValidObjectId(body.roomId)) {
+      return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
     }
 
     // 1️⃣ Create booking
@@ -87,7 +87,7 @@ export async function POST(request) {
         organisationId: user.organisationId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
-        spaceId: booking.spaceId,
+        roomId: booking.roomId,
         invoiceId: `INV-${Date.now()}-ADV`, // generate ID
         amount: booking.advanceAmount,
         balance: booking.advanceAmount,
@@ -103,7 +103,7 @@ export async function POST(request) {
           organisationId: user.organisationId,
           bookingId: booking._id,
           propertyId: booking.propertyId,
-          spaceId: booking.spaceId,
+          roomId: booking.roomId,
           invoiceId: `INV-${Date.now()}-RENT`, // generate ID
           amount: rentAmount,
           balance: rentAmount,

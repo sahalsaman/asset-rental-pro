@@ -4,7 +4,10 @@ import { Button } from "@/components/ui/button";
 
 export default function DeleteConfirmModal({ open, onClose, onConfirm, item }:any) {
   if (!item) return null;
-console.log(item);
+  const handleDelete = async (id: string) => {
+    await fetch(`/api/property?id=${id}`, { method: "DELETE" });
+onConfirm();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -15,7 +18,7 @@ console.log(item);
         <p>Are you sure you want to delete <strong>{item.name}</strong>?</p>
         <div className="flex justify-end gap-2 mt-4">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button variant="destructive" onClick={() => onConfirm(item._id)}>Delete</Button>
+          <Button variant="destructive" onClick={() => handleDelete(item._id)}>Delete</Button>
         </div>
       </DialogContent>
     </Dialog>

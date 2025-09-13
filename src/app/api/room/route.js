@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import SpaceModel from "@/../models/Space";
+import RoomModel from "@/../models/Room";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 
@@ -17,62 +17,62 @@ export async function GET(request) {
     return NextResponse.json({ error: "Missing propertyId" }, { status: 400 });
   }
 
-  const spaceId = url.searchParams.get("spaceId");
+  const roomId = url.searchParams.get("roomId");
 
   await connectMongoDB();
 
-  if (spaceId) {
-    const space = await SpaceModel.findOne({
-      _id: spaceId,
+  if (roomId) {
+    const room = await RoomModel.findOne({
+      _id: roomId,
       propertyId,
     });
 
-    if (!space) {
+    if (!room) {
       return NextResponse.json(null);
     }
 
     const bookingsCount = await BookingModel.countDocuments({
-      spaceId: space._id,
+      roomId: room._id,
     });
     
     if (bookingsCount) {
-    return NextResponse.json({ ...space.toObject(), bookingsCount:bookingsCount });
+    return NextResponse.json({ ...room.toObject(), bookingsCount:bookingsCount });
     }
 
-    return NextResponse.json({ ...space.toObject(), bookingsCount: 0 });
+    return NextResponse.json({ ...room.toObject(), bookingsCount: 0 });
   }
 
-  const spaces = await SpaceModel.find({ propertyId });
+  const rooms = await RoomModel.find({ propertyId });
 
-  const spacesWithCounts = await Promise.all(
-    spaces.map(async (space) => {
+  const roomsWithCounts = await Promise.all(
+    rooms.map(async (room) => {
       const bookingsCount = await BookingModel.countDocuments({
-        spaceId: space._id,
+        roomId: room._id,
       });
       if( bookingsCount) {  
-        return { ...space.toObject(), bookingsCount };
+        return { ...room.toObject(), bookingsCount };
       }else {
-        return { ...space.toObject(), bookingsCount: 0 };
+        return { ...room.toObject(), bookingsCount: 0 };
       }
     })
   );
 
-  return NextResponse.json(spacesWithCounts);
+  return NextResponse.json(roomsWithCounts);
 }
 
 
-// POST new space
+// POST new room
 export async function POST(request) {
   const user = getTokenValue(request);
   if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
   await connectMongoDB();
-  const space = await SpaceModel.create({ ...body, organisationId: user.organisationId });
-  return NextResponse.json(space, { status: 201 });
+  const room = await RoomModel.create({ ...body, organisationId: user.organisationId });
+  return NextResponse.json(room, { status: 201 });
 }
 
-// PUT update space
+// PUT update room
 export async function PUT(request) {
   const user = getTokenValue(request);
   if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -80,17 +80,17 @@ export async function PUT(request) {
   const id = new URL(request.url).searchParams.get("id");
   const body = await request.json();
   await connectMongoDB();
-  const updated = await SpaceModel.findOneAndUpdate({ _id: id, organisationId: user.organisationId }, body, { new: true });
+  const updated = await RoomModel.findOneAndUpdate({ _id: id, organisationId: user.organisationId }, body, { new: true });
   return NextResponse.json(updated);
 }
 
-// DELETE space
+// DELETE room
 export async function DELETE(request) {
   const user = getTokenValue(request);
   if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const id = new URL(request.url).searchParams.get("id");
   await connectMongoDB();
-  await SpaceModel.findOneAndDelete({ _id: id, organisationId: user.organisationId });
-  return NextResponse.json({ message: "Space deleted" });
+  await RoomModel.findOneAndDelete({ _id: id, organisationId: user.organisationId });
+  return NextResponse.json({ message: "Room deleted" });
 }

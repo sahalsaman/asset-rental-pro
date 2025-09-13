@@ -1,7 +1,8 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, } from 'lucide-react'; // icons
+import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, } from 'lucide-react'; // icons
+import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -10,7 +11,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
-    { title: 'Properties', path: '/owner/properties' },
+    { title: 'Properties', path: '/owner/rooms' },
     { title: 'Bookings', path: '/owner/bookings' },
     { title: 'Invoices', path: '/owner/invoices' },
     { title: 'Managers', path: '/owner/managers' },
@@ -19,9 +20,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={20} /> },
-    { title: 'Property', path: '/owner/properties', icon: <Building2 size={20} /> },
-    { title: 'Invoices', path: '/owner/invoices', icon: <Printer size={20} /> },
-    { title: 'Broadcast', path: '/owner/announcement', icon: <Megaphone size={20} /> },
+    { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={20} /> },
+    { title: 'Managers', path: '/owner/managers', icon: <Users size={20} /> },
+    { title: 'Organisation', path: '/owner/invoices', icon: <Building2 size={20} /> },
   ];
 
   const logout = async () => {
@@ -41,7 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Navbar */}
        <div
         className={`  w-full bg-cover bg-center bg-green-800 md:px-32 p-5
-        ${ pathname === "/owner/dashboard" ? "bg-[url('/banner.png')] h-70 " : "h-20 "} transition-all duration-300`}
+        ${ pathname === "/owner/dashboard" ? "bg-[url('/banner.png')] h-70 rounded-b-4xl" : "h-20 "} transition-all duration-300`}
       >
         <div className="flex justify-between items-center">
           {/* Desktop Nav */}
@@ -127,7 +128,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <main>{children}</main>
       {/* Mobile Bottom Menu */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md grid grid-cols-4 py-4 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-4 md:hidden">
         {mobileMenu.map((item, idx) => (
           <button
             key={idx}

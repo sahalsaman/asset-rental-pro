@@ -9,14 +9,14 @@ function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-// GET invoices (optionally filter by bookingId, propertyId, spaceId)
+// GET invoices (optionally filter by bookingId, propertyId, roomId)
 export async function GET(request) {
   try {
     await connectMongoDB();
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
     const propertyId = searchParams.get("propertyId");
-    const spaceId = searchParams.get("spaceId");
+    const roomId = searchParams.get("roomId");
 
       const user = getTokenValue(request);
         if (!user?.organisationId) {
@@ -30,8 +30,8 @@ export async function GET(request) {
     if (propertyId) {
       filter.propertyId = propertyId;
     }
-    if (spaceId) {
-      filter.spaceId = spaceId;
+    if (roomId) {
+      filter.roomId = roomId;
     }
     if (user?.organisationId) {
       filter.organisationId = user.organisationId;
@@ -40,7 +40,7 @@ export async function GET(request) {
     const invoices = await InvoiceModel.find(filter)
       // .populate("bookingId")
       // .populate("propertyId")
-      // .populate("spaceId");
+      // .populate("roomId");
 
     return NextResponse.json(invoices);
   } catch (err) {
@@ -63,8 +63,8 @@ export async function POST(request) {
     if (!isValidObjectId(body.propertyId)) {
       return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
     }
-    if (!isValidObjectId(body.spaceId)) {
-      return NextResponse.json({ error: "Invalid spaceId" }, { status: 400 });
+    if (!isValidObjectId(body.roomId)) {
+      return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
     }
 
     const invoice = await InvoiceModel.create(body);

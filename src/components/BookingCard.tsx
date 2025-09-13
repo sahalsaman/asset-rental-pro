@@ -13,7 +13,7 @@ interface BookingCardProps {
 
 export default function BookingCard({ booking, onEdit, onDelete }: BookingCardProps) {
     const router = useRouter();
-      const { id, spaceId } = useParams();
+      const { id, roomId } = useParams();
   return (
     <div className="border rounded-lg p-5 shadow-sm  hover:shadow-md transition">
       {/* Left Side - Booking Info */}
@@ -81,7 +81,7 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
 
       {/* Right Side - Actions */}
       <div className="flex items-center justify-end gap-2 shrink-0 mt-4">
-        <Button variant="outline" onClick={() => onEdit(booking)}>
+        {/* <Button variant="outline" onClick={() => onEdit(booking)}>
           Edit
         </Button>
         <Button
@@ -89,9 +89,9 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
           onClick={() => booking._id && onDelete(booking._id)}
         >
           Delete
-        </Button>
+        </Button> */}
             <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-              onClick={() => router.push(`/owner/properties/${booking.propertyId}/${booking.spaceId}/${booking._id}`)}
+              onClick={() => router.push(`/owner/rooms/${booking.roomId}/${booking._id}`)}
             >  <span className="text-sm">View Details</span>
               <ArrowRight size={18} />
             </button>

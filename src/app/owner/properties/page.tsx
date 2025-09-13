@@ -11,7 +11,7 @@ export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
   const [addEditOpen, setAddEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedProperty, setSelectedProperty]= useState<any|null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
 
 
   const fetchProperties = async () => {
@@ -24,40 +24,14 @@ export default function PropertiesPage() {
     fetchProperties();
   }, []);
 
-  const handleSave = async (formData:any) => {
-    if (selectedProperty?._id) {
-      await fetch(`/api/property?id=${selectedProperty?._id}`, {
-        method: "PUT",
-        body: JSON.stringify(formData),
-        headers: {  "Content-Type": "application/json" },
-      });
-    } else {
-      await fetch("/api/property", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-    setAddEditOpen(false);
-    setSelectedProperty(null);
-    fetchProperties();
-  };
-
-  const handleDelete = async (id:string) => {
-    await fetch(`/api/property?id=${id}`, { method: "DELETE" });
-    setDeleteOpen(false);
-    setSelectedProperty(null);
-    fetchProperties();
-  };
-
-    const breadcrumbItems = [
+  const breadcrumbItems = [
     { label: "Home", href: "/owner" },
-    { label: "Properties"},
+    { label: "Properties" },
   ];
 
   return (
     <div className=" p-5 md:pt-10 md:px-32 mb-10">
-        <Breadcrumbs items={breadcrumbItems}/>
+      <Breadcrumbs items={breadcrumbItems} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
         <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }}>
@@ -66,29 +40,31 @@ export default function PropertiesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {properties.length?properties?.map((property:any) => (
+        {properties.length ? properties?.map((property: any) => (
           <PropertyCard
             key={property?._id}
             property={property}
-            onEdit={(p:any) => { setSelectedProperty(p); setAddEditOpen(true); }}
-            onDelete={(p:any) => { setSelectedProperty(p); setDeleteOpen(true); }}
+            onEdit={(p: any) => { setSelectedProperty(p); setAddEditOpen(true); }}
+            onDelete={(p: any) => { setSelectedProperty(p); setDeleteOpen(true); }}
           />
-        ))   : (
+        )) : (
           <p className="text-gray-500">No properties.</p>
         )}
       </div>
 
       <PropertyFormModsl
         open={addEditOpen}
-        onClose={() => setAddEditOpen(false)}
-        onSave={handleSave}
+        onClose={() => {
+          setAddEditOpen(false);
+          fetchProperties();
+        }}
         initialData={selectedProperty}
       />
 
       <DeleteConfirmModal
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}
-        onConfirm={handleDelete}
+        onConfirm={fetchProperties}
         item={selectedProperty}
       />
     </div>

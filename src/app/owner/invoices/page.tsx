@@ -9,7 +9,7 @@ import InvoiceFormModal from "../../../components/InvoiceFormModal";
 import { apiFetch } from "@/lib/api";
 import InvoiceCard from "@/components/InvoiceCard";
 
-export default function SpaceDetailPage() {
+export default function RoomDetailPage() {
   const data = useParams();
 
 
@@ -42,7 +42,7 @@ export default function SpaceDetailPage() {
       body: JSON.stringify({
         ...data,
         // id,
-        // spaceId
+        // roomId
       }),
     });
 
@@ -70,12 +70,12 @@ export default function SpaceDetailPage() {
 
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">
-      {/* Space Header */}
+      {/* Room Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Invoices</h1>
-          {/* <p className="text-gray-600">Capacity: {space.capacity}</p>
-          <p className="text-gray-600">Price: ${space.price}</p> */}
+          {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
+          <p className="text-gray-600">Price: ${room.price}</p> */}
         </div>
         <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
       </div>
