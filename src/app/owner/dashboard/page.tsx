@@ -66,10 +66,10 @@ export default function OwnerDashboard() {
   };
 
   const options = [
-    { title: 'Enrolments', path: '/owner/enrolments', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Bookings', path: '/owner/bookings', icon: <Calendar className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Invoices', path: '/owner/invoices', icon: <NotepadTextDashed className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Broadcast', path: '/owner/announcement', icon: <Megaphone className="w-6 h-6 min-w-6 min-h-6" /> },
+    { title: 'Managers', path: '/owner/enrolments', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
   ];
 
   return (
