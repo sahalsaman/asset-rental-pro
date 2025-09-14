@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function Breadcrumbs({ items }:{ items: any }) {
   return (
-    <nav aria-label="breadcrumb" className="text-sm text-gray-600 mb-2">
+    <nav aria-label="breadcrumb" className="text-sm text-gray-600">
       <ol className="flex ">
         {items.map((item:any, idx:any) => (
           <li key={idx} className="flex items-center">

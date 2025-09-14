@@ -9,7 +9,7 @@ import { IInvoice } from "@/app/types";
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSave: (data: Partial<IInvoice>) => void;
+  onSave: () => void;
   editData?: IInvoice | null;
 }
 
@@ -39,8 +39,25 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    handleSaveInvoice(formData);
   };
+
+    const handleSaveInvoice = async (data: Partial<IInvoice>) => {
+    const method = editData ? "PUT" : "POST";
+    const url = editData
+      ? `/api/invoice?id=${editData._id}`
+      : `/api/invoice`;
+
+    await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ ...data, bookingId:editData?.bookingId }),
+    });
+
+   onSave()
+  };
+
 
   return (
     <Dialog open={open} onOpenChange={onClose} >

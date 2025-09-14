@@ -17,6 +17,7 @@ const RoomSchema = new Schema(
     currentBooking: { type: Number, default: 0 },
     Bookings: [{ type: mongoose.Schema.Types.ObjectId, ref: "Booking" }],
     disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

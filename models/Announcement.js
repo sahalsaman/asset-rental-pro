@@ -6,9 +6,10 @@ const AnnouncementSchema = new Schema(
     title: { type: String, required: true },
     message: { type: String, required: true },
     audience: { type: String, enum: ["all", "employees", "customers"], default: "all" },
-    disabled: { type: Boolean, required: true, default: false },
     attachments: [String], // URLs for any attached files or images
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

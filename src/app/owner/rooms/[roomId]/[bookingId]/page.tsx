@@ -9,16 +9,19 @@ import InvoiceCard from "../../../../../components/InvoiceCard";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
+import DeleteConfirmModal from "@/components/DeleteConfirmModal";
+import BookingAddEditModal from "@/components/BookingFormModal";
+import { FullscreenLoader } from "@/components/Loader";
 
 export default function BookingDetailPage() {
   const params = useParams();
   const router = useRouter();
 
   // Safely extract bookingId
-  const id=localStorageServiceSelectedOptions.getItem()?.property?._id;
+  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
 
-  const {  roomId } = useParams();
+  const { roomId } = useParams();
   const bookingId = Array.isArray(params?.bookingId)
     ? params.bookingId[0]
     : params?.bookingId;
@@ -31,7 +34,9 @@ export default function BookingDetailPage() {
   const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);
 
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     if (!bookingId) {
@@ -53,47 +58,17 @@ export default function BookingDetailPage() {
       .then(setInvoices);
   };
 
-  const handleSaveInvoice = async (data: Partial<IInvoice>) => {
-    const method = editInvoiceData ? "PUT" : "POST";
-    const url = editInvoiceData
-      ? `/api/invoice?id=${editInvoiceData._id}`
-      : `/api/invoice`;
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ ...data, bookingId }),
-    });
 
-    setShowInvoiceModal(false);
-    setEditInvoiceData(null);
-    fetchInvoices();
-  };
-
-  const handleDeleteInvoice = async () => {
-    if (!deleteId) return;
-    await fetch(`/api/invoice?id=${deleteId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setShowDelete(false);
-    setDeleteId(null);
-    fetchInvoices();
-  };
-
-  if (!booking) return <p className="p-6">Loading booking details...</p>;
+  if (!booking) return <FullscreenLoader/>;
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
-    { label: "Property", href: `/owner/properties/${id}` },
-    { label: "Room", href: `/owner/properties/${id}/${roomId}` },
+    { label: "Room", href: `/owner/rooms/${roomId}` },
     { label: booking.fullName || "Enrolment", },
   ];
 
-  function onEdit(){
-
-  }
+ 
 
   return (
     <div >
@@ -132,8 +107,12 @@ export default function BookingDetailPage() {
               )}
             </div>
           </div>
-
-        <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => onEdit()} />
+          <div className="flex gap-2">
+            <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => setShowBookingModal(true)} />
+            <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
+              setShowDelete(true);
+            }} />
+          </div>
         </div>
       </div>
 
@@ -155,7 +134,6 @@ export default function BookingDetailPage() {
                   setShowInvoiceModal(true);
                 }}
                 onDelete={(id) => {
-                  setDeleteId(id);
                   setShowDelete(true);
                 }}
               />
@@ -166,6 +144,17 @@ export default function BookingDetailPage() {
         </div>
       </div>
 
+      {/* Booking Delete Dialog */}
+      <DeleteConfirmModal
+        open={showDelete}
+        onClose={() => setShowDelete(false)}
+        onConfirm={() => {
+          setShowDelete(false);
+        }}
+        item={booking}
+      />
+
+
       {/* Invoice Modal */}
       <InvoiceFormModal
         open={showInvoiceModal}
@@ -173,8 +162,22 @@ export default function BookingDetailPage() {
           setShowInvoiceModal(false);
           setEditInvoiceData(null);
         }}
-        onSave={handleSaveInvoice}
+        onSave={() => {
+          setShowInvoiceModal(false);
+          setEditInvoiceData(null);
+        }}
         editData={editInvoiceData}
+      />
+
+      <BookingAddEditModal
+        open={showBookingModal}
+        onClose={() => {
+          setShowBookingModal(false);
+        }}
+        onSave={() => {
+          setShowBookingModal(false);
+        }}
+        editData={booking}
       />
     </div>
   );

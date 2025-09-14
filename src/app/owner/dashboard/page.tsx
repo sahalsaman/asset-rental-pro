@@ -141,7 +141,13 @@ export default function OwnerDashboard() {
       )}
       <PropertyFormModal
         open={addEditOpen}
-        onClose={() => setAddEditOpen(false)}
+        onClose={() => {
+          setAddEditOpen(false);
+        }}
+        onSave={() => {
+          setAddEditOpen(false);
+          fetchProperties();
+        }}
       />
     </main>
   );

@@ -10,14 +10,15 @@ const BookingSchema = new Schema(
     phone: { type: String, required: true },
     whatsappNumber: { type: String, required: true },
     address: { type: String, required: true },
-    vericationIdCard: { type: String},
-    vericationIdCardNumber: { type: String},
+    verificationIdCard: { type: String},
+    verificationIdCardNumber: { type: String},
     checkIn: { type: Date},
     checkOut: { type: Date },
     amount: Number,
     advanceAmount: Number,
     status: { type: String, default: BookingStatus.CONFIRMED },
     disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

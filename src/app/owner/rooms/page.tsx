@@ -1,18 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { IRoom } from "@/app/types";
-import BookingAddEditModal from "../../../components/BookingFormModal";
 import { Badge } from "@/components/ui/badge";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RoomCard from "@/components/RoomCard";
-import RoomAddEditModal from "@/components/RoomFormModal";
-import RoomDeleteDialog from "@/components/RoomDeleteConfirmModal";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import { Pencil } from "lucide-react";
+import RoomAddEditModal from "@/components/RoomFormModal";
+import  { FullscreenLoader, } from "@/components/Loader";
 
 export default function PropertyDetailPage() {
   const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
@@ -29,69 +26,25 @@ export default function PropertyDetailPage() {
 
   // Booking modal state
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [editBookingData, setEditBookingData] = useState<any>(null);
   const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
 
-  useEffect(() => {
-    apiFetch(`/api/property?propertyId=${id}`)
-      .then(res => res.json())
-      .then(setProperty);
 
+  useEffect(() => {
+
+    fetchProperty()
     fetchRooms();
   }, [id]);
 
+  const fetchProperty = () => {
+    apiFetch(`/api/property?propertyId=${id}`)
+      .then(res => res.json())
+      .then(setProperty);
+  }
+
   const fetchRooms = () => {
-    ;
     apiFetch(`/api/room?propertyId=${id}`)
       .then(res => res.json())
       .then(setRooms);
-  };
-
-  const handleSaveRoom = async (data: Partial<IRoom>) => {
-    const method = editRoomData ? "PUT" : "POST";
-    const url = editRoomData ? `/api/room?id=${editRoomData._id}` : `/api/room`;
-
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ ...data, propertyId: id }),
-    });
-
-    setShowRoomModal(false);
-    setEditRoomData(null);
-    fetchRooms();
-  };
-
-  const handleDeleteRoom = async () => {
-    if (!deleteId) return;
-    await fetch(`/api/room?id=${deleteId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setShowDelete(false);
-    setDeleteId(null);
-    fetchRooms();
-  };
-
-  const handleSaveBooking = async (data: any) => {
-    const method = editBookingData ? "PUT" : "POST";
-    const url = editBookingData ? `/api/booking?id=${editBookingData._id}` : `/api/booking`;
-
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        propertyId: id,
-        roomId: selectedRoom?._id,
-      }),
-    });
-
-    setShowBookingModal(false);
-    setEditBookingData(null);
-    setSelectedRoom(null);
   };
 
   const breadcrumbItems = [
@@ -99,14 +52,12 @@ export default function PropertyDetailPage() {
     { label: property?.name || "Property" },
   ];
 
-  function onEdit() {
-
-  }
+  if (!property) return <FullscreenLoader />;
 
   return (
     <div className="">
       {/* Property Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
+      <div className="flex flex-col justify-between items-start md:items-center gap-3 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
 
 
         <Breadcrumbs items={breadcrumbItems} />
@@ -132,17 +83,18 @@ export default function PropertyDetailPage() {
             )} */}
             </div>
           </div>
-          <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => onEdit()} />
-        </div>
+          <div className="flex gap-2"> 
+            {/* <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => onEdit()} /> */}
 
-        {/* Add Room Button */}
-        <Button onClick={() => setShowRoomModal(true)} className="whitespace-nowrap hidden sm:block">
-          Add Room
-        </Button>
+            {/* Add Room Button */}
+            <Button onClick={() => setShowRoomModal(true)} className="whitespace-nowrap hidden sm:block">
+              Add Room
+            </Button></div>
+        </div>
       </div>
       <div className="p-5 md:pt-10 md:px-32 mb-10">
-        <div className="flex justify-between  items-center">
-          <h1 className="text-2xl font-bold mb-5">Rooms</h1>
+        <div className="flex justify-between  items-center  mb-5">
+          <h1 className="text-2xl font-bold">Rooms</h1>
           <Button onClick={() => setShowRoomModal(true)} className="whitespace-nowrap sm:hidden block">
             Add Room
           </Button>
@@ -170,39 +122,18 @@ export default function PropertyDetailPage() {
           ))}
         </div>
       </div>
-
-
-
-      {/* Room Modals */}
-      <RoomAddEditModal
+     <RoomAddEditModal
         property={property}
         open={showRoomModal}
         onClose={() => {
           setShowRoomModal(false);
-          setEditRoomData(null);
         }}
-        onSave={handleSaveRoom}
-        editData={editRoomData}
+        onSave={() => {
+          setShowRoomModal(false);
+          fetchRooms();
+        }}
       />
 
-      <RoomDeleteDialog
-        open={showDelete}
-        onClose={() => setShowDelete(false)}
-        onConfirm={handleDeleteRoom}
-      />
-
-      {/* Booking Modal */}
-      <BookingAddEditModal
-        open={showBookingModal}
-        onClose={() => {
-          setShowBookingModal(false);
-          setEditBookingData(null);
-          setSelectedRoom(null);
-        }}
-        onSave={handleSaveBooking}
-        editData={editBookingData}
-        roomData={selectedRoom}
-      />
     </div>
   );
 }

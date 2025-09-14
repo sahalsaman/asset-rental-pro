@@ -22,6 +22,7 @@ const UserSchema = new Schema(
       ref: "Organisation",
     },
     disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

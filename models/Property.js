@@ -16,6 +16,7 @@ const PropertySchema = new Schema(
     images: [String],
     currency: { type: String, required: true },
     disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

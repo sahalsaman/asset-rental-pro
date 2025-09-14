@@ -15,6 +15,7 @@ const InvoiceSchema = new Schema(
     status: { type: String, default: InvoiceStatus.PENDING },
     dueDate: Date,
     disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
     payments: [
       {
         date: Date,

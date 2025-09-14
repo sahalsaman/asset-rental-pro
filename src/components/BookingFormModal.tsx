@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { IBooking, IRoom } from "@/app/types";
+import { Label } from "@radix-ui/react-label";
+import { BookingStatus } from "@/utils/contants";
 
 
 
@@ -16,20 +18,21 @@ interface Props {
   roomData?: IRoom | null;
 }
 
-export default function BookingAddEditModal({ open, onClose, onSave, editData,roomData }: Props) {
+export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData }: Props) {
   const [formData, setFormData] = useState<Partial<IBooking>>({
     fullName: "",
     phone: "",
     whatsappNumber: "",
     address: "",
-    vericationIdCard: "",
-    vericationIdCardNumber: "",
+    verificationIdCard: "",
+    verificationIdCardNumber: "",
     checkIn: "",
     checkOut: "",
     amount: roomData?.amount || 0,
     advanceAmount: roomData?.advanceAmount || 0,
+    status: "Pending",
   });
-console.log("roomData",roomData);
+  console.log("roomData", roomData);
 
   useEffect(() => {
     if (editData) {
@@ -39,7 +42,7 @@ console.log("roomData",roomData);
     }
   }, [editData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -49,7 +52,25 @@ console.log("roomData",roomData);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    handleSaveBooking(formData);
+  };
+
+  const handleSaveBooking = async (data: any) => {
+    const method = editData ? "PUT" : "POST";
+    const url = editData ? `/api/booking?id=${editData._id}` : `/api/booking`;
+
+    await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        ...data,
+        // propertyId: id,
+        roomId: roomData?._id,
+      }),
+    });
+
+    onSave(data);
   };
 
   return (
@@ -59,23 +80,182 @@ console.log("roomData",roomData);
           <DialogTitle>{editData ? "Edit Booking" : "Add Booking"}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <Input name="fullName" placeholder="Full Name" value={formData.fullName || ""} onChange={handleChange} required />
-          <Input name="phone" placeholder="Phone" value={formData.phone || ""} onChange={handleChange} required />
-          <Input name="whatsappNumber" placeholder="Whatsapp Number" value={formData.whatsappNumber || ""} onChange={handleChange} required />
-          <Input name="address" placeholder="Address" value={formData.address || ""} onChange={handleChange} required />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Full Name */}
+          <div>
+            <Label htmlFor="fullName">Full Name</Label>
+            <Input
+              id="fullName"
+              name="fullName"
+              placeholder="Full Name"
+              value={formData.fullName || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <Input name="vericationIdCard" placeholder="Verification ID Type" value={formData.vericationIdCard || ""} onChange={handleChange} />
-          <Input name="vericationIdCardNumber" placeholder="Verification ID Number" value={formData.vericationIdCardNumber || ""} onChange={handleChange} />
+          <div className="w-full grid grid-cols-2 gap-2">
+            {/* Phone */}
+            <div>
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          <Input name="checkIn" type="date" value={formData.checkIn ? formData.checkIn.split("T")[0] : ""} onChange={handleChange} required />
-          <Input name="checkOut" type="date" value={formData.checkOut ? formData.checkOut.split("T")[0] : ""} onChange={handleChange}  />
+            {/* WhatsApp Number */}
+            <div>
+              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+              <Input
+                id="whatsappNumber"
+                name="whatsappNumber"
+                placeholder="WhatsApp Number"
+                value={formData.whatsappNumber || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
 
-          <Input name="amount" type="number" placeholder="Rent Amount" value={formData.amount || ""} onChange={handleChange} required />
-          <Input name="advanceAmount" type="number" placeholder="Advance Amount" value={formData.advanceAmount || ""} onChange={handleChange} />
+          {/* Address */}
+          <div>
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              name="address"
+              placeholder="Address"
+              value={formData.address || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <Button type="submit">{editData ? "Update Booking" : "Save Booking"}</Button>
+          <div className="w-full grid grid-cols-2 gap-2">
+            {/* Verification ID Type */}
+            <div>
+              <Label htmlFor="verificationIdCard">Verification ID Type</Label>
+              <select
+                id="verificationIdCard"
+                name="verificationIdCard"
+                value={formData.verificationIdCard || ""}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+              >
+                <option value="">Select ID Type</option>
+                <option value="Aadhar">Aadhar</option>
+                <option value="PAN">PAN</option>
+                <option value="VoterID">Voter ID</option>
+                <option value="Passport">Passport</option>
+                <option value="DrivingLicense">Driving License</option>
+              </select>
+            </div>
+
+            {/* Verification ID Number */}
+            <div>
+              <Label htmlFor="verificationIdCardNumber"> ID Number</Label>
+              <Input
+                id="verificationIdCardNumber"
+                name="verificationIdCardNumber"
+                placeholder="Verification ID Number"
+                value={formData.verificationIdCardNumber || ""}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          <div className="w-full grid grid-cols-2 gap-2">
+            {/* Check-in */}
+            <div>
+              <Label htmlFor="checkIn">Check-In Date</Label>
+              <Input
+                id="checkIn"
+                name="checkIn"
+                type="date"
+                value={formData.checkIn ? formData.checkIn.split("T")[0] : ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Check-out */}
+            <div>
+              <Label htmlFor="checkOut">Check-Out Date</Label>
+              <Input
+                id="checkOut"
+                name="checkOut"
+                type="date"
+                value={formData.checkOut ? formData.checkOut.split("T")[0] : ""}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+<div className="w-full grid grid-cols-2 gap-2">
+
+          {/* Rent Amount */}
+          <div>
+            <Label htmlFor="amount">Rent Amount</Label>
+            <Input
+              id="amount"
+              name="amount"
+              type="number"
+              placeholder="Rent Amount"
+              value={formData.amount || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Advance Amount */}
+          <div>
+            <Label htmlFor="advanceAmount">Advance Amount</Label>
+            <Input
+              id="advanceAmount"
+              name="advanceAmount"
+              type="number"
+              placeholder="Advance Amount"
+              value={formData.advanceAmount || ""}
+              onChange={handleChange}
+            />
+          </div>
+</div>
+
+          {/* Status */}
+          <div>
+            <Label htmlFor="status">Booking Status</Label>
+            <select
+              id="status"
+              name="status"
+              value={formData.status || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+              required
+            >
+              <option value="">Select room status</option>
+              {Object.values(BookingStatus).map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Buttons */}
+          <div className="w-full grid grid-cols-2 gap-2 pt-2">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" className="w-full">
+              {editData ? "Update" : "Submit"}
+            </Button>
+          </div>
         </form>
+
       </DialogContent>
     </Dialog>
   );

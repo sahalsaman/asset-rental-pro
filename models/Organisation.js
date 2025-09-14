@@ -8,6 +8,7 @@ const OrganisationSchema = new Schema(
     managers: [{ type: Types.ObjectId, ref: "User" }],
     website: { type: String },
     disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

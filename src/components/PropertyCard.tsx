@@ -54,14 +54,14 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
             <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
             {/* <p className="text-sm"> ₹{property.amount} / {property.frequency}</p> */}
           </div>
-          <div className='flex justify-end  '>
+          {/* <div className='flex justify-end  '>
           
             <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
               onClick={() => router.push(`/owner/properties/${property._id}`)}
             >  <span className="text-sm">View Details</span>
               <ArrowRight size={18} />
             </button>
-          </div>
+          </div> */}
 
         </div>
       </div>

@@ -6,15 +6,17 @@ import { Button } from "@/components/ui/button";
 import { IRoom, IBooking } from "@/app/types";
 import BookingCard from "../../../../components/BookingCard";
 import BookingAddEditModal from "../../../../components/BookingFormModal";
-import BookingDeleteDialog from "../../../../components/BookingDelete";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
+import RoomAddEditModal from "@/components/RoomFormModal";
+import DeleteConfirmModal from "@/components/DeleteConfirmModal";
+import { FullscreenLoader } from "@/components/Loader";
 
 export default function RoomDetailPage() {
   const { roomId } = useParams();
-  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
+  const property = localStorageServiceSelectedOptions.getItem()?.property;
   const router = useRouter();
 
   const [room, setRoom] = useState<IRoom | null>(null);
@@ -25,68 +27,40 @@ export default function RoomDetailPage() {
   const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
 
   const [showDelete, setShowDelete] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+
+
+  const [showRoomModal, setShowRoomModal] = useState(false);
+
 
   useEffect(() => {
+    if (!roomId || !property?._id) router.push(`/owner/rooms`);
+    fetchRoom()
+    fetchBookings();
+  }, [property?._id, roomId]);
 
-    if (!roomId || !id) router.push(`/owner/rooms`);
-
-    apiFetch(`/api/room?propertyId=${id}&roomId=${roomId}`)
+  const fetchRoom = () => {
+    apiFetch(`/api/room?propertyId=${property?._id}&roomId=${roomId}`)
       .then(res => res.json())
       .then(setRoom);
-
-    fetchBookings();
-  }, [id, roomId]);
+  };
 
   const fetchBookings = () => {
-    apiFetch(`/api/booking?propertyId=${id}&roomId=${roomId}`)
+    apiFetch(`/api/booking?propertyId=${property?._id}&roomId=${roomId}`)
       .then(res => res.json())
       .then(setBookings);
   };
 
-  const handleSaveBooking = async (data: Partial<IBooking>) => {
-    const method = editBookingData ? "PUT" : "POST";
-    const url = editBookingData
-      ? `/api/booking?id=${editBookingData._id}`
-      : `/api/booking`;
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        propertyId: id,
-        roomId
-      }),
-    });
 
-    setShowBookingModal(false);
-    setEditBookingData(null);
-    fetchBookings();
-  };
 
-  const handleDeleteBooking = async () => {
-    if (!deleteId) return;
-    await fetch(`/api/booking?id=${deleteId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setShowDelete(false);
-    setDeleteId(null);
-    fetchBookings();
-  };
-
-  if (!room) return <p className="p-6">Loading room details...</p>;
+  if (!room) return <FullscreenLoader/>;
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
-    { label: "Property", href: `/owner/rooms/${id}` },
+    { label: "Rooms", href: `/owner/rooms/${roomId}` },
     { label: room.name || "Room" },
   ];
-  function onEdit() {
 
-  }
 
   return (
     <div >
@@ -129,7 +103,12 @@ export default function RoomDetailPage() {
               </div>
             </div>
           </div>
-        <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => onEdit()} />
+          <div className="flex gap-2">
+            <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => {setShowRoomModal(true)}} />
+            <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
+              setShowDelete(true);
+            }} />
+          </div>
         </div>
 
       </div>
@@ -155,7 +134,6 @@ export default function RoomDetailPage() {
                   setShowBookingModal(true);
                 }}
                 onDelete={(id) => {
-                  setDeleteId(id);
                   setShowDelete(true);
                 }}
               />
@@ -173,17 +151,40 @@ export default function RoomDetailPage() {
           setShowBookingModal(false);
           setEditBookingData(null);
         }}
-        onSave={handleSaveBooking}
+        onSave={() => {
+          setShowBookingModal(false);
+          setEditBookingData(null);
+        }}
         editData={editBookingData}
         roomData={room}
       />
 
       {/* Booking Delete Dialog */}
-      <BookingDeleteDialog
+      <DeleteConfirmModal
         open={showDelete}
         onClose={() => setShowDelete(false)}
-        onConfirm={handleDeleteBooking}
+        onConfirm={() => {
+          setShowDelete(false);
+          fetchBookings();
+        }}
+        item={room}
       />
+
+
+      {/* Room Modals */}
+      <RoomAddEditModal
+        property={property}
+        open={showRoomModal}
+        onClose={() => {
+          setShowRoomModal(false);
+        }}
+        onSave={() => {
+          setShowRoomModal(false);
+          fetchRoom();
+        }}
+        editData={room}
+      />
+
     </div>
   );
 }

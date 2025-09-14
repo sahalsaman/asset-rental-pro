@@ -41,7 +41,7 @@ export interface IRoom {
   description: string;
   images: string[];
   frequency: 'Day' | 'Week' | 'Month' | 'Year';
-  status: 'available' | 'booked' | 'maintenance';
+  status: string;
   advanceAmount?: number; // renamed in schema
   noOfSlots: number;
   bookingsCount?: number; // added to track bookings
@@ -59,8 +59,8 @@ export interface IBooking {
   phone: string;
   whatsappNumber?: string;
   address: string;
-  vericationIdCard?: string;
-  vericationIdCardNumber?: string;
+  verificationIdCard?: string;
+  verificationIdCardNumber?: string;
   checkIn?: string;
   checkOut?: string;
   amount?: number;

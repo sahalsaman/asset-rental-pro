@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IProperty, IRoom } from "@/app/types";
 import { useState, useEffect } from "react";
-import { FLAT_TYPES, RentDuration } from "@/utils/contants";
+import { FLAT_TYPES, RentDuration, RoomStatus } from "@/utils/contants";
+import { Label } from "@radix-ui/react-label";
 
 interface Props {
   property: IProperty | null;
   open: boolean;
   onClose: () => void;
-  onSave: (data: Partial<IRoom>) => void;
+  onSave: () => void;
   editData?: IRoom | null;
 }
 
@@ -39,11 +40,25 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    handleSaveRoom(formData);
   };
 
-  const isHostelOrPG = property?.category?.toLowerCase().includes("hostel") || property?.category?.toLowerCase().includes("pg")|| property?.category?.toLowerCase().includes("Co-Working");
-  const isFlatOrApartment = property?.category?.toLowerCase().includes("flat") || property?.category?.toLowerCase().includes("apartment")|| property?.category?.toLowerCase().includes("house");
+  const handleSaveRoom = async (data: Partial<IRoom>) => {
+    const method = editData ? "PUT" : "POST";
+    const url = editData ? `/api/room?id=${editData._id}` : `/api/room`;
+
+    await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ ...data, propertyId: property?._id }),
+    });
+    onSave();
+
+  };
+
+  const isHostelOrPG = property?.category?.toLowerCase().includes("hostel") || property?.category?.toLowerCase().includes("pg") || property?.category?.toLowerCase().includes("Co-Working");
+  const isFlatOrApartment = property?.category?.toLowerCase().includes("flat") || property?.category?.toLowerCase().includes("apartment") || property?.category?.toLowerCase().includes("house");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -51,84 +66,112 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
         <DialogHeader>
           <DialogTitle>{editData ? "Edit Room" : "Add Room"}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Label>Room Number</Label>
           <Input
             name="name"
-            placeholder="Room Number"
+            placeholder="eg : Room 101"
             value={formData.name || ""}
             onChange={handleChange}
             required
           />
-
+          <Label>Description</Label>
           <Input
             name="description"
-            placeholder="Description"
+            placeholder="Enter description"
             value={formData.description || ""}
             onChange={handleChange}
           />
 
-            <Input
-              name="amount"
-              type="number"
-              placeholder="Price"
-              value={formData.amount || ""}
-              onChange={handleChange}
-              required
-            />
-            <select
-              name="frequency"
-              value={formData.frequency || ""}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-              required
-            >
-              <option value="">Select Rent Duration</option>
-              {Object.values(RentDuration).map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-       
+          <Label>Amount</Label>
+          <Input
+            name="amount"
+            type="number"
+            placeholder="eg: 12000"
+            value={formData.amount || ""}
+            onChange={handleChange}
+            required
+          />
+          <Label>Select Rent Duration</Label>
+          <select
+            name="frequency"
+            value={formData.frequency || ""}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          >
+            <option value="">Select Rent Duration</option>
+            {Object.values(RentDuration).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+
 
           {isFlatOrApartment && (
-            <select
-              name="type"
-              value={formData.type || ""}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-              required
-            >
-              <option value="">Select Flat Type</option>
-              {FLAT_TYPES.map(flat => (
-                <option key={flat} value={flat}>
-                  {flat}
-                </option>
-              ))}
-            </select>
+            <>   <Label>Select Flat Type</Label>
+              <select
+                name="type"
+                value={formData.type || ""}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-3 py-2"
+                required
+              >
+                <option value="">Select Flat Type</option>
+                {FLAT_TYPES.map(flat => (
+                  <option key={flat} value={flat}>
+                    {flat}
+                  </option>
+                ))}
+              </select></>
           )}
 
           {isHostelOrPG && (
-            <Input
-              name="noOfSlots"
-              type="number"
-              placeholder="Number of Slots"
-              value={formData.noOfSlots || ""}
-              onChange={handleChange}
-              required
-            />
+            <>
+              <Label>Number of Slots</Label>
+              <Input
+                name="noOfSlots"
+                type="number"
+                placeholder="eg: 3"
+                value={formData.noOfSlots || ""}
+                onChange={handleChange}
+                required
+              />
+            </>
           )}
 
+          <Label>Advance Amount</Label>
           <Input
             name="advanceAmount"
             type="number"
-            placeholder="Advance Amount"
+            placeholder="eg: 12000"
             value={formData.advanceAmount || ""}
             onChange={handleChange}
           />
 
-          <Button type="submit">{editData ? "Update" : "Save"}</Button>
+          <Label>Status</Label>
+          <select
+            name="status"
+            value={formData.status || ""}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-3 py-2"
+            required
+          >
+            <option value="">Select room status</option>
+            {Object.values(RoomStatus).map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+      <div className="w-full grid grid-cols-2 gap-2">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button> <Button type="submit" className='w-full'>
+              {editData ? 'Update' : 'Submit'}
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

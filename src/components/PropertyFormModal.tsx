@@ -16,6 +16,7 @@ import { CurrencyType, PropertyStatus, PropertyType } from '@/utils/contants';
 interface PropertyFormModalProps {
   open: boolean;
   onClose: () => void;
+  onSave: () => void;
   initialData?: IProperty | null;
 }
 
@@ -23,6 +24,7 @@ export default function PropertyFormModal({
   open,
   onClose,
   initialData,
+  onSave
 }: PropertyFormModalProps) {
   const [formData, setFormData] = useState<IProperty>({
     name: '',
@@ -31,7 +33,7 @@ export default function PropertyFormModal({
     city: '',
     category: 'Room',
     status: PropertyStatus.ACTIVE,
-    state:"",
+    state: "",
     country: '',
     zipCode: '',
     images: [],
@@ -65,24 +67,25 @@ export default function PropertyFormModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleSave(formData);
-    onClose();
   };
 
-    const handleSave = async (formData:any) => {
-      if (initialData?._id) {
-        await fetch(`/api/property?id=${initialData?._id}`, {
-          method: "PUT",
-          body: JSON.stringify(formData),
-          headers: {  "Content-Type": "application/json" },
-        });
-      } else {
-        await fetch("/api/property", {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    };
+  const handleSave = async (formData: any) => {
+    if (initialData?._id) {
+      await fetch(`/api/property?id=${initialData?._id}`, {
+        method: "PUT",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+      });
+      onSave()
+    } else {
+      await fetch("/api/property", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" },
+      });
+      onSave()
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -180,11 +183,10 @@ export default function PropertyFormModal({
             ))}
           </select>
 
-          <div className="flex justify-end gap-2">
+          <div className="w-full grid grid-cols-2 gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button>
-            <Button type="submit">
+            </Button> <Button type="submit" className='w-full'>
               {initialData ? 'Update' : 'Submit'}
             </Button>
           </div>

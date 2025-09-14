@@ -6,19 +6,19 @@ import { Button } from "@/components/ui/button";
 import { IRoom, IBooking } from "@/app/types";
 import BookingCard from "../../../components/BookingCard";
 import BookingAddEditModal from "../../../components/BookingFormModal";
-import BookingDeleteDialog from "../../../components/BookingDelete";
 import { apiFetch } from "@/lib/api";
+import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 
 export default function BookingListPage() {
-    const data = useParams();
-    
-  
+  const data = useParams();
+
+
   const [bookings, setBookings] = useState<IBooking[]>([]);
 
   // Booking modals state
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
-  
+
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -51,18 +51,7 @@ export default function BookingListPage() {
     fetchBookings();
   };
 
-  const handleDeleteBooking = async () => {
-    if (!deleteId) return;
-    await fetch(`/api/booking?id=${deleteId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setShowDelete(false);
-    setDeleteId(null);
-    fetchBookings();
-  };
-
-    useEffect(() => {
+  useEffect(() => {
     fetchBookings();
   }, []);
 
@@ -117,10 +106,15 @@ export default function BookingListPage() {
       />
 
       {/* Booking Delete Dialog */}
-      <BookingDeleteDialog
+      <DeleteConfirmModal
         open={showDelete}
         onClose={() => setShowDelete(false)}
-        onConfirm={handleDeleteBooking}
+        onConfirm={() => {
+          setShowDelete(false);
+          setDeleteId(null);
+          fetchBookings();
+        }}
+        item={bookings.find(b => b._id === deleteId)}
       />
     </div>
   );

@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import PropertyCard from "../../../components/PropertyCard";
-import PropertyFormModsl from "../../../components/PropertyFormModal";
-import DeleteConfirmModal from "../../../components/PropertyDeleteConfirmModal";
+import PropertyFormModal from "../../../components/PropertyFormModal";
+import DeleteConfirmModal from "../../../components/DeleteConfirmModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -52,9 +52,12 @@ export default function PropertiesPage() {
         )}
       </div>
 
-      <PropertyFormModsl
+      <PropertyFormModal
         open={addEditOpen}
         onClose={() => {
+          setAddEditOpen(false);
+        }}
+        onSave={() => {
           setAddEditOpen(false);
           fetchProperties();
         }}
