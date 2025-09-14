@@ -12,16 +12,49 @@ export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [organisationName, setOrganisationName] = useState("");
+  const [countryCode, setCountryCode] = useState("+91"); // Default to India
   const router = useRouter();
+  const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
+  const [nameValidationMessage, setNameValidationMessage] = useState("");
+  const [organisationValidationMessage, setOrganisationValidationMessage] = useState("");
+
+  // Country code options
+  const countryCodes = [
+    { code: "+1", name: "USA" },
+    { code: "+91", name: "India" },
+    { code: "+44", name: "UK" },
+    { code: "+81", name: "Japan" },
+    { code: "+86", name: "China" },
+  ];
+  const validatePhoneNumber = (phoneNumber: string) => {
+    const phoneRegex = /^[0-9]{10}$/; // Validates 10-digit phone number
+    return phoneRegex.test(phoneNumber);
+  };
   // In sendOtp:
   const sendOtp = async () => {
+    setMobileNumberValidationMessage("");
+    if (!phone) {
+      setMobileNumberValidationMessage("Phone number is required.");
+      return;
+    }
+    if (!countryCode) {
+      setMobileNumberValidationMessage("Country code is required.");
+      return;
+    }
+    if (!validatePhoneNumber(phone)) {
+      setMobileNumberValidationMessage("Please enter a valid 10-digit phone number.");
+      return;
+    }
     try {
-      const res = await signUp(phone, name, organisationName)
-      router.push(`/auth/verify-otp?phone=${phone}`);
+       await signUp(phone, countryCode, name, organisationName)
+      toast.success("OTP sent successfully!");
+      router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
     } catch (err: any) {
-      if (err?.response?.data?.error) {
-        toast.error(err?.response?.data?.error)
-        return;
+        if (err?.response?.data?.message) {
+        toast.error(err?.response?.data?.message);
+      } else {
+        toast.error("An error occurred. Please try again.");
+        console.error("Login error:", err);
       }
       console.error("Signup error:", err);
     }
@@ -72,21 +105,37 @@ export default function LoginPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Phone Number
                 </label>
-                <input
-                  type="tel"
-                  maxLength={10}
-                  // minLength={10}
-                  placeholder="e.g. 9876543210"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
-                />
-
+                <div className="flex items-center gap-2">
+                  <select
+                    value={countryCode}
+                    onChange={(e) => setCountryCode(e.target.value)}
+                    className="w-20  px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                    style={{ maxWidth: '80px' }}
+                  >
+                    {countryCodes.map((option) => (
+                      <option key={option.code} value={option.code}>
+                        {option.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="tel"
+                    maxLength={10}
+                    // minLength={10}
+                    placeholder="e.g. 9876543210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                  />
+                </div>
+                {mobileNumberValidationMessage && (
+                  <p className="text-red-500 text-sm mt-1">{mobileNumberValidationMessage}</p>
+                )}
               </>
               <button
                 type="submit"
-                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200 font-semibold"
+                className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200 font-semibold"
               >
                 Send OTP
               </button>

@@ -4,15 +4,18 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const { phone } = await req.json();
+    const { phone ,countryCode} = await req.json();
 
     if (!phone) {
       return NextResponse.json({ message: "Phone number is required" }, { status: 400 });
     }
+    if (!countryCode) {
+      return NextResponse.json({ message: "Country code is required" }, { status: 400 });
+    }
 
     await connectMongoDB();
 
-    const user = await UserModel.findOne({ phone });
+    const user = await UserModel.findOne({ phone ,countryCode});
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

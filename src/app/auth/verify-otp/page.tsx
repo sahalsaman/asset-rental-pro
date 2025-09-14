@@ -9,13 +9,16 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 
 export default function VerifyOTPPage() {
   const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState(""); 
   const [otp, setOtp] = useState("");
 
   // Get phone only on client
   useEffect(() => {
     if (typeof window !== "undefined") {
       const p = new URLSearchParams(window.location.search).get("phone") || "";
+      const c = new URLSearchParams(window.location.search).get("countryCode") || "";
       setPhone(p);
+      setCountryCode(c);
     }
   }, []);
 
@@ -26,7 +29,7 @@ export default function VerifyOTPPage() {
     }
 
     try {
-      const res = await api.post("/auth/verify-otp", { phone, otp });
+      const res = await api.post("/auth/verify-otp", { phone, countryCode,otp });
       const role = res.data.role;
 
       if (role === "admin") location.href = "/admin/dashboard";
@@ -61,7 +64,7 @@ export default function VerifyOTPPage() {
             <div className="text-center mb-10">
            
           <h2 className="text-3xl font-bold text-green-700 mb-2">Verify Your OTP</h2>
-          <p className="text-sm text-gray-600">Enter the OTP sent to {phone || "your phone number"}</p>
+          <p className="text-sm text-gray-600">Enter the OTP sent to {countryCode+phone || "your phone number"}</p>
             </div>
             <form
               onSubmit={(e) => {
@@ -77,13 +80,13 @@ export default function VerifyOTPPage() {
                   onChange={handleOtpChange}
                   className="w-full"
                 >
-                  <InputOTPGroup className="justify-center gap-2">
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
+                  <InputOTPGroup className="w-full flex justify-center">
+                    <InputOTPSlot index={0} className="border-gray-300"/>
+                    <InputOTPSlot index={1} className="border-gray-300"/>
+                    <InputOTPSlot index={2} className="border-gray-300"/>
+                    <InputOTPSlot index={3} className="border-gray-300"/>
+                    <InputOTPSlot index={4} className="border-gray-300"/>
+                    <InputOTPSlot index={5} className="border-gray-300"/>
                   </InputOTPGroup>
                 </InputOTP>
               </div>

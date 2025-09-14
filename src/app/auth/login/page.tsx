@@ -28,11 +28,15 @@ export default function LoginPage() {
   };
 
   const sendOtp = async () => {
-    const fullPhoneNumber = `${countryCode}${phone}`;
     setMobileNumberValidationMessage("");
 
     if (!phone) {
       setMobileNumberValidationMessage("Phone number is required.");
+      return;
+    }
+
+    if (!countryCode) {
+      setMobileNumberValidationMessage("Country code is required.");
       return;
     }
 
@@ -42,9 +46,9 @@ export default function LoginPage() {
     }
 
     try {
-      await sendOtpApi(fullPhoneNumber);
+      await sendOtpApi(phone, countryCode);
       toast.success("OTP sent successfully!");
-      router.push(`/auth/verify-otp?phone=${fullPhoneNumber}`);
+      router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
     } catch (err: any) {
       if (err?.response?.data?.message) {
         toast.error(err?.response?.data?.message);
@@ -60,13 +64,13 @@ export default function LoginPage() {
       <div className="h-60 flex justify-center items-center">
         <h2 className="text-3xl font-bold text-white text-center mb-2 ">Welcome to Asset Management</h2>
       </div>
-      <div className="absolute sm:left-[13%]  md:left-[33%]" style={{marginTop:"-25px"}}>
+      <div className="absolute sm:left-[13%]  md:left-[33%]" style={{ marginTop: "-25px" }}>
         <div className="flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
           <div className="space-y-6 w-full">
-           <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100}/></div>
+            <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100} /></div>
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-green-700 mb-2">Enter Your Phone Number</h2>
-               {/* <p className="text-sm text-gray-600">Sign in to manage your properties securely with ease.</p> */}
+              {/* <p className="text-sm text-gray-600">Sign in to manage your properties securely with ease.</p> */}
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -102,12 +106,12 @@ export default function LoginPage() {
               Send OTP
             </button>
 
-             <p className="text-sm text-gray-600 text-center">
-                Don’t have an account?{" "}
-                <a href="/auth/signup" className="text-green-600 hover:underline">
-                  Sign up here
-                </a>
-              </p>
+            <p className="text-sm text-gray-600 text-center">
+              Don’t have an account?{" "}
+              <a href="/auth/signup" className="text-green-600 hover:underline">
+                Sign up here
+              </a>
+            </p>
           </div>
           <p className="text-xs text-gray-500 text-center mt-10">
             By logging in, you agree to our{" "}

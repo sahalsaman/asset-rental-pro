@@ -7,7 +7,7 @@ export async function POST(request) {
   await connectMongoDB();
 
   const body = await request.json(); 
-  const { phone, name ,organisationName} = body;
+  const { phone,countryCode, name ,organisationName} = body;
 
   if (!name) {
     return NextResponse.json({ error: "User Name is required" }, { status: 400 });
@@ -15,6 +15,14 @@ export async function POST(request) {
 
     if (!phone) {
     return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+  }
+
+  if (!countryCode) {
+    return NextResponse.json({ error: "Country code is required" }, { status: 400 });
+  }
+
+  if (!organisationName) {
+    return NextResponse.json({ error: "Organisation Name is required" }, { status: 400 });
   }
 
   const existingUser = await UserModel.findOne({ phone });
@@ -28,6 +36,7 @@ export async function POST(request) {
   const newUser=await UserModel.create({    
     firstName: name,
     phone,
+    countryCode,
     otp,
     otpExpireTime,
     role: "owner",
@@ -41,7 +50,7 @@ export async function POST(request) {
 
   await UserModel.findByIdAndUpdate(newUser._id,{organisationId:org?._id})
 
-  console.log(`✅ OTP for ${phone}: ${otp}`);
+  console.log(`✅ OTP for ${countryCode+phone}: ${otp}`);
 
   return NextResponse.json({ message: "OTP sent successfully" }, { status: 201 });
 }
