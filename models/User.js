@@ -5,6 +5,7 @@ const UserSchema = new Schema(
   {    
     firstName: { type: String, required: true },
     lastName: { type: String },
+    countryCode: { type: String, required: true, default: "+91" },
     phone: { type: String, required: true, unique: true, index: true },
     otp: { type: String },
     role: { 

@@ -35,7 +35,7 @@ export default function Home() {
           <Link href="#clients" onClick={() => setMenuOpen(false)}>Clients</Link>
           <Link href="#stats" onClick={() => setMenuOpen(false)}>Stats</Link>
           <Link href="#" onClick={() => setMenuOpen(false)}>Login</Link>
-          <Link href="/register">
+          <Link href="/auth/signup">
             <button className="bg-green-700 text-white w-full">Get Started</button>
           </Link>
         </div>
@@ -198,7 +198,7 @@ export default function Home() {
           <p className="text-lg mb-6">
             Join thousands of landlords and managers simplifying their workflows.
           </p>
-          <Link href="/register">
+          <Link href="/auth/signup">
             <button className="rounded-2xl text-lg px-8 py-4 bg-white text-green-700 hover:bg-green-100">
               Create Your Account
             </button>

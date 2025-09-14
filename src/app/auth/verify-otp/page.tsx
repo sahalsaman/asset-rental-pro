@@ -1,8 +1,11 @@
 "use client";
 
 import api from "@/lib/api";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import logo from "../../../../public/arp logo.png";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export default function VerifyOTPPage() {
   const [phone, setPhone] = useState("");
@@ -17,6 +20,11 @@ export default function VerifyOTPPage() {
   }, []);
 
   const verifyOtp = async () => {
+    if (!otp) {
+      toast.error("Please enter the OTP.");
+      return;
+    }
+
     try {
       const res = await api.post("/auth/verify-otp", { phone, otp });
       const role = res.data.role;
@@ -29,49 +37,87 @@ export default function VerifyOTPPage() {
     } catch (err: any) {
       if (err?.response?.data?.error) {
         toast.error(err?.response?.data?.error);
-        return;
+      } else {
+        toast.error("An error occurred. Please try again.");
+        console.error("OTP verify error:", err);
       }
-      console.error("OTP verify error:", err);
     }
   };
 
+  const handleOtpChange = (value: string) => {
+    setOtp(value);
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-green-00 to-green-50">
-      <form
-        className="w-full max-w-md bg-white shadow-2xl rounded-2xl p-8 transition-all duration-300"
-        onSubmit={(e) => {
-          e.preventDefault();
-          verifyOtp();
-        }}
-      >
-        <h2 className="text-3xl font-bold text-center text-green-700 mb-6">
-          Verify OTP
-        </h2>
-        <>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            One time password (OTP)
-          </label>
-          <input
-            type="text"
-            placeholder="Enter 6-digit OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
-          />
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-200"
-          >
-            Verify OTP
-          </button>
-          <p className="text-sm text-gray-500 mt-4 text-center">
-            Didn't receive it?{" "}
-            <span className="text-blue-500 underline cursor-pointer">
-              Try Again
-            </span>
+
+    <div className="bg-gradient-to-br from-green-700 to-green-900 ">
+      <div className="h-60 flex justify-center items-center">
+        <h2 className="text-3xl font-bold text-white text-center mb-2 ">Welcome to Asset Management</h2>
+      </div>
+      <div className="absolute sm:left-[13%]  md:left-[33%]" style={{ marginTop: "-25px" }}>
+        <div className="flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
+          <div className="space-y-6 w-full">
+            <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100} /></div>
+            <div className="text-center mb-10">
+           
+          <h2 className="text-3xl font-bold text-green-700 mb-2">Verify Your OTP</h2>
+          <p className="text-sm text-gray-600">Enter the OTP sent to {phone || "your phone number"}</p>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                verifyOtp();
+              }}
+              className="space-y-4"
+            >
+              <div>
+                <InputOTP
+                  maxLength={6}
+                  value={otp}
+                  onChange={handleOtpChange}
+                  className="w-full"
+                >
+                  <InputOTPGroup className="justify-center gap-2">
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200 font-semibold"
+              >
+                Verify OTP
+              </button>
+            </form>
+
+            <p className="text-sm text-gray-600 text-center">
+              Didn’t receive it?{" "}
+              <a href="/auth/login" className="text-green-600 hover:underline">
+                Resend OTP
+              </a>
+            </p>
+
+          </div>
+          <p className="text-xs text-gray-500 text-center mt-10">
+            By logging in, you agree to our{" "}
+            <a href="/privacy" className="text-green-600 hover:underline">
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a href="/terms" className="text-green-600 hover:underline">
+              Terms of Service
+            </a>.
           </p>
-        </>
-      </form>
+        </div>
+      </div>
+
     </div>
+
   );
 }
