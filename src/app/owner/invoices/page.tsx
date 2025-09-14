@@ -109,7 +109,10 @@ export default function RoomDetailPage() {
           setShowInvoiceModal(false);
           setEditInvoiceData(null);
         }}
-        onSave={handleSaveInvoice}
+        onSave={() => {
+          setShowInvoiceModal(false);
+          setEditInvoiceData(null);
+        }}
         editData={editInvoiceData}
       />
 
