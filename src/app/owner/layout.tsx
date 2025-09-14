@@ -22,8 +22,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={20} /> },
     { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={20} /> },
-    { title: 'Organisation', path: '/owner/properties', icon: <Building2 size={20} /> },
-    { title: 'Profile', path: '/owner/managers', icon: <User size={20} /> },
+    { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
+    { title: 'Profile', path: '/owner/profile', icon: <User size={20} /> },
   ];
 
   const logout = async () => {

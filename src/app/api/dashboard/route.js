@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import PropertyModel from "@/../models/Property";
 import RoomModel from "@/../models/Room";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { BookingStatus, InvoiceStatus, PropertyStatus, RoomStatus } from "@/utils/contants";
+import { BookingStatus, RoomStatus } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -17,9 +16,8 @@ export async function GET(request) {
 
     await connectMongoDB();
 
-    const propertiesCount = await PropertyModel.countDocuments({
+    const roomCount = await RoomModel.countDocuments({
       organisationId: user.organisationId,
-      status:PropertyStatus.ACTIVE
     });
 
     const availableRoomsCount = await RoomModel.countDocuments({
@@ -27,42 +25,77 @@ export async function GET(request) {
       status:RoomStatus.AVAILABLE
     });
 
-    const partiallyAvailable = await RoomModel.countDocuments({
-      organisationId: user.organisationId,
-      status:RoomStatus.PARTIALLYOCCUPIED
-    });
-
     const enrollmentsCount = await BookingModel.countDocuments({
       organisationId: user.organisationId,
       status:BookingStatus.CHECKED_IN
     });
 
-    // Calculate monthly received (sum of invoices paid in current month)
-    const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    const monthlyInvoices = await InvoiceModel.aggregate([
+    // Get the start and end of the current month
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // e.g., 2025-09-01 00:00:00
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // e.g., 2025-10-01 00:00:00
+
+    // Total Invoice Amount (This Month)
+    const totalInvoiceAmount = await InvoiceModel.aggregate([
       {
         $match: {
           organisationId: user.organisationId,
-          status: InvoiceStatus.PAID,
-          createdAt: { $gte: firstDay, $lte: lastDay },
+          deleted: false,
+          createdAt: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
         },
       },
       {
-        $group: { _id: null, total: { $sum: "$amount" } },
+        $group: {
+          _id: null,
+          total: { $sum: '$amount' }, // Sum the 'amount' field
+        },
       },
     ]);
 
-    const monthlyReceived =
-      monthlyInvoices.length > 0 ? monthlyInvoices[0].total : 0;
+    // Total Received Amount (This Month)
+    const totalReceivedAmount = await InvoiceModel.aggregate([
+      {
+        $match: {
+          organisationId: user.organisationId,
+          deleted: false,
+          'payments.date': {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+        },
+      },
+      {
+        $unwind: '$payments', // Unwind the payments array
+      },
+      {
+        $match: {
+          'payments.date': {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$payments.amount' }, // Sum the payment amounts
+        },
+      },
+    ]);
+
+
+
 
     return NextResponse.json({
-      properties: propertiesCount,
-      availableRooms: availableRoomsCount,
+      total_rooms: roomCount,
+      available_rooms: availableRoomsCount,
       enrollments: enrollmentsCount,
-      monthlyReceived,
+      totalInvoiceAmount: totalInvoiceAmount,
+      totalReceivedAmount: totalReceivedAmount
     });
   } catch (err) {
     console.log(err);

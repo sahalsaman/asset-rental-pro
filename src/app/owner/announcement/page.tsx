@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import AnnouncementFormModal from "../../../components/AnnouncementFormModal";
 import { apiFetch } from "@/lib/api";
 import AnnouncementCard from "@/components/AnnouncementCard";
+import { FullscreenLoader } from "@/components/Loader";
 
 export default function RoomDetailPage() {
   const data = useParams();
@@ -66,7 +67,7 @@ export default function RoomDetailPage() {
     fetchAnnouncements();
   }, []);
 
-  if (!announcements) return <p className="p-6">Loading announcement details...</p>;
+  if (!announcements) return <FullscreenLoader />;
 
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">

@@ -77,7 +77,7 @@ export default function RoomDetailPage() {
           {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
           <p className="text-gray-600">Price: ${room.price}</p> */}
         </div>
-        <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
+        {/* <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button> */}
       </div>
 
       {/* Invoice List */}

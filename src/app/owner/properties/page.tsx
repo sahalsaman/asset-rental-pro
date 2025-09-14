@@ -6,6 +6,7 @@ import PropertyFormModal from "../../../components/PropertyFormModal";
 import DeleteConfirmModal from "../../../components/DeleteConfirmModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import { FullscreenLoader } from "@/components/Loader";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -28,6 +29,7 @@ export default function PropertiesPage() {
     { label: "Home", href: "/owner" },
     { label: "Properties" },
   ];
+    if (!properties) return <FullscreenLoader />;
 
   return (
     <div className=" p-5 md:pt-10 md:px-32 mb-10">

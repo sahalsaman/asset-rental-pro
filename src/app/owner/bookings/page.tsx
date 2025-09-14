@@ -8,6 +8,7 @@ import BookingCard from "../../../components/BookingCard";
 import BookingAddEditModal from "../../../components/BookingFormModal";
 import { apiFetch } from "@/lib/api";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
+import { FullscreenLoader } from "@/components/Loader";
 
 export default function BookingListPage() {
   const data = useParams();
@@ -55,7 +56,7 @@ export default function BookingListPage() {
     fetchBookings();
   }, []);
 
-  if (!bookings) return <p className="p-6">Loading booking details...</p>;
+  if (!bookings) return <FullscreenLoader />;
 
   return (
     <div className="pt-10 md:px-32 px-5 mb-10">

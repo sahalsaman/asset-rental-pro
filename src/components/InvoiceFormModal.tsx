@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { IInvoice } from "@/app/types";
+import { Label } from "@radix-ui/react-label";
 
 interface Props {
   open: boolean;
@@ -42,7 +43,7 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
     handleSaveInvoice(formData);
   };
 
-    const handleSaveInvoice = async (data: Partial<IInvoice>) => {
+  const handleSaveInvoice = async (data: Partial<IInvoice>) => {
     const method = editData ? "PUT" : "POST";
     const url = editData
       ? `/api/invoice?id=${editData._id}`
@@ -52,10 +53,10 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ ...data, bookingId:editData?.bookingId }),
+      body: JSON.stringify({ ...data, bookingId: editData?.bookingId }),
     });
 
-   onSave()
+    onSave()
   };
 
 
@@ -66,7 +67,8 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
           <DialogTitle>{editData ? "Edit Invoice" : "Add Invoice"}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Label>Amount</Label>
           <Input
             name="amount"
             type="number"
@@ -76,16 +78,20 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             required
           />
 
-          <select name="type" value={formData.type || "Rent"} onChange={handleChange} required>
+          <Label>Amount Type</Label>
+          <select name="type" value={formData.type || "Rent"} onChange={handleChange} required
+            className="w-full border border-gray-300 rounded px-3 py-2">
             <option value="Advance">Advance</option>
             <option value="Rent">Rent</option>
           </select>
 
+          <Label>Transaction type</Label>
           <select
             name="transactionType"
             value={formData.transactionType || "online"}
             onChange={handleChange}
             required
+            className="w-full border border-gray-300 rounded px-3 py-2"
           >
             <option value="online">Online</option>
             <option value="cash">Cash</option>
@@ -93,20 +99,24 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             <option value="card">Card</option>
           </select>
 
+          <Label>Transaction Id</Label>
           <Input
             name="transactionId"
-            placeholder="Transaction ID"
+            placeholder="Transaction Id"
             value={formData.transactionId || ""}
             onChange={handleChange}
           />
 
-          <select name="status" value={formData.status || "unpaid"} onChange={handleChange} required>
+          <Label>Payment Status</Label>
+          <select name="status" value={formData.status || "unpaid"} onChange={handleChange} required
+            className="w-full border border-gray-300 rounded px-3 py-2">
             <option value="paid">Paid</option>
             <option value="unpaid">Unpaid</option>
             <option value="failed">Failed</option>
           </select>
 
-          <div>    <label className="text-sm font-medium">Received Date</label>
+          <div>
+            <Label>Recived date</Label>
             <Input
               name="recivedDate"
               type="date"
@@ -114,7 +124,8 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
               onChange={handleChange}
             /></div>
 
-          <div>    <label className="text-sm font-medium ">Due Date</label>
+          <div>
+            <Label>Due date</Label>
             <Input
               name="dueDate"
               type="date"
@@ -122,17 +133,13 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
               onChange={handleChange}
             /></div>
 
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="disabled"
-              checked={formData.disabled || false}
-              onChange={(e) => setFormData((prev) => ({ ...prev, disabled: e.target.checked }))}
-            />
-            <label>Disabled</label>
+          <div className="w-full grid grid-cols-2 gap-2">
+            <Button type="button" variant="secondary" onClick={onClose}>
+              Cancel
+            </Button> <Button type="submit" className='w-full'>
+              {editData ? 'Update' : 'Submit'}
+            </Button>
           </div>
-
-          <Button type="submit">{editData ? "Update Invoice" : "Save Invoice"}</Button>
         </form>
       </DialogContent>
     </Dialog>

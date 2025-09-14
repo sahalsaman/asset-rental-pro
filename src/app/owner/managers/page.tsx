@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import ManagerFormModal from "@/components/ManagerFormModal";
 import { apiFetch } from "@/lib/api";
-
+import { Badge } from "@/components/ui/badge";
 
 interface Manager {
   _id: string;
@@ -20,13 +20,21 @@ export default function ManagerPage() {
   const [managers, setManagers] = useState<Manager[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [editManager, setEditManager] = useState<Manager | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const organisationId = "ORG_ID_FROM_SESSION_OR_CONTEXT"; // TODO: inject dynamically
 
   const fetchManagers = async () => {
-    const res = await apiFetch(`/api/managers?organisationId=${organisationId}`);
-    const data = await res.json();
-    setManagers(data);
+    try {
+      const res = await apiFetch(`/api/managers?organisationId=${organisationId}`);
+      if (!res.ok) throw new Error("Failed to fetch managers");
+      const data = await res.json();
+      setManagers(data);
+      setError(null);
+    } catch (err) {
+      setError("Error fetching managers. Please try again.");
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -34,25 +42,40 @@ export default function ManagerPage() {
   }, []);
 
   const handleSave = async (managerData: Partial<Manager>) => {
-    if (editManager) {
-      await fetch(`/api/managers/${editManager._id}`, {
-        method: "PUT",
-        body: JSON.stringify(managerData),
-      });
-    } else {
-      await fetch(`/api/managers`, {
-        method: "POST",
-        body: JSON.stringify(managerData ),
-      });
+    try {
+      if (editManager) {
+        const res = await fetch(`/api/managers/${editManager._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(managerData),
+        });
+        if (!res.ok) throw new Error("Failed to update manager");
+      } else {
+        const res = await fetch(`/api/managers`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...managerData, organisationId }),
+        });
+        if (!res.ok) throw new Error("Failed to create manager");
+      }
+      setOpenModal(false);
+      setEditManager(null);
+      fetchManagers();
+    } catch (err) {
+      setError("Error saving manager. Please try again.");
+      console.error(err);
     }
-    setOpenModal(false);
-    setEditManager(null);
-    fetchManagers();
   };
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/managers/${id}`, { method: "DELETE" });
-    fetchManagers();
+    try {
+      const res = await fetch(`/api/managers/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete manager");
+      fetchManagers();
+    } catch (err) {
+      setError("Error deleting manager. Please try again.");
+      console.error(err);
+    }
   };
 
   return (
@@ -62,45 +85,63 @@ export default function ManagerPage() {
         <Button onClick={() => setOpenModal(true)}>Add Manager</Button>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>No</TableHead>
-            <TableHead>Manager</TableHead>
-            <TableHead>Properties</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right"></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {managers.length ? managers.map((m, i) => (
-            <TableRow key={m._id}>
-              <TableCell>{i + 1}</TableCell>
-              <TableCell>
-                <div>
-                  <p>{m.firstName} {m.lastName}</p>
-                  {m.phone}
-                </div></TableCell>
-              <TableCell></TableCell>
-              <TableCell>{m.properties?.map((p) => p.name).join(", ")}</TableCell>
-              <TableCell>{m.disabled ? "Disabled" : "Active"}</TableCell>
-              <TableCell className="text-right flex gap-2 justify-end">
-                <Button variant="outline" size="sm" onClick={() => { setEditManager(m); setOpenModal(true); }}>
-                  Edit
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(m._id)}>
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          )) : ""}
-        </TableBody>
-      </Table>
+      {error && (
+        <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
+          {error}
+        </div>
+      )}
+
+      {managers.length === 0 && !error ? (
+        <p className="text-gray-500 text-center">No managers found. Add a manager to get started.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {managers.map((manager, index) => (
+            <Card key={manager._id} className="shadow-md">
+              <CardContent>
+                <div className="flex justify-between items-center mb-2">
+                <h3 className="text-xl font-semibold">{manager.firstName} {manager.lastName || ""}</h3>
+                <Badge variant="default">{manager.disabled ? "Disabled" : "Active"}</Badge>
+                </div>
+                <p className="text-sm text-gray-600">
+                  <span className="font-semibold">Phone:</span> {manager.phone}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-semibold">Properties:</span>{" "}
+                  {manager.properties?.map((p) => p.name).join(", ") || "None"}
+                </p>
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setEditManager(manager);
+                      setOpenModal(true);
+                    }}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(manager._id)}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
 
       {openModal && (
         <ManagerFormModal
           open={openModal}
-          onClose={() => { setOpenModal(false); setEditManager(null); }}
+          onClose={() => {
+            setOpenModal(false);
+            setEditManager(null);
+          }}
           onSave={handleSave}
           editData={editManager}
         />

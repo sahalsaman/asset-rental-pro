@@ -19,10 +19,11 @@ export default function OwnerDashboard() {
   const [addEditOpen, setAddEditOpen] = useState(false);
 
   const [stats, setStats] = useState({
-    properties: 0,
-    rooms: 0,
+    total_rooms: 0,
+    available_rooms: 0,
     enrollments: 0,
-    monthlyReceived: 0,
+    totalInvoiceAmount: 0,
+    totalReceivedAmount: 0
   });
 
   // Fetch stats from backend API
@@ -32,10 +33,11 @@ export default function OwnerDashboard() {
       if (!res.ok) throw new Error("Failed to fetch dashboard stats");
       const data = await res.json();
       setStats({
-        properties: data.properties,
-        rooms: data.availableRooms,
+        total_rooms: data.total_rooms,
+        available_rooms: data.available_rooms,
         enrollments: data.enrollments,
-        monthlyReceived: data.monthlyReceived,
+        totalInvoiceAmount: data.totalInvoiceAmount,
+        totalReceivedAmount: data.totalReceivedAmount
       });
     } catch (err) {
       console.error(err);
@@ -69,7 +71,7 @@ export default function OwnerDashboard() {
     { title: 'Bookings', path: '/owner/bookings', icon: <Calendar className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Invoices', path: '/owner/invoices', icon: <NotepadTextDashed className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Broadcast', path: '/owner/announcement', icon: <Megaphone className="w-6 h-6 min-w-6 min-h-6" /> },
-    { title: 'Managers', path: '/owner/enrolments', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
+    { title: 'Managers', path: '/owner/managers', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
   ];
 
   return (
@@ -100,12 +102,12 @@ export default function OwnerDashboard() {
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <DashboardCard title="Total Rooms" value={stats.properties} icon={Building2} />
-        <DashboardCard title="Available Rooms" value={stats.rooms} icon={BuildingIcon} />
-        <DashboardCard title="Notice Period" value={stats.rooms} icon={BuildingIcon} />
+        <DashboardCard title="Total Rooms" value={stats.total_rooms} icon={Building2} />
+        <DashboardCard title="Available Rooms" value={stats.available_rooms} icon={BuildingIcon} />
+        <DashboardCard title="Notice Period" value={stats.available_rooms} icon={BuildingIcon} />
         <DashboardCard title="Enrollments" value={stats.enrollments} icon={Users} />
-        <DashboardCard title="Target" value={`₹${stats.monthlyReceived}`} icon={DollarSign} />
-        <DashboardCard title="Monthly Received" value={`₹${stats.monthlyReceived}`} icon={DollarSign} />
+        <DashboardCard title="Target" value={`₹${stats.totalInvoiceAmount}`} icon={DollarSign} />
+        <DashboardCard title="Monthly Received" value={`₹${stats.totalReceivedAmount}`} icon={DollarSign} />
       </div>
 
       <div className=" md:hidden grid grid-cols-4 gap-4 mt-8">
