@@ -57,14 +57,19 @@ export default function VerifyOTPPage() {
       <div className="h-60 flex justify-center items-center">
         <h2 className="text-3xl font-bold text-white text-center mb-2 ">Welcome to Asset Management</h2>
       </div>
-      <div className="absolute sm:left-[13%]  md:left-[33%]" style={{ marginTop: "-25px" }}>
-        <div className="flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
-          <div className="space-y-6 w-full">
+      <div className="absolute w-full" style={{ marginTop: "-25px" }}>
+        <div className="flex justify-center items-center w-full px-2">
+        <div className="w-[400px] flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
+               <div className="space-y-6 w-full">
             <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100} /></div>
             <div className="text-center mb-10">
            
           <h2 className="text-3xl font-bold text-green-700 mb-2">Verify Your OTP</h2>
-          <p className="text-sm text-gray-600">Enter the OTP sent to {countryCode+phone || "your phone number"}</p>
+          <p className="text-sm text-gray-600">
+  {countryCode && phone 
+    ? `We’ve sent an OTP to ${countryCode}${phone}` 
+    : "We’ve sent an OTP to your phone number"}
+</p>
             </div>
             <form
               onSubmit={(e) => {
@@ -119,7 +124,7 @@ export default function VerifyOTPPage() {
           </p>
         </div>
       </div>
-
+</div>
     </div>
 
   );

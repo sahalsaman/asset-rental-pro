@@ -46,8 +46,10 @@ export default function LoginPage() {
       return;
     }
     try {
-       await signUp(phone, countryCode, name, organisationName)
-      toast.success("OTP sent successfully!");
+      const res= await signUp(phone, countryCode, name, organisationName)
+      console.log("res..",res);
+      // toast.success("OTP sent successfully!");
+      toast.success("Your OTP : "+res.data.data.otp);
       router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
     } catch (err: any) {
         if (err?.response?.data?.message) {
@@ -66,8 +68,9 @@ export default function LoginPage() {
       <div className="h-60 flex justify-center items-center">
         <h2 className="text-3xl font-bold text-white text-center mb-2 ">Welcome to Asset Management</h2>
       </div>
-      <div className="absolute sm:left-[13%]  md:left-[33%]" style={{ marginTop: "-25px" }}>
-        <div className="flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
+      <div className="absolute w-full" style={{ marginTop: "-25px" }}>
+        <div className="flex justify-center items-center w-full px-2">
+        <div className="w-[400px] flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
           <div className="space-y-6 w-full">
             {/* <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100} /></div> */}
             <div className="text-center mb-10">
@@ -162,7 +165,7 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
-
+</div>
     </div>
   );
 }

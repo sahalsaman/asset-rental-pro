@@ -3,6 +3,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
+import logo from "../../../public/arp logo-white.png"
+import Image from 'next/image';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -51,7 +53,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={() => router.push('/owner/dashboard')}
               className="text-2xl font-bold text-white mr-5 cursor-pointer block md:hidden"
             >
-              ARP
+              {/* ARP */}
+              <Image src={logo} alt="Logo" width={50} />
             </h1>
           <div className="hidden md:flex items-center gap-4">
             <h1

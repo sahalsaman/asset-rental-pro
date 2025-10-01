@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import PropertyFormModal from "@/components/PropertyFormModal";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
+import BookingAddEditModal from "@/components/BookingFormModal";
 
 
 export default function OwnerDashboard() {
@@ -17,6 +18,7 @@ export default function OwnerDashboard() {
   const [properties, setProperties] = useState([]);
   const [selectedProperties, setSelectedProperties] = useState("");
   const [addEditOpen, setAddEditOpen] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   const [stats, setStats] = useState({
     total_rooms: 0,
@@ -123,7 +125,7 @@ export default function OwnerDashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-6">
-        <Button variant="outline" onClick={() => alert("Add Enrollment Clicked")} className="flex items-center gap-2 h-18 cursor-pointer">
+        <Button variant="outline" onClick={() => setShowBookingModal(true)} className="flex items-center gap-2 h-18 cursor-pointer">
           <Plus className="w-4 h-4" /> Add Booking
         </Button>
 
@@ -151,6 +153,16 @@ export default function OwnerDashboard() {
           fetchProperties();
         }}
       />
+         {/* Booking Modal */}
+            <BookingAddEditModal
+              open={showBookingModal}
+              onClose={() => {
+                setShowBookingModal(false);
+              }}
+              onSave={() => {
+                setShowBookingModal(false);
+              }}
+            />
     </main>
   );
 }

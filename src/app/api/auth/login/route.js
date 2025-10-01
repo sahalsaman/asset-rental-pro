@@ -37,10 +37,11 @@ export async function POST(req) {
 
     console.log(`🔄 OTP updated for ${phone}: ${otp}`);
 
-    return NextResponse.json(
-      { message: "OTP sent successfully" },
-      { status: 200 }
-    );
+  return NextResponse.json({ message: "OTP sent successfully",data:{
+    otp: otp,
+    countryCode: countryCode,
+    phone: phone,
+  } }, { status: 201 });
   } catch (err) {
     console.error("❌ OTP generation error:", err);
     return NextResponse.json(

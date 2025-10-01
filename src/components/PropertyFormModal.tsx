@@ -69,6 +69,26 @@ export default function PropertyFormModal({
     handleSave(formData);
   };
 
+  function resetForm() {
+    setFormData(
+      {
+        name: '',
+        description: '',
+        address: '',
+        city: '',
+        category: 'Room',
+        status: PropertyStatus.ACTIVE,
+        state: "",
+        country: '',
+        zipCode: '',
+        images: [],
+        currency: "₹",
+        disabled: false,
+      }
+    );
+  }
+
+
   const handleSave = async (formData: any) => {
     if (initialData?._id) {
       await fetch(`/api/property?id=${initialData?._id}`, {
@@ -76,6 +96,7 @@ export default function PropertyFormModal({
         body: JSON.stringify(formData),
         headers: { "Content-Type": "application/json" },
       });
+      resetForm()
       onSave()
     } else {
       await fetch("/api/property", {
@@ -83,6 +104,7 @@ export default function PropertyFormModal({
         body: JSON.stringify(formData),
         headers: { "Content-Type": "application/json" },
       });
+      resetForm()
       onSave()
     }
   };

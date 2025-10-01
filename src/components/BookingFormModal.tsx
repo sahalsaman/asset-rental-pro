@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 import { IBooking, IRoom } from "@/app/types";
 import { Label } from "@radix-ui/react-label";
 import { BookingStatus } from "@/utils/contants";
+import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
+import { apiFetch } from "@/lib/api";
 
 
 
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData }: Props) {
+  const property_id = localStorageServiceSelectedOptions.getItem()?.property?._id;
   const [formData, setFormData] = useState<Partial<IBooking>>({
     fullName: "",
     phone: "",
@@ -31,13 +34,22 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     amount: roomData?.amount || 0,
     advanceAmount: roomData?.advanceAmount || 0,
     status: "Pending",
+    roomId: roomData?._id || "",
+    propertyId: property_id,
   });
-  console.log("roomData", roomData);
+  const [rooms, setRooms] = useState<IRoom[]>([]);
+
+  const fetchRooms = () => {
+    apiFetch(`/api/room?propertyId=${property_id}`)
+      .then(res => res.json())
+      .then(setRooms);
+  };
 
   useEffect(() => {
     if (editData) {
       setFormData(editData);
     } else {
+      if (!roomData) fetchRooms();
       setFormData({});
     }
   }, [editData]);
@@ -63,11 +75,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        // propertyId: id,
-        roomId: roomData?._id,
-      }),
+      body: JSON.stringify(data),
     });
 
     onSave(data);
@@ -82,6 +90,22 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name */}
+          {!roomData && <div>
+            <Label htmlFor="roomId">Room</Label>
+            <select
+              id="roomId"
+              name="roomId"
+              value={formData.roomId || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            >
+              <option value="">Select Room</option>
+              {rooms.map((room) => (
+                <option key={room._id} value={room._id}>
+                  {room.name} - ₹{room.amount}
+                </option>))}
+            </select>
+          </div>}
           <div>
             <Label htmlFor="fullName">Full Name</Label>
             <Input
@@ -195,35 +219,35 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
             </div>
           </div>
 
-<div className="w-full grid grid-cols-2 gap-2">
+          <div className="w-full grid grid-cols-2 gap-2">
 
-          {/* Rent Amount */}
-          <div>
-            <Label htmlFor="amount">Rent Amount</Label>
-            <Input
-              id="amount"
-              name="amount"
-              type="number"
-              placeholder="Rent Amount"
-              value={formData.amount || ""}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            {/* Rent Amount */}
+            <div>
+              <Label htmlFor="amount">Rent Amount</Label>
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                placeholder="Rent Amount"
+                value={formData.amount || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-          {/* Advance Amount */}
-          <div>
-            <Label htmlFor="advanceAmount">Advance Amount</Label>
-            <Input
-              id="advanceAmount"
-              name="advanceAmount"
-              type="number"
-              placeholder="Advance Amount"
-              value={formData.advanceAmount || ""}
-              onChange={handleChange}
-            />
+            {/* Advance Amount */}
+            <div>
+              <Label htmlFor="advanceAmount">Advance Amount</Label>
+              <Input
+                id="advanceAmount"
+                name="advanceAmount"
+                type="number"
+                placeholder="Advance Amount"
+                value={formData.advanceAmount || ""}
+                onChange={handleChange}
+              />
+            </div>
           </div>
-</div>
 
           {/* Status */}
           <div>

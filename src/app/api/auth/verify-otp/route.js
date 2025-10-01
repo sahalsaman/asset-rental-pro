@@ -8,7 +8,7 @@ import { setTokenValue } from "@/utils/tokenHandler";
 export async function POST(req) {
   await connectMongoDB();
 
-  const { phone, otp } = await req.json();
+  const { phone, otp,countryCode } = await req.json();
 
   const user = await UserModel.findOne({ phone,countryCode }).populate()
   if (!user) {
@@ -26,7 +26,6 @@ export async function POST(req) {
     },
   });
   }
-
 
 
   const isOtpExpired = new Date() > new Date(user.otpExpireTime || 0);
