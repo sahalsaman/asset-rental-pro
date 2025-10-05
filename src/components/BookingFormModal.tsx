@@ -9,6 +9,7 @@ import { Label } from "@radix-ui/react-label";
 import { BookingStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
+import toast from "react-hot-toast";
 
 
 
@@ -18,11 +19,12 @@ interface Props {
   onSave: (data: Partial<IBooking>) => void;
   editData?: IBooking | null;
   roomData?: IRoom | null;
-  property_data?:IProperty
+  property_data?: IProperty
+  page?: boolean
 }
 
-export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData,property_data }: Props) {
-  const property_id = property_data?property_data?._id:localStorageServiceSelectedOptions.getItem()?.property?._id;
+export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData, property_data, page }: Props) {
+  const property_id = property_data ? property_data?._id : localStorageServiceSelectedOptions.getItem()?.property?._id;
   const [formData, setFormData] = useState<Partial<IBooking>>({
     fullName: "",
     phone: "",
@@ -78,11 +80,11 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
-        ...data, roomId: roomData?._id ,
+        ...data, roomId: roomData?._id,
         propertyId: roomData?.propertyId,
       }),
     });
-
+    toast.success("Successfully saved booking");
     onSave(data);
   };
 
@@ -103,6 +105,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               value={formData.roomId || ""}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
+              required={!roomData?true:false}
             >
               <option value="">Select Room</option>
               {rooms.map((room) => (
@@ -276,9 +279,9 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
           {/* Buttons */}
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
-            <Button type="button" variant="secondary" onClick={onClose}>
+            {!page ? <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button>
+            </Button> : ""}
             <Button type="submit" className="w-full">
               {editData ? "Update" : "Submit"}
             </Button>
