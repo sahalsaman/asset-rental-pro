@@ -2,14 +2,11 @@
 
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import BookingAddEditModal from "@/components/BookingFormModal";
 import { FullscreenLoader } from "@/components/Loader";
 
 export default function BookingForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const [property, setProperty] = useState<IProperty | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [loader, setLoader] = useState(true);
@@ -17,8 +14,7 @@ export default function BookingForm() {
   const fetchProperty = async () => {
     try {
       setLoader(true);
-
-      const propertyId = searchParams.get("property_id");
+          const propertyId = new URLSearchParams(window.location.search).get("property_id");
       if (!propertyId) {
         console.error("❌ Property ID missing in URL");
         setLoader(false);
@@ -39,7 +35,7 @@ export default function BookingForm() {
 
   useEffect(() => {
     fetchProperty();
-  }, [searchParams]); // re-fetch if query changes
+  }, []); // re-fetch if query changes
 
   if (loader) return <FullscreenLoader />;
 
