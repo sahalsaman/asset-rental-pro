@@ -116,6 +116,7 @@ export default function BookingListPage() {
           fetchBookings();
         }}
         item={bookings.find(b => b._id === deleteId)}
+        type="booking"
       />
     </div>
   );

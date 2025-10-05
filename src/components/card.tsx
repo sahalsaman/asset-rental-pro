@@ -11,6 +11,7 @@ interface DashboardCardProps {
 }
 
 export default function DashboardCard({ title, value, icon: Icon, onClick }: DashboardCardProps) {
+
   return (
     <Card
       className="hover:shadow-lg transition cursor-pointer max-sm:p-2 max-sm:px-3"

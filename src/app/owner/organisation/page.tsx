@@ -42,7 +42,7 @@ export default function PropertiesPage() {
   return (
     <div>
       <div className="flex flex-col justify-between items-start md:items-center gap-3 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
-        <Breadcrumbs items={breadcrumbItems} />
+        {/* <Breadcrumbs items={breadcrumbItems} /> */}
         <div className="w-full flex justify-between ">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-blue-200 rounded-md flex items-center justify-center text-gray-500 text-2xl">

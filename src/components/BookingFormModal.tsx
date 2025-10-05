@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { IBooking, IRoom } from "@/app/types";
+import { IBooking, IProperty, IRoom } from "@/app/types";
 import { Label } from "@radix-ui/react-label";
 import { BookingStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
@@ -18,10 +18,11 @@ interface Props {
   onSave: (data: Partial<IBooking>) => void;
   editData?: IBooking | null;
   roomData?: IRoom | null;
+  property_data?:IProperty
 }
 
-export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData }: Props) {
-  const property_id = localStorageServiceSelectedOptions.getItem()?.property?._id;
+export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData,property_data }: Props) {
+  const property_id = property_data?property_data?._id:localStorageServiceSelectedOptions.getItem()?.property?._id;
   const [formData, setFormData] = useState<Partial<IBooking>>({
     fullName: "",
     phone: "",
@@ -35,9 +36,10 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     advanceAmount: roomData?.advanceAmount || 0,
     status: "Pending",
     roomId: roomData?._id || "",
-    propertyId: property_id,
+    propertyId: roomData?.propertyId,
   });
   const [rooms, setRooms] = useState<IRoom[]>([]);
+  console.log("formData", formData);
 
   const fetchRooms = () => {
     apiFetch(`/api/room?propertyId=${property_id}`)
@@ -75,7 +77,10 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data, roomId: roomData?._id ,
+        propertyId: roomData?.propertyId,
+      }),
     });
 
     onSave(data);

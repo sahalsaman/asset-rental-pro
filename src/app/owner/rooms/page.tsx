@@ -100,6 +100,9 @@ export default function PropertyDetailPage() {
           </Button>
         </div>
         {/* Rooms Grid */}
+              {rooms.length === 0 ? (
+        <p className="text-gray-500 text-center">No rooms/space found. <br/>Add a room/space to get started.</p>
+      ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {rooms.map(room => (
             <RoomCard
@@ -120,7 +123,7 @@ export default function PropertyDetailPage() {
               }}
             />
           ))}
-        </div>
+        </div>)}
       </div>
      <RoomAddEditModal
         property={property}

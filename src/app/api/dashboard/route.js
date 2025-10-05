@@ -88,8 +88,6 @@ export async function GET(request) {
     ]);
 
 
-
-
     return NextResponse.json({
       total_rooms: roomCount,
       available_rooms: availableRoomsCount,

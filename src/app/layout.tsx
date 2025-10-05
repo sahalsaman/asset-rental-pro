@@ -17,26 +17,59 @@ const geistMono = Geist_Mono({
 
 
 
+
 export const metadata: Metadata = {
   title: 'Rental Property Management - Efficient Solutions for Landlords',
-  description: 'Discover top-tier rental property management services to maximize your income and minimize hassle.',
-  keywords: 'rental property management, property managers, real estate, pg management, apartment management, rent collection,flat management, tenant screening, maintenance services, landlord services',
+  description: 'Discover top-tier rental property management services designed to maximize your rental income, simplify tenant management, streamline rent collection, and reduce operational hassles.',
+  keywords: 'rental property management, property managers, real estate management, pg management, hostel management, apartment management, rent collection, flat management, tenant screening, maintenance services, landlord solutions, WEBCOS',
   authors: [{ name: 'WEBCOS', url: 'https://webcos.co' }],
   creator: 'WEBCOS',
   publisher: 'WEBCOS',
   applicationName: 'Rental Property Management',
+  category: 'Real Estate',
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  alternates: {
+    canonical: 'https://arp.webcos.co',
+    languages: {
+      'en-US': 'https://arp.webcos.co',
+    },
+  },
   openGraph: {
-    title: 'Rental Property Management',
-    description: 'Efficient Solutions for Landlords',
-    images: '/og-image.jpg',
+    title: 'Rental Property Management - Maximize Rental Income',
+    description: 'Professional rental property management services by WEBCOS. From tenant screening to rent collection, we handle it all for landlords and property owners.',
+    url: 'https://arp.webcos.co',
+    siteName: 'WEBCOS',
+    images: [
+      {
+        url: '../../public/arp logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Rental Property Management Solutions',
+      },
+    ],
     type: 'website',
+    locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Rental Property Management',
-    description: 'Efficient Solutions for Landlords',
+    title: 'Rental Property Management - Efficient Solutions',
+    description: 'Simplify your rental management with ARP. Maximize profits, minimize hassle.',
+    images: ['../../public/arp logo.png'],
+    creator: '@webcos',
   },
+  // verification: {
+  //   google: 'your-google-site-verification-code',
+  // },
 };
+
 
 export default function RootLayout({
   children,

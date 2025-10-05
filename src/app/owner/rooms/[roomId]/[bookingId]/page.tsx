@@ -150,8 +150,10 @@ export default function BookingDetailPage() {
         onClose={() => setShowDelete(false)}
         onConfirm={() => {
           setShowDelete(false);
+          window.location.href = `/owner/rooms/${roomId}`;
         }}
         item={booking}
+        type="booking"
       />
 
 

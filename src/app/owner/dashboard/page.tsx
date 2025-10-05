@@ -1,7 +1,8 @@
 "use client";
 
 import { Building2, Users, QrCode, DollarSign, Plus, Calendar, NotepadTextDashed, Square, Building, EyeOff, Ligature, LightbulbIcon, Factory, BuildingIcon, Megaphone } from "lucide-react";
-
+import { QRCodeCanvas } from "qrcode.react";
+import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import DashboardCard from "../../../components/card";
@@ -15,10 +16,11 @@ import BookingAddEditModal from "@/components/BookingFormModal";
 export default function OwnerDashboard() {
   const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
-  const [properties, setProperties] = useState([]);
-  const [selectedProperties, setSelectedProperties] = useState("");
+  const [properties, setProperties] = useState<IProperty[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState("");
   const [addEditOpen, setAddEditOpen] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [qrUrl, setQrUrl] = useState("");
 
   const [stats, setStats] = useState({
     total_rooms: 0,
@@ -27,6 +29,11 @@ export default function OwnerDashboard() {
     totalInvoiceAmount: 0,
     totalReceivedAmount: 0
   });
+
+  const setQRcodeUrl = (propertyId: string) => {
+    const selectedProp = properties.find((prop: IProperty) => prop._id === propertyId);
+    setQrUrl(`http://www.arp.webcos.co/booking-form?org_id=${selectedProp?.organisationId}&&property_id=${propertyId}`);
+  }
 
   // Fetch stats from backend API
   const fetchStats = async () => {
@@ -50,9 +57,11 @@ export default function OwnerDashboard() {
     const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
+
     if (data.length > 0) {
-      setSelectedProperties(data[0]._id);
+      setSelectedProperty(data[0]._id);
       localStorageServiceSelectedOptions.setItem({ property: data[0] });
+      setQRcodeUrl(data[0]._id);
     }
   };
 
@@ -65,8 +74,9 @@ export default function OwnerDashboard() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { value } = e.target;
-    setSelectedProperties(value);
+    setSelectedProperty(value);
     localStorageServiceSelectedOptions.setItem({ property: value });
+    setQRcodeUrl(value);
   };
 
   const options = [
@@ -82,7 +92,7 @@ export default function OwnerDashboard() {
         <div className="bg-white h-15 shadow-md rounded-2xl p-4 text-center flex justify-between items-center mb-6 gap-2">
           <select
             name="frequency"
-            value={selectedProperties || ""}
+            value={selectedProperty || ""}
             onChange={handleChange}
             className="w-full  "
             required
@@ -98,7 +108,6 @@ export default function OwnerDashboard() {
             Add
           </Button>
         </div>
-
       </div>
 
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
@@ -108,8 +117,8 @@ export default function OwnerDashboard() {
         <DashboardCard title="Available Rooms" value={stats.available_rooms} icon={BuildingIcon} />
         <DashboardCard title="Notice Period" value={stats.available_rooms} icon={BuildingIcon} />
         <DashboardCard title="Enrollments" value={stats.enrollments} icon={Users} />
-        <DashboardCard title="Target" value={`₹${stats.totalInvoiceAmount}`} icon={DollarSign} />
-        <DashboardCard title="Monthly Received" value={`₹${stats.totalReceivedAmount}`} icon={DollarSign} />
+        <DashboardCard title="Target" value={`₹${0}`} icon={DollarSign} />
+        <DashboardCard title="Monthly Received" value={`₹${0}`} icon={DollarSign} />
       </div>
 
       <div className=" md:hidden grid grid-cols-4 gap-4 mt-8">
@@ -136,10 +145,29 @@ export default function OwnerDashboard() {
 
       {qrOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            {/* <QRCode value="https://your-enrollment-link.com" /> */}
-            <img src="https://img.freepik.com/free-vector/scan-me-qr-code_78370-2915.jpg?semt=ais_hybrid&w=740&q=80" alt="" />
-            <Button className="mt-4 w-full" onClick={() => setQrOpen(false)}>Close</Button>
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center flex flex-col justify-center gap-5">
+            <h2 className="text-lg font-semibold mb-3">Booking QR Code</h2>
+
+            {/* ✅ Actual QR Code */}
+            <QRCodeCanvas
+              value={qrUrl}
+              size={300}
+              bgColor="#ffffff"
+              fgColor="#000000"
+              level="H"
+            // includeMargin={true}
+            />
+
+            {/* <p className="text-sm text-gray-500 mt-2 break-all">
+              {qrUrl}
+            </p> */}
+
+            <Button
+              className="mt-4 w-full"
+              onClick={() => setQrOpen(false)}
+            >
+              Close
+            </Button>
           </div>
         </div>
       )}
@@ -153,16 +181,16 @@ export default function OwnerDashboard() {
           fetchProperties();
         }}
       />
-         {/* Booking Modal */}
-            <BookingAddEditModal
-              open={showBookingModal}
-              onClose={() => {
-                setShowBookingModal(false);
-              }}
-              onSave={() => {
-                setShowBookingModal(false);
-              }}
-            />
+      {/* Booking Modal */}
+      <BookingAddEditModal
+        open={showBookingModal}
+        onClose={() => {
+          setShowBookingModal(false);
+        }}
+        onSave={() => {
+          setShowBookingModal(false);
+        }}
+      />
     </main>
   );
 }

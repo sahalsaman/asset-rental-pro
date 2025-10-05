@@ -28,6 +28,7 @@ export interface IProperty {
   currency: string;
   userId?: string; 
   disabled: boolean;
+  organisationId?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

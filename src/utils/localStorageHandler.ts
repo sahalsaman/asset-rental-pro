@@ -7,7 +7,7 @@ const localStorageServiceSelectedOptions = {
     if (!isBrowser()) return;
     try {
       const serializedValue = JSON.stringify(value);
-      window.localStorage.setItem("arp_selected", serializedValue);
+      window.localStorage.setItem("arp_property", serializedValue);
     } catch (error) {
       console.error("Error setting localStorage item", error);
     }
@@ -16,7 +16,7 @@ const localStorageServiceSelectedOptions = {
   getItem: () => {
     if (!isBrowser()) return null;
     try {
-      const value = window.localStorage.getItem("arp_selected");
+      const value = window.localStorage.getItem("arp_property");
       return value ? JSON.parse(value) : null;
     } catch (error) {
       console.error("Error getting localStorage item", error);
@@ -27,7 +27,7 @@ const localStorageServiceSelectedOptions = {
   removeItem: () => {
     if (!isBrowser()) return;
     try {
-      window.localStorage.removeItem("arp_selected");
+      window.localStorage.removeItem("arp_property");
     } catch (error) {
       console.error("Error removing localStorage item", error);
     }

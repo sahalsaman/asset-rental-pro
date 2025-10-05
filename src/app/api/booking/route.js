@@ -105,8 +105,8 @@ export async function POST(request) {
           propertyId: booking.propertyId,
           roomId: booking.roomId,
           invoiceId: `INV-${Date.now()}-RENT`, // generate ID
-          amount: rentAmount,
-          balance: rentAmount,
+          amount: booking.amount,
+          balance: booking.amount,
           type: "Rent",
           dueDate: booking.checkIn || new Date(),
         });

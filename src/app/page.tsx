@@ -51,14 +51,14 @@ export default function Home() {
           <p className="text-lg md:text-xl mb-8 text-gray-100">
             Simplify bookings, automate rent, and scale faster with our smart rental platform.
           </p>
-          <div className="max-w-xl mx-auto mb-6 flex rounded-xl overflow-hidden shadow-lg bg-white">
+          {/* <div className="max-w-xl mx-auto mb-6 flex rounded-xl overflow-hidden shadow-lg bg-white">
             <input
               type="text"
               placeholder="Search hostels, rooms, cities..."
               className="w-full px-4 py-3 text-gray-700 outline-none"
             />
             <button className="bg-green-600 text-white px-6">Search</button>
-          </div>
+          </div> */}
           <Link href="/auth/signup">
             <button className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition">
               Start Free

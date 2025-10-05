@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, } from 'lucide-react'; // icons
+import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Properties', path: '/owner/properties' },
-    { title: 'Rooms', path: '/owner/rooms'},
+    { title: 'Rooms', path: '/owner/rooms' },
     { title: 'Bookings', path: '/owner/bookings' },
     { title: 'Invoices', path: '/owner/invoices' },
     { title: 'Managers', path: '/owner/managers' },
@@ -43,19 +43,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen pb-24">
       {/* Navbar */}
-       <div
+      <div
         className={`  w-full bg-cover bg-center bg-green-800 md:px-32 p-5
-        ${ pathname === "/owner/dashboard" ? "bg-[url('/banner.png')] h-70 rounded-b-4xl" : "h-20 "} transition-all duration-300`}
+        ${pathname === "/owner/dashboard" ? "bg-[url('/banner.png')] h-70 rounded-b-4xl" : "h-20 "} transition-all duration-300`}
       >
         <div className="flex justify-between items-center">
           {/* Desktop Nav */}
-            <h1
-              onClick={() => router.push('/owner/dashboard')}
-              className="text-2xl font-bold text-white mr-5 cursor-pointer block md:hidden"
+          <div className=" mr-5  block md:hidden">
+            <div
+            className=" flex items-center gap-4"
             >
-              {/* ARP */}
-              <Image src={logo} alt="Logo" width={50} />
-            </h1>
+              <ArrowLeft className={` text-white cursor-pointer ${pathname === "/owner/dashboard" ? "hidden":"block"}`}  onClick={() => router.back()}/>
+              <Image src={logo} alt="Logo" width={50} className='cursor-pointer' 
+              onClick={() => router.push('/owner/dashboard')}/>
+            </div>
+
+          </div>
           <div className="hidden md:flex items-center gap-4">
             <h1
               onClick={() => router.push('/owner/dashboard')}
