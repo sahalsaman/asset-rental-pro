@@ -32,7 +32,7 @@ export default function OwnerDashboard() {
 
   const setQRcodeUrl = (propertyId: string) => {
     const selectedProp = properties.find((prop: IProperty) => prop._id === propertyId);
-    setQrUrl(`http://www.arp.webcos.co/booking-form?property_id=${propertyId}`);
+    setQrUrl(`http://arp.webcos.co/booking-form?property_id=${propertyId}`);
   }
 
   // Fetch stats from backend API
