@@ -64,7 +64,7 @@ export default function LoginPage() {
 
   return (
 
-    <div className="bg-gradient-to-br from-green-700 to-green-900 ">
+    <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 ">
       <div className="h-60 flex justify-center items-center">
         <h2 className="text-3xl font-bold text-white text-center mb-2 ">Welcome to Asset Management</h2>
       </div>

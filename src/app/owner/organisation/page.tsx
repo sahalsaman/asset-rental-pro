@@ -50,7 +50,7 @@ export default function PropertiesPage() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">{organisation?.name}</h1>
-         
+         <p className="text-sm">Organisation</p>
             </div>
           </div>
         </div>

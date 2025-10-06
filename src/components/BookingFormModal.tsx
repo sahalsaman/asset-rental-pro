@@ -90,12 +90,12 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto overscroll-contain p-6">
         <DialogHeader>
           <DialogTitle>{editData ? "Edit Booking" : "Add Booking"}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 overflow-auto">
           {/* Full Name */}
           {!roomData && <div>
             <Label htmlFor="roomId">Room</Label>
@@ -126,7 +126,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
             />
           </div>
 
-          <div className="w-full grid grid-cols-2 gap-2">
             {/* Phone */}
             <div>
               <Label htmlFor="phone">Phone</Label>
@@ -152,7 +151,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
                 required
               />
             </div>
-          </div>
 
           {/* Address */}
           <div>
@@ -167,7 +165,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
             />
           </div>
 
-          <div className="w-full grid grid-cols-2 gap-2">
             {/* Verification ID Type */}
             <div>
               <Label htmlFor="verificationIdCard">Verification ID Type</Label>
@@ -198,9 +195,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
                 onChange={handleChange}
               />
             </div>
-          </div>
 
-          <div className="w-full grid grid-cols-2 gap-2">
             {/* Check-in */}
             <div>
               <Label htmlFor="checkIn">Check-In Date</Label>
@@ -225,9 +220,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
                 onChange={handleChange}
               />
             </div>
-          </div>
-
-          <div className="w-full grid grid-cols-2 gap-2">
 
             {/* Rent Amount */}
             <div>
@@ -255,7 +247,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
                 onChange={handleChange}
               />
             </div>
-          </div>
 
           {/* Status */}
           <div>

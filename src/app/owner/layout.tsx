@@ -1,16 +1,25 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
+import { apiFetch } from '@/lib/api';
+import { IProperty } from '../types';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [properties, setProperties] = useState<IProperty[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState("");
+  const [qrUrl, setQrUrl] = useState("");
 
+  const setQRcodeUrl = (propertyId: string) => {
+    const selectedProp = properties.find((prop: IProperty) => prop._id === propertyId);
+    setQrUrl(`http://arp.webcos.co/booking-form?property_id=${propertyId}`);
+  }
   const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Properties', path: '/owner/properties' },
@@ -40,22 +49,46 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
+  const fetchProperties = async () => {
+    const res = await apiFetch("/api/property");
+    const data = await res.json();
+    setProperties(data);
+
+    if (data.length > 0) {
+      setSelectedProperty(data[0]._id);
+      localStorageServiceSelectedOptions.setItem({ property: data[0] });
+      setQRcodeUrl(data[0]._id);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { value } = e.target;
+    setSelectedProperty(value);
+    localStorageServiceSelectedOptions.setItem({ property: value });
+    setQRcodeUrl(value);
+  };
+
   return (
     <div className="min-h-screen pb-24">
       {/* Navbar */}
       <div
-        className={`  w-full bg-cover bg-center bg-green-800 md:px-32 p-5
-        ${pathname === "/owner/dashboard" ? "max-md:bg-[url('/banner.png')] md:bg-green-700 h-70 md:h-30 rounded-b-4xl" : "h-20 "} transition-all duration-300`}
+        className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-16 md:h-20  flex items-center"
       >
-        <div className="flex justify-between items-center">
+        <div className="w-full flex justify-between items-center">
           {/* Desktop Nav */}
           <div className=" mr-5  block md:hidden">
             <div
-            className=" flex items-center gap-4"
+              className=" flex items-center gap-3"
             >
-              <ArrowLeft className={` text-white cursor-pointer ${pathname === "/owner/dashboard" ? "hidden":"block"}`}  onClick={() => router.back()}/>
-              <Image src={logo} alt="Logo" width={50} className='cursor-pointer' 
-              onClick={() => router.push('/owner/dashboard')}/>
+              {/* <ArrowLeft className={` text-white cursor-pointer   ${pathname === "/owner/dashboard" ? "hidden" : "block"}`} onClick={() => router.back()} /> */}
+              <Image src={logo} alt="Logo" width={40} className='cursor-pointer'
+                onClick={() => router.push('/owner/dashboard')} />
             </div>
 
           </div>
@@ -77,14 +110,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             ))}
           </div>
-
+          <div>
+            <select
+              name="frequency"
+              value={selectedProperty || ""}
+              onChange={handleChange}
+              className="w-full  bg-green-800 border-green-800 text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+              style={{minWidth: "220px",border:"0px",height:"44px"}}
+              required
+            >
+              <option value=""> Select Property</option>
+              {properties.map((property: any) => (
+                <option key={property?._id} value={property?._id}>
+                  {property?.name}
+                </option>
+              ))}
+            </select>
+          </div>
           {/* Profile Dropdown */}
           <div className="relative">
+
             <button
               onClick={() => setOpen(!open)}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-green-900 text-white cursor-pointer"
             >
-              {!open ? <User size={20} /> : <XIcon size={20} />}
+              {!open ? <User size={16} /> : <XIcon size={20} />}
             </button>
 
             {open && (

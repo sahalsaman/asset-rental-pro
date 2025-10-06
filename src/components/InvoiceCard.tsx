@@ -32,9 +32,9 @@ export default function InvoiceCard({ invoice, onEdit, onDelete }: Props) {
           <Button size="icon" variant="outline" onClick={() => onEdit(invoice)}>
             <Edit className="w-4 h-4" />
           </Button>
-          <Button size="icon" variant="destructive" onClick={() => onDelete(invoice._id!)}>
+          {/* <Button size="icon" variant="destructive" onClick={() => onDelete(invoice._id!)}>
             <Trash className="w-4 h-4" />
-          </Button>
+          </Button> */}
         </div>
         </div>
       </CardContent>

@@ -32,7 +32,7 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
         <div className='w-full flex flex-col justify-between'>
 
           <div className='flex justify-between'>
-              <Badge variant="default">{property.category}</Badge>
+            <h2 className="text-lg font-semibold mt-1">{property.name}</h2>
             <div className='flex  gap-3'>
               <button
                 onClick={() => onEdit(property)}
@@ -42,7 +42,7 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
               <button
                 onClick={() => onDelete(property)}
               >
-                <Trash2 size={16} />
+                {/* <Trash2 size={16} /> */}
               </button>
               {/* <div className="text-xs w-fit rounded bg-green-700 text-white px-2 py-1 ">{property.status}</div> */}
 
@@ -50,10 +50,10 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
 
           </div>
           <div>
-            <h2 className="text-lg font-semibold mt-1">{property.name}</h2>
             <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
             {/* <p className="text-sm"> ₹{property.amount} / {property.frequency}</p> */}
           </div>
+              <Badge className='mt-2' variant="default">{property.category}</Badge>
           {/* <div className='flex justify-end  '>
           
             <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '

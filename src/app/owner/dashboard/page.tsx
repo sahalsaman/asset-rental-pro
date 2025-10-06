@@ -87,10 +87,11 @@ export default function OwnerDashboard() {
   ];
 
   return (
-    <main className=" bg-white text-gray-800 pt-12 md:px-32 px-5 mb-10 relative">
-      <div className="absolute -top-8 left-0 w-full z-10 px-10"  >
-      <div className="flex justify-center w-full">
-          <div className="bg-white h-15 shadow-md rounded-2xl p-4 text-center flex justify-between items-center mb-6 gap-2 w-full" style={{maxWidth:"600px"}}>
+    <main className=" bg-white text-gray-800 pt-8 md:px-32 px-5 mb-10 ">
+      {/* <div className=" w-full "  >
+      <div className=" w-full">
+        Current Property
+          <div className=" h-15 shadow-md rounded-2xl p-4 text-center flex justify-between items-center mb-6 gap-2 w-full" style={{maxWidth:"600px"}}>
           <select
             name="frequency"
             value={selectedProperty || ""}
@@ -105,12 +106,9 @@ export default function OwnerDashboard() {
               </option>
             ))}
           </select>
-          <Button onClick={() => { setAddEditOpen(true); }}>
-            Add
-          </Button>
         </div>
       </div>
-      </div>
+      </div> */}
 
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
@@ -141,7 +139,7 @@ export default function OwnerDashboard() {
         </Button>
 
         <Button variant="outline" onClick={() => setQrOpen(true)} className="flex items-center gap-2 h-18 cursor-pointer">
-          <QrCode className="w-4 h-4" /> Show QR Code
+          <QrCode className="w-4 h-4" /> Booking QR Code
         </Button>
       </div>
 
@@ -173,16 +171,6 @@ export default function OwnerDashboard() {
           </div>
         </div>
       )}
-      <PropertyFormModal
-        open={addEditOpen}
-        onClose={() => {
-          setAddEditOpen(false);
-        }}
-        onSave={() => {
-          setAddEditOpen(false);
-          fetchProperties();
-        }}
-      />
       {/* Booking Modal */}
       <BookingAddEditModal
         open={showBookingModal}

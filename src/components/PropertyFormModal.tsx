@@ -111,7 +111,7 @@ export default function PropertyFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-h-[90vh] overflow-y-auto overscroll-contain p-6">
         <DialogHeader>
           <DialogTitle>{initialData ? 'Edit' : 'Add'} Property</DialogTitle>
         </DialogHeader>

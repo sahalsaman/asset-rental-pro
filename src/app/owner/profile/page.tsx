@@ -44,23 +44,23 @@ export default function PropertiesPage() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col  m-4">
-          <a  className="p-4 border-b-1 border-b-gray-300"   onClick={() => router.push('/owner/organisation')}>
+      <div className="flex flex-col text-sm m-4">
+            <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/organisation')}>
            Organisation
           </a>
-              <a  className="p-4 border-b-1 border-b-gray-300"   >
+              <a  className="p-4 border-b-1 border-b-gray-200"   >
            Change mobile number
           </a>
-            <a  className="p-4 border-b-1 border-b-gray-300"   onClick={() => router.push('/owner/privacu')}>
+              <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/privacu')}>
            Privacy
           </a>
-            <a  className="p-4 border-b-1 border-b-gray-300"   onClick={() => router.push('/owner/trems')}>
+               <a  className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/trems')}>
            Terms
           </a>
-            <a  className="p-4 border-b-1 border-b-gray-300"  >
+               <a  className="p-4 border-b-1 border-b-gray-200" >
            FAQ
           </a>
-             <a  className="p-4 border-b-1 border-b-gray-300"   >
+             <a  className="p-4 border-b-1 border-b-gray-200"  >
            Help and Support
           </a>
       </div>

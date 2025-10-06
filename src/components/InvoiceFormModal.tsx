@@ -111,8 +111,9 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
           <select name="status" value={formData.status || "unpaid"} onChange={handleChange} required
             className="w-full border border-gray-300 rounded px-3 py-2">
             <option value="paid">Paid</option>
-            <option value="unpaid">Unpaid</option>
-            <option value="failed">Failed</option>
+            <option value="unpaid">Pending</option>
+            <option value="failed">Carry forwerd</option>
+            <option value="unpaid">Canceled</option>
           </select>
 
           <div>
