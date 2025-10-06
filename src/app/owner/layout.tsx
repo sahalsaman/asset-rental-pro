@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Navbar */}
       <div
         className={`  w-full bg-cover bg-center bg-green-800 md:px-32 p-5
-        ${pathname === "/owner/dashboard" ? "bg-[url('/banner.png')] h-70 rounded-b-4xl" : "h-20 "} transition-all duration-300`}
+        ${pathname === "/owner/dashboard" ? "max-md:bg-[url('/banner.png')] md:bg-green-700 h-70 md:h-30 rounded-b-4xl" : "h-20 "} transition-all duration-300`}
       >
         <div className="flex justify-between items-center">
           {/* Desktop Nav */}
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={() => router.push('/owner/dashboard')}
               className="text-2xl font-bold text-white mr-5 cursor-pointer"
             >
-              ARP
+              <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
             </h1>
             {options.map((card, idx) => (
               <div

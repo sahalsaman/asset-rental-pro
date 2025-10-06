@@ -65,7 +65,7 @@ export default function RoomDetailPage() {
   return (
     <div >
       {/* Room Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8 pt-5 shadow-sm border md:px-32 px-5">
+      <div className="flex flex-col justify-between items-start  gap-6 mb-6 bg-slate-50 p-8 pt-5 shadow-sm border md:px-32 px-5">
         <Breadcrumbs items={breadcrumbItems} />
         <div className="w-full flex justify-between">
           <div className="flex items-center gap-4">

@@ -73,7 +73,7 @@ export default function BookingDetailPage() {
   return (
     <div >
       {/* Booking Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5 pt-5">
+      <div className="flex flex-col justify-between items-start  gap-6 mb-6 bg-slate-50 p-8  shadow-sm border md:px-32 px-5 pt-5">
         <Breadcrumbs items={breadcrumbItems} />
         <div className="w-full flex justify-between">
           <div className="flex items-center gap-4">
@@ -119,11 +119,11 @@ export default function BookingDetailPage() {
 
       {/* Invoice List */}
       <div className=" md:px-32 px-5">
-        <div className="flex justify-between items-center mb-5">
+        {/* <div className="flex justify-between items-center mb-5">
           <h2 className="text-2xl font-bold">Invoices</h2>
           <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button>
-        </div>
-        <div className="space-x-3">
+        </div> */}
+        <div className="flex flex-col gap-4 mb-10">
           {invoices.length > 0 ? (
             invoices.map((invoice) => (
               <InvoiceCard
