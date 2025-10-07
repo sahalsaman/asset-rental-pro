@@ -8,7 +8,7 @@ import about from "../../public/arp aboout.svg"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import Image from "next/image";
-import { subscription_plans } from "@/utils/subscriptions-plans";
+import { subscription_plans } from "@/utils/mock-data";
 
 // 1. Define the Interface for Props
 interface FAQItemProps {

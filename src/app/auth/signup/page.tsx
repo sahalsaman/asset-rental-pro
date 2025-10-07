@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import logo from "../../../../public/arp logo.png"
+import { countryCodes } from "@/utils/mock-data";
 
 export default function LoginPage() {
 
@@ -18,14 +19,7 @@ export default function LoginPage() {
   const [nameValidationMessage, setNameValidationMessage] = useState("");
   const [organisationValidationMessage, setOrganisationValidationMessage] = useState("");
 
-  // Country code options
-  const countryCodes = [
-    { code: "+1", name: "USA" },
-    { code: "+91", name: "India" },
-    { code: "+44", name: "UK" },
-    { code: "+81", name: "Japan" },
-    { code: "+86", name: "China" },
-  ];
+
   const validatePhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^[0-9]{10}$/; // Validates 10-digit phone number
     return phoneRegex.test(phoneNumber);

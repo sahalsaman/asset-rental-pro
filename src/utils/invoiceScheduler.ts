@@ -4,7 +4,7 @@ import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import connectMongoDB from "@/../database/db";
 import { BookingStatus } from "./contants";
-import { sendInvoiceToWhatsApp } from "./sendInvoiceToWhatsApp";
+import { sendInvoiceToWhatsApp } from "./sendToWhatsApp";
 
 connectMongoDB();
 

@@ -51,6 +51,7 @@ export async function POST(request) {
   await UserModel.findByIdAndUpdate(newUser._id,{organisationId:org?._id})
 
   console.log(`✅ OTP for ${countryCode+phone}: ${otp}`);
+      // const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
 
   return NextResponse.json({ message: "OTP sent successfully",data:{
     otp: otp,

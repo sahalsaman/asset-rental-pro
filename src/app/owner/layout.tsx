@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, SubscriptIcon, CircleDollarSign, DollarSignIcon, } from 'lucide-react'; // icons
+import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, SubscriptIcon, CircleDollarSign, DollarSignIcon, BadgeDollarSign, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
@@ -34,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={20} /> },
     { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={20} /> },
-    { title: 'Payments', path: '/owner/payments', icon: <DollarSignIcon size={20} /> },
+    { title: 'Payments', path: '/owner/payments', icon: <BadgeDollarSign size={20} /> },
     { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
   ];
 

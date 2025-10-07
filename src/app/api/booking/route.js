@@ -4,7 +4,7 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
-import { sendInvoiceToWhatsApp } from "@/utils/sendInvoiceToWhatsApp";
+import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {

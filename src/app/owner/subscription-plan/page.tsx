@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { subscription_plans } from "@/utils/subscriptions-plans";
+import { subscription_plans } from "@/utils/mock-data";
 import { CheckCircle } from "lucide-react";
 
 export default function SubscriptionPlan() {

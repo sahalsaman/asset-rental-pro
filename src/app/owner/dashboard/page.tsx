@@ -86,7 +86,7 @@ export default function OwnerDashboard() {
     { title: 'Managers', path: '/owner/managers', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
 
     { title: 'Add Bookings', path: 'BOOKING_FORM', icon: <PlusIcon className="w-6 h-6 min-w-6 min-h-6" /> },
-    { title: 'Pricing', path: '/owner/subscription-plan', icon: <BadgeDollarSign className="w-6 h-6 min-w-6 min-h-6" /> },
+    { title: 'Pricing', path: '/owner/subscription-plan', icon: <DollarSign className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Support', path: '/owner/supoort', icon: <Headset className="w-6 h-6 min-w-6 min-h-6" /> },
   ];
@@ -124,7 +124,7 @@ export default function OwnerDashboard() {
         <DashboardCard title="Available Rooms" value={stats.available_rooms} icon={BuildingIcon} />
         <DashboardCard title="Notice Period" value={stats.noticePeriod} icon={BuildingIcon} />
         <DashboardCard title="Enrollments" value={stats.enrollments} icon={Users} />
-        <DashboardCard title="Target" value={`₹${0}`} icon={DollarSign} />
+        <DashboardCard title="Monthly Target" value={`₹${0}`} icon={DollarSign} />
         <DashboardCard title="Monthly Received" value={`₹${0}`} icon={DollarSign} />
       </div>
 

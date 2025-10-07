@@ -1,6 +1,7 @@
 import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
+import { sendOTPText } from "@/utils/sendToWhatsApp";
 
 export async function POST(req) {
   try {
@@ -36,6 +37,7 @@ export async function POST(req) {
     });
 
     console.log(`🔄 OTP updated for ${phone}: ${otp}`);
+    // const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
 
   return NextResponse.json({ message: "OTP sent successfully",data:{
     otp: otp,
