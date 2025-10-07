@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import OrganisationModel from "@/../models/Organisation";
+import {OrganisationModel} from "@/../models/Organisation";
 import { getTokenValue } from "@/utils/tokenHandler";
 
 export async function GET(request) {

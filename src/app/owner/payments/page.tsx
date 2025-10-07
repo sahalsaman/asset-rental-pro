@@ -10,21 +10,21 @@ import { apiFetch } from "@/lib/api";
 import InvoiceCard from "@/components/InvoiceCard";
 import { FullscreenLoader } from "@/components/Loader";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
+import PaymentCard from "@/components/PaymentCard";
 
 export default function RoomDetailPage() {
-  const data = useParams();
+
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
+  const [property, setProperty] = useState<any>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loader, setLoader] = useState(false);
-  const [property, setProperty] = useState<any>(null);
-  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
 
   const fetchInvoices = () => {
     setLoader(true);
-    apiFetch(`/api/list?page=invoice`)
+    apiFetch("/api/list?page=invoice&&payments=true")
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch invoices");
         return res.json();
@@ -35,44 +35,11 @@ export default function RoomDetailPage() {
   };
 
   const fetchProperty = () => {
+    const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
     apiFetch(`/api/property?propertyId=${id}`)
       .then(res => res.json())
       .then(setProperty);
   }
-
-
-  const handleSaveInvoice = async (data: Partial<IInvoice>) => {
-    const method = editInvoiceData ? "PUT" : "POST";
-    const url = editInvoiceData
-      ? `/api/invoice?id=${editInvoiceData._id}`
-      : `/api/invoice`;
-
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        // id,
-        // roomId
-      }),
-    });
-
-    setShowInvoiceModal(false);
-    setEditInvoiceData(null);
-    fetchInvoices();
-  };
-
-  const handleDeleteInvoice = async () => {
-    if (!deleteId) return;
-    await fetch(`/api/invoice?id=${deleteId}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    setShowDelete(false);
-    setDeleteId(null);
-    fetchInvoices();
-  };
 
   useEffect(() => {
     fetchInvoices();
@@ -85,38 +52,21 @@ export default function RoomDetailPage() {
     <div className="p-5 md:pt-10 md:px-32 mb-10">
       {/* Room Header */}
       <div className="flex justify-between items-center  mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Invoices</h1>
-          {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
-          <p className="text-gray-600">Price: ${room.price}</p> */}
-        </div>
-        {/* <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button> */}
+        <h1 className="text-2xl font-bold">Payments</h1>
       </div>
-
-      {/* Invoice List */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {invoices.length > 0 ? (
           invoices.map((invoice) => (
-            <InvoiceCard
+            <PaymentCard
               key={invoice._id}
               invoice={invoice}
               property={property}
-              onEdit={(i) => {
-                setEditInvoiceData(i);
-                setShowInvoiceModal(true);
-              }}
-              onDelete={(id) => {
-                setDeleteId(id);
-                setShowDelete(true);
-              }}
             />
           ))
         ) : (
           <p className="text-gray-500">No invoices yet for this booking.</p>
         )}
       </div>
-
-      {/* Invoice Modal */}
       <InvoiceFormModal
         open={showInvoiceModal}
         onClose={() => {

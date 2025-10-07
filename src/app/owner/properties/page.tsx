@@ -14,7 +14,6 @@ export default function PropertiesPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
 
-
   const fetchProperties = async () => {
     const res = await apiFetch("/api/property");
     const data = await res.json();

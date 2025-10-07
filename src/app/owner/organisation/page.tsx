@@ -15,6 +15,10 @@ export default function PropertiesPage() {
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
   const [organisation, setOrganisation] = useState<any | null>(null);
 
+  useEffect(() => {
+    fetchOrganisation();
+    fetchProperties();
+  }, []);
 
   const fetchProperties = async () => {
     const res = await apiFetch("/api/property");
@@ -22,22 +26,17 @@ export default function PropertiesPage() {
     setProperties(data);
   };
 
-    const fetchOrganisation = async () => {
+  const fetchOrganisation = async () => {
     const res = await apiFetch("/api/organisation");
     const data = await res.json();
     setOrganisation(data);
   };
 
-  useEffect(() => {
-    fetchOrganisation();
-    fetchProperties();
-  }, []);
-
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
     { label: "Organisation" },
   ];
-  if (!properties) return <FullscreenLoader />;
+  if (!organisation) return <FullscreenLoader />;
 
   return (
     <div>
@@ -55,7 +54,6 @@ export default function PropertiesPage() {
           </div>
         </div>
       </div>
-
       <div className=" p-5 md:pt-10 md:px-32 mb-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Properties</h1>
@@ -67,7 +65,7 @@ export default function PropertiesPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {properties.length ? properties?.map((property: any) => (
             <PropertyCard
-              key={organisation?._id}
+              key={property?._id}
               property={property}
               onEdit={(p: any) => { setSelectedProperty(p); setAddEditOpen(true); }}
               onDelete={(p: any) => { setSelectedProperty(p); setDeleteOpen(true); }}
@@ -76,8 +74,6 @@ export default function PropertiesPage() {
             <p className="text-gray-500">No properties.</p>
           )}
         </div>
-
-
       </div>
       <PropertyFormModal
         open={addEditOpen}
@@ -90,7 +86,6 @@ export default function PropertiesPage() {
         }}
         initialData={selectedProperty}
       />
-
       <DeleteConfirmModal
         open={deleteOpen}
         onClose={() => setDeleteOpen(false)}

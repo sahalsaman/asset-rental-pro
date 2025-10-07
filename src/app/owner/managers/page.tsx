@@ -6,6 +6,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import ManagerFormModal from "@/components/ManagerFormModal";
 import { apiFetch } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
+import { FullscreenLoader } from "@/components/Loader";
+import { Edit } from "lucide-react";
 
 interface Manager {
   _id: string;
@@ -21,19 +23,21 @@ export default function ManagerPage() {
   const [openModal, setOpenModal] = useState(false);
   const [editManager, setEditManager] = useState<Manager | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const organisationId = "ORG_ID_FROM_SESSION_OR_CONTEXT"; // TODO: inject dynamically
+  const [loader, setLoader] = useState(false);
 
   const fetchManagers = async () => {
     try {
-      const res = await apiFetch(`/api/managers?organisationId=${organisationId}`);
+      setLoader(true);
+      const res = await apiFetch(`/api/managers`);
       if (!res.ok) throw new Error("Failed to fetch managers");
       const data = await res.json();
       setManagers(data);
       setError(null);
+      setLoader(false);
     } catch (err) {
       setError("Error fetching managers. Please try again.");
       console.error(err);
+      setLoader(false);
     }
   };
 
@@ -43,18 +47,19 @@ export default function ManagerPage() {
 
   const handleSave = async (managerData: Partial<Manager>) => {
     try {
+
       if (editManager) {
-        const res = await fetch(`/api/managers/${editManager._id}`, {
+        const res = await fetch("/api/managers", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(managerData),
+          body: JSON.stringify({ ...managerData, managerId: editManager._id }),
         });
         if (!res.ok) throw new Error("Failed to update manager");
       } else {
         const res = await fetch(`/api/managers`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...managerData, organisationId }),
+          body: JSON.stringify(managerData),
         });
         if (!res.ok) throw new Error("Failed to create manager");
       }
@@ -78,8 +83,11 @@ export default function ManagerPage() {
     }
   };
 
+
+  if (loader) return <FullscreenLoader />;
+
   return (
-    <div className="pt-10 md:px-32 px-5 mb-10">
+    <div className="p-5 md:pt-10 md:px-32 mb-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Managers</h1>
         <Button onClick={() => setOpenModal(true)}>Add Manager</Button>
@@ -99,8 +107,8 @@ export default function ManagerPage() {
             <Card key={manager._id} className="shadow-md">
               <CardContent>
                 <div className="flex justify-between items-center mb-2">
-                <h3 className="text-xl font-semibold">{manager.firstName} {manager.lastName || ""}</h3>
-                <Badge variant="default">{manager.disabled ? "Disabled" : "Active"}</Badge>
+                  <h3 className="text-xl font-semibold">{manager.firstName} {manager.lastName || ""}</h3>
+                  <Badge variant="default">{manager.disabled ? "Disabled" : "Active"}</Badge>
                 </div>
                 <p className="text-sm text-gray-600">
                   <span className="font-semibold">Phone:</span> {manager.phone}
@@ -119,15 +127,15 @@ export default function ManagerPage() {
                       setOpenModal(true);
                     }}
                   >
-                    Edit
+                    <Edit className="w-4 h-4" />
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="destructive"
                     size="sm"
                     onClick={() => handleDelete(manager._id)}
                   >
                     Delete
-                  </Button>
+                  </Button> */}
                 </div>
               </CardContent>
             </Card>

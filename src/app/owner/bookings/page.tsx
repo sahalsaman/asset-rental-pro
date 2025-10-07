@@ -11,24 +11,26 @@ import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { FullscreenLoader } from "@/components/Loader";
 
 export default function BookingListPage() {
-  const data = useParams();
-
-
   const [bookings, setBookings] = useState<IBooking[]>([]);
-
-  // Booking modals state
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
-
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
+  const [loader, setLoader] = useState(false);
 
   const fetchBookings = () => {
+    setLoader(true);
     apiFetch(`/api/list?page=booking`)
-      .then(res => res.json())
-      .then(setBookings);
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch bookings");
+        return res.json();
+      })
+      .then(data => setBookings(data))
+      .catch(err => console.error("Error fetching bookings:", err))
+      .finally(() => setLoader(false));
   };
+
+
 
   const handleSaveBooking = async (data: Partial<IBooking>) => {
     const method = editBookingData ? "PUT" : "POST";
@@ -56,10 +58,10 @@ export default function BookingListPage() {
     fetchBookings();
   }, []);
 
-  if (!bookings) return <FullscreenLoader />;
+  if (loader) return <FullscreenLoader />;
 
   return (
-    <div className="pt-10 md:px-32 px-5 mb-10">
+    <div className="p-5 md:pt-10 md:px-32 mb-10">
       {/* Room Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>

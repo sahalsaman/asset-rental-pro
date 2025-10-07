@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { IInvoice } from "@/app/types";
 import { Label } from "@radix-ui/react-label";
+import { InvoiceStatus, RentAmountType, TransactionType } from "@/utils/contants";
 
 interface Props {
   open: boolean;
@@ -23,9 +24,10 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
     } else {
       setFormData({
         disabled: false,
-        status: "unpaid",
-        type: "Rent",
-        transactionType: "online",
+        status: InvoiceStatus.PENDING,
+        type: RentAmountType.RENT,
+        transactionType: TransactionType.INHAND,
+        recivedDate:new Date()
       });
     }
   }, [editData]);
@@ -78,12 +80,15 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             required
           />
 
-          <Label>Amount Type</Label>
+          {/* <Label>Amount Type</Label>
           <select name="type" value={formData.type || "Rent"} onChange={handleChange} required
             className="w-full border border-gray-300 rounded px-3 py-2">
-            <option value="Advance">Advance</option>
-            <option value="Rent">Rent</option>
-          </select>
+            {Object.values(RentAmountType).map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select> */}
 
           <Label>Transaction type</Label>
           <select
@@ -93,10 +98,11 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             required
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
-            <option value="online">Online</option>
-            <option value="cash">Cash</option>
-            <option value="upi">UPI</option>
-            <option value="card">Card</option>
+            {Object.values(TransactionType).map((transactionType) => (
+              <option key={transactionType} value={transactionType}>
+                {transactionType}
+              </option>
+            ))}
           </select>
 
           <Label>Transaction Id</Label>
@@ -110,10 +116,11 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
           <Label>Payment Status</Label>
           <select name="status" value={formData.status || "unpaid"} onChange={handleChange} required
             className="w-full border border-gray-300 rounded px-3 py-2">
-            <option value="paid">Paid</option>
-            <option value="unpaid">Pending</option>
-            <option value="failed">Carry forwerd</option>
-            <option value="unpaid">Canceled</option>
+            {Object.values(InvoiceStatus).map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
           </select>
 
           <div>

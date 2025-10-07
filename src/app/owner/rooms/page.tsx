@@ -15,22 +15,15 @@ export default function PropertyDetailPage() {
   const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
   const [property, setProperty] = useState<any>(null);
   const [rooms, setRooms] = useState<IRoom[]>([]);
-
-  // Room modal state
   const [showRoomModal, setShowRoomModal] = useState(false);
   const [editRoomData, setEditRoomData] = useState<IRoom | null>(null);
-
-  // Room delete state
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  // Booking modal state
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
 
 
   useEffect(() => {
-
     fetchProperty()
     fetchRooms();
   }, [id]);
@@ -57,7 +50,7 @@ export default function PropertyDetailPage() {
   return (
     <div className="">
       {/* Property Header */}
-      <div className="flex flex-col justify-between items-start  gap-3 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
+      {/* <div className="flex flex-col justify-between items-start  gap-3 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
 
 
         <Breadcrumbs items={breadcrumbItems} />
@@ -69,29 +62,22 @@ export default function PropertyDetailPage() {
             </div>
 
 
-            {/* Property Info */}
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">{property?.name}</h1>
               <p className="text-sm text-gray-600">
                 {property?.address}, {property?.city}, {property?.state} {property?.zipCode}, {property?.country}
               </p>
               <Badge variant="default">{property?.category}</Badge>
-              {/* {property?.description && (
-              <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                {property.description}
-              </p>
-            )} */}
+         
             </div>
           </div>
           <div className="flex gap-2"> 
-            {/* <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => onEdit()} /> */}
-
-            {/* Add Room Button */}
+         
             <Button onClick={() => setShowRoomModal(true)} className="whitespace-nowrap hidden sm:block">
               Add Room
             </Button></div>
         </div>
-      </div>
+      </div> */}
       <div className="p-5 md:pt-10 md:px-32 mb-10">
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Rooms</h1>

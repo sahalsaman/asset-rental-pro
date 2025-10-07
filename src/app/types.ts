@@ -1,3 +1,5 @@
+import { InvoiceStatus, RentAmountType, TransactionType } from "@/utils/contants";
+
 export interface IUser {
   _id?: string;
   firstName: string;
@@ -22,11 +24,11 @@ export interface IProperty {
   state: string;
   country: string;
   zipCode: string;
-  status:string;
+  status: string;
   category: 'Room' | 'Hotel' | 'Hostel';
   images: string[];
   currency: string;
-  userId?: string; 
+  userId?: string;
   disabled: boolean;
   organisationId?: string;
   createdAt?: Date;
@@ -35,7 +37,7 @@ export interface IProperty {
 
 export interface IRoom {
   _id?: string;
-  propertyId: string;
+  propertyId: IProperty| string;
   name: string;
   type: string; // e.g. 2BHK, 4 bed
   amount: number;
@@ -52,8 +54,8 @@ export interface IRoom {
 
 export interface IBooking {
   _id?: string;
-  propertyId: string;
-  roomId: string;
+  propertyId: IProperty| string;
+  roomId: IRoom|string; 
   property?: IProperty;
   room?: IRoom;
   fullName: string;
@@ -68,21 +70,21 @@ export interface IBooking {
   advanceAmount?: number;
   status?: string;
   disabled?: boolean;
-    createdAt?: Date;
+  createdAt?: Date;
   updatedAt?: Date;
 }
 
 export interface IInvoice {
   invoiceId?: string; // Added for better invoice numbering
   _id?: string;
-  bookingId: string; // Required in schema
-  propertyId: string; // Required in schema
-  roomId: string; // Required in schema
+  bookingId: IBooking|string; // Required in schema
+  propertyId: IProperty| string; // Required in schema
+  roomId: IRoom|string; // Required in schema
   amount?: number;
-  type: "Advance" | "Rent";
-  transactionType: "online" | "cash" | "upi" | "card";
+  type: RentAmountType;
+  transactionType: TransactionType;
   transactionId?: string;
-  status: "paid" | "unpaid" | "failed";
+  status: InvoiceStatus;
   recivedDate?: Date; // Present in schema, optional in interface
   dueDate?: Date;     // Schema uses `dueDate`
   disabled: boolean;
@@ -99,6 +101,6 @@ export interface IAnnouncement {
   disabled?: boolean;
   attachments?: string[];
   createdBy: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

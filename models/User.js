@@ -19,7 +19,7 @@ const UserSchema = new Schema(
     lastLogin: { type: Date },
     properties: [{ type: Types.ObjectId, ref: "Property" }],
     organisationId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "Organisation",
     },
     disabled: { type: Boolean, required: true, default: false },

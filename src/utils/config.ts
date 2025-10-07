@@ -1,0 +1,10 @@
+export const whatsapp_config = {
+    WHATSAPP_TOKEN:"EAAcxRCuLFAYBPp0RaEUPdzbKJKWh78w0SjxSMc8s74UUm5ZBKX6HPlFteSjee83KZBaQ0ZAcvOZCRdkaBsZCTnZBpEyqTOkDDis6zwyMjDphp2bJV9zNTiXj6DZAPcSDqjHdBnSjZCHHhkPwW245MXZBFpAeKeZCJAxSgQWnpDerLamGoXUOZB0JzJAaSiK52Kt8ZBQvf4o9npJ6AgNx1EjvbwdW4ycShUQ9TWTypanmlTq5lfkxuAZDZD",
+    WHATSAPP_PHONE_NUMBER_ID: "864101953442589"
+}
+
+export const razorpay_config = {
+  RAZORPAY_KEY_ID:"rzp_test_RQajTWhiooP6Nm",
+  RAZORPAY_KEY_SECRET:"ImkY0Rx0up8AmPCQjSskNbeS",
+}
+

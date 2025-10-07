@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { IBooking } from "@/app/types";
 import { CalendarDays, Phone, MapPin, ArrowRight } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { statusColorMap } from "@/utils/contants";
 
 interface BookingCardProps {
   booking: IBooking;
@@ -12,8 +13,8 @@ interface BookingCardProps {
 }
 
 export default function BookingCard({ booking, onEdit, onDelete }: BookingCardProps) {
-    const router = useRouter();
-      const { id, roomId } = useParams();
+  const router = useRouter();
+  const { id, roomId } = useParams();
   return (
     <div className="border rounded-lg p-5 shadow-sm  hover:shadow-md transition">
       {/* Left Side - Booking Info */}
@@ -22,13 +23,8 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
         <div className="flex items-center gap-3">
           <p className="text-lg font-semibold">{booking.fullName}</p>
           <span
-            className={`text-xs px-2 py-1 rounded-full ${
-              booking.status === "confirmed"
-                ? "bg-green-100 text-green-800"
-                : booking.status === "pending"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-red-100 text-red-800"
-            }`}
+            className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[booking?.status??""] || "bg-gray-100 text-gray-800"
+              }`}
           >
             {booking.status}
           </span>
@@ -90,11 +86,11 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
         >
           Delete
         </Button> */}
-            <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-              onClick={() => router.push(`/owner/rooms/${booking.roomId}/${booking._id}`)}
-            >  <span className="text-sm">View Details</span>
-              <ArrowRight size={18} />
-            </button>
+        <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
+          onClick={() => router.push(`/owner/rooms/${booking.roomId}/${booking._id}`)}
+        >  <span className="text-sm">View Details</span>
+          <ArrowRight size={18} />
+        </button>
       </div>
     </div>
   );

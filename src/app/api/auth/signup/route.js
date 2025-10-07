@@ -1,7 +1,7 @@
 import UserModel from "@/../models/User";
-import OrganisationModel from "@/../models/Organisation";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
+import { OrganisationModel } from "../../../../../models/Organisation";
 
 export async function POST(request) {
   await connectMongoDB();

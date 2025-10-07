@@ -1,9 +1,10 @@
 'use client';
 
-import { ArrowRight, Pencil, Trash2 } from 'lucide-react';
+import { ArrowRight, Edit, Pencil, Trash2 } from 'lucide-react';
 import { IProperty } from '@/app/types';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
+import { Button } from './ui/button';
 
 interface Props {
   property: IProperty;
@@ -34,11 +35,10 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
           <div className='flex justify-between'>
             <h2 className="text-lg font-semibold mt-1">{property.name}</h2>
             <div className='flex  gap-3'>
-              <button
-                onClick={() => onEdit(property)}
-              >
-                <Pencil size={16} />
-              </button>
+           
+                  <Button size="icon" variant="outline" onClick={() => onEdit(property)}>
+              <Edit className="w-4 h-4" />
+            </Button>
               <button
                 onClick={() => onDelete(property)}
               >

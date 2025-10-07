@@ -9,27 +9,21 @@ import BookingAddEditModal from "../../../../components/BookingFormModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import { Pencil, Trash } from "lucide-react";
+import { Edit, Pencil, Trash } from "lucide-react";
 import RoomAddEditModal from "@/components/RoomFormModal";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { FullscreenLoader } from "@/components/Loader";
 
 export default function RoomDetailPage() {
   const { roomId } = useParams();
-  const property = localStorageServiceSelectedOptions.getItem()?.property;
   const router = useRouter();
-
   const [room, setRoom] = useState<IRoom | null>(null);
   const [bookings, setBookings] = useState<IBooking[]>([]);
-
-  // Booking modals state
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
-
   const [showDelete, setShowDelete] = useState(false);
-
-
   const [showRoomModal, setShowRoomModal] = useState(false);
+  const property = localStorageServiceSelectedOptions.getItem()?.property;
 
 
   useEffect(() => {
@@ -50,10 +44,7 @@ export default function RoomDetailPage() {
       .then(setBookings);
   };
 
-
-
-
-  if (!room) return <FullscreenLoader/>;
+  if (!room) return <FullscreenLoader />;
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
@@ -104,17 +95,15 @@ export default function RoomDetailPage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => {setShowRoomModal(true)}} />
-            <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
+            <Button size="icon" variant="outline" onClick={() => { setShowRoomModal(true) }} >
+              <Edit className="w-4 h-4" />
+            </Button>
+            {/* <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
               setShowDelete(true);
-            }} />
+            }} /> */}
           </div>
         </div>
-
       </div>
-
-
-      {/* Bookings List */}
       <div className=" md:px-32 px-5 ">
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Bookings</h1>
@@ -154,6 +143,7 @@ export default function RoomDetailPage() {
         onSave={() => {
           setShowBookingModal(false);
           setEditBookingData(null);
+          fetchBookings();
         }}
         editData={editBookingData}
         roomData={room}

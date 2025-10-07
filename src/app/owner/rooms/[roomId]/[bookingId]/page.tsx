@@ -9,34 +9,27 @@ import InvoiceCard from "../../../../../components/InvoiceCard";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import { Pencil, Trash } from "lucide-react";
+import { Edit, Pencil, Trash } from "lucide-react";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import BookingAddEditModal from "@/components/BookingFormModal";
 import { FullscreenLoader } from "@/components/Loader";
+import { statusColorMap } from "@/utils/contants";
 
 export default function BookingDetailPage() {
   const params = useParams();
   const router = useRouter();
-
-  // Safely extract bookingId
-  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
-
   const { roomId } = useParams();
+  const [booking, setBooking] = useState<IBooking | null>(null);
+  const [invoices, setInvoices] = useState<IInvoice[]>([]);
+  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);
+  const [showDelete, setShowDelete] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [property, setProperty] = useState<any>(null);
+  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
   const bookingId = Array.isArray(params?.bookingId)
     ? params.bookingId[0]
     : params?.bookingId;
-
-  const [booking, setBooking] = useState<IBooking | null>(null);
-  const [invoices, setInvoices] = useState<IInvoice[]>([]);
-
-  // Modal states
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-  const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);
-
-  const [showDelete, setShowDelete] = useState(false);
-
-
-  const [showBookingModal, setShowBookingModal] = useState(false);
 
   useEffect(() => {
     if (!bookingId) {
@@ -49,6 +42,7 @@ export default function BookingDetailPage() {
       .then(setBooking);
 
     fetchInvoices();
+    fetchProperty()
   }, [bookingId]);
 
   const fetchInvoices = () => {
@@ -58,17 +52,19 @@ export default function BookingDetailPage() {
       .then(setInvoices);
   };
 
+  const fetchProperty = () => {
+    apiFetch(`/api/property?propertyId=${id}`)
+      .then(res => res.json())
+      .then(setProperty);
+  }
 
-
-  if (!booking) return <FullscreenLoader/>;
+  if (!booking) return <FullscreenLoader />;
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
     { label: "Room", href: `/owner/rooms/${roomId}` },
     { label: booking.fullName || "Enrolment", },
   ];
-
- 
 
   return (
     <div >
@@ -95,11 +91,7 @@ export default function BookingDetailPage() {
               )}
               {booking.status && (
                 <span
-                  className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${booking.status === "confirmed"
-                    ? "bg-green-100 text-green-700"
-                    : booking.status === "cancelled"
-                      ? "bg-red-100 text-red-700"
-                      : "bg-yellow-100 text-yellow-700"
+                  className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[booking?.status ?? ""] || "bg-gray-100 text-gray-800"
                     }`}
                 >
                   {booking.status}
@@ -108,10 +100,12 @@ export default function BookingDetailPage() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Pencil className="w-4 h-4 mr-1 mt-2" onClick={() => setShowBookingModal(true)} />
-            <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
+            <Button size="icon" variant="outline" onClick={() => { setShowBookingModal(true) }} >
+              <Edit className="w-4 h-4" />
+            </Button>
+            {/* <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
               setShowDelete(true);
-            }} />
+            }} /> */}
           </div>
         </div>
       </div>
@@ -136,6 +130,7 @@ export default function BookingDetailPage() {
                 onDelete={(id) => {
                   setShowDelete(true);
                 }}
+                property={property}
               />
             ))
           ) : (
@@ -167,6 +162,7 @@ export default function BookingDetailPage() {
         onSave={() => {
           setShowInvoiceModal(false);
           setEditInvoiceData(null);
+          fetchInvoices();
         }}
         editData={editInvoiceData}
       />

@@ -105,7 +105,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               value={formData.roomId || ""}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
-              required={!roomData?true:false}
+              required={!roomData ? true : false}
             >
               <option value="">Select Room</option>
               {rooms.map((room) => (
@@ -126,31 +126,31 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
             />
           </div>
 
-            {/* Phone */}
-            <div>
-              <Label htmlFor="phone">Phone</Label>
-              <Input
-                id="phone"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone || ""}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          {/* Phone */}
+          <div>
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              name="phone"
+              placeholder="Phone"
+              value={formData.phone || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            {/* WhatsApp Number */}
-            <div>
-              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
-              <Input
-                id="whatsappNumber"
-                name="whatsappNumber"
-                placeholder="WhatsApp Number"
-                value={formData.whatsappNumber || ""}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          {/* WhatsApp Number */}
+          <div>
+            <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+            <Input
+              id="whatsappNumber"
+              name="whatsappNumber"
+              placeholder="WhatsApp Number"
+              value={formData.whatsappNumber || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
           {/* Address */}
           <div>
@@ -165,88 +165,88 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
             />
           </div>
 
-            {/* Verification ID Type */}
-            <div>
-              <Label htmlFor="verificationIdCard">Verification ID Type</Label>
-              <select
-                id="verificationIdCard"
-                name="verificationIdCard"
-                value={formData.verificationIdCard || ""}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded px-3 py-2"
-              >
-                <option value="">Select ID Type</option>
-                <option value="Aadhar">Aadhar</option>
-                <option value="PAN">PAN</option>
-                <option value="VoterID">Voter ID</option>
-                <option value="Passport">Passport</option>
-                <option value="DrivingLicense">Driving License</option>
-              </select>
-            </div>
+          {/* Verification ID Type */}
+          <div>
+            <Label htmlFor="verificationIdCard">Verification ID Type</Label>
+            <select
+              id="verificationIdCard"
+              name="verificationIdCard"
+              value={formData.verificationIdCard || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            >
+              <option value="">Select ID Type</option>
+              <option value="Aadhar">Aadhar</option>
+              <option value="PAN">PAN</option>
+              <option value="VoterID">Voter ID</option>
+              <option value="Passport">Passport</option>
+              <option value="DrivingLicense">Driving License</option>
+            </select>
+          </div>
 
-            {/* Verification ID Number */}
-            <div>
-              <Label htmlFor="verificationIdCardNumber"> ID Number</Label>
-              <Input
-                id="verificationIdCardNumber"
-                name="verificationIdCardNumber"
-                placeholder="Verification ID Number"
-                value={formData.verificationIdCardNumber || ""}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Verification ID Number */}
+          <div>
+            <Label htmlFor="verificationIdCardNumber"> ID Number</Label>
+            <Input
+              id="verificationIdCardNumber"
+              name="verificationIdCardNumber"
+              placeholder="Verification ID Number"
+              value={formData.verificationIdCardNumber || ""}
+              onChange={handleChange}
+            />
+          </div>
 
-            {/* Check-in */}
-            <div>
-              <Label htmlFor="checkIn">Check-In Date</Label>
-              <Input
-                id="checkIn"
-                name="checkIn"
-                type="date"
-                value={formData.checkIn ? formData.checkIn.split("T")[0] : ""}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          {/* Check-in */}
+          <div>
+            <Label htmlFor="checkIn">Check-In Date</Label>
+            <Input
+              id="checkIn"
+              name="checkIn"
+              type="date"
+              value={formData.checkIn ? formData.checkIn.split("T")[0] : ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            {/* Check-out */}
-            <div>
-              <Label htmlFor="checkOut">Check-Out Date</Label>
-              <Input
-                id="checkOut"
-                name="checkOut"
-                type="date"
-                value={formData.checkOut ? formData.checkOut.split("T")[0] : ""}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Check-out */}
+          <div>
+            <Label htmlFor="checkOut">Check-Out Date</Label>
+            <Input
+              id="checkOut"
+              name="checkOut"
+              type="date"
+              value={formData.checkOut ? formData.checkOut.split("T")[0] : ""}
+              onChange={handleChange}
+            />
+          </div>
 
-            {/* Rent Amount */}
-            <div>
-              <Label htmlFor="amount">Rent Amount</Label>
-              <Input
-                id="amount"
-                name="amount"
-                type="number"
-                placeholder="Rent Amount"
-                value={formData.amount || ""}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          {/* Rent Amount */}
+          <div>
+            <Label htmlFor="amount">Rent Amount</Label>
+            <Input
+              id="amount"
+              name="amount"
+              type="number"
+              placeholder="Rent Amount"
+              value={formData.amount || ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            {/* Advance Amount */}
-            <div>
-              <Label htmlFor="advanceAmount">Advance Amount</Label>
-              <Input
-                id="advanceAmount"
-                name="advanceAmount"
-                type="number"
-                placeholder="Advance Amount"
-                value={formData.advanceAmount || ""}
-                onChange={handleChange}
-              />
-            </div>
+          {/* Advance Amount */}
+          <div>
+            <Label htmlFor="advanceAmount">Advance Amount</Label>
+            <Input
+              id="advanceAmount"
+              name="advanceAmount"
+              type="number"
+              placeholder="Advance Amount"
+              value={formData.advanceAmount || ""}
+              onChange={handleChange}
+            />
+          </div>
 
           {/* Status */}
           <div>

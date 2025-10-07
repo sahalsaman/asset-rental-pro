@@ -10,7 +10,6 @@ export default function PropertiesPage() {
   const [user, setUser] = useState<any | null>(null);
   const router = useRouter();
 
-
   const fetchUser = async () => {
     const res = await apiFetch("/api/user");
     const data = await res.json();
@@ -45,6 +44,9 @@ export default function PropertiesPage() {
         </div>
       </div>
       <div className="flex flex-col text-sm m-4">
+            <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/subscription-plan')}>
+           Subscription
+          </a>
             <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/organisation')}>
            Organisation
           </a>

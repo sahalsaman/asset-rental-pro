@@ -2,6 +2,7 @@
 import { IAnnouncement } from "@/app/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
 
 interface Props {
   announcement: IAnnouncement;
@@ -19,8 +20,9 @@ export default function AnnouncementCard({ announcement, onEdit, onDelete }: Pro
         <p className="text-gray-600 mb-2">{announcement.message}</p>
         <div className="flex justify-between items-end">   <p className="text-xs text-gray-400">Audience: {announcement.audience}</p>
           <div className="flex gap-2 mt-3">
-            <Button size="sm" variant="outline" onClick={() => onEdit(announcement)}>Edit</Button>
-            <Button size="sm" variant="destructive" onClick={() => onDelete(announcement._id)}>Delete</Button>
+            <Button size="sm" variant="outline" onClick={() => onEdit(announcement)}>  
+              <Edit className="w-4 h-4" /></Button>
+            {/* <Button size="sm" variant="destructive" onClick={() => onDelete(announcement._id)}>Delete</Button> */}
           </div></div>
       </CardContent>
     </Card>

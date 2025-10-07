@@ -14,20 +14,36 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const prop = request.nextUrl.searchParams.get("prop");
+
+      if (!prop) {
+      return NextResponse.json({ error: "Select valid property" }, { status: 404 });
+    }
+
     await connectMongoDB();
 
     const roomCount = await RoomModel.countDocuments({
       organisationId: user.organisationId,
+      propertyId: prop
     });
 
     const availableRoomsCount = await RoomModel.countDocuments({
       organisationId: user.organisationId,
-      status:RoomStatus.AVAILABLE
+      status: RoomStatus.AVAILABLE,
+      propertyId: prop
     });
 
     const enrollmentsCount = await BookingModel.countDocuments({
       organisationId: user.organisationId,
-      status:BookingStatus.CHECKED_IN
+      status: BookingStatus.CHECKED_IN,
+      propertyId: prop
+    });
+
+    const noticePeriod = await BookingModel.countDocuments({
+      organisationId: user.organisationId,
+      status: BookingStatus.CHECKED_IN,
+      checkOut: { $gt: new Date() },
+      propertyId: prop
     });
 
 
@@ -41,6 +57,7 @@ export async function GET(request) {
       {
         $match: {
           organisationId: user.organisationId,
+          propertyId: prop,
           deleted: false,
           createdAt: {
             $gte: startOfMonth,
@@ -61,6 +78,7 @@ export async function GET(request) {
       {
         $match: {
           organisationId: user.organisationId,
+          propertyId: prop,
           deleted: false,
           'payments.date': {
             $gte: startOfMonth,
@@ -93,10 +111,11 @@ export async function GET(request) {
       available_rooms: availableRoomsCount,
       enrollments: enrollmentsCount,
       totalInvoiceAmount: totalInvoiceAmount,
-      totalReceivedAmount: totalReceivedAmount
+      totalReceivedAmount: totalReceivedAmount,
+      noticePeriod: noticePeriod
     });
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return NextResponse.json(
       { error: "Failed to fetch dashboard data", details: err.message },
       { status: 500 }

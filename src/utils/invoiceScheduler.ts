@@ -32,7 +32,8 @@ cron.schedule("0 0 * * *", async () => {
           type: "Rent",
           dueDate: booking.checkIn || new Date(),
       });
-      sendInvoiceToWhatsApp(booking.contactPhone, `INV-${Date.now()}-RENT`, booking.amount);
+    
+      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.amount,booking?.fullName);
     }
   }
 });

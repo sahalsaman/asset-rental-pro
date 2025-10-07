@@ -37,7 +37,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           placeholder={placeholder}
           aria-label={value.join(", ")}
         >
-          {value.length > 0 ? value.join(", ") : placeholder}
+          {placeholder}
         </SelectValue>
       </SelectTrigger>
       <SelectContent>
@@ -57,6 +57,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           </SelectItem>
         ))}
       </SelectContent>
+      <div>
+        { value.join(", ") }
+      </div>
     </Select>
   );
 };

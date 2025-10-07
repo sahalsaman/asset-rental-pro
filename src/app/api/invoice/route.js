@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import connectMongoDB from "@/../database/db";
 import InvoiceModel from "@/../models/Invoice";
 import { getTokenValue } from "@/utils/tokenHandler";
+import { InvoiceStatus } from "@/utils/contants";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -18,12 +19,12 @@ export async function GET(request) {
     const propertyId = searchParams.get("propertyId");
     const roomId = searchParams.get("roomId");
 
-      const user = getTokenValue(request);
-        if (!user?.organisationId) {
-          return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-        }
+    const user = getTokenValue(request);
+    if (!user?.organisationId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    let filter= {};
+    let filter = {};
     if (bookingId) {
       filter.bookingId = bookingId;
     }
@@ -38,9 +39,7 @@ export async function GET(request) {
     }
 
     const invoices = await InvoiceModel.find(filter)
-      // .populate("bookingId")
-      // .populate("propertyId")
-      // .populate("roomId");
+      .populate()
 
     return NextResponse.json(invoices);
   } catch (err) {

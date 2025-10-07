@@ -4,6 +4,7 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
+import { sendInvoiceToWhatsApp } from "@/utils/sendInvoiceToWhatsApp";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -94,6 +95,7 @@ export async function POST(request) {
         type: "Advance",
         dueDate: booking.checkIn || new Date(),
       });
+      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.advanceAmount,booking?.fullName);
     }
 
     // --- First Rent Invoice ---
@@ -111,6 +113,7 @@ export async function POST(request) {
           dueDate: booking.checkIn || new Date(),
         });
       
+      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.amount,booking?.fullName);
     }
 
     console.log('invoices to create:', invoices);

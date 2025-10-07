@@ -8,6 +8,7 @@ import about from "../../public/arp aboout.svg"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import Image from "next/image";
+import { subscription_plans } from "@/utils/subscriptions-plans";
 
 // 1. Define the Interface for Props
 interface FAQItemProps {
@@ -78,7 +79,7 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-green-700 to-green-900 text-white md:py-40 py-16 px-6 text-center overflow-hidden">
+      <section className="relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white md:py-40 py-16 px-6 text-center overflow-hidden">
         <div className="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
         <div className="max-w-4xl mx-auto z-10 relative">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
@@ -96,7 +97,7 @@ export default function Home() {
       </section>
 
       {/* Setup Guide Section */}
-      <section id="setup-guide" className="py-24 px-6 w-full md:absolute top-[500px]">
+      <section id="setup-guide" className="py-12 md:py-24 px-6 w-full md:absolute top-[500px]">
         <div className="max-w-6xl mx-auto w-full md:flex justify-center">
           <h2 className="text-4xl font-bold mb-6 text-center text-green-700 block md:hidden">Quick Start Setup Guide</h2>
           <p className="text-xl text-gray-600 mb-12 text-center block md:hidden">
@@ -124,7 +125,8 @@ export default function Home() {
                 description: "Connect your payment gateway and set up recurring invoicing cycles for your tenants."
               }
             ].map((item, index) => (
-              <div key={index} className="flex flex-col items-center text-center p-8 bg-white rounded-xl shadow-2xl transition duration-300 hover:shadow-green-300/50">
+              <div key={index} className="flex flex-col items-center text-center p-8 bg-white rounded-xl shadow-2xl 
+              shadow-gray-200 transition duration-300 hover:shadow-green-300/50">
                 <div className="w-14 h-14 bg-green-700 rounded-full flex items-center justify-center mb-4 shadow-lg">
                   {item.icon}
                 </div>
@@ -147,8 +149,8 @@ export default function Home() {
       </section>
 
 
-      <section id="about" className="py-24 px-6 bg-white md:mt-40">
-        <div className="max-w-6xl mx-auto md:flex justify-between items-center gap-12">
+      <section id="about" className="py-12 md:py-24 px-6 bg-white md:mt-40">
+        <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
           <div className="w-full md:w-1/2">
             <h2 className="text-4xl font-extrabold mb-6 text-gray-800  inline-block pb-1">Why Choose AssetRentalPro?</h2>
@@ -200,71 +202,50 @@ export default function Home() {
 
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24 px-6 bg-slate-50 text-center">
+      <section id="pricing" className="py-12 md:py-24 px-6 bg-slate-50 text-center">
         <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-xl text-gray-600 mb-12">No hidden fees. Scale your portfolio with a plan that fits your needs.</p>
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {/* Free Plan */}
-          <div className="bg-white p-8 rounded-xl shadow-2xl border-2 border-transparent">
-            <h3 className="text-2xl font-bold text-green-700 mb-4">Basic</h3>
-            <p className="text-5xl font-extrabold mb-2">$0</p>
-            <p className="text-gray-500 mb-6">per month</p>
-            <p className="text-gray-600 mb-6">Perfect for new landlords managing a few assets.</p>
-            <ul className="space-y-3 text-left mb-8">
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Up to 5 properties</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Basic tenant portal</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Email support</span></li>
-            </ul>
-            <Link href="/auth/signup">
-              <button className="bg-gray-200 text-gray-800 font-semibold w-full py-3 rounded-xl hover:bg-gray-300">
-                Start Free
-              </button>
-            </Link>
-          </div>
+          {subscription_plans.map((plan, index) => (
+          <div
+            key={index}
+            className={`bg-white p-8 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
+          >
+            {plan.highlight && (
+              <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
+                POPULAR
+              </div>
+            )}
 
-          {/* Pro Plan - Highlighted */}
-          <div className="bg-white p-8 rounded-xl shadow-2xl border-2 border-green-700 relative">
-            <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">POPULAR</div>
-            <h3 className="text-2xl font-bold text-green-700 mb-4">Pro</h3>
-            <p className="text-5xl font-extrabold mb-2">$49</p>
-            <p className="text-gray-500 mb-6">per month</p>
-            <p className="text-gray-600 mb-6">The best choice for professional property managers.</p>
-            <ul className="space-y-3 text-left mb-8">
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Up to 100 properties</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Automated invoicing & payments</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Advanced analytics dashboard</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Priority support</span></li>
-            </ul>
-            <Link href="/auth/signup?plan=pro">
-              <button className="bg-green-700 text-white font-semibold w-full py-3 rounded-xl hover:bg-green-600">
-                Choose Pro
-              </button>
-            </Link>
-          </div>
+            <h3 className="text-2xl font-bold text-green-700 mb-4">{plan.name}</h3>
+            <p className="text-5xl font-extrabold mb-2">{plan.price}</p>
+            <p className="text-gray-500 mb-6">{plan.period}</p>
+            <p className="text-gray-600 mb-6">{plan.description}</p>
 
-          {/* Enterprise Plan */}
-          <div className="bg-white p-8 rounded-xl shadow-2xl border-2 border-transparent">
-            <h3 className="text-2xl font-bold text-green-700 mb-4">Enterprise</h3>
-            <p className="text-5xl font-extrabold mb-2">Custom</p>
-            <p className="text-gray-500 mb-6">per month</p>
-            <p className="text-gray-600 mb-6">Solutions for large-scale portfolios and custom features.</p>
             <ul className="space-y-3 text-left mb-8">
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Unlimited properties</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>Dedicated account manager</span></li>
-              <li className="flex items-center space-x-2 text-gray-700"><CheckCircle className="w-5 h-5 text-green-500" /><span>SLA & custom integrations</span></li>
+              {plan.features.map((feature, i) => (
+                <li key={i} className="flex items-center space-x-2 text-gray-700">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span>{feature}</span>
+                </li>
+              ))}
             </ul>
-            <Link href="/contact/sales">
-              <button className="bg-gray-200 text-gray-800 font-semibold w-full py-3 rounded-xl hover:bg-gray-300">
-                Contact Sales
+
+            <Link href={plan.buttonLink}>
+              <button
+                className={`${plan.buttonStyle} font-semibold w-full py-3 rounded-xl`}
+              >
+                {plan.buttonText}
               </button>
             </Link>
           </div>
+        ))}
         </div>
       </section>
 
       {/* Downloads Section */}
-      <section id="downloads" className="py-24 px-6 bg-white text-center">
+      <section id="downloads" className="py-12 md:py-24 px-6 bg-white text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold mb-6">Download Our Mobile App</h2>
           <p className="text-xl text-gray-600 mb-12">
@@ -291,7 +272,7 @@ export default function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-24 px-6 bg-gray-50">
+      <section id="faq" className="py-12 md:py-24 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="bg-white rounded-xl shadow-lg p-6">
@@ -321,16 +302,16 @@ export default function Home() {
 
 
       {/* Stats Section */}
-      <section id="stats" className="py-24 bg-white text-center">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-20 text-green-700">
+      <section id="stats" className="py-12 md:py-24 bg-white text-center">
+        <div className="flex flex-col md:flex-row justify-center items-center  gap-20 text-green-700">
           <div className="flex flex-col items-center">
             {/* <Users className="w-10 h-10 mb-2" /> */}
-            <p className="text-2xl text-left"><span className=" text-6xl font-extralight">20,000+ Users</span><br /></p>
-          </div><span className="text-6xl font-extralight">|</span>
+            <p className="text-2xl text-center md:text-left"><span className=" text-6xl font-extralight">20,000+ Users</span><br /></p>
+          </div><span className="text-6xl font-extralight md:block hidden">|</span>
           <div className="flex flex-col items-center">
             {/* <Building2 className="w-10 h-10 mb-2" /> */}
 
-            <p className="text-2xl text-left"><span className=" text-6xl font-extralight">1000+ Properties</span><br /></p>
+            <p className="text-2xl text-center md:text-left"><span className=" text-6xl font-extralight">1000+ Properties</span><br /></p>
           </div>
         </div>
       </section>
@@ -340,7 +321,7 @@ export default function Home() {
       <section className="py-20 bg-green-700 text-white text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-4xl font-extrabold mb-4 drop-shadow">Ready to Take Control?</h2>
-          <p className="text-xl mb-8 text-green-100">
+          <p className="text-xl mb-8 text-green-100 px-2">
             Join thousands of landlords and managers simplifying their workflows and maximizing their profit today.
           </p>
           <Link href="/auth/signup">

@@ -64,11 +64,11 @@ export default function LoginPage() {
   return (
     <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 ">
       <div className="h-60 flex justify-center items-center">
-        <h2 className="text-3xl font-bold text-white text-center mb-2 ">Welcome to Asset Management</h2>
+        <h2 className="text-3xl font-bold text-white text-center mb-4 ">Welcome to Asset Management</h2>
       </div>
-      <div className="absolute w-full" style={{ marginTop: "-25px" }}>
-        <div className="flex justify-center items-center w-full px-2">
-        <div className="w-[400px] flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
+      <div className="absolute w-full" style={{ marginTop: "-35px" }}>
+        <div className="flex justify-center items-center w-full">
+        <div className="w-full max-w-[450px] flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
           <div className="space-y-6 w-full">
             <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100} /></div>
             <div className="text-center mb-10">

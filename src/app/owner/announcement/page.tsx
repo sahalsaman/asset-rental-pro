@@ -1,34 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {  IAnnouncement } from "@/app/types";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { IAnnouncement } from "@/app/types";
 import AnnouncementFormModal from "../../../components/AnnouncementFormModal";
 import { apiFetch } from "@/lib/api";
 import AnnouncementCard from "@/components/AnnouncementCard";
 import { FullscreenLoader } from "@/components/Loader";
 
 export default function RoomDetailPage() {
-  const data = useParams();
-
-
   const [announcements, setAnnouncements] = useState<IAnnouncement[]>([]);
-
-  // Announcement modals state
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [editAnnouncementData, setEditAnnouncementData] = useState<IAnnouncement | null>(null);
-
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [loader, setLoader] = useState(true);
 
+  const fetchAnnouncements = async () => {
+    try {
+      setLoader(true);
+      const res = await apiFetch(`/api/announcement`);
+      if (!res.ok) throw new Error("Failed to fetch announcements");
+      const data = await res.json();
+      setAnnouncements(data);
+    } catch (error) {
+      console.error("Error fetching announcements:", error);
+    } finally {
+      setLoader(false); // ✅ Always runs, even if error occurs
+    }
+  }
 
-  const fetchAnnouncements = () => {
-    apiFetch(`/api/announcement`)
-      .then(res => res.json())
-      .then(setAnnouncements);
-  };
+  useEffect(() => {
+    fetchAnnouncements();
+  }, []);
 
   const handleSaveAnnouncement = async (data: Partial<IAnnouncement>) => {
     const method = editAnnouncementData ? "PUT" : "POST";
@@ -63,14 +67,12 @@ export default function RoomDetailPage() {
     fetchAnnouncements();
   };
 
-  useEffect(() => {
-    fetchAnnouncements();
-  }, []);
 
-  if (!announcements) return <FullscreenLoader />;
+
+  if (loader) return <FullscreenLoader />;
 
   return (
-    <div className="pt-10 md:px-32 px-5 mb-10">
+    <div className="p-5 md:pt-10 md:px-32 mb-10">
       {/* Room Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>
@@ -82,26 +84,26 @@ export default function RoomDetailPage() {
       </div>
 
       {/* Announcement List */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-             {announcements.length > 0 ? (
-               announcements.map((announcement) => (
-                 <AnnouncementCard
-                   key={announcement._id}
-                   announcement={announcement}
-                   onEdit={(i) => {
-                     setEditAnnouncementData(i);
-                     setShowAnnouncementModal(true);
-                   }}
-                   onDelete={(id) => {
-                     setDeleteId(id);
-                     setShowDelete(true);
-                   }}
-                 />
-               ))
-             ) : (
-               <p className="text-gray-500">No announcements.</p>
-             )}
-           </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {announcements.length > 0 ? (
+          announcements.map((announcement) => (
+            <AnnouncementCard
+              key={announcement._id}
+              announcement={announcement}
+              onEdit={(i) => {
+                setEditAnnouncementData(i);
+                setShowAnnouncementModal(true);
+              }}
+              onDelete={(id) => {
+                setDeleteId(id);
+                setShowDelete(true);
+              }}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500">No announcements.</p>
+        )}
+      </div>
 
       {/* Announcement Modal */}
       <AnnouncementFormModal

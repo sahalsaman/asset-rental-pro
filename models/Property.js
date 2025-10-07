@@ -1,9 +1,10 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import { PropertyStatus } from '@/utils/contants';
 
 const PropertySchema = new Schema(
   {
-    organisationId: { type: mongoose.Schema.Types.ObjectId, ref: "Organisation", required: true },
+    organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
+    Bookings: [{ type: Types.ObjectId, ref: "Room" }],
     name: { type: String, required: true },
     description: String,
     address: { type: String, required: true },

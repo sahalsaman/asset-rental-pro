@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export default function TermsOfService() {
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-800 py-20 px-6">
-      <div className="max-w-4xl mx-auto bg-white p-10 rounded-2xl shadow">
+    <main className="min-h-screen bg-gray-50 text-gray-800 md:py-20 md:px-6">
+      <div className="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow">
         <h1 className="text-4xl font-bold text-green-700 mb-6">Terms of Service</h1>
         <p className="mb-4 text-gray-600">
           Welcome to <strong>AssetRentalPro</strong>. By accessing or using our platform,

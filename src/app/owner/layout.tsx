@@ -1,19 +1,20 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, } from 'lucide-react'; // icons
+import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, SubscriptIcon, CircleDollarSign, DollarSignIcon, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
+import { FullscreenLoader } from '@/components/Loader';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [properties, setProperties] = useState<IProperty[]>([]);
-  const [selectedProperty, setSelectedProperty] = useState("");
+  const [selectedPropertyId, setSelectedPropertyId] = useState("");
   const [qrUrl, setQrUrl] = useState("");
 
   const setQRcodeUrl = (propertyId: string) => {
@@ -33,8 +34,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={20} /> },
     { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={20} /> },
+    { title: 'Payments', path: '/owner/payments', icon: <DollarSignIcon size={20} /> },
     { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
-    { title: 'Profile', path: '/owner/profile', icon: <User size={20} /> },
   ];
 
   const logout = async () => {
@@ -54,14 +55,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const data = await res.json();
     setProperties(data);
 
-    if (data.length > 0) {
-      setSelectedProperty(data[0]._id);
+   const prop = localStorageServiceSelectedOptions.getItem()
+    if (prop?.property) {
+      setSelectedPropertyId(prop.property._id)
+      setQRcodeUrl(prop.property._id);
+    }else
+    if (data.length > 0 && !selectedPropertyId) {
+      setSelectedPropertyId(data[0]._id);
       localStorageServiceSelectedOptions.setItem({ property: data[0] });
       setQRcodeUrl(data[0]._id);
     }
   };
 
   useEffect(() => {
+ 
     fetchProperties();
   }, []);
 
@@ -69,16 +76,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { value } = e.target;
-    setSelectedProperty(value);
-    localStorageServiceSelectedOptions.setItem({ property: value });
+    setSelectedPropertyId(value);
+    const prop = properties.find(p => p._id === value)
+    localStorageServiceSelectedOptions.setItem({ property: prop });
     setQRcodeUrl(value);
+    window.location.reload();
   };
+
 
   return (
     <div className="min-h-screen pb-24">
       {/* Navbar */}
       <div
-        className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-16 md:h-20  flex items-center"
+        className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-34 md:h-20 py-5"
       >
         <div className="w-full flex justify-between items-center">
           {/* Desktop Nav */}
@@ -110,31 +120,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             ))}
           </div>
-          <div>
-            <select
-              name="frequency"
-              value={selectedProperty || ""}
-              onChange={handleChange}
-              className="w-full  bg-green-800 border-green-800 text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
-              style={{minWidth: "220px",border:"0px",height:"44px"}}
-              required
-            >
-              <option value=""> Select Property</option>
-              {properties.map((property: any) => (
-                <option key={property?._id} value={property?._id}>
-                  {property?.name}
-                </option>
-              ))}
-            </select>
-          </div>
           {/* Profile Dropdown */}
           <div className="relative">
 
             <button
               onClick={() => setOpen(!open)}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-green-900 text-white cursor-pointer"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"
             >
-              {!open ? <User size={16} /> : <XIcon size={20} />}
+              {!open ? <User size={20} /> : <XIcon size={20} />}
             </button>
 
             {open && (
@@ -181,7 +174,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )}
           </div>
         </div>
+        <div className='mt-2'>
+          {/* <p className='text-white'>Current Property</p> */}
+          <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
+            <Building2 className='ml-2 text-white' />
+          <select
+            name="frequency"
+            value={selectedPropertyId || ""}
+            onChange={handleChange}
+            className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+            style={{ minWidth: "220px", border: "0px", height: "48px" }}
+            required
+          >
+            <option value=""> Select Property</option>
+            {properties.map((property: any) => (
+              <option key={property?._id} value={property?._id}>
+                {property?.name}
+              </option>
+            ))}
+          </select>
+          </div>
+        </div>
       </div>
+
 
       <main>{children}</main>
       {/* Mobile Bottom Menu */}
