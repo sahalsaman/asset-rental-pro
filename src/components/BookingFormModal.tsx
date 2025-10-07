@@ -102,7 +102,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
             <select
               id="roomId"
               name="roomId"
-              value={formData.roomId || ""}
+              value={formData.roomId as string || ""}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required={!roomData ? true : false}
