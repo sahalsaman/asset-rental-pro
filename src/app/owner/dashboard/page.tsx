@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Users, QrCode, DollarSign, Plus, Calendar, NotepadTextDashed, Square, Building, EyeOff, Ligature, LightbulbIcon, Factory, BuildingIcon, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset } from "lucide-react";
+import { Building2, Users, DollarSign, Calendar, NotepadTextDashed,  Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import DashboardCard from "../../../components/card";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
-import PropertyFormModal from "@/components/PropertyFormModal";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import BookingAddEditModal from "@/components/BookingFormModal";
 import toast from "react-hot-toast";
@@ -18,8 +17,6 @@ import { FullscreenLoader } from "@/components/Loader";
 export default function OwnerDashboard() {
   const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
-  const [properties, setProperties] = useState<IProperty[]>([]);
-  const [selectedProperty, setSelectedProperty] = useState("");
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [qrUrl, setQrUrl] = useState("");
   const [loader, setLoader] = useState(true);
@@ -32,25 +29,22 @@ export default function OwnerDashboard() {
     totalReceivedAmount: 0,
     noticePeriod: 0
   });
+    const current_property = localStorageServiceSelectedOptions.getItem()?.property
 
   const setQRcodeUrl = () => {
-    const prop = localStorageServiceSelectedOptions.getItem()
-    setQrUrl(`http://arp.webcos.co/booking-form?property_id=${prop?.property?._id}`);
+    setQrUrl(`http://arp.webcos.co/booking-form?property_id=${current_property?._id}`);
   }
 
   // Fetch stats from backend API
   const fetchStats = async () => {
-    const prop = localStorageServiceSelectedOptions.getItem()?.property?._id
-    console.log(prop);
-
-    if (!prop) {
+    if (!current_property?._id) {
       setLoader(false);
       toast.error("Select Property")
       return
     }
     setLoader(true);
     try {
-      const res = await apiFetch(`/api/dashboard?prop=${prop}`); // replace with your API route
+      const res = await apiFetch(`/api/dashboard?prop=${current_property?._id}`); // replace with your API route
       console.log(res);
 
       if (!res.ok) throw new Error("Failed to fetch dashboard stats");
@@ -86,8 +80,8 @@ export default function OwnerDashboard() {
     { title: 'Managers', path: '/owner/managers', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
 
     { title: 'Add Bookings', path: 'BOOKING_FORM', icon: <PlusIcon className="w-6 h-6 min-w-6 min-h-6" /> },
-    { title: 'Pricing', path: '/owner/subscription-plan', icon: <DollarSign className="w-6 h-6 min-w-6 min-h-6" /> },
-    { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 min-w-6 min-h-6" /> },
+  
+    { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 min-w-6 min-h-6" /> },  { title: 'Subscription', path: '/owner/subscription-plan', icon: <DollarSign className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Support', path: '/owner/supoort', icon: <Headset className="w-6 h-6 min-w-6 min-h-6" /> },
   ];
 
@@ -121,11 +115,11 @@ export default function OwnerDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <DashboardCard title="Total Rooms" value={stats.total_rooms} icon={Building2} />
-        <DashboardCard title="Available Rooms" value={stats.available_rooms} icon={BuildingIcon} />
-        <DashboardCard title="Notice Period" value={stats.noticePeriod} icon={BuildingIcon} />
+        <DashboardCard title="Available Rooms" value={stats.available_rooms} icon={Bed} />
+        <DashboardCard title="Notice Period" value={stats.noticePeriod} icon={Paperclip  } />
         <DashboardCard title="Enrollments" value={stats.enrollments} icon={Users} />
-        <DashboardCard title="Monthly Target" value={`₹${0}`} icon={DollarSign} />
-        <DashboardCard title="Monthly Received" value={`₹${0}`} icon={DollarSign} />
+        <DashboardCard title="Monthly Target" value={`${current_property?.currency}${0}`} icon={Tickets} />
+        <DashboardCard title="Monthly Received" value={`${current_property?.currency}${0}`} icon={BadgeDollarSign} />
       </div>
 
       <div className=" md:hidden grid grid-cols-4 gap-4 mt-8">
@@ -168,7 +162,7 @@ export default function OwnerDashboard() {
           </div>
         </div>
       )}
-      {/* Booking Modal */}
+      {/* Add Booking Modal */}
       <BookingAddEditModal
         open={showBookingModal}
         onClose={() => {

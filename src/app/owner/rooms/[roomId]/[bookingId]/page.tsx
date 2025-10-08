@@ -32,6 +32,13 @@ export default function BookingDetailPage() {
     : params?.bookingId;
 
   useEffect(() => {
+
+ftechBooking()
+    fetchInvoices();
+    fetchProperty()
+  }, [bookingId]);
+
+  const ftechBooking = () => {
     if (!bookingId) {
       router.push("/owner/bookings");
       return;
@@ -40,10 +47,7 @@ export default function BookingDetailPage() {
     apiFetch(`/api/booking?bookingId=${bookingId}`)
       .then((res) => res.json())
       .then(setBooking);
-
-    fetchInvoices();
-    fetchProperty()
-  }, [bookingId]);
+  };
 
   const fetchInvoices = () => {
     if (!bookingId) return;
@@ -81,7 +85,7 @@ export default function BookingDetailPage() {
             <div>
               <h1 className="text-xl font-semibold">{booking.fullName}</h1>
               <p className="text-gray-600">
-                {booking.phone}
+                {booking.countryCode} {booking.phone}
               </p>
               {booking.checkIn && booking.checkOut && (
                 <p className="text-gray-500 text-sm">
@@ -174,6 +178,7 @@ export default function BookingDetailPage() {
         }}
         onSave={() => {
           setShowBookingModal(false);
+          ftechBooking()
         }}
         editData={booking}
       />

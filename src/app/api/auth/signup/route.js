@@ -2,6 +2,7 @@ import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../../models/Organisation";
+import { UserRoles } from "@/utils/contants";
 
 export async function POST(request) {
   await connectMongoDB();
@@ -39,7 +40,7 @@ export async function POST(request) {
     countryCode,
     otp,
     otpExpireTime,
-    role: "owner",
+    role: UserRoles.OWNER,
     disabled: false,
   });
 

@@ -118,7 +118,6 @@ export default function LoginPage() {
                   <input
                     type="tel"
                     maxLength={10}
-                    // minLength={10}
                     placeholder="e.g. 9876543210"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}

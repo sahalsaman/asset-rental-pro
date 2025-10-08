@@ -57,7 +57,7 @@ export default function BookingForm() {
                 onSave={() =>
                     router.push("/")}
                 property_data={property}
-                page={true}
+                booking_from_outside={true}
             />
         </main>
     );

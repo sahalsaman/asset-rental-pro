@@ -51,7 +51,6 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
           </div>
           <div>
             <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
-            {/* <p className="text-sm"> ₹{property.amount} / {property.frequency}</p> */}
           </div>
               <Badge className='mt-2' variant="default">{property.category}</Badge>
           {/* <div className='flex justify-end  '>

@@ -1,22 +1,27 @@
-export const USER_ROLES = ['owner', 'manager', 'user', 'admin'];
- 
+export enum UserRoles {
+  OWNER = 'Owner',
+  MANAGER = 'Manager', 
+  USER = 'User', 
+  ADMIN = 'Admin'
+}
 
-export enum PropertyType  {
-  SHOP_BUILDING= "Shop Building",
-  HOTEL= "Hotel",
-  LODGE_ROOM="Lodge/Room",
-  PG_HOSTEL= "PG/Hostel",
-  HOUSE= "House",
-  FLAT_APARTMENT= "Flat/Apartment",
-  TURF= "Turf",
-  CONFERENCE_HALL= "Conference Hall",
-  AUDITORIUM= "Auditorium",
-  GODOWN= "Godown",
-  OFFICE_SPACE= "Office Room",
-  CO_WORKING_SPACE= "Co-Working Room",
-  LAND_SPACE= "Land Room",
-  REST_SPACE= "Rest Room",
-  RESORT= "Resort",
+
+export enum PropertyType {
+  SHOP_BUILDING = "Shop Building",
+  HOTEL = "Hotel",
+  LODGE_ROOM = "Lodge/Room",
+  PG_HOSTEL = "PG/Hostel",
+  HOUSE = "House",
+  FLAT_APARTMENT = "Flat/Apartment",
+  TURF = "Turf",
+  CONFERENCE_HALL = "Conference Hall",
+  AUDITORIUM = "Auditorium",
+  GODOWN = "Godown",
+  OFFICE_SPACE = "Office Room",
+  CO_WORKING_SPACE = "Co-Working Room",
+  LAND_SPACE = "Land Room",
+  REST_SPACE = "Rest Room",
+  RESORT = "Resort",
 }
 
 
@@ -54,7 +59,7 @@ export enum InvoiceStatus {
   BALANCE = "Balance",
   CANCELLED = "Cancelled",
   REFUNDED = "Refunded",
-  CARRYFORWORDED  = "carry forworded",
+  CARRYFORWORDED = "carry forworded",
 }
 
 // 📌 Transaction Type
@@ -78,12 +83,31 @@ export enum CurrencyType {
   GBP = '£',
 }
 
-export enum RentDuration {
+export enum RentFrequency {
   DAY = 'Day',
   WEEK = 'Week',
   MONTH = 'Month',
   YEAR = 'Year',
 }
+
+export enum AnnouncementType {
+  ALL = 'all',
+  MANAGERS = 'managers',
+  USERS = 'users',
+}
+
+export enum SubscritptionStatus {
+  ACTIVE = 'active',
+  CANCELLED = 'cancelled',
+  EXPIRED = 'expired',
+  TRIAL = 'trial',
+}
+
+export enum SubscritptionBillingCycle {
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+}
+
 
 
 export const FLAT_TYPES = ["1BHK", "2BHK", "3BHK", "4BHK", "5BHK"];

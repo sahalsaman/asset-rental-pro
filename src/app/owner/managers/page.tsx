@@ -7,7 +7,7 @@ import ManagerFormModal from "@/components/ManagerFormModal";
 import { apiFetch } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { FullscreenLoader } from "@/components/Loader";
-import { Edit } from "lucide-react";
+import { Building2, Edit, Phone, PhoneCall } from "lucide-react";
 
 interface Manager {
   _id: string;
@@ -104,19 +104,26 @@ export default function ManagerPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {managers.map((manager, index) => (
-            <Card key={manager._id} className="shadow-md">
-              <CardContent>
+            <Card key={manager._id} className="shadow-md p-4">
+              <CardContent className="p-0">
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-xl font-semibold">{manager.firstName} {manager.lastName || ""}</h3>
                   <Badge variant="default">{manager.disabled ? "Disabled" : "Active"}</Badge>
                 </div>
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold">Phone:</span> {manager.phone}
-                </p>
-                <p className="text-sm text-gray-600">
-                  <span className="font-semibold">Properties:</span>{" "}
-                  {manager.properties?.map((p) => p.name).join(", ") || "None"}
-                </p>
+
+                {manager?.phone && <div className="flex items-center gap-2">
+                  <Phone size={16} />
+                  <p className="text-sm text-gray-600 ">
+                    {manager.phone}
+                  </p>
+                </div>}
+                {manager.properties?.length && <div className="flex items-center gap-2 mt-1">
+                  <Building2 size={16} />
+                  <p className="text-sm text-gray-600 ">
+                    {manager.properties?.map((p) => p.name).join(", ") || "None"}
+                  </p>
+                </div>}
+
 
                 <div className="flex justify-end gap-2">
                   <Button

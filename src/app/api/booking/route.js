@@ -5,6 +5,8 @@ import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
+import PropertyModel from "../../../../models/Property";
+import RoomModel from "../../../../models/Room";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -43,8 +45,8 @@ export async function GET(request) {
     }
 
     const bookings = await BookingModel.find(filter)
-      // .populate("property")
-      // .populate("room");
+    // .populate("property")
+    // .populate("room");
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(
@@ -66,12 +68,18 @@ export async function POST(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isValidObjectId(body.propertyId)) {
-      return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
-    }
     if (!isValidObjectId(body.roomId)) {
       return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
     }
+
+    if (!isValidObjectId(body.propertyId)) {
+      const roomData = await RoomModel.findById(body.roomId)
+      if (!roomData?.propertyId) {
+        return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
+      }
+      body.propertyId = roomData?.propertyId
+    }
+
 
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
@@ -95,29 +103,29 @@ export async function POST(request) {
         type: "Advance",
         dueDate: booking.checkIn || new Date(),
       });
-      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.advanceAmount,booking?.fullName);
+      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.advanceAmount, booking?.fullName);
     }
 
     // --- First Rent Invoice ---
     if (booking.amount && booking.amount > 0) {
 
-        invoices.push({
-          organisationId: user.organisationId,
-          bookingId: booking._id,
-          propertyId: booking.propertyId,
-          roomId: booking.roomId,
-          invoiceId: `INV-${Date.now()}-RENT`, // generate ID
-          amount: booking.amount,
-          balance: booking.amount,
-          type: "Rent",
-          dueDate: booking.checkIn || new Date(),
-        });
-      
-      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.amount,booking?.fullName);
+      invoices.push({
+        organisationId: user.organisationId,
+        bookingId: booking._id,
+        propertyId: booking.propertyId,
+        roomId: booking.roomId,
+        invoiceId: `INV-${Date.now()}-RENT`, // generate ID
+        amount: booking.amount,
+        balance: booking.amount,
+        type: "Rent",
+        dueDate: booking.checkIn || new Date(),
+      });
+
+      sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.amount, booking?.fullName);
     }
 
     console.log('invoices to create:', invoices);
-    
+
 
     if (invoices.length > 0) {
       await InvoiceModel.insertMany(invoices);

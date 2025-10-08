@@ -1,4 +1,4 @@
-import { USER_ROLES } from '@/utils/contants';
+import { USER_ROLES, UserRoles } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
 const UserSchema = new Schema(
@@ -10,9 +10,9 @@ const UserSchema = new Schema(
     otp: { type: String },
     role: { 
       type: String, 
-      enum: USER_ROLES, 
+      enum: UserRoles, 
       required: true,
-      default: "user" 
+      default: UserRoles.USER 
     },
     otpExpireTime: { type: Date },
     onboardingCompleted: { type: Boolean, required: true, default: false },

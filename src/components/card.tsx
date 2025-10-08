@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LucideIcon } from "lucide-react";
+import { ArrowUpRightIcon, LucideIcon } from "lucide-react";
 
 interface DashboardCardProps {
   title: string;
@@ -14,15 +14,16 @@ export default function DashboardCard({ title, value, icon: Icon, onClick }: Das
 
   return (
     <Card
-      className="hover:shadow-lg transition cursor-pointer max-sm:p-2 max-sm:px-3"
+      className="rounded-md transition cursor-pointer max-sm:p-3 shadow-none"
       onClick={onClick}
     >
       <CardContent className=" max-sm:p-0">
-        <div className="flex items-center justify-between md:mb-4">
-          {Icon && <Icon className="md:h-6 md:w-6 w-4 h-4 text-gray-500" />}
-          <p className="sm:text-2xl font-bold">{value}</p>
+        <div className="flex items-center justify-between md:mb-4 mb-1">
+          {Icon && <Icon className="md:h-10 md:w-10 w-8 h-8 text-white bg-green-700 rounded-full p-2 font-thin" />}
+          <ArrowUpRightIcon/>
         </div>
         <CardTitle className="sm:text-lg text-sm font-extralight">{title}</CardTitle>
+          <p className="sm:text-2xl text-lg font-bold">{value}</p>
       </CardContent>
     </Card>
   );

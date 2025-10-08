@@ -4,6 +4,7 @@ import connectMongoDB from "@/../database/db";
 import UserModel from "@/../models/User";
 import {OrganisationModel} from "@/../models/Organisation";
 import { getTokenValue } from "@/utils/tokenHandler";
+import { UserRoles } from "@/utils/contants";
 
 // 📍 GET all managers for current org
 export async function GET(request) {
@@ -49,7 +50,7 @@ export async function POST(reques) {
       lastName,
       phone,
       organisationId,
-      role: "manager",
+      role: UserRoles.MANAGER,
     });
 
     await OrganisationModel.findByIdAndUpdate(organisationId, {

@@ -33,7 +33,7 @@ export default function RoomCard({ room, property, onEdit, onDelete, onBook }: R
             {property?.currency}{room.amount}
           </p>
         </CardTitle>
-        <h2>Room : {room.name}</h2>
+        <h2>{room.name}</h2>
 
         {/* <p className="text-gray-700">{room.description}</p> */}
 

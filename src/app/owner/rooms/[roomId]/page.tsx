@@ -23,23 +23,23 @@ export default function RoomDetailPage() {
   const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [showRoomModal, setShowRoomModal] = useState(false);
-  const property = localStorageServiceSelectedOptions.getItem()?.property;
+  const current_property = localStorageServiceSelectedOptions.getItem()?.property;
 
 
   useEffect(() => {
-    if (!roomId || !property?._id) router.push(`/owner/rooms`);
+    if (!roomId || !current_property?._id) router.push(`/owner/rooms`);
     fetchRoom()
     fetchBookings();
-  }, [property?._id, roomId]);
+  }, [current_property?._id, roomId]);
 
   const fetchRoom = () => {
-    apiFetch(`/api/room?propertyId=${property?._id}&roomId=${roomId}`)
+    apiFetch(`/api/room?propertyId=${current_property?._id}&roomId=${roomId}`)
       .then(res => res.json())
       .then(setRoom);
   };
 
   const fetchBookings = () => {
-    apiFetch(`/api/booking?propertyId=${property?._id}&roomId=${roomId}`)
+    apiFetch(`/api/booking?propertyId=${current_property?._id}&roomId=${roomId}`)
       .then(res => res.json())
       .then(setBookings);
   };
@@ -79,11 +79,11 @@ export default function RoomDetailPage() {
                 )}
 
                 <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs">
-                  ₹{room.amount?.toLocaleString()} {room?.frequency && ` / ${room.frequency}`}
+                  {current_property?.currency}{room.amount?.toLocaleString()} {room?.frequency && ` / ${room.frequency}`}
                 </span>
                 {room?.advanceAmount && room?.advanceAmount > 0 ? (
                   <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-md text-xs">
-                    Advance: ₹{room.advanceAmount?.toLocaleString()}
+                    Advance: {current_property?.currency}{room.advanceAmount?.toLocaleString()}
                   </span>
                 ) : ""}
                 {room?.noOfSlots > 1 && (
@@ -108,7 +108,7 @@ export default function RoomDetailPage() {
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Bookings</h1>
           {/* Booking Button */}
-          <Button onClick={() => setShowBookingModal(true)} className="whitespace-nowrap">
+          <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
             Add Booking
           </Button>
         </div>
@@ -118,13 +118,6 @@ export default function RoomDetailPage() {
               <BookingCard
                 key={booking._id}
                 booking={booking}
-                onEdit={(b) => {
-                  setEditBookingData(b);
-                  setShowBookingModal(true);
-                }}
-                onDelete={(id) => {
-                  setShowDelete(true);
-                }}
               />
             ))
           ) : (
@@ -133,7 +126,7 @@ export default function RoomDetailPage() {
         </div>
       </div>
 
-      {/* Booking Modal */}
+      {/* Add Booking Modal */}
       <BookingAddEditModal
         open={showBookingModal}
         onClose={() => {
@@ -145,7 +138,6 @@ export default function RoomDetailPage() {
           setEditBookingData(null);
           fetchBookings();
         }}
-        editData={editBookingData}
         roomData={room}
       />
 
@@ -163,7 +155,7 @@ export default function RoomDetailPage() {
 
       {/* Room Modals */}
       <RoomAddEditModal
-        property={property}
+        property={current_property}
         open={showRoomModal}
         onClose={() => {
           setShowRoomModal(false);

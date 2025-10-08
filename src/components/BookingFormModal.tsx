@@ -10,6 +10,7 @@ import { BookingStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
+import { countryCodes } from "@/utils/mock-data";
 
 
 
@@ -20,31 +21,32 @@ interface Props {
   editData?: IBooking | null;
   roomData?: IRoom | null;
   property_data?: IProperty
-  page?: boolean
+  booking_from_outside?: boolean
 }
 
-export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData, property_data, page }: Props) {
-  const property_id = property_data ? property_data?._id : localStorageServiceSelectedOptions.getItem()?.property?._id;
+export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData, property_data, booking_from_outside }: Props) {
+  const property = property_data ? property_data : localStorageServiceSelectedOptions.getItem()?.property;
   const [formData, setFormData] = useState<Partial<IBooking>>({
+    roomId: roomData ? roomData?._id : "",
+    propertyId: property?._id || "",
     fullName: "",
+    countryCode: "+91",
     phone: "",
+    whatsappCountryCode: "+91",
     whatsappNumber: "",
     address: "",
     verificationIdCard: "",
     verificationIdCardNumber: "",
     checkIn: "",
     checkOut: "",
-    amount: roomData?.amount || 0,
-    advanceAmount: roomData?.advanceAmount || 0,
-    status: "Pending",
-    roomId: roomData?._id || "",
-    propertyId: roomData?.propertyId,
+    amount: roomData ? roomData?.amount : 0,
+    advanceAmount: roomData ? roomData?.advanceAmount : 0,
+    status: BookingStatus.PENDING,
   });
   const [rooms, setRooms] = useState<IRoom[]>([]);
-  console.log("formData", formData);
 
   const fetchRooms = () => {
-    apiFetch(`/api/room?propertyId=${property_id}`)
+    apiFetch(`/api/room?propertyId=${property?._id}`)
       .then(res => res.json())
       .then(setRooms);
   };
@@ -54,9 +56,29 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
       setFormData(editData);
     } else {
       if (!roomData) fetchRooms();
-      setFormData({});
+      setFormData((prev) => ({
+        ...prev,
+        roomId: roomData?._id || "",
+        amount: roomData?.amount || 0,
+        advanceAmount: roomData?.advanceAmount || 0,
+        propertyId: property?._id || "",
+      }));
     }
-  }, [editData]);
+  }, [editData, roomData]);
+
+  const handleRoomChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    handleChange(e)
+    const { name, value } = e.target;
+    roomData = rooms.find(i => i._id === value)
+    setFormData((prev) => ({
+      ...prev,
+      roomId: roomData?._id || "",
+      amount: roomData?.amount || 0,
+      advanceAmount: roomData?.advanceAmount || 0,
+      propertyId: property?._id || "",
+    }));
+
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -80,8 +102,9 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
-        ...data, roomId: roomData?._id,
-        propertyId: roomData?.propertyId,
+        ...data,
+        roomId: roomData ? roomData?._id : data?.roomId,
+        propertyId: property?._id,
       }),
     });
     toast.success("Successfully saved booking");
@@ -97,20 +120,20 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
         <form onSubmit={handleSubmit} className="space-y-4 overflow-auto">
           {/* Full Name */}
-          {!roomData && <div>
+          {!roomData && !editData && <div>
             <Label htmlFor="roomId">Room</Label>
             <select
               id="roomId"
               name="roomId"
               value={formData.roomId as string || ""}
-              onChange={handleChange}
+              onChange={handleRoomChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required={!roomData ? true : false}
             >
               <option value="">Select Room</option>
               {rooms.map((room) => (
                 <option key={room._id} value={room._id}>
-                  {room.name} - ₹{room.amount}
+                  {room.name} - {property?.currency}{room.amount}
                 </option>))}
             </select>
           </div>}
@@ -125,32 +148,64 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               required
             />
           </div>
-
           {/* Phone */}
           <div>
             <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              name="phone"
-              placeholder="Phone"
-              value={formData.phone || ""}
-              onChange={handleChange}
-              required
-            />
+            <div className="flex items-center gap-2">
+              <select
+                name="countryCode" // ✅ added
+                value={formData.countryCode || ""}
+                onChange={handleChange}
+                className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                style={{ maxWidth: '80px' }}
+              >
+                {countryCodes.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.code}
+                  </option>
+                ))}
+              </select>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="Phone"
+                value={formData.phone || ""}
+                onChange={handleChange}
+                required
+                maxLength={10}
+              />
+            </div>
           </div>
 
           {/* WhatsApp Number */}
           <div>
             <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
-            <Input
-              id="whatsappNumber"
-              name="whatsappNumber"
-              placeholder="WhatsApp Number"
-              value={formData.whatsappNumber || ""}
-              onChange={handleChange}
-              required
-            />
+            <div className="flex items-center gap-2">
+              <select
+                name="whatsappCountryCode" // ✅ added
+                value={formData.whatsappCountryCode || ""}
+                onChange={handleChange}
+                className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                style={{ maxWidth: '80px' }}
+              >
+                {countryCodes.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.code}
+                  </option>
+                ))}
+              </select>
+              <Input
+                id="whatsappNumber"
+                name="whatsappNumber"
+                placeholder="WhatsApp Number"
+                value={formData.whatsappNumber || ""}
+                onChange={handleChange}
+                required
+                maxLength={10}
+              />
+            </div>
           </div>
+
 
           {/* Address */}
           <div>
@@ -224,28 +279,34 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
           {/* Rent Amount */}
           <div>
             <Label htmlFor="amount">Rent Amount</Label>
-            <Input
-              id="amount"
-              name="amount"
-              type="number"
-              placeholder="Rent Amount"
-              value={formData.amount || ""}
-              onChange={handleChange}
-              required
-            />
+            <div className="flex items-center gap-1">
+              {property?.currency}
+              <Input
+                id="amount"
+                name="amount"
+                type="number"
+                placeholder="Rent Amount"
+                value={formData.amount || ""}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
 
           {/* Advance Amount */}
           <div>
             <Label htmlFor="advanceAmount">Advance Amount</Label>
-            <Input
-              id="advanceAmount"
-              name="advanceAmount"
-              type="number"
-              placeholder="Advance Amount"
-              value={formData.advanceAmount || ""}
-              onChange={handleChange}
-            />
+            <div className="flex items-center gap-1">
+              {property?.currency}
+              <Input
+                id="advanceAmount"
+                name="advanceAmount"
+                type="number"
+                placeholder="Advance Amount"
+                value={formData.advanceAmount || ""}
+                onChange={handleChange}
+              />
+            </div>
           </div>
 
           {/* Status */}
@@ -270,10 +331,10 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
           {/* Buttons */}
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
-            {!page ? <Button type="button" variant="secondary" onClick={onClose}>
+            {!booking_from_outside ? <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button> : ""}
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" variant="green">
               {editData ? "Update" : "Submit"}
             </Button>
           </div>

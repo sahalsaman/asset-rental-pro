@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { IRoom, IBooking } from "@/app/types";
+import {  IBooking } from "@/app/types";
 import BookingCard from "../../../components/BookingCard";
-import BookingAddEditModal from "../../../components/BookingFormModal";
 import { apiFetch } from "@/lib/api";
-import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { FullscreenLoader } from "@/components/Loader";
 
 export default function BookingListPage() {
@@ -31,29 +28,6 @@ export default function BookingListPage() {
   };
 
 
-
-  const handleSaveBooking = async (data: Partial<IBooking>) => {
-    const method = editBookingData ? "PUT" : "POST";
-    const url = editBookingData
-      ? `/api/booking?id=${editBookingData._id}`
-      : `/api/booking`;
-
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        // id,
-        // roomId
-      }),
-    });
-
-    setShowBookingModal(false);
-    setEditBookingData(null);
-    fetchBookings();
-  };
-
   useEffect(() => {
     fetchBookings();
   }, []);
@@ -69,7 +43,7 @@ export default function BookingListPage() {
           {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
           <p className="text-gray-600">Price: ${room.price}</p> */}
         </div>
-        <Button onClick={() => setShowBookingModal(true)}>Add Booking</Button>
+        {/* <Button onClick={() => setShowBookingModal(true)}>Add Booking</Button> */}
       </div>
 
       {/* Bookings List */}
@@ -81,14 +55,6 @@ export default function BookingListPage() {
               <BookingCard
                 key={booking._id}
                 booking={booking}
-                onEdit={(b) => {
-                  setEditBookingData(b);
-                  setShowBookingModal(true);
-                }}
-                onDelete={(id) => {
-                  setDeleteId(id);
-                  setShowDelete(true);
-                }}
               />
             ))
           ) : (
@@ -97,29 +63,7 @@ export default function BookingListPage() {
         </div>
       </div>
 
-      {/* Booking Modal */}
-      <BookingAddEditModal
-        open={showBookingModal}
-        onClose={() => {
-          setShowBookingModal(false);
-          setEditBookingData(null);
-        }}
-        onSave={handleSaveBooking}
-        editData={editBookingData}
-      />
-
-      {/* Booking Delete Dialog */}
-      <DeleteConfirmModal
-        open={showDelete}
-        onClose={() => setShowDelete(false)}
-        onConfirm={() => {
-          setShowDelete(false);
-          setDeleteId(null);
-          fetchBookings();
-        }}
-        item={bookings.find(b => b._id === deleteId)}
-        type="booking"
-      />
+    
     </div>
   );
 }

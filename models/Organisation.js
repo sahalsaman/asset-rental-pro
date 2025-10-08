@@ -1,3 +1,4 @@
+import { SubscritptionBillingCycle, SubscritptionStatus } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
 // Subscription Schema
@@ -10,13 +11,12 @@ const OrgSubscriptionSchema = new Schema(
     },
     plan: { 
       type: String, 
-      enum: ['basic', 'pro', 'enterprise'],  // Customize enums as needed
       required: true 
     },
     status: { 
       type: String, 
-      enum: ['active', 'cancelled', 'expired', 'trial'], 
-      default: 'trial' 
+      enum: SubscritptionStatus,
+      default: SubscritptionStatus.TRIAL
     },
     startDate: { 
       type: Date, 
@@ -27,7 +27,7 @@ const OrgSubscriptionSchema = new Schema(
     },
     billingCycle: { 
       type: String, 
-      enum: ['monthly', 'yearly'], 
+      enum: SubscritptionBillingCycle, 
       required: true 
     },
     amount: { 

@@ -9,9 +9,9 @@
 export const subscription_plans = [
   {
     name: "Basic",
-    price: "₹99",
+    price: "₹199",
     period: "per month",
-    price_yearly: "₹1199",
+    price_yearly: "₹2299",
     description: "Perfect for new landlords managing a few assets.",
     features: [
       "1 property",
@@ -31,9 +31,9 @@ export const subscription_plans = [
   },
   {
     name: "Pro",
-    price: "₹199",
+    price: "₹499",
     period: "per month",
-    price_yearly: "₹2299",
+    price_yearly: "₹4899",
     description: "The best choice for professional property managers.",
     features: [
       "Up to 10 properties",

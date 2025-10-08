@@ -35,7 +35,7 @@ export default function PropertiesPage() {
       <Breadcrumbs items={breadcrumbItems} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
-        <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }}>
+        <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
           Add Property
         </Button>
       </div>

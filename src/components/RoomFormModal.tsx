@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IProperty, IRoom } from "@/app/types";
 import { useState, useEffect } from "react";
-import { FLAT_TYPES, RentDuration, RoomStatus } from "@/utils/contants";
+import { FLAT_TYPES, RentFrequency, RoomStatus } from "@/utils/contants";
 import { Label } from "@radix-ui/react-label";
 
 interface Props {
@@ -101,7 +101,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
             required
           >
             <option value="">Select Rent Duration</option>
-            {Object.values(RentDuration).map((type) => (
+            {Object.values(RentFrequency).map((type) => (
               <option key={type} value={type}>
                 {type}
               </option>
@@ -165,10 +165,11 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
               </option>
             ))}
           </select>
-      <div className="w-full grid grid-cols-2 gap-2">
+          <div className="w-full grid grid-cols-2 gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button> <Button type="submit" className='w-full'>
+            </Button>
+            <Button type="submit" className='w-full' variant="green">
               {editData ? 'Update' : 'Submit'}
             </Button>
           </div>

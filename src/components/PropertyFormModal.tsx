@@ -31,13 +31,13 @@ export default function PropertyFormModal({
     description: '',
     address: '',
     city: '',
-    category: 'Room',
+    category: PropertyType.FLAT_APARTMENT,
     status: PropertyStatus.ACTIVE,
     state: "",
     country: '',
     zipCode: '',
     images: [],
-    currency: "₹",
+    currency: CurrencyType.INR,
     disabled: false,
   });
 
@@ -76,13 +76,13 @@ export default function PropertyFormModal({
         description: '',
         address: '',
         city: '',
-        category: 'Room',
+        category: PropertyType.FLAT_APARTMENT,
         status: PropertyStatus.ACTIVE,
         state: "",
         country: '',
         zipCode: '',
         images: [],
-        currency: "₹",
+        currency: CurrencyType.INR,
         disabled: false,
       }
     );
@@ -208,7 +208,8 @@ export default function PropertyFormModal({
           <div className="w-full grid grid-cols-2 gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button> <Button type="submit" className='w-full'>
+            </Button> 
+            <Button type="submit" className='w-full' variant="green">
               {initialData ? 'Update' : 'Submit'}
             </Button>
           </div>

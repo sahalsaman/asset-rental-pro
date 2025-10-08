@@ -1,13 +1,12 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Menu, X, User, XIcon, Home, Building2, Printer, Megaphone, BuildingIcon, Users, ArrowBigLeft, ArrowLeft, SubscriptIcon, CircleDollarSign, DollarSignIcon, BadgeDollarSign, } from 'lucide-react'; // icons
+import { User, XIcon, Home, Building2,  BuildingIcon, BadgeDollarSign, UserCircle, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
-import { FullscreenLoader } from '@/components/Loader';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -32,10 +31,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const mobileMenu = [
-    { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={20} /> },
-    { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={20} /> },
-    { title: 'Payments', path: '/owner/payments', icon: <BadgeDollarSign size={20} /> },
-    { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
+    { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={21} /> },
+    { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={21} /> },
+    { title: 'Payments', path: '/owner/payments', icon: <BadgeDollarSign size={21} /> },
+    // { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
+    { title: 'Profile', path: '/owner/profile', icon: <UserCircle size={21} /> },
   ];
 
   const logout = async () => {
@@ -150,15 +150,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   }}
                   className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                 >
-                  Organisation
-                </button>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    router.push('/owner/organisation');
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                >
                   Help & Support
                 </button>
                 <button
@@ -189,7 +180,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <option value=""> Select Property</option>
             {properties.map((property: any) => (
               <option key={property?._id} value={property?._id}>
-                {property?.name}
+                {property?.name} {property?.ca}
               </option>
             ))}
           </select>
@@ -200,12 +191,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <main>{children}</main>
       {/* Mobile Bottom Menu */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-4 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-evenly py-4 md:hidden">
         {mobileMenu.map((item, idx) => (
           <button
             key={idx}
             onClick={() => router.push(item.path)}
-            className={`flex flex-col items-center text-xs ${pathname === item.path ? "text-green-600" : "text-gray-500"
+            className={`flex flex-col gap-1 items-center text-xs ${pathname === item.path ? "text-green-600" : "text-gray-500"
               }`}
           >
             {item.icon}

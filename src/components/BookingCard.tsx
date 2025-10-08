@@ -2,19 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import { IBooking } from "@/app/types";
-import { CalendarDays, Phone, MapPin, ArrowRight } from "lucide-react";
+import { CalendarDays, Phone, MapPin, ArrowRight, MessageCircle } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { statusColorMap } from "@/utils/contants";
+import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 
 interface BookingCardProps {
   booking: IBooking;
-  onEdit: (booking: IBooking) => void;
-  onDelete: (id: string) => void;
+  onEdit?: (booking: IBooking) => void;
+  onDelete?: (id: string) => void;
 }
 
 export default function BookingCard({ booking, onEdit, onDelete }: BookingCardProps) {
   const router = useRouter();
   const { id, roomId } = useParams();
+    const current_property = localStorageServiceSelectedOptions.getItem()?.property
   return (
     <div className="border rounded-lg p-5 shadow-sm  hover:shadow-md transition">
       {/* Left Side - Booking Info */}
@@ -33,7 +35,12 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
         {/* Contact */}
         {booking.phone && (
           <p className="text-sm text-gray-600 flex items-center gap-1">
-            <Phone size={14} /> {booking.phone}
+            <Phone size={14} /> <span>{booking.countryCode}{booking.phone}</span>
+          </p>
+        )}
+          {booking.whatsappNumber && (
+          <p className="text-sm text-gray-600 flex items-center gap-1">
+            <MessageCircle size={14} /> <span>{booking.whatsappCountryCode}{booking.whatsappNumber}</span>
           </p>
         )}
 
@@ -64,12 +71,12 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
         <div className="mt-2 text-sm">
           {booking.amount && (
             <span className="mr-4">
-              <strong>Rent Amount:</strong> ₹{booking.amount.toLocaleString()}
+              <strong>Rent Amount:</strong> {current_property?.currency}{booking.amount.toLocaleString()}
             </span>
           )}
           {booking.advanceAmount && (
             <span>
-              <strong>Advance:</strong> ₹{booking.advanceAmount.toLocaleString()}
+              <strong>Advance:</strong> {current_property?.currency}{booking.advanceAmount.toLocaleString()}
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { InvoiceStatus, RentAmountType, TransactionType } from "@/utils/contants";
+import { AnnouncementType, InvoiceStatus, PropertyType, RentAmountType, RentFrequency, TransactionType, UserRoles } from "@/utils/contants";
 
 export interface IUser {
   _id?: string;
@@ -6,7 +6,7 @@ export interface IUser {
   lastName?: string;
   phone: string;
   otp?: string;
-  role: 'owner' | 'manager' | 'user' | 'admin';
+  role: UserRoles;
   otpExpireTime?: Date;
   signupCompleted?: boolean;
   lastLogin?: Date;
@@ -25,7 +25,7 @@ export interface IProperty {
   country: string;
   zipCode: string;
   status: string;
-  category: 'Room' | 'Hotel' | 'Hostel';
+  category: PropertyType;
   images: string[];
   currency: string;
   userId?: string;
@@ -43,7 +43,7 @@ export interface IRoom {
   amount: number;
   description: string;
   images: string[];
-  frequency: 'Day' | 'Week' | 'Month' | 'Year';
+  frequency: RentFrequency;
   status: string;
   advanceAmount?: number; // renamed in schema
   noOfSlots: number;
@@ -59,7 +59,9 @@ export interface IBooking {
   property?: IProperty;
   room?: IRoom;
   fullName: string;
+  countryCode:string;
   phone: string;
+  whatsappCountryCode:string
   whatsappNumber?: string;
   address: string;
   verificationIdCard?: string;
@@ -97,7 +99,7 @@ export interface IAnnouncement {
   organisationId: string;
   title: string;
   message: string;
-  audience: "all" | "employees" | "customers";
+  audienceType: AnnouncementType
   disabled?: boolean;
   attachments?: string[];
   createdBy: string;

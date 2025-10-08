@@ -1,3 +1,4 @@
+import { AnnouncementType } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
 const AnnouncementSchema = new Schema(
@@ -5,7 +6,7 @@ const AnnouncementSchema = new Schema(
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
-    audience: { type: String, enum: ["all", "employees", "customers"], default: "all" },
+    audienceType: { type: String, enum: AnnouncementType, default: AnnouncementType.ALL },
     attachments: [String], // URLs for any attached files or images
     createdBy: { type: Types.ObjectId, ref: "User", required: true },
     disabled: { type: Boolean, required: true, default: false },

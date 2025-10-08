@@ -106,7 +106,7 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
               onChange={handlePropertiesChange}
             />
           </div>
-          <Button type="submit">{editData ? "Update" : "Save"}</Button>
+          <Button type="submit" variant="green">{editData ? "Update" : "Save"}</Button>
         </form>
       </DialogContent>
     </Dialog>
