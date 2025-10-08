@@ -55,10 +55,10 @@ export default function PropertiesPage() {
               <a  className="p-4 border-b-1 border-b-gray-200"   >
            Change mobile number
           </a>
-              <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/privacu')}>
+              <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/privacy')}>
            Privacy
           </a>
-               <a  className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/trems')}>
+               <a  className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/terms')}>
            Terms
           </a>
                <a  className="p-4 border-b-1 border-b-gray-200" >

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { IInvoice, IProperty } from "@/app/types";
+import { IBooking, IInvoice, IProperty } from "@/app/types";
 import { Edit, Trash } from "lucide-react";
 import { statusColorMap } from "@/utils/contants";
 
@@ -15,18 +15,26 @@ interface Props {
 
 export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Props) {
   return (
-    <Card>
-      <CardContent >
-        <p className="text-gray-700">
-          #{invoice?.invoiceId}</p>
-        <CardTitle className="text-lg font-semibold">
-          {property?.currency}{invoice.amount}
+    <Card className="py-4">
+      <CardContent className="px-4"> 
+        <CardTitle className="text-lg font-semibold flex justify-between">
+          <span> {(invoice?.bookingId as IBooking)?.fullName ?? ""}</span>
+          <span>{property?.currency}{invoice.amount}</span>
         </CardTitle>
+        <p className="text-gray-600 text-sm">   {invoice?.updatedAt
+          ? new Date(invoice.updatedAt).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
+          : "—"}</p>
+        <p className="text-gray-700 text-xs">
+          #{invoice?.invoiceId}</p>
         <div className="flex  justify-between items-end">
 
           <div >
 
-            {/* <p className="text-gray-600">Date: {new Date(invoice?.date).toLocaleDateString()}</p> */}
+           
             <span
               className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[invoice?.status ?? ""] || "bg-gray-100 text-gray-800"
                 }`}

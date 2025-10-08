@@ -79,7 +79,7 @@ export default function OwnerDashboard() {
     { title: 'Broadcast', path: '/owner/announcement', icon: <Megaphone className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Managers', path: '/owner/managers', icon: <Users className="w-6 h-6 min-w-6 min-h-6" /> },
 
-    { title: 'Add Bookings', path: 'BOOKING_FORM', icon: <PlusIcon className="w-6 h-6 min-w-6 min-h-6" /> },
+    { title: 'New Booking', path: 'BOOKING_FORM', icon: <PlusIcon className="w-6 h-6 min-w-6 min-h-6" /> },
   
     { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 min-w-6 min-h-6" /> },  { title: 'Subscription', path: '/owner/subscription-plan', icon: <DollarSign className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Support', path: '/owner/supoort', icon: <Headset className="w-6 h-6 min-w-6 min-h-6" /> },
@@ -129,7 +129,7 @@ export default function OwnerDashboard() {
             <Button className="h-15 w-15 bg-green-700">
               {card.icon}
             </Button>
-            <span className="text-xs text-nowrap">{card.title}</span>
+            <span className="text-xs text-nowrap text-center">{card.title}</span>
           </div>
         ))}
       </div>

@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import MultiSelect from "./ui/multiselect";
 import { Label } from "./ui/label";
+import { countryCodes } from "@/utils/mock-data";
 
 export default function ManagerFormModal({ open, onClose, onSave, editData }: any) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    countryCode: "+91",
     phone: "",
     properties: [] as string[],
   });
@@ -36,13 +38,14 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
       setFormData({
         firstName: editData.firstName || "",
         lastName: editData.lastName || "",
+        countryCode: editData.countryCode || "",
         phone: editData.phone || "",
-        properties: editData.properties?.map((p:any)=>p.name) || [],
+        properties: editData.properties?.map((p: any) => p.name) || [],
       });
     }
   }, [editData]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -51,7 +54,7 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    formData.properties=properties.filter(p=>formData.properties.includes(p.name)).map(p=>p._id)
+    formData.properties = properties.filter(p => formData.properties.includes(p.name)).map(p => p._id)
     e.preventDefault();
     onSave(formData);
   };
@@ -64,9 +67,9 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <div>
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName">First Name</Label>
             <Input
-            className="mt-1"
+              className="mt-1"
               name="firstName"
               placeholder="First Name"
               value={formData.firstName}
@@ -77,7 +80,7 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
           <div>
             <Label htmlFor="lastName">Last Name</Label>
             <Input
-            className="mt-1"
+              className="mt-1"
               name="lastName"
               placeholder="Last Name"
               value={formData.lastName}
@@ -86,16 +89,30 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
           </div>
           <div>
             <Label htmlFor="phone">Phone Number</Label>
-            <Input
-            className="mt-1"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-              maxLength={10}
-            />
-
+            <div className="flex items-center gap-2">
+              <select
+                name="countryCode" // ✅ added
+                value={formData.countryCode || ""}
+                onChange={handleChange}
+                className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                style={{ maxWidth: '80px' }}
+              >
+                {countryCodes.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.code}
+                  </option>
+                ))}
+              </select>
+              <Input
+                className="mt-1"
+                name="phone"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+                maxLength={10}
+              />
+            </div>
           </div>
           <div>
             <Label className="mb-1" htmlFor="properties">Select Properties</Label>

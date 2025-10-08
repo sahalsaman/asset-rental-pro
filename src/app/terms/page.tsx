@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function TermsOfService() {
+  const router=useRouter()
   return (
     <main className="min-h-screen bg-gray-50 text-gray-800 md:py-20 md:px-6">
       <div className="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow">
@@ -58,9 +60,9 @@ export default function TermsOfService() {
         </p>
 
         <div className="mt-10">
-          <Link href="/" className="text-green-700 hover:underline">
+          <a onClick={() => router.back()}  className="text-green-700 hover:underline">
             ← Back to Home
-          </Link>
+          </a>
         </div>
       </div>
     </main>

@@ -9,12 +9,14 @@ import Script from "next/script";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { IUser } from "@/app/types";
 import { Anybody } from "next/font/google";
+import { FullscreenLoader } from "@/components/Loader";
+import { SubscritptionStatus } from "@/utils/contants";
 // import { useToaster } from "react-hot-toast";
 
 export default function SubscriptionPlan() {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<IUser | null>(null);
-  const [activeSub, setActiveSub] = useState<any | null>(null);
+  const [activeSub, setActiveSub] = useState<any | "">("");
   const current_property = localStorageServiceSelectedOptions.getItem()
 
   const fetchUser = async () => {
@@ -33,7 +35,6 @@ export default function SubscriptionPlan() {
     fetchUser();
     fetchSucscription()
   }, []);
-
 
 
   const handlePlanSelect = async (plan: any) => {
@@ -96,10 +97,14 @@ export default function SubscriptionPlan() {
     }
   };
 
+  if (!user) return <FullscreenLoader />;
+
   return (
     <div className="min-h-screen bg-gray-50">
-  {  activeSub?  <div className="bg-amber-300 py-2 px-4 flex items-center justify-between">Active plan  
-        <div className="bg-amber-400 py-1 px-4 rounded-lg font-bold text-sm flex items-center gap-1">{activeSub?.plan}</div></div>:""}
+      {activeSub ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
+        {activeSub.status==SubscritptionStatus.PENDING?"Subscription process not completed":activeSub.status==SubscritptionStatus.ACTIVE?"Active plan":activeSub.status==SubscritptionStatus.TRIAL?"14 Day trial activated":""}
+        
+        <div className="bg-amber-400 py-1 px-4 rounded-lg font-bold text-sm flex items-center gap-1">{activeSub?.plan}</div></div> : ""}
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <section id="pricing" className="py-8 md:py-24 px-4 sm:px-6 bg-slate-50 text-left">
         <h2 className="text-2xl sm:text-2xl font-bold mb-2">Pricing Plans</h2>

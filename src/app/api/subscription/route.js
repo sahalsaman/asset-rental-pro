@@ -24,10 +24,9 @@ export async function GET(req) {
 
     const activeSub = await OrgSubscriptionModel.findOne({
         organisation: user.organisationId,
-        // status: SubscritptionStatus.ACTIVE,
     }).sort({ createdAt: -1 });
 
-    return NextResponse.json(activeSub || null);
+    return NextResponse.json(activeSub || {message:"Not Acivated"});
 }
 
 
