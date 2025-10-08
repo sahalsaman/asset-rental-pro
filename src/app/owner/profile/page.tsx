@@ -6,9 +6,10 @@ import { FullscreenLoader } from "@/components/Loader";
 import { Badge } from "@/components/ui/badge";
 import {  useRouter } from 'next/navigation';
 import { UserRoles } from "@/utils/contants";
+import { IUser } from "@/app/types";
 
 export default function PropertiesPage() {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<IUser | null>(null);
   const router = useRouter();
 
   const fetchUser = async () => {

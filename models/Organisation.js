@@ -1,7 +1,6 @@
 import { SubscritptionBillingCycle, SubscritptionStatus } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
-// Subscription Schema
 const OrgSubscriptionSchema = new Schema(
   {
     organisation: { 
@@ -18,50 +17,37 @@ const OrgSubscriptionSchema = new Schema(
       enum: SubscritptionStatus,
       default: SubscritptionStatus.TRIAL
     },
-    startDate: { 
-      type: Date, 
-      required: true 
-    },
-    endDate: { 
-      type: Date 
-    },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date },
     billingCycle: { 
       type: String, 
       enum: SubscritptionBillingCycle, 
       required: true 
     },
-    amount: { 
-      type: Number,  // e.g., 999 for ₹999/month
-      required: true 
+    amount: { type: Number, required: true },
+    paymentMethod: { type: String, required: true },
+    autoRenew: { type: Boolean, default: true },
+    trialDays: { type: Number, default: 14 },
+    trialCompleted: { type: Boolean, default: true },
+
+    usageLimits: {  
+      property: { type: Number, default: 0 },
+      rooms: { type: Number, default: 0 },
+      bookings: { type: Number, default: 0 }
     },
-    paymentMethod: { 
-      type: String,  // e.g., 'razorpay', 'stripe', 'manual'
-      required: true 
-    },
-    autoRenew: { 
-      type: Boolean, 
-      default: true 
-    },
-    trialDays: { 
-      type: Number, 
-      default: 14 
-    },
-    usageLimits: {  // Optional: For metered plans
-      users: { type: Number, default: 0 },  // e.g., max users
-      storage: { type: Number, default: 0 },  // e.g., GB storage
-      bookings: { type: Number, default: 0 }  // e.g., max bookings/month
-    },
-    lastPaymentDate: { 
-      type: Date 
-    },
-    nextBillingDate: { 
-      type: Date 
-    },
+
+    lastPaymentDate: { type: Date },
+    nextBillingDate: { type: Date },
+
+    razorpay_orderId: { type: String },
+    razorpay_paymentId: { type: String },
+    razorpay_signature: { type: String },
+    razorpay_status: { type: String },
   },
   { timestamps: true }
 );
 
-// Organisation Schema (Updated with Subscription Reference)
+
 const OrganisationSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -73,13 +59,13 @@ const OrganisationSchema = new Schema(
     deleted: { type: Boolean, required: true, default: false },
     subscription: { 
       type: Types.ObjectId, 
-      ref: "Org_subscription"  // One-to-one: Each org has one active subscription
+      ref: "Org_subscription"  
     },
   },
   { timestamps: true }
 );
 
-// Models
+
 const OrganisationModel =
   mongoose.models.Organisation || mongoose.model("Organisation", OrganisationSchema);
 

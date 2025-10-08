@@ -1,3 +1,5 @@
+import { SubscritptionBillingCycle } from "./contants";
+
  export const countryCodes = [
     { code: "+91", name: "India" },
     { code: "+1", name: "USA" },
@@ -8,9 +10,12 @@
 
 export const subscription_plans = [
   {
+    id:"arp_subcription_21",
     name: "Basic",
+    amount: 199,
     price: "₹199",
     period: "per month",
+    billingCycle:SubscritptionBillingCycle.MONTHLY,
     price_yearly: "₹2299",
     description: "Perfect for new landlords managing a few assets.",
     features: [
@@ -24,15 +29,18 @@ export const subscription_plans = [
     total_rooms: 10,
     total_bookings: 30,
     buttonText: "Start Free",
-    buttonLink: "/auth/signup",
+    buttonLink: "/subscription",
     buttonStyle: "bg-gray-200 text-gray-800 hover:bg-gray-300",
     borderColor: "border-transparent",
     highlight: false,
   },
   {
+    id:"arp_subcription_47",
     name: "Pro",
+    amount: 499,
     price: "₹499",
     period: "per month",
+    billingCycle:SubscritptionBillingCycle.MONTHLY,
     price_yearly: "₹4899",
     description: "The best choice for professional property managers.",
     features: [
@@ -47,12 +55,13 @@ export const subscription_plans = [
     total_rooms: 100,
     total_bookings: 300,
     buttonText: "Choose Pro",
-    buttonLink: "/auth/signup?plan=pro",
+    buttonLink: "/subscription?plan=pro",
     buttonStyle: "bg-green-700 text-white hover:bg-green-600",
     borderColor: "border-green-700",
     highlight: true,
   },
   {
+    id:"arp_subcription_74",
     name: "Enterprise",
     price: "Custom",
     period: "per month",
@@ -66,7 +75,7 @@ export const subscription_plans = [
     total_rooms:"UNLIMITED",
     total_bookings:"UNLIMITED",
     buttonText: "Contact Sales",
-    buttonLink: "/contact/sales",
+    buttonLink: "/contact",
     buttonStyle: "bg-gray-200 text-gray-800 hover:bg-gray-300",
     borderColor: "border-transparent",
     highlight: false,

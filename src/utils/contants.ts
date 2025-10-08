@@ -101,6 +101,7 @@ export enum SubscritptionStatus {
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
   TRIAL = 'trial',
+  PENDING = 'pending',
 }
 
 export enum SubscritptionBillingCycle {

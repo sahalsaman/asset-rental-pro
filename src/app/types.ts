@@ -4,6 +4,7 @@ export interface IUser {
   _id?: string;
   firstName: string;
   lastName?: string;
+  countryCode?: string;
   phone: string;
   otp?: string;
   role: UserRoles;
