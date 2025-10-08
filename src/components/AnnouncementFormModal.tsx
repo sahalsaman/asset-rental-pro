@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { IAnnouncement } from "@/app/types";
 import { Label } from "./ui/label";
+import { AnnouncementType } from "@/utils/contants";
 
 interface Props {
   open: boolean;
@@ -17,22 +18,22 @@ interface Props {
 export default function AnnouncementFormModal({ open, onClose, onSave, editData }: Props) {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [audience, setAudience] = useState<"all" | "employees" | "customers">("all");
+  const [audienceType, setAudienceType] = useState<AnnouncementType|string>('');
 
   useEffect(() => {
     if (editData) {
       setTitle(editData.title);
       setMessage(editData.message);
-      setAudience(editData.audience);
+      setAudienceType(editData?.audienceType);
     } else {
       setTitle("");
       setMessage("");
-      setAudience("all");
+      setAudienceType("all");
     }
   }, [editData]);
 
   const handleSubmit = () => {
-    onSave({ title, message, audience });
+    onSave({ title, message, audienceType });
   };
 
   return (
@@ -54,10 +55,10 @@ export default function AnnouncementFormModal({ open, onClose, onSave, editData 
           </div>
 
           <div className="w-full">
-            <Label htmlFor="audience">Audience</Label>
-            <Select value={audience} onValueChange={(v: any) => setAudience(v)} >
-              <SelectTrigger className="w-full mt-1" id="audience" name="audience">
-                <SelectValue placeholder="Select audience" />
+            <Label htmlFor="audienceType">Audience</Label>
+            <Select value={audienceType} onValueChange={(v: any) => setAudienceType(v)} >
+              <SelectTrigger className="w-full mt-1" id="audienceType" name="audienceType">
+                <SelectValue placeholder="Select audienceType" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>

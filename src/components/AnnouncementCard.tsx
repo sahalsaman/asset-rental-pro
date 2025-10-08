@@ -18,7 +18,7 @@ export default function AnnouncementCard({ announcement, onEdit, onDelete }: Pro
           <span>{announcement.title}</span>
         </CardTitle>
         <p className="text-gray-600 mb-2">{announcement.message}</p>
-        <div className="flex justify-between items-end">   <p className="text-xs text-gray-400">Audience: {announcement.audience}</p>
+        <div className="flex justify-between items-end">   <p className="text-xs text-gray-400">Audience: {announcement.audienceType}</p>
           <div className="flex gap-2 mt-3">
             <Button size="sm" variant="outline" onClick={() => onEdit(announcement)}>  
               <Edit className="w-4 h-4" /></Button>

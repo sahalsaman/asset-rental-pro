@@ -28,6 +28,8 @@ const OrgSubscriptionSchema = new Schema(
     paymentMethod: { type: String, required: true },
     autoRenew: { type: Boolean, default: true },
     trialDays: { type: Number, default: 14 },
+    trialStarted: { type: Date },
+    trialendDate: { type: Date },
     trialCompleted: { type: Boolean, default: true },
 
     usageLimits: {  

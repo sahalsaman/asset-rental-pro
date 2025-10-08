@@ -100,7 +100,7 @@ export interface IAnnouncement {
   organisationId: string;
   title: string;
   message: string;
-  audienceType: AnnouncementType
+  audienceType: AnnouncementType|string;
   disabled?: boolean;
   attachments?: string[];
   createdBy: string;

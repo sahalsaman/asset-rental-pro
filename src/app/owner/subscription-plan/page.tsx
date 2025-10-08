@@ -59,7 +59,7 @@ export default function SubscriptionPlan() {
         description: `${plan.name} Plan Subscription`,
         order_id: orderId,
         handler: async function (response: any) {
-          const verifyRes = await fetch("/api/subscription", {
+          const verifyRes = await fetch("/api/subscription/paid", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
