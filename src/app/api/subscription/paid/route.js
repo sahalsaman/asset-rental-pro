@@ -3,10 +3,9 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import { OrgSubscriptionModel } from "@/../models/Organisation";
 import connectMongoDB from "@/../database/db";
-import { razorpay_config } from "../../../utils/config";
-import { subscription_plans } from "../../../utils/mock-data";
-import { SubscritptionStatus, SubscritptionBillingCycle } from "../../../utils/contants";
-import { getTokenValue } from "@/utils/tokenHandler";
+import { razorpay_config } from "../../../../utils/config";
+import { subscription_plans } from "../../../../utils/mock-data";
+import { SubscritptionStatus, SubscritptionBillingCycle } from "../../../../utils/contants";
 
 const razorpay = new Razorpay({
     key_id: razorpay_config.RAZORPAY_KEY_ID,
