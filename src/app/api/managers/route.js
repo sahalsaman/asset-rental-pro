@@ -2,9 +2,10 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import UserModel from "@/../models/User";
-import {OrganisationModel} from "@/../models/Organisation";
+import { OrganisationModel } from "@/../models/Organisation";
 import { getTokenValue } from "@/utils/tokenHandler";
 import { UserRoles } from "@/utils/contants";
+import PropertyModel from "../../../../models/Property";
 
 // 📍 GET all managers for current org
 export async function GET(request) {
@@ -16,19 +17,23 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    if (user.role == UserRoles.MANAGER) {
+    return NextResponse.json({role:UserRoles.MANAGER});
+    }
+
     const managers = await UserModel.find({
       organisationId: user.organisationId,
-      role: "manager",
-    }).populate("properties");
+      role: UserRoles.MANAGER,
+    }).populate('properties');
 
-    return NextResponse.json(managers);
+    return NextResponse.json({managers:managers,role:UserRoles.OWNER});
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 
 // 📍 POST (Add Manager)
-export async function POST(reques) {
+export async function POST(request) {
   try {
     await connectMongoDB();
     const body = await request.json();
@@ -39,7 +44,7 @@ export async function POST(reques) {
     }
 
     const organisationId = user.organisationId;
-    const { firstName, lastName, phone } = body;
+    const { firstName, lastName, phone, properties, countryCode } = body;
 
     if (!firstName || !phone) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -49,13 +54,20 @@ export async function POST(reques) {
       firstName,
       lastName,
       phone,
+      countryCode: countryCode || "+91",
       organisationId,
+      properties: properties || [],
       role: UserRoles.MANAGER,
     });
 
-    await OrganisationModel.findByIdAndUpdate(organisationId, {
-      $addToSet: { managers: newManager._id },
-    });
+    if (properties && properties.length > 0) {
+      properties.forEach(async (propertyId) => {
+        await PropertyModel.findByIdAndUpdate(propertyId, {
+          $addToSet: { managers: newManager._id },
+        });
+      })
+    }
+
 
     return NextResponse.json(newManager, { status: 201 });
   } catch (err) {
@@ -74,7 +86,7 @@ export async function PUT(request) {
     }
 
     const body = await request.json();
-    const { managerId, firstName, lastName, phone, properties } = body;
+    const { managerId, firstName, lastName, phone, properties, countryCode } = body;
 
     if (!managerId) {
       return NextResponse.json({ error: "Manager ID is required" }, { status: 400 });
@@ -83,7 +95,7 @@ export async function PUT(request) {
     const existingManager = await UserModel.findOne({
       _id: managerId,
       organisationId: user.organisationId,
-      role: "manager",
+      role: UserRoles.MANAGER,
     });
 
     if (!existingManager) {
@@ -94,7 +106,15 @@ export async function PUT(request) {
     if (firstName !== undefined) existingManager.firstName = firstName;
     if (lastName !== undefined) existingManager.lastName = lastName;
     if (phone !== undefined) existingManager.phone = phone;
+    if (countryCode !== undefined) existingManager.countryCode = countryCode;
     if (properties !== undefined) existingManager.properties = properties;
+    if (properties && properties.length > 0) {
+      properties.forEach(async (propertyId) => {
+        await PropertyModel.findByIdAndUpdate(propertyId, {
+          $addToSet: { managers: existingManager._id },
+        });
+      })
+    }
 
     await existingManager.save();
 

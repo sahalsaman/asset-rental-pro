@@ -8,6 +8,7 @@ import { apiFetch } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { FullscreenLoader } from "@/components/Loader";
 import { Building2, Edit, Phone, PhoneCall } from "lucide-react";
+import { UserRoles } from "@/utils/contants";
 
 interface Manager {
   _id: string;
@@ -24,6 +25,7 @@ export default function ManagerPage() {
   const [editManager, setEditManager] = useState<Manager | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loader, setLoader] = useState(false);
+  const [role, setRole] = useState("");
 
   const fetchManagers = async () => {
     try {
@@ -31,12 +33,16 @@ export default function ManagerPage() {
       const res = await apiFetch(`/api/managers`);
       if (!res.ok) throw new Error("Failed to fetch managers");
       const data = await res.json();
-      setManagers(data);
+        setRole(data?.role);
+      if (data?.managers) {
+        setManagers(data?.managers);
+      }
       setError(null);
       setLoader(false);
-    } catch (err) {
+    } catch (err: any) {
       setError("Error fetching managers. Please try again.");
       console.error(err);
+
       setLoader(false);
     }
   };
@@ -90,9 +96,8 @@ export default function ManagerPage() {
     <div className="p-5 md:pt-10 md:px-32 mb-10">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Managers</h1>
-        <Button onClick={() => setOpenModal(true)}>Add Manager</Button>
+        {role !== UserRoles.MANAGER ? <Button variant="green" onClick={() => setOpenModal(true)}>Add Manager</Button> : ""}
       </div>
-
       {error && (
         <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
           {error}
@@ -100,7 +105,8 @@ export default function ManagerPage() {
       )}
 
       {managers.length === 0 && !error ? (
-        <p className="text-gray-500 text-center">No managers found. Add a manager to get started.</p>
+        role === UserRoles.MANAGER ? <p className="text-gray-500 text-center">You do not have permission to view this page.</p> :
+          <p className="text-gray-500 text-center">No managers found. Add a manager to get started.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {managers.map((manager, index) => (
@@ -117,12 +123,12 @@ export default function ManagerPage() {
                     {manager.phone}
                   </p>
                 </div>}
-                {manager.properties?.length && <div className="flex items-center gap-2 mt-1">
+                {manager.properties?.length ? <div className="flex items-center gap-2 mt-1">
                   <Building2 size={16} />
                   <p className="text-sm text-gray-600 ">
                     {manager.properties?.map((p) => p.name).join(", ") || "None"}
                   </p>
-                </div>}
+                </div> : ""}
 
 
                 <div className="flex justify-end gap-2">

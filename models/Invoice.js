@@ -12,7 +12,7 @@ const InvoiceSchema = new Schema(
     balance: { type: Number, default: 0 },  // Tracks remaining amount
     carryForwarded: { type: Number, default: 0 },  // Fixed spelling: 'carryForwerded' → 'carryForwarded'
     type: { type: String, required: true },  // Added: required (e.g., 'rent', 'advance')
-    status: { type: String, enum: Object.values(InvoiceStatus), default: InvoiceStatus.PENDING },
+    status: { type: String, enum: InvoiceStatus, default: InvoiceStatus.PENDING },
     dueDate: { type: Date, required: true },
     paymentGateway: { 
       type: String, 

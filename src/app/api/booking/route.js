@@ -5,7 +5,6 @@ import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
-import PropertyModel from "../../../../models/Property";
 import RoomModel from "../../../../models/Room";
 
 // Helper to validate ObjectId

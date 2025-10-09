@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { User, XIcon, Home, Building2,  BuildingIcon, BadgeDollarSign, UserCircle, } from 'lucide-react'; // icons
+import { User, XIcon, Home, Building2, BuildingIcon, BadgeDollarSign, UserCircle, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
@@ -14,12 +14,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [open, setOpen] = useState(false);
   const [properties, setProperties] = useState<IProperty[]>([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
-  const [qrUrl, setQrUrl] = useState("");
 
-  const setQRcodeUrl = (propertyId: string) => {
-    const selectedProp = properties.find((prop: IProperty) => prop._id === propertyId);
-    setQrUrl(`http://arp.webcos.co/booking-form?property_id=${propertyId}`);
-  }
+
   const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Properties', path: '/owner/properties' },
@@ -50,25 +46,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
+
   const fetchProperties = async () => {
     const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
-
-   const prop = localStorageServiceSelectedOptions.getItem()
-    if (prop?.property) {
-      setSelectedPropertyId(prop.property._id)
-      setQRcodeUrl(prop.property._id);
-    }else
-    if (data.length > 0 && !selectedPropertyId) {
-      setSelectedPropertyId(data[0]._id);
+    if(data.length > 0){
       localStorageServiceSelectedOptions.setItem({ property: data[0] });
-      setQRcodeUrl(data[0]._id);
-    }
+      setSelectedPropertyId(data[0]._id);
   };
+}
+
 
   useEffect(() => {
- 
     fetchProperties();
   }, []);
 
@@ -79,7 +69,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setSelectedPropertyId(value);
     const prop = properties.find(p => p._id === value)
     localStorageServiceSelectedOptions.setItem({ property: prop });
-    setQRcodeUrl(value);
     window.location.reload();
   };
 
@@ -169,21 +158,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* <p className='text-white'>Current Property</p> */}
           <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
             <Building2 className='ml-2 text-white' />
-          <select
-            name="frequency"
-            value={selectedPropertyId || ""}
-            onChange={handleChange}
-            className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
-            style={{ minWidth: "220px", border: "0px", height: "48px" }}
-            required
-          >
-            <option value=""> Select Property</option>
-            {properties.map((property: any) => (
-              <option key={property?._id} value={property?._id}>
-                {property?.name} {property?.ca}
-              </option>
-            ))}
-          </select>
+            <select
+              name="frequency"
+              value={selectedPropertyId || ""}
+              onChange={handleChange}
+              className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+              style={{ minWidth: "220px", border: "0px", height: "48px" }}
+              required
+            >
+              <option value=""> Select Property</option>
+              {properties.map((property: any) => (
+                <option key={property?._id} value={property?._id}>
+                  {property?.name} {property?.ca}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

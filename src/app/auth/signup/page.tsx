@@ -12,6 +12,7 @@ export default function LoginPage() {
 
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [organisationName, setOrganisationName] = useState("");
   const [countryCode, setCountryCode] = useState("+91"); // Default to India
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function LoginPage() {
       return;
     }
     try {
-      const res= await signUp(phone, countryCode, name, organisationName)
+      const res= await signUp(phone, countryCode, name,lastName ,organisationName)
       console.log("res..",res);
       // toast.success("OTP sent successfully!");
       toast.success("Your OTP : "+res.data.data.otp);
@@ -88,13 +89,24 @@ export default function LoginPage() {
                   required
                 />
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name
+                  First Name
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Sahal"
+                  placeholder="e.g. John"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
+                  required
+                />
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. abraham"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 mb-4"
                   required
                 />

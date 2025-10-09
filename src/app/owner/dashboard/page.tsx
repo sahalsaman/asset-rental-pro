@@ -21,7 +21,7 @@ export default function OwnerDashboard() {
   const [qrUrl, setQrUrl] = useState("");
   const [loader, setLoader] = useState(true);
 
-  const [stats, setStats] = useState({
+  const [status, setStatus] = useState({
     total_rooms: 0,
     available_rooms: 0,
     enrollments: 0,
@@ -35,8 +35,8 @@ export default function OwnerDashboard() {
     setQrUrl(`http://arp.webcos.co/booking-form?property_id=${current_property?._id}`);
   }
 
-  // Fetch stats from backend API
-  const fetchStats = async () => {
+  // Fetch status from backend API
+  const fetchStatus = async () => {
     if (!current_property?._id) {
       setLoader(false);
       toast.error("Select Property")
@@ -47,9 +47,9 @@ export default function OwnerDashboard() {
       const res = await apiFetch(`/api/dashboard?prop=${current_property?._id}`); // replace with your API route
       console.log(res);
 
-      if (!res.ok) throw new Error("Failed to fetch dashboard stats");
+      if (!res.ok) throw new Error("Failed to fetch dashboard status");
       const data = await res.json();
-      setStats({
+      setStatus({
         total_rooms: data.total_rooms,
         available_rooms: data.available_rooms,
         enrollments: data.enrollments,
@@ -65,7 +65,7 @@ export default function OwnerDashboard() {
   };
 
   useEffect(() => {
-    fetchStats();
+    fetchStatus();
   }, []);
 
   const openQR = () => {
@@ -114,12 +114,12 @@ export default function OwnerDashboard() {
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <DashboardCard title="Total Rooms" value={stats.total_rooms} icon={Building2} />
-        <DashboardCard title="Available Rooms" value={stats.available_rooms} icon={Bed} />
-        <DashboardCard title="Notice Period" value={stats.noticePeriod} icon={Paperclip  } />
-        <DashboardCard title="Enrollments" value={stats.enrollments} icon={Users} />
-        <DashboardCard title="Monthly Target" value={`${current_property?.currency}${0}`} icon={Tickets} />
-        <DashboardCard title="Monthly Received" value={`${current_property?.currency}${0}`} icon={BadgeDollarSign} />
+        <DashboardCard title="Total Rooms" value={status.total_rooms} icon={Building2} />
+        <DashboardCard title="Available Rooms" value={status.available_rooms} icon={Bed} />
+        <DashboardCard title="Notice Period" value={status.noticePeriod} icon={Paperclip  } />
+        <DashboardCard title="Enrollments" value={status.enrollments} icon={Users} />
+        <DashboardCard title="Monthly Target" value={`${current_property?.currency}${status?.totalInvoiceAmount}`} icon={Tickets} />
+        <DashboardCard title="Monthly Received" value={`${current_property?.currency}${status?.totalReceivedAmount}`} icon={BadgeDollarSign} />
       </div>
 
       <div className=" md:hidden grid grid-cols-4 gap-4 mt-8">

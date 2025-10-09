@@ -1,6 +1,6 @@
 "use client";
 
-import { sendOtpApi } from "@/lib/api";
+import { login } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -39,7 +39,7 @@ export default function LoginPage() {
     }
 
     try {
-      const res=await sendOtpApi(phone, countryCode);
+      const res=await login(phone, countryCode);
       toast.success("Your OTP : "+res.data.data.otp);
       // toast.success("OTP sent successfully!");
       router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);

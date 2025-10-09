@@ -49,9 +49,9 @@ export default function PropertiesPage() {
          {user?.role===UserRoles.OWNER?   <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/organisation')}>
            Organisation
           </a>:""}
-            <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/subscription-plan')}>
+               {user?.role===UserRoles.OWNER?   <a  className="p-4 border-b-1 border-b-gray-200"  onClick={() => router.push('/owner/subscription-plan')}>
            Subscription
-          </a>
+          </a>:""}
               <a  className="p-4 border-b-1 border-b-gray-200"   >
            Change mobile number
           </a>

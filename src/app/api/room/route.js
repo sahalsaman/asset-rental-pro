@@ -69,6 +69,7 @@ export async function POST(request) {
   const body = await request.json();
   await connectMongoDB();
   const room = await RoomModel.create({ ...body, organisationId: user.organisationId });
+  await prop
   return NextResponse.json(room, { status: 201 });
 }
 

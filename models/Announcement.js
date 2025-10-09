@@ -4,6 +4,7 @@ import mongoose, { Schema, Types } from 'mongoose';
 const AnnouncementSchema = new Schema(
   {
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
+    propertyId: { type: Types.ObjectId, ref: "Property", required: true },
     title: { type: String, required: true },
     message: { type: String, required: true },
     audienceType: { type: String, enum: AnnouncementType, default: AnnouncementType.ALL },

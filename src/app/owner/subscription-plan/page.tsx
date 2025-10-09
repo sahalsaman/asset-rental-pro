@@ -78,8 +78,8 @@ export default function SubscriptionPlan() {
         },
         prefill: {
           name: user?.firstName,
-          email: `${user?.firstName}@email.com`,
-          contact: user?.phone,
+          email: `${user?.firstName}@${user?.organisationId?.name}.com`,
+          contact: `${user?.countryCode}${user?.phone}`,
         },
         theme: {
           color: "#2563EB",

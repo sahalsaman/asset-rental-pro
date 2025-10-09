@@ -4,7 +4,6 @@ import { PropertyStatus } from '@/utils/contants';
 const PropertySchema = new Schema(
   {
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
-    Bookings: [{ type: Types.ObjectId, ref: "Room" }],
     name: { type: String, required: true },
     description: String,
     address: { type: String, required: true },
@@ -18,6 +17,7 @@ const PropertySchema = new Schema(
     currency: { type: String, required: true },
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
+    managers: [{ type: Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

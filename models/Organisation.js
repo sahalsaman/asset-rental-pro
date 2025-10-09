@@ -55,7 +55,6 @@ const OrganisationSchema = new Schema(
     name: { type: String, required: true },
     logo: { type: String },
     owner: { type: Types.ObjectId, ref: "User", required: true },
-    managers: [{ type: Types.ObjectId, ref: "User" }],
     website: { type: String },
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },

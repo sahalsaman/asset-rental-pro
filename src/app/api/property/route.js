@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import PropertyModel from "@/../models/Property";
 import { getTokenValue } from "@/utils/tokenHandler";
+import { UserRoles } from "@/utils/contants";
 
 
 
@@ -14,6 +15,9 @@ export async function GET(request) {
     if (!user.organisationId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    if (!user.role) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const propertyId = new URL(request.url).searchParams.get("propertyId");
 
     await connectMongoDB();
@@ -21,8 +25,19 @@ export async function GET(request) {
       const property = await PropertyModel.find({ _id: propertyId, organisationId: user.organisationId });
       return NextResponse.json(property[0] || null);
     } else {
-      const properties = await PropertyModel.find({ organisationId: user.organisationId });
-      return NextResponse.json(properties);
+      if (user.role === UserRoles.MANAGER) {
+        const properties = await PropertyModel.find({
+          organisationId: user.organisationId,
+          managers: user.id,
+          deleted: false,
+          disabled: false
+        })
+        return NextResponse.json(properties);
+      } else {
+        const properties = await PropertyModel.find({ organisationId: user.organisationId });
+        return NextResponse.json(properties);
+      }
+
     }
   } catch (err) {
     return NextResponse.json(

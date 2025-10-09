@@ -8,7 +8,7 @@ export async function POST(request) {
   await connectMongoDB();
 
   const body = await request.json(); 
-  const { phone,countryCode, name ,organisationName} = body;
+  const { phone,countryCode, name ,organisationName, lastName} = body;
 
   if (!name) {
     return NextResponse.json({ error: "User Name is required" }, { status: 400 });
@@ -36,6 +36,7 @@ export async function POST(request) {
 
   const newUser=await UserModel.create({    
     firstName: name,
+    lastName:lastName,
     phone,
     countryCode,
     otp,

@@ -4,7 +4,7 @@ import RoomModel from "@/../models/Room";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { BookingStatus, RoomStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, RoomStatus } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -16,7 +16,7 @@ export async function GET(request) {
 
     const prop = request.nextUrl.searchParams.get("prop");
 
-      if (!prop) {
+    if (!prop) {
       return NextResponse.json({ error: "Select valid property" }, { status: 404 });
     }
 
@@ -53,57 +53,26 @@ export async function GET(request) {
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1); // e.g., 2025-10-01 00:00:00
 
     // Total Invoice Amount (This Month)
-    const totalInvoiceAmount = await InvoiceModel.aggregate([
+    const totalInvoices = await InvoiceModel.find(
       {
-        $match: {
-          organisationId: user.organisationId,
-          propertyId: prop,
-          deleted: false,
-          createdAt: {
-            $gte: startOfMonth,
-            $lt: endOfMonth,
-          },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$amount' }, // Sum the 'amount' field
-        },
-      },
-    ]);
+        organisationId: user.organisationId,
+        propertyId: prop,
+        deleted: false,
+        createdAt: { $gte: startOfMonth, $lt: endOfMonth },
 
-    // Total Received Amount (This Month)
-    const totalReceivedAmount = await InvoiceModel.aggregate([
-      {
-        $match: {
-          organisationId: user.organisationId,
-          propertyId: prop,
-          deleted: false,
-          'payments.date': {
-            $gte: startOfMonth,
-            $lt: endOfMonth,
-          },
-        },
       },
-      {
-        $unwind: '$payments', // Unwind the payments array
+
+    );
+
+    const { totalInvoiceAmount, totalReceivedAmount } = totalInvoices.reduce(
+      (acc, inv) => {
+        acc.totalInvoiceAmount += inv.amount;
+        if (inv.status === InvoiceStatus.PAID) acc.totalReceivedAmount += inv.amount;
+        return acc;
       },
-      {
-        $match: {
-          'payments.date': {
-            $gte: startOfMonth,
-            $lt: endOfMonth,
-          },
-        },
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$payments.amount' }, // Sum the payment amounts
-        },
-      },
-    ]);
+      { totalInvoiceAmount: 0, totalReceivedAmount: 0 }
+    );
+
 
 
     return NextResponse.json({

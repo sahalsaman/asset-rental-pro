@@ -2,6 +2,7 @@ import { AnnouncementType, InvoiceStatus, PropertyType, RentAmountType, RentFreq
 
 export interface IUser {
   _id?: string;
+  organisationId?: any;
   firstName: string;
   lastName?: string;
   countryCode?: string;
@@ -10,6 +11,7 @@ export interface IUser {
   role: UserRoles;
   otpExpireTime?: Date;
   signupCompleted?: boolean;
+  properties?: any[];
   lastLogin?: Date;
   disabled: boolean;
   createdAt?: Date;

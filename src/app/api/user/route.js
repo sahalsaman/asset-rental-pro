@@ -13,7 +13,15 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const userData = await UserModel.findById(user.id);
+    if (!user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userData = await UserModel.findById(user.id).populate('organisationId', 'name address contactEmail contactPhone');
+
+    if (!userData) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     return NextResponse.json(userData, { status: 200 });
   } catch (error) {
