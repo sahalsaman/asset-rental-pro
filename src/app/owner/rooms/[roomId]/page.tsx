@@ -9,7 +9,7 @@ import BookingAddEditModal from "../../../../components/BookingFormModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import { Edit, Pencil, Trash } from "lucide-react";
+import { Edit, Pencil, ReceiptIndianRupee, Trash } from "lucide-react";
 import RoomAddEditModal from "@/components/RoomFormModal";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { FullscreenLoader } from "@/components/Loader";
@@ -66,23 +66,24 @@ export default function RoomDetailPage() {
 
             {/* Room Info */}
             <div>
-              <h1 className="text-2xl font-bold">Room {room?.name}</h1>
+              <h1 className="text-2xl font-bold">{room?.name}</h1>
               {/* {room?.description && (
               <p className="text-sm text-gray-600 line-clamp-2">{room.description}</p>
             )} */}
 
-              <div className="flex flex-wrap items-center gap-3 ">
                 {room?.type && (
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs">
                     {room.type}
                   </span>
                 )}
+              <div className="flex flex-wrap items-center gap-1 ">
 
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs">
-                  {current_property?.currency}{room.amount?.toLocaleString()} {room?.frequency && ` / ${room.frequency}`}
-                </span>
+                <p className=" text-xs flex gap-1">
+                  <ReceiptIndianRupee size={16} className="text-gray-700"/>
+                <span>  {current_property?.currency}{room.amount?.toLocaleString()} {room?.frequency && ` Per ${room.frequency}`}</span>
+                </p>
                 {room?.advanceAmount && room?.advanceAmount > 0 ? (
-                  <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-md text-xs">
+                  <span className=" text-xs">
                     Advance: {current_property?.currency}{room.advanceAmount?.toLocaleString()}
                   </span>
                 ) : ""}

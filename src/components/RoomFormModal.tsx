@@ -19,12 +19,14 @@ interface Props {
 
 export default function RoomAddEditModal({ property, open, onClose, onSave, editData }: Props) {
   const [formData, setFormData] = useState<Partial<IRoom>>({});
-
   useEffect(() => {
     if (editData) {
       setFormData(editData);
     } else {
-      setFormData({});
+      setFormData({
+        frequency:RentFrequency.MONTH,
+        status:RoomStatus.AVAILABLE
+      });
     }
   }, [editData]);
 
@@ -84,6 +86,8 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
           />
 
           <Label>Amount</Label>
+              <div className="flex items-center gap-1">
+              {property?.currency}
           <Input
             name="amount"
             type="number"
@@ -92,6 +96,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
             onChange={handleChange}
             required
           />
+          </div>
           <Label>Select Rent Duration</Label>
           <select
             name="frequency"
@@ -142,13 +147,15 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
           )}
 
           <Label>Advance Amount</Label>
+              <div className="flex items-center gap-1">
+              {property?.currency}
           <Input
             name="advanceAmount"
             type="number"
             placeholder="eg: 12000"
             value={formData.advanceAmount || ""}
             onChange={handleChange}
-          />
+          /></div>
 
           <Label>Status</Label>
           <select

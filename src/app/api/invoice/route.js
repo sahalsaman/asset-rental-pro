@@ -39,7 +39,9 @@ export async function GET(request) {
     }
 
     const invoices = await InvoiceModel.find(filter)
-      .populate()
+       .populate("bookingId")
+        .sort({ createdAt: -1 })
+        .lean(false);
 
     return NextResponse.json(invoices);
   } catch (err) {
