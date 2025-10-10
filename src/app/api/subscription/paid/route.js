@@ -4,8 +4,8 @@ import crypto from "crypto";
 import connectMongoDB from "@/../database/db";
 
 import { OrganisationModel, OrgSubscriptionModel, SubscriptionPaymentModel } from "@/../models/Organisation";
-import { razorpay_config } from "../../../../utils/config";
-import { SubscriptionStatus, SubscriptionBillingCycle } from "../../../../utils/constants";
+import { razorpay_config } from "@/utils/config";
+import { SubscriptionStatus, SubscriptionBillingCycle } from "@/utils/constants";
 import { subscription_plans } from "@/utils/mock-data";
 
 export async function PUT(req) {
