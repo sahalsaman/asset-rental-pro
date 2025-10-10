@@ -39,7 +39,7 @@ export default function RoomCard({ room, property, onEdit, onDelete, onBook }: R
 
         {room.type && <p className="text-sm text-gray-500">Type: {room.type}</p>}
 
-        {room.noOfSlots > 1 && <p className="text-sm text-gray-500">Slots: {(room?.bookingsCount ?? 0)}/{room.noOfSlots}</p>}
+        {room.noOfSlots > 1 && <p className="text-sm text-gray-500">Slots: {(room?.currentBooking ?? 0)}/{room.noOfSlots}</p>}
 
         <div className="flex justify-between gap-2 mt-4">
           {/* <Button variant="secondary" onClick={() => onEdit(room)}>

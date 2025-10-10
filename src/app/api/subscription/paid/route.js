@@ -5,8 +5,8 @@ import connectMongoDB from "@/../database/db";
 
 import { OrganisationModel, OrgSubscriptionModel, SubscriptionPaymentModel } from "@/../models/Organisation";
 import { razorpay_config } from "@/utils/config";
-import { SubscriptionStatus, SubscriptionBillingCycle } from "@/utils/constants";
 import { subscription_plans } from "@/utils/mock-data";
+import { SubscritptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
 
 export async function PUT(req) {
   try {
@@ -37,7 +37,7 @@ export async function PUT(req) {
     const endDate = new Date();
 
     // Set end date based on plan cycle
-    if (selected_plan.billingCycle === SubscriptionBillingCycle.YEARLY)
+    if (selected_plan.billingCycle === SubscritptionBillingCycle.YEARLY)
       endDate.setFullYear(endDate.getFullYear() + 1);
     else endDate.setMonth(endDate.getMonth() + 1);
 
@@ -46,11 +46,11 @@ export async function PUT(req) {
       { organisation: organisationId },
       {
         plan: selected_plan.name,
-        status: SubscriptionStatus.ACTIVE,
+        status: SubscritptionStatus.ACTIVE,
         startDate,
         endDate,
         billingCycle:
-          selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
+          selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
         amount: selected_plan.amount,
         paymentMethod: "razorpay",
         lastPaymentDate: startDate,
@@ -70,7 +70,7 @@ export async function PUT(req) {
       organisation: organisationId,
       subscription: subscription._id,
       plan: selected_plan.name,
-      status: SubscriptionStatus.ACTIVE,
+      status: SubscritptionStatus.ACTIVE,
       startDate,
       endDate,
       amount: selected_plan.amount,

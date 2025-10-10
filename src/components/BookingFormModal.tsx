@@ -258,10 +258,18 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               id="checkIn"
               name="checkIn"
               type="date"
-              value={formData.checkIn ? formData.checkIn.split("T")[0] : ""}
+              value={
+                formData.checkIn
+                  ? (typeof formData.checkIn === "string"
+                    ? formData.checkIn
+                    : formData.checkIn.toISOString()
+                  ).split("T")[0]
+                  : ""
+              }
               onChange={handleChange}
               required
             />
+
           </div>
 
           {/* Check-out */}
@@ -271,9 +279,17 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               id="checkOut"
               name="checkOut"
               type="date"
-              value={formData.checkOut ? formData.checkOut.split("T")[0] : ""}
+              value={
+                formData.checkOut
+                  ? (typeof formData.checkOut === "string"
+                    ? formData.checkOut
+                    : formData.checkOut.toISOString()
+                  ).split("T")[0]
+                  : ""
+              }
               onChange={handleChange}
             />
+
           </div>
 
           {/* Rent Amount */}

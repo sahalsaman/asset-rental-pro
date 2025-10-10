@@ -143,8 +143,8 @@ export interface IBooking {
   address: string;
   verificationIdCard?: string;
   verificationIdCardNumber?: string;
-  checkIn?: Date;
-  checkOut?: Date;
+  checkIn?: Date | string;
+  checkOut?: Date | string;
   amount: number;
   advanceAmount?: number;
   status: BookingStatus;
