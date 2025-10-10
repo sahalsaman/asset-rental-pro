@@ -3,6 +3,7 @@ import connectMongoDB from "@/../database/db";
 import RoomModel from "@/../models/Room";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
+import { OrgSubscriptionModel } from "../../../../models/Organisation";
 
 
 export async function GET(request) {
@@ -34,9 +35,9 @@ export async function GET(request) {
     const bookingsCount = await BookingModel.countDocuments({
       roomId: room._id,
     });
-    
+
     if (bookingsCount) {
-    return NextResponse.json({ ...room.toObject(), bookingsCount:bookingsCount });
+      return NextResponse.json({ ...room.toObject(), bookingsCount: bookingsCount });
     }
 
     return NextResponse.json({ ...room.toObject(), bookingsCount: 0 });
@@ -49,9 +50,9 @@ export async function GET(request) {
       const bookingsCount = await BookingModel.countDocuments({
         roomId: room._id,
       });
-      if( bookingsCount) {  
+      if (bookingsCount) {
         return { ...room.toObject(), bookingsCount };
-      }else {
+      } else {
         return { ...room.toObject(), bookingsCount: 0 };
       }
     })
@@ -68,8 +69,12 @@ export async function POST(request) {
 
   const body = await request.json();
   await connectMongoDB();
+  const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
+  const rooms_list = await RoomModel.find({ organisationId: user.organisationId })
+  if (org?.usageLimits?.property == rooms_list?.length + 1) {
+    return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
+  }
   const room = await RoomModel.create({ ...body, organisationId: user.organisationId });
-  await prop
   return NextResponse.json(room, { status: 201 });
 }
 

@@ -29,7 +29,6 @@ export enum PropertyType {
 export enum PropertyStatus {
   ACTIVE = "Active",
   INACTIVE = "Inactive",
-  PENDING = "Pending",
   DRAFT = "Draft",
 }
 

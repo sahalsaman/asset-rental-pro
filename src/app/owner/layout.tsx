@@ -7,6 +7,7 @@ import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
+import { SubscritptionStatus } from '@/utils/contants';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -14,6 +15,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [open, setOpen] = useState(false);
   const [properties, setProperties] = useState<IProperty[]>([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
+  const [organisation, setOrganisation] = useState<any | null>(null);
+  const [app_data, setApp_data] = useState<any | null>(null);
 
 
   const options = [
@@ -51,15 +54,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
-    if(data.length > 0){
+    if (data.length > 0) {
       localStorageServiceSelectedOptions.setItem({ property: data[0] });
       setSelectedPropertyId(data[0]._id);
+    };
+  }
+
+    const fetchOrganisation = async () => {
+    const res = await apiFetch("/api/organisation");
+    const data = await res.json();
+    setOrganisation(data);
   };
-}
 
 
   useEffect(() => {
     fetchProperties();
+    fetchOrganisation();
   }, []);
 
   const handleChange = (
@@ -75,10 +85,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen pb-24">
-      {/* Navbar */}
-      <div
-        className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-34 md:h-20 py-5"
-      >
+      <div className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-34 md:h-20 py-5">
         <div className="w-full flex justify-between items-center">
           {/* Desktop Nav */}
           <div className=" mr-5  block md:hidden">
@@ -176,7 +183,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </div>
       </div>
-
+      {organisation?.subscription?.status&&organisation?.subscription?.status!==SubscritptionStatus.ACTIVE ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
+       {organisation?.subscription?.status ===SubscritptionStatus.TRIAL? 'Your 14 days free trial is active' : organisation?.subscription?.status ===SubscritptionStatus.PENDING? 'Your subscription is pending' : organisation?.subscription?.status ===SubscritptionStatus.EXPIRED? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status ===SubscritptionStatus.CANCELLED? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
+      </div> : ""}
 
       <main>{children}</main>
       {/* Mobile Bottom Menu */}

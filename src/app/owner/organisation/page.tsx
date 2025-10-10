@@ -7,6 +7,8 @@ import DeleteConfirmModal from "../../../components/DeleteConfirmModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { FullscreenLoader } from "@/components/Loader";
+import { Edit } from "lucide-react";
+import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -24,12 +26,17 @@ export default function PropertiesPage() {
     const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
+    const ls = localStorageServiceSelectedOptions.getItem()
+    if (!ls?.property?._id) {
+      localStorageServiceSelectedOptions.setItem({ property: data[0] });
+    }
   };
 
   const fetchOrganisation = async () => {
     const res = await apiFetch("/api/organisation");
     const data = await res.json();
     setOrganisation(data);
+
   };
 
   const breadcrumbItems = [
@@ -49,17 +56,20 @@ export default function PropertiesPage() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">{organisation?.name}</h1>
-         <p className="text-sm">Organisation</p>
+              <p className="text-sm">Organisation</p>
             </div>
           </div>
+          <Button size="icon" variant="outline" onClick={() => { }} >
+            <Edit className="w-4 h-4" />
+          </Button>
         </div>
       </div>
       <div className=" p-5 md:pt-10 md:px-32 mb-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Properties</h1>
-          <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
+          {organisation.subscription && <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
             Add Property
-          </Button>
+          </Button>}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

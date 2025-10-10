@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import {OrganisationModel} from "@/../models/Organisation";
 import { getTokenValue } from "@/utils/tokenHandler";
+import { UserRoles } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -12,7 +13,11 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const organisations = await OrganisationModel.findById(user.organisationId);
+    if(user.role !==UserRoles.OWNER){
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    const organisations = await OrganisationModel.findById(user.organisationId).populate("subscription").lean();
 
     return NextResponse.json(organisations, { status: 200 });
   } catch (error) {

@@ -6,6 +6,8 @@ import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 import RoomModel from "../../../../models/Room";
+import { BookingStatus, RoomStatus } from "@/utils/contants";
+import { OrgSubscriptionModel } from "../../../../models/Organisation";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -55,8 +57,7 @@ export async function GET(request) {
   }
 }
 
-// POST new booking
-// POST new booking
+
 export async function POST(request) {
   try {
     await connectMongoDB();
@@ -79,6 +80,23 @@ export async function POST(request) {
       body.propertyId = roomData?.propertyId
     }
 
+    const room = await RoomModel.findOne({
+      _id: body.roomId,
+      propertyId: body.propertyId,
+    });
+
+    if (!room) {
+      return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
+    }
+    if (!room.status || room.status !== RoomStatus.AVAILABLE) {
+      return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
+    }
+
+     const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
+      const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
+      if (org?.usageLimits?.property == bookings_list?.length + 1) {
+        return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
+      }
 
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
@@ -123,11 +141,25 @@ export async function POST(request) {
       sendInvoiceToWhatsApp(booking.whatsappNumber, `INV-${Date.now()}-ADV`, booking.amount, booking?.fullName);
     }
 
-    console.log('invoices to create:', invoices);
-
 
     if (invoices.length > 0) {
       await InvoiceModel.insertMany(invoices);
+    }
+
+    if (room.noOfSlots > 1 && room.currentBooking < room.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.CONFIRMED)) {
+      await RoomModel.findByIdAndUpdate(booking.roomId,
+        {
+          $inc: { currentBooking: 1 },
+          $addToSet: { Bookings: booking._id }
+        });
+    }
+
+    if (room.noOfSlots === 1&& (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.CONFIRMED)) {
+      await RoomModel.findByIdAndUpdate(booking.roomId, {
+        status: RoomStatus.RESERVED,
+        $inc: { currentBooking: 1 },
+        $addToSet: { Bookings: booking._id }
+      });
     }
 
     return NextResponse.json(
@@ -158,6 +190,23 @@ export async function PUT(request) {
     if (!updated) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
+
+     if (room.noOfSlots > 1 && booking.status === BookingStatus.CHECKED_OUT) {
+      await RoomModel.findByIdAndUpdate(booking.roomId,
+        {
+          $dec: { currentBooking: 1 },
+          $remToSet: { Bookings: booking._id }
+        });
+    }
+
+    if (room.noOfSlots === 1&& booking.status === BookingStatus.CHECKED_OUT) {
+      await RoomModel.findByIdAndUpdate(booking.roomId, {
+        status: RoomStatus.AVAILABLE,
+        $inc: { currentBooking: -1 },
+        $pull: { Bookings: booking._id }
+      });
+    }
+  
 
     return NextResponse.json({ message: "Booking updated", updated });
   } catch (err) {

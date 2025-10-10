@@ -140,14 +140,6 @@ export default function PropertyFormModal({
             placeholder="Address"
             required
           />
-          <Label>State</Label>
-          <Input
-            name="state"
-            value={formData.state}
-            onChange={handleChange}
-            placeholder="State"
-            required
-          />
           <Label>City</Label>
           <Input
             name="city"
@@ -157,6 +149,14 @@ export default function PropertyFormModal({
             required
           />
 
+          <Label>State</Label>
+          <Input
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            placeholder="State"
+            required
+          />
           <Label>Status</Label>
           <select
             name="status"

@@ -15,19 +15,29 @@ interface Props {
   editData?: IInvoice | null;
 }
 
+interface InvoiceFormData extends Partial<IInvoice> {
+  transactionId?: string;
+  transactionType?: TransactionType;
+  recivedDate?: string;
+}
+
 export default function InvoiceFormModal({ open, onClose, onSave, editData }: Props) {
-  const [formData, setFormData] = useState<Partial<IInvoice>>({});
+  const [formData, setFormData] = useState<InvoiceFormData>({});
 
   useEffect(() => {
     if (editData) {
-      setFormData(editData);
+      setFormData({
+        ...editData,
+        transactionType: TransactionType.INHAND,
+        recivedDate: new Date().toISOString().split("T")[0],
+      });
     } else {
       setFormData({
         disabled: false,
         status: InvoiceStatus.PENDING,
         type: RentAmountType.RENT,
         transactionType: TransactionType.INHAND,
-        recivedDate:new Date()
+        recivedDate: new Date().toISOString().split("T")[0],
       });
     }
   }, [editData]);
@@ -40,30 +50,26 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSaveInvoice(formData);
-  };
-
-  const handleSaveInvoice = async (data: Partial<IInvoice>) => {
     const method = editData ? "PUT" : "POST";
-    const url = editData
-      ? `/api/invoice?id=${editData._id}`
-      : `/api/invoice`;
+    const url = editData ? `/api/invoice?id=${editData._id}` : `/api/invoice`;
 
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ ...data, bookingId: editData?.bookingId }),
+      body: JSON.stringify({
+        ...formData,
+        bookingId: editData?.bookingId,
+      }),
     });
 
-    onSave()
+    onSave();
   };
 
-
   return (
-    <Dialog open={open} onOpenChange={onClose} >
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{editData ? "Edit Invoice" : "Add Invoice"}</DialogTitle>
@@ -80,20 +86,10 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             required
           />
 
-          {/* <Label>Amount Type</Label>
-          <select name="type" value={formData.type || "Rent"} onChange={handleChange} required
-            className="w-full border border-gray-300 rounded px-3 py-2">
-            {Object.values(RentAmountType).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select> */}
-
           <Label>Transaction type</Label>
           <select
             name="transactionType"
-            value={formData.transactionType || "online"}
+            value={formData.transactionType || TransactionType.INHAND}
             onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded px-3 py-2"
@@ -114,8 +110,13 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
           />
 
           <Label>Payment Status</Label>
-          <select name="status" value={formData.status || "unpaid"} onChange={handleChange} required
-            className="w-full border border-gray-300 rounded px-3 py-2">
+          <select
+            name="status"
+            value={formData.status || InvoiceStatus.PENDING}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded px-3 py-2"
+          >
             {Object.values(InvoiceStatus).map((status) => (
               <option key={status} value={status}>
                 {status}
@@ -123,29 +124,32 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
             ))}
           </select>
 
-          <div>
-            <Label>Recived date</Label>
-            <Input
-              name="recivedDate"
-              type="date"
-              value={formData.recivedDate ? formData.recivedDate.toString().split("T")[0] : ""}
-              onChange={handleChange}
-            /></div>
+          <Label>Received date</Label>
+          <Input
+            name="recivedDate"
+            type="date"
+            value={formData.recivedDate || ""}
+            onChange={handleChange}
+          />
 
-          <div>
-            <Label>Due date</Label>
-            <Input
-              name="dueDate"
-              type="date"
-              value={formData.dueDate ? formData.dueDate.toString().split("T")[0] : ""}
-              onChange={handleChange}
-            /></div>
+          <Label>Due date</Label>
+          <Input
+            name="dueDate"
+            type="date"
+            value={
+              formData.dueDate
+                ? new Date(formData.dueDate).toISOString().split("T")[0]
+                : ""
+            }
+            onChange={handleChange}
+          />
 
           <div className="w-full grid grid-cols-2 gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button> <Button type="submit" className='w-full' variant="green">
-              {editData ? 'Update' : 'Submit'}
+            </Button>
+            <Button type="submit" className="w-full" variant="green">
+              {editData ? "Update" : "Submit"}
             </Button>
           </div>
         </form>

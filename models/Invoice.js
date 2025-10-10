@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { InvoiceStatus, TransactionType } from '@/utils/contants';
+import { InvoiceStatus, RentAmountType, TransactionType } from '@/utils/contants';
 
 const InvoiceSchema = new Schema(
   {
@@ -11,7 +11,7 @@ const InvoiceSchema = new Schema(
     amount: { type: Number, required: true },  // Added: required for consistency
     balance: { type: Number, default: 0 },  // Tracks remaining amount
     carryForwarded: { type: Number, default: 0 },  // Fixed spelling: 'carryForwerded' → 'carryForwarded'
-    type: { type: String, required: true },  // Added: required (e.g., 'rent', 'advance')
+    type: { type: String,enum:RentAmountType, required: true },  // Added: required (e.g., 'rent', 'advance')
     status: { type: String, enum: InvoiceStatus, default: InvoiceStatus.PENDING },
     dueDate: { type: Date, required: true },
     paymentGateway: { 
@@ -28,7 +28,7 @@ const InvoiceSchema = new Schema(
         transactionId: { type: String, required: true },  // General txn ID (e.g., from gateway)
         transactionType: { 
           type: String, 
-          enum: Object.values(TransactionType), 
+          enum: TransactionType, 
           // default: TransactionType.INHAND 
         },
         razorpayPaymentId: { type: String },  // New: Razorpay-specific payment ID (e.g., 'pay_abc123')
