@@ -5,7 +5,7 @@ import InvoiceModel from "@/../models/Invoice";
 import connectMongoDB from "@/../database/db";
 import { BookingStatus } from "./contants";
 import { sendInvoiceToWhatsApp } from "./sendToWhatsApp";
-import { generateRazorpayLink } from "./razerPay";
+import {  generateRazorpayLinkForInvoice } from "./razerPay";
 
 connectMongoDB();
 
@@ -22,7 +22,7 @@ cron.schedule("0 0 * * *", async () => {
     if (booking.roomId.frequency === "Month" && now.getDate() === 1) shouldGenerate = true; // 1st of month
     if (booking.roomId.frequency === "Year" && now.getFullYear() === 1) shouldGenerate = true; // 1st of month
     let invoiceId = `INV-${booking._id}-${Date.now()}-RENT`
-    const paymentLink = await generateRazorpayLink(invoiceId, booking.amount, booking?.fullName);
+    const paymentLink = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking?.fullName);
     if (shouldGenerate) {
       await InvoiceModel.create({
         organisationId: booking.organisationId,
