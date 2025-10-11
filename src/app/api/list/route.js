@@ -18,13 +18,15 @@ export async function GET(request) {
     const organisationId = user.organisationId;
     const { searchParams } = new URL(request.url);
     const page = searchParams.get("page");
+    const propertyId = searchParams.get("propertyId");
 
     await connectMongoDB();
     let filter = {
-      organisationId
+      organisationId,
+      propertyId
     };
     if (page === "booking") {
-      const bookings = await BookingModel.find({ organisationId }).sort({ createdAt: -1 });
+      const bookings = await BookingModel.find(filter).sort({ createdAt: -1 });
       return NextResponse.json(bookings);
     } else if (page === "invoice") {
       const payments = searchParams.get("payments")
@@ -38,7 +40,7 @@ export async function GET(request) {
 
         return NextResponse.json(invoices);
       }
-      const invoices = await InvoiceModel.find({ organisationId })
+      const invoices = await InvoiceModel.find(filter)
         .populate("bookingId")
         .sort({ createdAt: -1 })
         .lean(false);

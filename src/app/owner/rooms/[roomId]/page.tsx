@@ -13,6 +13,7 @@ import { Edit, Pencil, ReceiptIndianRupee, Trash } from "lucide-react";
 import RoomAddEditModal from "@/components/RoomFormModal";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { FullscreenLoader } from "@/components/Loader";
+import { RoomStatus } from "@/utils/contants";
 
 export default function RoomDetailPage() {
   const { roomId } = useParams();
@@ -71,16 +72,16 @@ export default function RoomDetailPage() {
               <p className="text-sm text-gray-600 line-clamp-2">{room.description}</p>
             )} */}
 
-                {room?.type && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs">
-                    {room.type}
-                  </span>
-                )}
+              {room?.type && (
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs">
+                  {room.type}
+                </span>
+              )}
               <div className="flex flex-wrap items-center gap-1 ">
 
                 <p className=" text-xs flex gap-1">
-                  <ReceiptIndianRupee size={16} className="text-gray-700"/>
-                <span>  {current_property?.currency}{room.amount?.toLocaleString()} {room?.frequency && ` Per ${room.frequency}`}</span>
+                  <ReceiptIndianRupee size={16} className="text-gray-700" />
+                  <span>  {current_property?.currency}{room.amount?.toLocaleString()} {room?.frequency && ` Per ${room.frequency}`}</span>
                 </p>
                 {room?.advanceAmount && room?.advanceAmount > 0 ? (
                   <span className=" text-xs">
@@ -89,7 +90,7 @@ export default function RoomDetailPage() {
                 ) : ""}
                 {room?.noOfSlots > 1 && (
                   <span className="px-2 py-1 bg-pink-100 text-pink-800 rounded-md text-xs">
-                    Slots: {room.noOfSlots}
+                    Available Slots: {room.noOfSlots-(room?.currentBooking??0)}/{room.noOfSlots}
                   </span>
                 )}
               </div>
@@ -109,9 +110,9 @@ export default function RoomDetailPage() {
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Bookings</h1>
           {/* Booking Button */}
-          <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
+          {room.status === RoomStatus.AVAILABLE ? <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
             Add Booking
-          </Button>
+          </Button> : ""}
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {bookings.length > 0 ? (

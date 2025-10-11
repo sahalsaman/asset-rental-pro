@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
 import { SubscritptionStatus } from '@/utils/contants';
+import SubscriptionPlan from './subscription-plan/page';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -55,12 +56,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const data = await res.json();
     setProperties(data);
     if (data.length > 0) {
-      localStorageServiceSelectedOptions.setItem({ property: data[0] });
-      setSelectedPropertyId(data[0]._id);
+      const prop = localStorageServiceSelectedOptions.getItem()?.property;
+      if (prop && prop?._id) {
+        setSelectedPropertyId(prop?._id);
+        return;
+      } else {
+        localStorageServiceSelectedOptions.setItem({ property: data[0] });
+        setSelectedPropertyId(data[0]._id);
+      }
     };
   }
 
-    const fetchOrganisation = async () => {
+  const fetchOrganisation = async () => {
     const res = await apiFetch("/api/organisation");
     const data = await res.json();
     setOrganisation(data);
@@ -176,18 +183,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <option value=""> Select Property</option>
               {properties.map((property: any) => (
                 <option key={property?._id} value={property?._id}>
-                  {property?.name} {property?.ca}
+                  {property?.name} - {property?.category}
                 </option>
               ))}
             </select>
           </div>
         </div>
       </div>
-      {organisation?.subscription?.status&&organisation?.subscription?.status!==SubscritptionStatus.ACTIVE ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
-       {organisation?.subscription?.status ===SubscritptionStatus.TRIAL? 'Your 14 days free trial is active' : organisation?.subscription?.status ===SubscritptionStatus.PENDING? 'Your subscription is pending' : organisation?.subscription?.status ===SubscritptionStatus.EXPIRED? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status ===SubscritptionStatus.CANCELLED? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
+      {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
+        {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? 'Your 14 days free trial is active' : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
       </div> : ""}
 
-      <main>{children}</main>
+      {organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? <SubscriptionPlan /> : <main>{children}</main>}
+
       {/* Mobile Bottom Menu */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-evenly py-4 md:hidden">
         {mobileMenu.map((item, idx) => (

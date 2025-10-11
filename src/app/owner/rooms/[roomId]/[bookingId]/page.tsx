@@ -32,10 +32,11 @@ export default function BookingDetailPage() {
     : params?.bookingId;
 
   useEffect(() => {
-
-ftechBooking()
+    ftechBooking()
     fetchInvoices();
-    fetchProperty()
+
+    const prop=localStorageServiceSelectedOptions.getItem().property
+    setProperty(prop)
   }, [bookingId]);
 
   const ftechBooking = () => {
@@ -43,7 +44,6 @@ ftechBooking()
       router.push("/owner/bookings");
       return;
     }
-
     apiFetch(`/api/booking?bookingId=${bookingId}`)
       .then((res) => res.json())
       .then(setBooking);
@@ -55,12 +55,6 @@ ftechBooking()
       .then((res) => res.json())
       .then(setInvoices);
   };
-
-  const fetchProperty = () => {
-    apiFetch(`/api/property?propertyId=${id}`)
-      .then(res => res.json())
-      .then(setProperty);
-  }
 
   if (!booking) return <FullscreenLoader />;
 

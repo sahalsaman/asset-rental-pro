@@ -71,6 +71,7 @@ export default function SubscriptionPlan() {
 
       if (result && plan.id == "arp_subcription_trial") {
         toast.success("You have successfully activated the Free Trial plan.");
+        window.location.href="/owner/dashboard"
         return
       }
 
@@ -128,8 +129,7 @@ export default function SubscriptionPlan() {
         <h2 className="text-xl sm:text-2xl font-bold mb-4">Pricing Plans</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl sm:max-w-6xl mx-auto">
           {subscription_plans.map((plan, index) => (
-
-            plan.id != "arp_subcription_trial" && <div
+            <div
               key={index}
               className={`bg-white p-4 sm:p-6 rounded-xl shadow-lg md:shadow-2xl shadow-gray-200 border-2  relative overflow-hidden`}
               onClick={() => { setSelectedPlan(plan); setOpenDetailPopup(true); }}

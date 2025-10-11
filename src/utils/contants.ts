@@ -35,10 +35,9 @@ export enum PropertyStatus {
 // 📌 Room Status (inside property: room, bed, hall, etc.)
 export enum RoomStatus {
   AVAILABLE = "Available",
-  PARTIALLYOCCUPIED = "Partially Occupied",
-  OCCUPIED = "Occupied",
+   PARTIALLY_BOOKED = "Partially Booked",
   MAINTENANCE = "Maintenance",
-  RESERVED = "Reserved",
+  BOOKED = "Booked",
 }
 
 // 📌 Booking Status
@@ -106,6 +105,34 @@ export enum SubscritptionStatus {
 export enum SubscritptionBillingCycle {
   MONTHLY = 'monthly',
   YEARLY = 'yearly',
+}
+
+export enum BankStatus {
+  PRIMARY = "Primary",
+  SECONDARY = "Secondary",
+  INACTIVE = "Inactive",
+}
+
+export enum PaymentStatus {
+  PENDING = "pending",
+  SUCCESS = "success",
+  FAILED = "failed",
+  REFUNDED = "refunded",
+  CANCELLED = "cancelled",
+}
+
+export enum PaymentMethod {
+  RAZORPAY = "razorpay",
+  CASH = "cash",
+  BANK_TRANSFER = "bank_transfer",
+  UPI = "upi",
+}
+
+export enum PaymentType {
+  RENT = "rent",
+  ADVANCE = "advance",
+  SERVICE = "service",
+  REFUND = "refund",
 }
 
 

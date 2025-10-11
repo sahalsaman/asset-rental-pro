@@ -73,8 +73,6 @@ const OrgSubscriptionSchema = new Schema(
 
     // Trial details
     trialDays: { type: Number, default: 14 },
-    trialStarted: { type: Date },
-    trialEndDate: { type: Date },
     trialCompleted: { type: Boolean, default: false },
 
     // Usage limits

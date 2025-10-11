@@ -8,6 +8,7 @@ import { razorpay_config } from "../../../utils/config";
 import { subscription_plans } from "../../../utils/mock-data";
 import { getTokenValue } from "@/utils/tokenHandler";
 import { SubscritptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
+import { generateRazorpayLinkForSubscription } from "@/utils/razerPay";
 
 const razorpay = new Razorpay({
     key_id: razorpay_config.RAZORPAY_KEY_ID,
@@ -52,24 +53,6 @@ export async function POST(req) {
             organisation: user.organisationId,
         });
 
-        let freeTrialParams = {};
-
-        if (selected_plan.id == "arp_subcription_trial") {
-            if (subscription) {
-                subscription.trialDays = 14;
-                subscription.trialStarted = new Date();
-                subscription.trialEndDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 14-day trial
-                subscription.status = SubscritptionStatus.TRIAL;
-            } else {
-                freeTrialParams = {
-                    trialDays: 14,
-                    trialStarted: new Date(),
-                    trialEndDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14-day trial
-                    status: SubscritptionStatus.TRIAL,
-                }
-            }
-        }
-
         if (subscription) {
             // Update existing pending subscription
             subscription.plan = selected_plan.name;
@@ -77,7 +60,7 @@ export async function POST(req) {
                 selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY;
             subscription.amount = selected_plan.amount;
             subscription.paymentMethod = "razorpay";
-            subscription.status = selected_plan.id == "arp_subcription_trial" ? SubscritptionStatus.TRIAL : SubscritptionStatus.PENDING;
+            subscription.status = SubscritptionStatus.TRIAL
             subscription.usageLimits = {
                 property: selected_plan.total_properties || 0,
                 rooms: selected_plan.total_rooms || 0,
@@ -89,21 +72,19 @@ export async function POST(req) {
             subscription = await OrgSubscriptionModel.create({
                 organisation: user.organisationId,
                 plan: selected_plan.name,
-                status: selected_plan.id == "arp_subcription_trial" ? SubscritptionStatus.TRIAL : SubscritptionStatus.PENDING,
+                status: SubscritptionStatus.TRIAL,
                 startDate: new Date(),
+                endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
                 billingCycle:
                     selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
                 amount: selected_plan.amount,
                 paymentMethod: "razorpay",
                 trialDays: 14,
-                trialStarted: new Date(),
-                trialEndDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14-day trial
                 usageLimits: {
                     property: selected_plan.total_properties || 0,
                     rooms: selected_plan.total_rooms || 0,
                     bookings: selected_plan.total_bookings || 0,
                 },
-                ...freeTrialParams
             });
         }
 
@@ -119,11 +100,9 @@ export async function POST(req) {
         }
 
         // Create Razorpay order
-        const order = await razorpay.orders.create({
-            amount: selected_plan.amount * 100,
-            currency: "INR",
-            receipt: `receipt_${Date.now()}`,
-        });
+        const order = await generateRazorpayLinkForSubscription(
+            selected_plan.amount, user.organisationId
+        );
 
         // Record payment attempt (optional)
         await SubscriptionPaymentModel.create({

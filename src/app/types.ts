@@ -52,8 +52,6 @@ export interface IOrgSubscription {
   autoRenew: boolean;
 
   trialDays: number;
-  trialStarted?: Date;
-  trialEndDate?: Date;
   trialCompleted: boolean;
 
   usageLimits?: IUsageLimits;
@@ -113,6 +111,7 @@ export interface IRoom {
   organisationId: any;
   propertyId: any;
   name: string;
+  numberOfRooms?: number; // For multiple rooms addition //only in frontend
   type: string; // Example: 2BHK, 4 Bed
   amount: number;
   description?: string;

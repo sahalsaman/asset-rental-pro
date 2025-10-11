@@ -6,18 +6,16 @@ import {  IBooking } from "@/app/types";
 import BookingCard from "../../../components/BookingCard";
 import { apiFetch } from "@/lib/api";
 import { FullscreenLoader } from "@/components/Loader";
+import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 
 export default function BookingListPage() {
   const [bookings, setBookings] = useState<IBooking[]>([]);
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
-  const [showDelete, setShowDelete] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loader, setLoader] = useState(false);
+  const prop=localStorageServiceSelectedOptions.getItem()?.property
 
   const fetchBookings = () => {
     setLoader(true);
-    apiFetch(`/api/list?page=booking`)
+    apiFetch(`/api/list?page=booking&&propertyId=${prop?._id}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch bookings");
         return res.json();

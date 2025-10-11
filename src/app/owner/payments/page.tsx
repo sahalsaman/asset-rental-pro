@@ -14,8 +14,8 @@ import PaymentCard from "@/components/PaymentCard";
 
 export default function RoomDetailPage() {
 
+    const property = localStorageServiceSelectedOptions.getItem()?.property;
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
-  const [property, setProperty] = useState<any>(null);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);
   const [showDelete, setShowDelete] = useState(false);
@@ -24,7 +24,7 @@ export default function RoomDetailPage() {
 
   const fetchInvoices = () => {
     setLoader(true);
-    apiFetch("/api/list?page=invoice&&payments=true")
+    apiFetch(`/api/list?page=invoice&&payments=true&&propertyId=${property?._id}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch invoices");
         return res.json();
@@ -34,16 +34,9 @@ export default function RoomDetailPage() {
       .finally(() => setLoader(false));
   };
 
-  const fetchProperty = () => {
-    const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
-    apiFetch(`/api/property?propertyId=${id}`)
-      .then(res => res.json())
-      .then(setProperty);
-  }
 
   useEffect(() => {
     fetchInvoices();
-    fetchProperty()
   }, []);
 
   if (loader) return <FullscreenLoader />;

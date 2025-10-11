@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { IBooking, IProperty, IRoom } from "@/app/types";
 import { Label } from "@radix-ui/react-label";
-import { BookingStatus } from "@/utils/contants";
+import { BookingStatus, RoomStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
@@ -131,7 +131,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               required={!roomData ? true : false}
             >
               <option value="">Select Room</option>
-              {rooms.map((room) => (
+              {rooms.map((room) => (room.status === RoomStatus.AVAILABLE &&
                 <option key={room._id} value={room._id}>
                   {room.name} - {property?.currency}{room.amount}
                 </option>))}

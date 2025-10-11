@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import {OrganisationModel} from "@/../models/Organisation";
+import { OrganisationModel, OrgSubscriptionModel } from "@/../models/Organisation";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { UserRoles } from "@/utils/contants";
+import { SubscritptionStatus, UserRoles } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -13,17 +13,30 @@ export async function GET(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if(user.role !==UserRoles.OWNER){
+    if (user.role !== UserRoles.OWNER) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const organisations = await OrganisationModel.findById(user.organisationId).populate("subscription").lean();
+    let organisation = await OrganisationModel.findById(user.organisationId).populate("subscription").lean();
 
-    return NextResponse.json(organisations, { status: 200 });
+    if (organisation?.subscription?.status === SubscritptionStatus.TRIAL || organisation?.subscription?.status === SubscritptionStatus.ACTIVE) {
+      const currentDate = new Date();
+      const endDate = new Date(organisation.subscription.endDate);
+      if (currentDate > endDate) {
+        await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
+          status: SubscritptionStatus.EXPIRED,
+          trialCompleted: true
+        })
+      }
+
+      organisation = await OrganisationModel.findById(user.organisationId).populate("subscription").lean();
+    }
+
+    return NextResponse.json(organisation, { status: 200 });
   } catch (error) {
-    console.error("Error fetching organisations:", error);
+    console.error("Error fetching organisation:", error);
     return NextResponse.json(
-      { error: "Failed to fetch organisations" },
+      { error: "Failed to fetch organisation" },
       { status: 500 }
     );
   }

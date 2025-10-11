@@ -12,8 +12,7 @@ import RoomAddEditModal from "@/components/RoomFormModal";
 import  { FullscreenLoader, } from "@/components/Loader";
 
 export default function PropertyDetailPage() {
-  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
-  const [property, setProperty] = useState<any>(null);
+     const property=localStorageServiceSelectedOptions.getItem()?.property
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [showRoomModal, setShowRoomModal] = useState(false);
   const [editRoomData, setEditRoomData] = useState<IRoom | null>(null);
@@ -24,18 +23,12 @@ export default function PropertyDetailPage() {
 
 
   useEffect(() => {
-    fetchProperty()
     fetchRooms();
-  }, [id]);
+  }, []);
 
-  const fetchProperty = () => {
-    apiFetch(`/api/property?propertyId=${id}`)
-      .then(res => res.json())
-      .then(setProperty);
-  }
 
   const fetchRooms = () => {
-    apiFetch(`/api/room?propertyId=${id}`)
+    apiFetch(`/api/room?propertyId=${property?._id}`)
       .then(res => res.json())
       .then(setRooms);
   };
@@ -45,7 +38,7 @@ export default function PropertyDetailPage() {
     { label: property?.name || "Property" },
   ];
 
-  if (!property) return <FullscreenLoader />;
+  if (!rooms) return <FullscreenLoader />;
 
   return (
     <div className="">

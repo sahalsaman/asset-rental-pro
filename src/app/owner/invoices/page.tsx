@@ -19,12 +19,11 @@ export default function RoomDetailPage() {
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loader, setLoader] = useState(false);
-  const [property, setProperty] = useState<any>(null);
-  const id = localStorageServiceSelectedOptions.getItem()?.property?._id;
+  const property = localStorageServiceSelectedOptions.getItem()?.property;
 
   const fetchInvoices = () => {
     setLoader(true);
-    apiFetch(`/api/list?page=invoice`)
+    apiFetch(`/api/list?page=invoice&&propertyId=${property?._id}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch invoices");
         return res.json();
@@ -32,35 +31,6 @@ export default function RoomDetailPage() {
       .then(data => setInvoices(data))
       .catch(err => console.error("Error fetching invoices:", err))
       .finally(() => setLoader(false));
-  };
-
-  const fetchProperty = () => {
-    apiFetch(`/api/property?propertyId=${id}`)
-      .then(res => res.json())
-      .then(setProperty);
-  }
-
-
-  const handleSaveInvoice = async (data: Partial<IInvoice>) => {
-    const method = editInvoiceData ? "PUT" : "POST";
-    const url = editInvoiceData
-      ? `/api/invoice?id=${editInvoiceData._id}`
-      : `/api/invoice`;
-
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        // id,
-        // roomId
-      }),
-    });
-
-    setShowInvoiceModal(false);
-    setEditInvoiceData(null);
-    fetchInvoices();
   };
 
   const handleDeleteInvoice = async () => {
@@ -76,7 +46,6 @@ export default function RoomDetailPage() {
 
   useEffect(() => {
     fetchInvoices();
-    fetchProperty()
   }, []);
 
   if (loader) return <FullscreenLoader />;

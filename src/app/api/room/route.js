@@ -32,14 +32,6 @@ export async function GET(request) {
       return NextResponse.json(null);
     }
 
-    const bookingsCount = await BookingModel.countDocuments({
-      roomId: room._id,
-    });
-
-    if (bookingsCount) {
-      return NextResponse.json({ ...room.toObject(), bookingsCount: bookingsCount });
-    }
-
     return NextResponse.json({ ...room.toObject(), bookingsCount: 0 });
   }
 
@@ -71,9 +63,29 @@ export async function POST(request) {
   await connectMongoDB();
   const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
   const rooms_list = await RoomModel.find({ organisationId: user.organisationId })
+
+    
+  if (body.isMultipleRoom) {
+    if (body.numberOfRooms && org?.usageLimits?.property < rooms_list?.length + body.numberOfRooms) {
+      return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
+    }
+
+    const newRooms = [];
+    for (let i = 0; i < (body.numberOfRooms || 1); i++) {
+      const roomData = { ...body, organisationId: user.organisationId, name: `Room - ${i + 1}` };
+      delete roomData.isMultipleRoom;
+      delete roomData.numberOfRooms;
+      const room = await RoomModel.create(roomData);
+      newRooms.push(room);
+    }
+    return NextResponse.json(newRooms, { status: 201 });
+
+  }
+
   if (org?.usageLimits?.property == rooms_list?.length + 1) {
     return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
   }
+
   const room = await RoomModel.create({ ...body, organisationId: user.organisationId });
   return NextResponse.json(room, { status: 201 });
 }

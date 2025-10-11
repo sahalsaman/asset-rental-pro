@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { InvoiceStatus, RentAmountType, TransactionType } from '@/utils/contants';
+import { InvoiceStatus, RentAmountType } from '@/utils/contants';
 
 const InvoiceSchema = new Schema(
   {
@@ -18,26 +18,10 @@ const InvoiceSchema = new Schema(
       type: String, 
       enum: ['razorpay', 'upi', 'cash', 'manual'], 
       default: 'manual' 
-    },  // New: Tracks primary gateway (updated on first payment)
+    },  
+    paymentUrl:{ type: String}, 
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
-    payments: [
-      {
-        date: { type: Date, default: Date.now },
-        amount: { type: Number, required: true },
-        transactionId: { type: String, required: true },  // General txn ID (e.g., from gateway)
-        transactionType: { 
-          type: String, 
-          enum: TransactionType, 
-          // default: TransactionType.INHAND 
-        },
-        razorpayPaymentId: { type: String },  // New: Razorpay-specific payment ID (e.g., 'pay_abc123')
-        razorpayOrderId: { type: String },  // New: Order ID for verification
-        razorpaySignature: { type: String },  // New: Signature for webhook validation
-        gateway: { type: String, default: 'manual' },  // New: Per-payment gateway (e.g., 'razorpay')
-        notes: { type: String },  // New: Optional notes (e.g., "Partial payment via UPI")
-      },
-    ],
   },
   { timestamps: true }
 );

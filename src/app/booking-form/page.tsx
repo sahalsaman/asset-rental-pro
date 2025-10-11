@@ -29,6 +29,7 @@ export default function BookingForm() {
             const data = await res.json();
             setShowBookingModal(true)
             setProperty(data);
+            setLoader(false);
         } catch (err) {
             console.error("Error fetching property:", err);
         } finally {

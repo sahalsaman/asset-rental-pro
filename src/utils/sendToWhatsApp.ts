@@ -1,6 +1,5 @@
 import axios from 'axios';  
 import { whatsapp_config } from './config';
-import { generateRazorpayLink } from './razerPay';
 
 export const config = {
     WHATSAPP_TOKEN:whatsapp_config?.WHATSAPP_TOKEN,
@@ -55,7 +54,7 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsApp(phone: string, invoiceId: string, amount: number, name: string) {
+export async function sendInvoiceToWhatsApp(phone: string, invoiceId: string, amount: number, name: string,paymentLink:any) {
   try {
     const formattedPhone = formatPhone("91"+phone);  // Ensure correct format
     const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
@@ -64,8 +63,6 @@ export async function sendInvoiceToWhatsApp(phone: string, invoiceId: string, am
     const dueDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
     dueDate.setHours(0, 0, 0, 0);
     const dueDateStr = dueDate.toISOString().split('T')[0];
-
-    const paymentLink = await generateRazorpayLink(invoiceId, amount, name);
 
     const response = await axios.post(
       url,

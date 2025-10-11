@@ -7,6 +7,7 @@ import { IProperty, IRoom } from "@/app/types";
 import { useState, useEffect } from "react";
 import { FLAT_TYPES, RentFrequency, RoomStatus } from "@/utils/contants";
 import { Label } from "@radix-ui/react-label";
+import { Switch } from "./ui/switch";
 
 interface Props {
   property: IProperty | null;
@@ -19,24 +20,32 @@ interface Props {
 
 export default function RoomAddEditModal({ property, open, onClose, onSave, editData }: Props) {
   const [formData, setFormData] = useState<Partial<IRoom>>({});
-  useEffect(() => {
+  const [isMultipleRoom, setIsMultipleRoom] = useState(false);
+   useEffect(() => {
     if (editData) {
       setFormData(editData);
+      setIsMultipleRoom(false);
     } else {
       setFormData({
-        frequency:RentFrequency.MONTH,
-        status:RoomStatus.AVAILABLE
+        frequency: RentFrequency.MONTH,
+        status: RoomStatus.AVAILABLE,
       });
     }
   }, [editData]);
 
-  const handleChange = (
+ const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'amount' || name === 'advanceAmount' || name === 'noOfSlots' ? Number(value) : value,
+      [name]:
+        name === "amount" ||
+        name === "advanceAmount" ||
+        name === "noOfSlots" ||
+        name === "numberOfRooms"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -53,7 +62,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
       method,
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ ...data, propertyId: property?._id }),
+      body: JSON.stringify({ ...data, propertyId: property?._id,isMultipleRoom }),
     });
     onSave();
 
@@ -69,14 +78,40 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
           <DialogTitle>{editData ? "Edit Room" : "Add Room"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <Label>Room Number</Label>
-          <Input
-            name="name"
-            placeholder="eg : Room 101"
-            value={formData.name || ""}
-            onChange={handleChange}
-            required
-          />
+           <div className="flex items-center space-x-2">
+            <Switch
+              id="multiple-room"
+              checked={isMultipleRoom}
+              onCheckedChange={(checked) => setIsMultipleRoom(checked)}
+            />
+            <Label htmlFor="multiple-room">Multiple Rooms (Same Details)</Label>
+          </div>
+
+          {/* Conditionally show Room Number or Number of Rooms */}
+          {!isMultipleRoom ? (
+            <>
+              <Label>Room Number</Label>
+              <Input
+                name="name"
+                placeholder="eg : Room 101"
+                value={formData.name || ""}
+                onChange={handleChange}
+                required
+              />
+            </>
+          ) : (
+            <>
+              <Label>Number of Rooms</Label>
+              <Input
+                name="numberOfRooms"
+                type="number"
+                placeholder="eg: 5"
+                value={formData.numberOfRooms || ""}
+                onChange={handleChange}
+                required
+              />
+            </>
+          )}
           <Label>Description</Label>
           <Input
             name="description"
@@ -86,16 +121,16 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
           />
 
           <Label>Amount</Label>
-              <div className="flex items-center gap-1">
-              {property?.currency}
-          <Input
-            name="amount"
-            type="number"
-            placeholder="eg: 12000"
-            value={formData.amount || ""}
-            onChange={handleChange}
-            required
-          />
+          <div className="flex items-center gap-1">
+            {property?.currency}
+            <Input
+              name="amount"
+              type="number"
+              placeholder="eg: 12000"
+              value={formData.amount || ""}
+              onChange={handleChange}
+              required
+            />
           </div>
           <Label>Select Rent Duration</Label>
           <select
@@ -147,15 +182,15 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
           )}
 
           <Label>Advance Amount</Label>
-              <div className="flex items-center gap-1">
-              {property?.currency}
-          <Input
-            name="advanceAmount"
-            type="number"
-            placeholder="eg: 12000"
-            value={formData.advanceAmount || ""}
-            onChange={handleChange}
-          /></div>
+          <div className="flex items-center gap-1">
+            {property?.currency}
+            <Input
+              name="advanceAmount"
+              type="number"
+              placeholder="eg: 12000"
+              value={formData.advanceAmount || ""}
+              onChange={handleChange}
+            /></div>
 
           <Label>Status</Label>
           <select
