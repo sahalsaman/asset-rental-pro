@@ -206,11 +206,11 @@ export default function Home() {
         <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-xl text-gray-600 mb-12">No hidden fees. Scale your portfolio with a plan that fits your needs.</p>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-4 gap-4 max-w-6xl mx-auto">
           {subscription_plans.map((plan, index) => (
           <div
             key={index}
-            className={`bg-white p-8 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
+            className={`bg-white p-5 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
           >
             {plan.highlight && (
               <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
@@ -226,19 +226,19 @@ export default function Home() {
             <ul className="space-y-3 text-left mb-8">
               {plan.features.map((feature, i) => (
                 <li key={i} className="flex items-center space-x-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <CheckCircle className="w-5 h-5 min-w-5 text-green-500" />
                   <span>{feature}</span>
                 </li>
               ))}
             </ul>
 
-            <Link href={plan.buttonLink}>
+            {/* <Link href={plan.buttonLink}>
               <button
                 className={`${plan.buttonStyle} font-semibold w-full py-3 rounded-xl`}
               >
                 {plan.buttonText}
               </button>
-            </Link>
+            </Link> */}
           </div>
         ))}
         </div>

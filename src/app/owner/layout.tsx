@@ -9,6 +9,7 @@ import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
 import { SubscritptionStatus } from '@/utils/contants';
 import SubscriptionPlan from './subscription-plan/page';
+import { Button } from '@/components/ui/button';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -95,7 +96,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-34 md:h-20 py-5">
         <div className="w-full flex justify-between items-center">
           {/* Desktop Nav */}
-          <div className=" mr-5  block md:hidden">
+          <div className=" mr-5  block lg:hidden">
             <div
               className=" flex items-center gap-3"
             >
@@ -105,7 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
 
           </div>
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             <h1
               onClick={() => router.push('/owner/dashboard')}
               className="text-2xl font-bold text-white mr-5 cursor-pointer"
@@ -123,20 +124,43 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             ))}
           </div>
+            <div className='hidden md:block'>
+          {properties?.length ? <div >
+            {/* <p className='text-white'>Current Property</p> */}
+            <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
+              <Building2 className='ml-4 text-white' />
+              <select
+                name="frequency"
+                value={selectedPropertyId || ""}
+                onChange={handleChange}
+                className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+                style={{ minWidth: "220px", border: "0px", height: "48px" }}
+                required
+              >
+                <option value=""> Select Property</option>
+                {properties.map((property: any) => (
+                  <option key={property?._id} value={property?._id}>
+                    {property?.name} - {property?.category}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div> :
+            <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition">
+              Start Free Trial
+            </Button>
+          }
+        </div>
           {/* Profile Dropdown */}
           <div className="relative">
-
             <button
               onClick={() => setOpen(!open)}
               className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"
             >
               {!open ? <User size={20} /> : <XIcon size={20} />}
             </button>
-
             {open && (
               <div className="absolute right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
-
-
                 <button
                   onClick={() => {
                     setOpen(false);
@@ -168,26 +192,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             )}
           </div>
         </div>
-        <div className='mt-2'>
-          {/* <p className='text-white'>Current Property</p> */}
-          <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
-            <Building2 className='ml-2 text-white' />
-            <select
-              name="frequency"
-              value={selectedPropertyId || ""}
-              onChange={handleChange}
-              className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
-              style={{ minWidth: "220px", border: "0px", height: "48px" }}
-              required
-            >
-              <option value=""> Select Property</option>
-              {properties.map((property: any) => (
-                <option key={property?._id} value={property?._id}>
-                  {property?.name} - {property?.category}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className='block md:hidden'>
+          {properties?.length ? <div className='mt-2'>
+            {/* <p className='text-white'>Current Property</p> */}
+            <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
+              <Building2 className='ml-2 text-white' />
+              <select
+                name="frequency"
+                value={selectedPropertyId || ""}
+                onChange={handleChange}
+                className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+                style={{ minWidth: "220px", border: "0px", height: "48px" }}
+                required
+              >
+                <option value=""> Select Property</option>
+                {properties.map((property: any) => (
+                  <option key={property?._id} value={property?._id}>
+                    {property?.name} - {property?.category}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div> :
+            <Button className="mt-3 w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition">
+              Start Free Trial
+            </Button>
+          }
         </div>
       </div>
       {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
@@ -197,7 +227,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? <SubscriptionPlan /> : <main>{children}</main>}
 
       {/* Mobile Bottom Menu */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-evenly py-4 md:hidden">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-evenly py-4 lg:hidden">
         {mobileMenu.map((item, idx) => (
           <button
             key={idx}

@@ -90,7 +90,7 @@ export default function RoomDetailPage() {
                 ) : ""}
                 {room?.noOfSlots > 1 && (
                   <span className="px-2 py-1 bg-pink-100 text-pink-800 rounded-md text-xs">
-                    Available Slots: {room.noOfSlots-(room?.currentBooking??0)}/{room.noOfSlots}
+                    Available Slots: {room.noOfSlots-(room?.currentBooking??0)}
                   </span>
                 )}
               </div>
@@ -110,7 +110,7 @@ export default function RoomDetailPage() {
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Bookings</h1>
           {/* Booking Button */}
-          {room.status === RoomStatus.AVAILABLE ? <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
+          {room.status === RoomStatus.AVAILABLE||room.status === RoomStatus.PARTIALLY_BOOKED ? <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
             Add Booking
           </Button> : ""}
         </div>
@@ -138,7 +138,8 @@ export default function RoomDetailPage() {
         onSave={() => {
           setShowBookingModal(false);
           setEditBookingData(null);
-          fetchBookings();
+           fetchRoom()
+    fetchBookings();
         }}
         roomData={room}
       />

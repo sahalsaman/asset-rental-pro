@@ -108,8 +108,7 @@ export enum SubscritptionBillingCycle {
 }
 
 export enum BankStatus {
-  PRIMARY = "Primary",
-  SECONDARY = "Secondary",
+  ACTIVE = "Active",
   INACTIVE = "Inactive",
 }
 
@@ -133,6 +132,13 @@ export enum PaymentType {
   ADVANCE = "advance",
   SERVICE = "service",
   REFUND = "refund",
+}
+
+export enum PaymentRecieverOptios{
+  BANK = "Bank",
+  UPIPHONE = "UPI Phone",
+  UPIQR = "UPI QR",
+  UPIID = "UPI ID",
 }
 
 

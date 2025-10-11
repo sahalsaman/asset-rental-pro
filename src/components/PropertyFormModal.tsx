@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; // fixed "Inut" typo
 import { Label } from '@radix-ui/react-label';
 import { CurrencyType, PropertyStatus, PropertyType } from '@/utils/contants';
+import { Textarea } from './ui/textarea';
 
 interface PropertyFormModalProps {
   open: boolean;
@@ -55,7 +56,7 @@ export default function PropertyFormModal({
   }, [initialData]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -125,11 +126,11 @@ export default function PropertyFormModal({
             required
           />
           <Label>Description</Label>
-          <Input
+          <Textarea
             name="description"
             value={formData.description}
             onChange={handleChange}
-            placeholder="Description"
+            placeholder="Enter your amenities and services"
             required
           />
           <Label>Address</Label>

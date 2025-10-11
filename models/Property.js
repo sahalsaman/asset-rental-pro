@@ -1,32 +1,6 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { BankStatus, PropertyStatus } from "@/utils/contants";
+import {  PropertyStatus } from "@/utils/contants";
 
-const BankDetailSchema = new Schema(
-  {
-    accountNo: String,
-    ifsc: String,
-    accountHolderName: String,
-    status: { type: String, enum: BankStatus, default: BankStatus.INACTIVE },
-  },
-  { _id: false }
-);
-
-const UPIDetailSchema = new Schema(
-  {
-    upiId: String,
-    qrcode_link: String,
-    status: { type: String, enum: BankStatus, default: BankStatus.INACTIVE },
-  },
-  { _id: false }
-);
-
-const UPPhoneDetailSchema = new Schema(
-  {
-    upiPhoneNumber: String,
-    status: { type: String, enum: BankStatus, default: BankStatus.INACTIVE },
-  },
-  { _id: false }
-);
 
 const PropertySchema = new Schema(
   {
@@ -35,6 +9,7 @@ const PropertySchema = new Schema(
     description: String,
     amenities: [String], 
     services: [String], 
+    images: [String],
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
@@ -42,34 +17,12 @@ const PropertySchema = new Schema(
     zipCode:  { type: String, required: true },
     status: { type: String, default: PropertyStatus.AVAILABLE },
     category: { type: String, required: true },
-    images: [String],
     currency: { type: String, required: true },
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
     managers: [{ type: Types.ObjectId, ref: "User" }],
     is_paymentRecieveSelf: { type: Boolean, default: true },
-    // 🏦 Bank and UPI details with validators
-    bankDetails: {
-      type: [BankDetailSchema],
-      validate: {
-        validator: (v) => v.length <= 2,
-        message: "Maximum of 2 bank accounts allowed",
-      },
-    },
-    upiDetails: {
-      type: [UPIDetailSchema],
-      validate: {
-        validator: (v) => v.length <= 2,
-        message: "Maximum of 2 UPI IDs allowed",
-      },
-    },
-    upiPhoneDetails: {
-      type: [UPPhoneDetailSchema],
-      validate: {
-        validator: (v) => v.length <= 2,
-        message: "Only 1 UPI Phone number allowed",
-      },
-    },
+    selectedBank: { type: Types.ObjectId, ref: "BankDetail"}
   },
   { timestamps: true }
 );

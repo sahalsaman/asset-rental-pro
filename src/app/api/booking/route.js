@@ -89,7 +89,7 @@ export async function POST(request) {
     if (!room) {
       return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
     }
-    if (!room.status || room.status !== RoomStatus.AVAILABLE) {
+    if (!room.status || (room.status !== RoomStatus.AVAILABLE&&room.status !== RoomStatus.PARTIALLY_BOOKED)) {
       return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
     }
 

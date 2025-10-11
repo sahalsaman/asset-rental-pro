@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { FLAT_TYPES, RentFrequency, RoomStatus } from "@/utils/contants";
 import { Label } from "@radix-ui/react-label";
 import { Switch } from "./ui/switch";
+import { Textarea } from "./ui/textarea";
 
 interface Props {
   property: IProperty | null;
@@ -34,7 +35,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
   }, [editData]);
 
  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -113,9 +114,9 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
             </>
           )}
           <Label>Description</Label>
-          <Input
+          <Textarea
             name="description"
-            placeholder="Enter description"
+            placeholder="Enter your amenities and services"
             value={formData.description || ""}
             onChange={handleChange}
           />

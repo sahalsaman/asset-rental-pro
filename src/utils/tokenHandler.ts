@@ -1,8 +1,14 @@
 
 import jwt from "jsonwebtoken";
 
+ export interface IPayload  {
+    id: string;
+    role: string;
+    organisationId:string;
+  };
+
 export function setTokenValue(user:any){
-  const payload = {
+  const payload:IPayload = {
     id: user._id,
     role: user.role,
     organisationId:user.organisationId

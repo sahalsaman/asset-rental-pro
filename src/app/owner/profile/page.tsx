@@ -56,20 +56,23 @@ export default function PropertiesPage() {
         {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/organisation')}>
           Organisation
         </a> : ""}
+           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-details')}>
+          Bank & UPI Details
+        </a> : ""}
         {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subscription-plan')}>
           Subscription
         </a> : ""}
         <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/privacy')}>
-          Privacy
+          Privacy and policy
         </a>
         <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/terms')}>
-          Terms
+          Terms & Conditions
         </a>
         <a className="p-4 border-b-1 border-b-gray-200" >
           FAQ
         </a>
         <a className="p-4 border-b-1 border-b-gray-200"  >
-          Help and Support
+          Support
         </a>
       </div>
     </div>
