@@ -26,7 +26,7 @@ export default function PaymentCard({ invoice, property }: Props) {
         </h3>
 
         <h3 className="text-lg md:text-2xl  font-semibold">
-          {property?.currency}{invoice.amount}
+          {property?.currency}{invoice.amount?.toLocaleString()}
         </h3>
       </div>
       <div className="flex  justify-between items-center">

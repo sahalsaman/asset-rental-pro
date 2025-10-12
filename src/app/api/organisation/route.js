@@ -22,12 +22,18 @@ export async function GET(request) {
     if (organisation?.subscription?.status === SubscritptionStatus.TRIAL || organisation?.subscription?.status === SubscritptionStatus.ACTIVE) {
       const currentDate = new Date();
       const endDate = new Date(organisation.subscription.endDate);
-      if (currentDate > endDate) {
-       organisation= await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
+      currentDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+      const diffTime = endDate.getTime() - currentDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays <= 0) {
+          await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
           status: SubscritptionStatus.EXPIRED,
           trialCompleted: true
-        },{ new: true }).populate("subscription").lean();
+        }, { new: true })
+        organisation = await OrganisationModel.findById(user.organisationId).populate("subscription").lean();
       }
+
 
     }
 

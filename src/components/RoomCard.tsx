@@ -30,7 +30,7 @@ export default function RoomCard({ room, property, onEdit, onDelete, onBook }: R
             {room.status}
           </span>
           <p className="font-bold">
-            {property?.currency}{room.amount}
+            {property?.currency}{room.amount?.toLocaleString()}
           </p>
         </CardTitle>
         <h2>{room.name}</h2>

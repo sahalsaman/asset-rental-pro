@@ -47,32 +47,13 @@ export default function Home() {
     setSubscriptionPlans(subscription_plans.slice(1, 4))
   }, [])
 
-  const header = (<header className="flex justify-between items-center px-4 md:px-24 py-4 shadow-md bg-white sticky top-0 z-50">
-    <div className="flex items-center gap-3">
-      <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
-      <h1 className="text-2xl md:text-2xl font-bold text-green-700">Asset Rental Pro</h1>
-    </div>
-    <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">
-      <Link href="#setup-guide">Setup Guide</Link>
-      <Link href="#pricing">Pricing</Link>
-      <Link href="#downloads">Downloads</Link>
-      <Link href="#faq">FAQ</Link>
-      <Link href="/auth/signup">
-        <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm ">Get Started</button>
-      </Link>
-      <Link href="/auth/login">Login</Link>
-    </nav>
-    <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-      <Menu className="h-6 w-6 text-green-700" />
-    </button>
-  </header>)
 
   if (menuOpen) {
     return (
       <div className="bg-white  px-6 py-4 space-y-8 text-xl text-center flex flex-col">
         <div className="flex justify-between m-5 mb-10">
           <div className="flex items-center gap-3">
-            <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
+            <Image src={logo} alt="Logo" width={60} className='cursor-pointer' />
           </div>
           <button className="" onClick={() => setMenuOpen(!menuOpen)}>
             <X className="h-10 w-10 text-gray-700 font-light" />
@@ -96,10 +77,28 @@ export default function Home() {
     <main className="min-h-screen bg-white text-gray-800 ">
       {/* Navbar */}
 
-      {header}
+      <header className="flex justify-between items-center px-4 md:px-24 py-3 md:py-4 shadow-md bg-white sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <Image src={logo} alt="Logo" className='w-10 h-10 md:w-14 md:h-14 cursor-pointer' />
+          <h1 className="text-xl md:text-3xl font-bold text-green-700">Asset Rental Pro</h1>
+        </div>
+        <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">
+          <Link href="#setup-guide">Setup Guide</Link>
+          <Link href="#pricing">Pricing</Link>
+          <Link href="#downloads">Downloads</Link>
+          <Link href="#faq">FAQ</Link>
+          <Link href="/auth/signup">
+            <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm ">Get Started</button>
+          </Link>
+          <Link href="/auth/login">Login</Link>
+        </nav>
+        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+          <Menu className="h-6 w-6 text-green-700" />
+        </button>
+      </header>
 
       {/* Hero Section */}
-      <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white md:py-40 py-16 px-6 text-center overflow-hidden`}  >
+      <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white py-32 px-6 md:py-40  text-center overflow-hidden`}  >
         <div className="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
         <div className="max-w-4xl mx-auto z-10 relative">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">

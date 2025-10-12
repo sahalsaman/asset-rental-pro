@@ -12,7 +12,7 @@ import SubscriptionPlan from './subscription-plan/page';
 import { Button } from '@/components/ui/button';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-      const prop = localStorageServiceSelectedOptions.getItem()?.property;
+  const prop = localStorageServiceSelectedOptions.getItem()?.property;
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -76,8 +76,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
   useEffect(() => {
-    fetchProperties();
     fetchOrganisation();
+    fetchProperties();
   }, []);
 
   const handleChange = (
@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const diffTime = end.getTime() - currentDate.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 0) return "Your free trial has ended.";
+    if (diffDays <= 0) return "Your subscription has expired. Please renew to continue using our services.";
     return `You have ${diffDays} day${diffDays > 1 ? "s" : ""} remaining in your free trial.`;
   };
 
@@ -106,7 +106,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen pb-24">
-      <div className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5 h-34 md:h-20 py-5">
+      <div className=" w-full bg-cover bg-center bg-green-700 md:px-32 px-5  py-5">
         <div className="w-full flex justify-between items-center">
           {/* Desktop Nav */}
           <div className=" mr-5  block lg:hidden">
@@ -233,7 +233,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           }
         </div>
       </div>
-      {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
+      {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className=" bg-amber-300 py-2 md:px-32 px-5 flex items-center justify-between text-sm">
         {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? `${remainingDate(organisation?.subscription?.endDate)}` : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
       </div> : ""}
 

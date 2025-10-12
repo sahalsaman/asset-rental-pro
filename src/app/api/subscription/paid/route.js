@@ -68,7 +68,7 @@ export async function PUT(req) {
     // ✅ Record successful payment
     await SubscriptionPaymentModel.create({
       organisation: organisationId,
-      subscription: subscription._id,
+      subscription: subscription?._id,
       plan: selected_plan.name,
       status: SubscritptionStatus.ACTIVE,
       startDate,

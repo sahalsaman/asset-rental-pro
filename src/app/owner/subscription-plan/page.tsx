@@ -21,7 +21,7 @@ export default function SubscriptionPlan() {
   const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
   const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([])
 
-  const current_property = localStorageServiceSelectedOptions.getItem()
+  const current_property = localStorageServiceSelectedOptions.getItem()?.property
 
   const fetchUser = async () => {
     const res = await apiFetch("/api/me");
@@ -33,10 +33,9 @@ export default function SubscriptionPlan() {
     const res = await apiFetch("/api/subscription");
     const data = await res.json();
     setActiveSub(data);
-
-    if(data.plan==="Free Trial"){
-      setSubscriptionPlans(subscription_plans.slice(1,4))
-    }else{
+    if (data.status) {
+      setSubscriptionPlans(subscription_plans.slice(1, 4))
+    } else {
       setSubscriptionPlans(subscription_plans)
     }
   };
@@ -77,7 +76,7 @@ export default function SubscriptionPlan() {
 
       if (result && plan.id == "arp_subcription_trial") {
         toast.success("You have successfully activated the Free Trial plan.");
-        window.location.href="/owner/dashboard"
+        window.location.href = "/owner/dashboard"
         return
       }
 
@@ -96,13 +95,16 @@ export default function SubscriptionPlan() {
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
-              organisationId: current_property?._id,
-              plan: plan.name,
+              organisationId: user?.organisationId?._id,
+              plan: plan.id,
             }),
           });
 
           const result = await verifyRes.json();
-          if (result.success) toast("✅ Payment successful!");
+          if (result.success) {
+            toast.success("✅ Payment successful!");
+            window.location.reload()
+          }
           else toast("❌ Payment verification failed.");
         },
         prefill: {
@@ -143,7 +145,8 @@ export default function SubscriptionPlan() {
               <div className="flex justify-between items-center">
                 <div className="">
                   <h3 className="text-md md:text-2xl font-semibold text-green-700">{plan.name}</h3>
-                  <p className="text-gray-500 text-sm sm:text-base">{plan.features[0]}</p>
+                  <p className="text-gray-500 text-sm sm:text-base">{plan.features[0] == "14 days free trial" ? plan.features[1] : plan.features[0]}</p>
+                  <p className="text-gray-500 text-sm sm:text-base">{plan.features[0] == "14 days free trial" ? plan.features[2] : plan.features[1]}</p>
                 </div>
                 <div className={`${!plan.no_price && 'border-l-1'} pl-5 flex`}>
                   {!plan.no_price ? <div>

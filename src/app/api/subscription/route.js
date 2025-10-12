@@ -109,7 +109,7 @@ export async function POST(req) {
             organisation: user.organisationId,
             subscription: subscription._id,
             plan: selected_plan.name,
-            status: SubscriptionStatus.PENDING,
+            status: SubscritptionStatus.PENDING,
             startDate: new Date(),
             amount: selected_plan.amount,
             paymentMethod: "razorpay",

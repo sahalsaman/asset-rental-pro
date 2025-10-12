@@ -28,7 +28,7 @@ export default function PropertiesPage() {
     setProperties(data);
     const ls = localStorageServiceSelectedOptions.getItem()
     if (!ls?.property?._id) {
-      localStorageServiceSelectedOptions.setItem({ property: data[0] });
+      localStorageServiceSelectedOptions.setItem({ property: data[0] ,organisation:organisation });
     }
   };
 

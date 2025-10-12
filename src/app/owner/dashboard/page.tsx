@@ -109,8 +109,8 @@ export default function OwnerDashboard() {
         <DashboardCard title="Available Rooms" value={status?.available_rooms} icon={Bed} />
         <DashboardCard title="Notice Period" value={status?.noticePeriod} icon={Paperclip} />
         <DashboardCard title="Enrollments" value={status?.enrollments} icon={Users} />
-        <DashboardCard title="Monthly Target" value={`${current_property?.currency ?? ""}${status?.totalInvoiceAmount}`} icon={Tickets} />
-        <DashboardCard title="Monthly Received" value={`${current_property?.currency ?? ""}${status?.totalReceivedAmount}`} icon={BadgeDollarSign} />
+        <DashboardCard title="Monthly Target" value={`${current_property?.currency ?? ""}${status?.totalInvoiceAmount?.toLocaleString()}`} icon={Tickets} />
+        <DashboardCard title="Monthly Received" value={`${current_property?.currency ?? ""}${status?.totalReceivedAmount?.toLocaleString()}`} icon={BadgeDollarSign} />
       </div>
 
       <div className=" lg:hidden grid grid-cols-4 gap-4 md:gap-8 mt-8">

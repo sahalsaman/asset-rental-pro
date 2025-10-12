@@ -95,6 +95,11 @@ export async function POST(request) {
 
     const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
     const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
+
+     if (org?.status === SubscritptionStatus.EXPIRED) {
+        return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
+      }
+      
     if (org?.usageLimits?.property == bookings_list?.length + 1) {
       return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
     }

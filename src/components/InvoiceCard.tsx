@@ -40,7 +40,7 @@ export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Pro
       <CardContent className="px-4">
         <CardTitle className="text-lg font-semibold flex justify-between">
           <span> {(invoice?.bookingId as IBooking)?.fullName ?? ""}</span>
-          <span>{property?.currency}{invoice.amount}</span>
+          <span>{property?.currency}{invoice.amount?.toLocaleString()}</span>
         </CardTitle>
         <p className="text-gray-600 text-sm">   {invoice?.updatedAt
           ? new Date(invoice.updatedAt).toLocaleDateString("en-GB", {
@@ -64,7 +64,7 @@ export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Pro
             </span>
           </div>
           <div className="flex gap-2">
-       {   invoice.status!==InvoiceStatus.PAID&&  <Button size="icon" variant="green" onClick={() => sendToWhatsappMesaage(invoice)}>
+            {invoice.status !== InvoiceStatus.PAID && <Button size="icon" variant="green" onClick={() => sendToWhatsappMesaage(invoice)}>
               <Send className="w-4 h-4" />
             </Button>}
             <Button size="icon" variant="outline" onClick={() => onEdit(invoice)}>
