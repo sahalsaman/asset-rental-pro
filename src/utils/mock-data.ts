@@ -45,6 +45,7 @@ export const subscription_plans = [
     description: "Perfect for new landlords managing a few assets.",
     property_limit:1,
     features: [
+      "14 days free trial ",
       "1 property",
       "Up to 10 rooms",
       "Up to 30 booking",

@@ -40,6 +40,12 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([])
+
+  useEffect(() => {
+
+    setSubscriptionPlans(subscription_plans.slice(1, 4))
+  },[])
   
 
   return (
@@ -207,11 +213,11 @@ export default function Home() {
         <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-xl text-gray-600 mb-12">No hidden fees. Scale your portfolio with a plan that fits your needs.</p>
 
-        <div className="grid md:grid-cols-4 gap-4 max-w-6xl mx-auto">
-          {subscription_plans.map((plan, index) => (
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {subscriptionPlans.map((plan, index) => (
           <div
             key={index}
-            className={`bg-white p-5 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
+            className={`bg-white p-8 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
           >
             {plan.highlight && (
               <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
@@ -225,7 +231,7 @@ export default function Home() {
             <p className="text-gray-600 mb-6">{plan.description}</p>
 
             <ul className="space-y-3 text-left mb-8">
-              {plan.features.map((feature, i) => (
+              {plan.features.map((feature:any, i:any) => (
                 <li key={i} className="flex items-center space-x-2 text-gray-700">
                   <CheckCircle className="w-5 h-5 min-w-5 text-green-500" />
                   <span>{feature}</span>

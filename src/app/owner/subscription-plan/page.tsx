@@ -35,7 +35,9 @@ export default function SubscriptionPlan() {
     setActiveSub(data);
 
     if(data.plan==="Free Trial"){
-      subscription_plans.shift();
+      setSubscriptionPlans(subscription_plans.slice(1,4))
+    }else{
+      setSubscriptionPlans(subscription_plans)
     }
   };
 
@@ -132,7 +134,7 @@ export default function SubscriptionPlan() {
       <section id="pricing" className="py-6 md:py-24 px-4 sm:px-6 bg-slate-50 text-left">
         <h2 className="text-xl sm:text-2xl font-bold mb-4">Pricing Plans</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl sm:max-w-6xl mx-auto">
-          {subscription_plans.map((plan, index) => (
+          {subscriptionPlans.map((plan, index) => (
             <div
               key={index}
               className={`bg-white p-4 sm:p-6 rounded-xl shadow-lg md:shadow-2xl shadow-gray-200 border-2  relative overflow-hidden`}

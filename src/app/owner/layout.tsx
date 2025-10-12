@@ -12,6 +12,7 @@ import SubscriptionPlan from './subscription-plan/page';
 import { Button } from '@/components/ui/button';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+      const prop = localStorageServiceSelectedOptions.getItem()?.property;
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -57,7 +58,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const data = await res.json();
     setProperties(data);
     if (data.length > 0) {
-      const prop = localStorageServiceSelectedOptions.getItem()?.property;
       if (prop && prop?._id) {
         setSelectedPropertyId(prop?._id);
         return;
