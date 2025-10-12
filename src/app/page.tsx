@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Key, Zap, ShieldCheck, FileText, LayoutDashboard, DollarSign, Briefcase, TrendingUp } from "lucide-react";
+import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Key, Zap, ShieldCheck, FileText, LayoutDashboard, DollarSign, Briefcase, TrendingUp, SidebarClose, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import logo from "../../public/arp logo.png"
-import about from "../../public/arp aboout.svg"
+import about from "../../public/arp aboout.png"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
+import bannerBg from "../../public/banner.png"
 import Image from "next/image";
 import { subscription_plans } from "@/utils/mock-data";
 
@@ -43,50 +44,62 @@ export default function Home() {
   const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([])
 
   useEffect(() => {
-
     setSubscriptionPlans(subscription_plans.slice(1, 4))
-  },[])
-  
+  }, [])
+
+  const header = (<header className="flex justify-between items-center px-4 md:px-24 py-4 shadow-md bg-white sticky top-0 z-50">
+    <div className="flex items-center gap-3">
+      <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
+      <h1 className="text-2xl md:text-2xl font-bold text-green-700">Asset Rental Pro</h1>
+    </div>
+    <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">
+      <Link href="#setup-guide">Setup Guide</Link>
+      <Link href="#pricing">Pricing</Link>
+      <Link href="#downloads">Downloads</Link>
+      <Link href="#faq">FAQ</Link>
+      <Link href="/auth/signup">
+        <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm ">Get Started</button>
+      </Link>
+      <Link href="/auth/login">Login</Link>
+    </nav>
+    <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+      <Menu className="h-6 w-6 text-green-700" />
+    </button>
+  </header>)
+
+  if (menuOpen) {
+    return (
+      <div className="bg-white  px-6 py-4 space-y-8 text-xl text-center flex flex-col">
+        <div className="flex justify-between m-5 mb-10">
+          <div className="flex items-center gap-3">
+            <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
+          </div>
+          <button className="" onClick={() => setMenuOpen(!menuOpen)}>
+            <X className="h-10 w-10 text-gray-700 font-light" />
+          </button>
+        </div>
+        <Link className="border-b pb-8" href="#setup-guide" onClick={() => setMenuOpen(false)}>Setup Guide</Link>
+        <Link className="border-b pb-8" href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</Link>
+        <Link className="border-b pb-8" href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
+        <Link className="border-b pb-8" href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
+        <Link className="border-b pb-8" href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
+        <Link href="/auth/signup">
+          <button className="bg-green-700 text-white w-full py-2 rounded-xl">Get Started</button>
+        </Link>
+      </div>)
+  }
+
+
+
 
   return (
     <main className="min-h-screen bg-white text-gray-800 ">
       {/* Navbar */}
-      <header className="flex justify-between items-center px-4 md:px-24 py-4 shadow-md bg-white sticky top-0 z-50">
-        <div className="flex items-center gap-3">
-          <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
-          <h1 className="text-lg md:text-2xl font-bold text-green-700">AssetRentalPro</h1>
-        </div>
-        <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">
-          <Link href="#setup-guide">Setup Guide</Link>
-          <Link href="#pricing">Pricing</Link>
-          <Link href="#downloads">Downloads</Link>
-          <Link href="#faq">FAQ</Link>
-          <Link href="/auth/signup">
-            <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm ">Get Started</button>
-          </Link>
-          <Link href="/auth/login">Login</Link>
-        </nav>
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-          <Menu className="h-6 w-6 text-green-700" />
-        </button>
-      </header>
 
-      {/* Mobile Nav */}
-      {menuOpen && (
-        <div className="md:hidden bg-white shadow-md px-6 py-4 space-y-4 text-sm flex flex-col">
-          <Link href="#setup-guide" onClick={() => setMenuOpen(false)}>Setup Guide</Link>
-          <Link href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</Link>
-          <Link href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
-          <Link href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
-          <Link href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
-          <Link href="/auth/signup">
-            <button className="bg-green-700 text-white w-full py-2 rounded-xl">Get Started</button>
-          </Link>
-        </div>
-      )}
+      {header}
 
       {/* Hero Section */}
-      <section className="relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white md:py-40 py-16 px-6 text-center overflow-hidden">
+      <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white md:py-40 py-16 px-6 text-center overflow-hidden`}  >
         <div className="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
         <div className="max-w-4xl mx-auto z-10 relative">
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
@@ -159,48 +172,52 @@ export default function Home() {
       <section id="about" className="py-12 md:py-24 px-6 bg-white md:mt-40">
         <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
-          <div className="w-full md:w-1/2">
-            <h2 className="text-4xl font-extrabold mb-6 text-gray-800  inline-block pb-1">Why Choose AssetRentalPro?</h2>
+          <div className="w-full md:w-1/2 text-center md:text-left">
+            <h2 className="text-5xl font-extrabold mb-4 text-gray-800  inline-block">Why Choose</h2>
+            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1">Asset Rental Pro (ARP)?</h2>
             <p className="text-xl text-gray-600 mb-10 leading-relaxed">
               We're more than just software. We're your partner in maximizing **Return on Investment (ROI)** by replacing manual, error-prone tasks with intelligent automation.
             </p>
-            <ul className="space-y-8 text-gray-700">
-              {[
-                {
-                  icon: <Zap className="w-6 h-6 text-green-600" />,
-                  text: <span className="text-lg font-bold">1-Click Maintenance Control:</span>,
-                  detail: "Tenants log issues in 30 seconds. Managers assign vendors and track progress from initial report to invoice payment, all automated."
-                },
-                {
-                  icon: <DollarSign className="w-6 h-6 text-green-600" />,
-                  text: <span className="text-lg font-bold">Financial Automation:</span>,
-                  detail: "Automated rent collection (ACH/Card), expense tracking, and **one-click 1099 generation** ensures flawless accounting every time."
-                },
-                {
-                  icon: <ShieldCheck className="w-6 h-6 text-green-600" />,
-                  text: <span className="text-lg font-bold">High-Security Document Vault:</span>,
-                  detail: "Military-grade cloud storage for leases and sensitive data, coupled with **role-based access** for maximum security."
-                },
-                {
-                  icon: <TrendingUp className="w-6 h-6 text-green-600" />,
-                  text: <span className="text-lg font-bold">Unmatched Transparency & Growth:</span>,
-                  detail: "Dedicated Owner Portals and instant, customizable reports give you the data needed to make **smart portfolio decisions**."
-                }
-              ].map((item, index) => (
-                <li key={index} className="flex items-start gap-4 p-2">
-                  <div className="p-2 bg-green-100 rounded-full">{item.icon}</div>
-                  <div>
-                    {item.text}
-                    <p className="text-base text-gray-600 mt-1">{item.detail}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
+
           </div>
 
           {/* NEW IMAGE */}
           <div className="w-full md:w-1/2 mt-10 md:mt-0">
-            <Image src={about} alt="Logo" />
+            <Image src={about} alt="Logo" className="rounded-4xl" />
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto mt-10">
+          <div className="space-y-8 text-gray-700 grid  grid-cols-1 md:grid-cols-2">
+            {[
+              {
+                icon: <Zap className="w-6 h-6 text-green-600" />,
+                text: <span className="text-lg font-bold">1-Click Maintenance Control:</span>,
+                detail: "Tenants log issues in 30 seconds. Managers assign vendors and track progress from initial report to invoice payment, all automated."
+              },
+              {
+                icon: <DollarSign className="w-6 h-6 text-green-600" />,
+                text: <span className="text-lg font-bold">Financial Automation:</span>,
+                detail: "Automated rent collection (ACH/Card), expense tracking, and **one-click 1099 generation** ensures flawless accounting every time."
+              },
+              {
+                icon: <ShieldCheck className="w-6 h-6 text-green-600" />,
+                text: <span className="text-lg font-bold">High-Security Document Vault:</span>,
+                detail: "Military-grade cloud storage for leases and sensitive data, coupled with **role-based access** for maximum security."
+              },
+              {
+                icon: <TrendingUp className="w-6 h-6 text-green-600" />,
+                text: <span className="text-lg font-bold">Unmatched Transparency & Growth:</span>,
+                detail: "Dedicated Owner Portals and instant, customizable reports give you the data needed to make **smart portfolio decisions**."
+              }
+            ].map((item, index) => (
+              <div key={index} className="flex items-start gap-4 p-2">
+                <div className="p-2 bg-green-100 rounded-full">{item.icon}</div>
+                <div>
+                  {item.text}
+                  <p className="text-base text-gray-600 mt-1">{item.detail}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -215,39 +232,39 @@ export default function Home() {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {subscriptionPlans.map((plan, index) => (
-          <div
-            key={index}
-            className={`bg-white p-8 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
-          >
-            {plan.highlight && (
-              <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
-                POPULAR
-              </div>
-            )}
+            <div
+              key={index}
+              className={`bg-white p-8 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
+            >
+              {plan.highlight && (
+                <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-3 py-1 rounded-bl-xl">
+                  POPULAR
+                </div>
+              )}
 
-            <h3 className="text-2xl font-bold text-green-700 mb-4">{plan.name}</h3>
-            <p className="text-5xl font-extrabold mb-2">{plan.price}</p>
-            <p className="text-gray-500 mb-6">{plan.period}</p>
-            <p className="text-gray-600 mb-6">{plan.description}</p>
+              <h3 className="text-2xl font-bold text-green-700 mb-4">{plan.name}</h3>
+              <p className="text-5xl font-extrabold mb-2">{plan.price}</p>
+              <p className="text-gray-500 mb-6">{plan.period}</p>
+              <p className="text-gray-600 mb-6">{plan.description}</p>
 
-            <ul className="space-y-3 text-left mb-8">
-              {plan.features.map((feature:any, i:any) => (
-                <li key={i} className="flex items-center space-x-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 min-w-5 text-green-500" />
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
+              <ul className="space-y-3 text-left mb-8">
+                {plan.features.map((feature: any, i: any) => (
+                  <li key={i} className="flex items-center space-x-2 text-gray-700">
+                    <CheckCircle className="w-5 h-5 min-w-5 text-green-500" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
 
-            {/* <Link href={plan.buttonLink}>
+              {/* <Link href={plan.buttonLink}>
               <button
                 className={`${plan.buttonStyle} font-semibold w-full py-3 rounded-xl`}
               >
                 {plan.buttonText}
               </button>
             </Link> */}
-          </div>
-        ))}
+            </div>
+          ))}
         </div>
       </section>
 
@@ -275,6 +292,34 @@ export default function Home() {
                 </div>
             </div>
           </div> */}
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section id="stats" className="py-12 md:py-24 bg-green-700 bg-gradient-to-br from-green-600 to-green-800 text-center">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-20 text-white max-w-4xl mx-auto">
+          <div className="flex flex-col items-center">
+            {/* <Users className="w-10 h-10 mb-2" /> */}
+            <p className="text-xl md:text-2xl text-center">
+              <span className="text-5xl md:text-6xl font-bold">2,500,000+</span><br />
+              <span>Properties</span>
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            {/* <Building2 className="w-10 h-10 mb-2" /> */}
+            <p className="text-xl md:text-2xl text-center">
+              <span className="text-5xl md:text-6xl font-bold">98.5%</span><br />
+              <span className="text-nowrap">Average Occupainy Rate</span>
+            </p>
+          </div>
+          <div className="flex flex-col items-center">
+            {/* <Building2 className="w-10 h-10 mb-2" /> */}
+
+            <p className="text-xl md:text-2xl text-center">
+              <span className="text-5xl md:text-6xl font-bold">4.9/5</span><br />
+              <span className="text-nowrap">Owner Satisfaction Rating</span>
+            </p>
+          </div>
         </div>
       </section>
 
@@ -308,20 +353,7 @@ export default function Home() {
       </section>
 
 
-      {/* Stats Section */}
-      <section id="stats" className="py-12 md:py-24 bg-white text-center">
-        <div className="flex flex-col md:flex-row justify-center items-center  gap-20 text-green-700">
-          <div className="flex flex-col items-center">
-            {/* <Users className="w-10 h-10 mb-2" /> */}
-            <p className="text-2xl text-center md:text-left"><span className=" text-6xl font-extralight">20,000+ Users</span><br /></p>
-          </div><span className="text-6xl font-extralight md:block hidden">|</span>
-          <div className="flex flex-col items-center">
-            {/* <Building2 className="w-10 h-10 mb-2" /> */}
 
-            <p className="text-2xl text-center md:text-left"><span className=" text-6xl font-extralight">1000+ Properties</span><br /></p>
-          </div>
-        </div>
-      </section>
 
 
       {/* CTA Section */}
