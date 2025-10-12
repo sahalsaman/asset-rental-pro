@@ -2,7 +2,7 @@
 
 import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Key, Zap, ShieldCheck, FileText, LayoutDashboard, DollarSign, Briefcase, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../public/arp logo.png"
 import about from "../../public/arp aboout.svg"
 import playstore from "../../public/playstore.svg"
@@ -40,6 +40,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  
 
   return (
     <main className="min-h-screen bg-white text-gray-800 ">

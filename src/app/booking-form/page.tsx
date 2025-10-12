@@ -7,7 +7,7 @@ import BookingAddEditModal from "@/components/BookingFormModal";
 import { FullscreenLoader } from "@/components/Loader";
 import { useRouter } from "next/navigation";
 
-export default function BookingForm() {
+export default function User() {
     const [property, setProperty] = useState<IProperty | null>(null);
     const [showBookingModal, setShowBookingModal] = useState(false);
     const [loader, setLoader] = useState(true);

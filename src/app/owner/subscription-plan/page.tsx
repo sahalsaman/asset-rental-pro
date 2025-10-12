@@ -19,7 +19,7 @@ export default function SubscriptionPlan() {
   const [activeSub, setActiveSub] = useState<any | "">("");
   const [openDetailPopup, setOpenDetailPopup] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
-  // const [subscription_plans, setSubscription_plans] = useState<any[]>([])
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([])
 
   const current_property = localStorageServiceSelectedOptions.getItem()
 
@@ -33,6 +33,10 @@ export default function SubscriptionPlan() {
     const res = await apiFetch("/api/subscription");
     const data = await res.json();
     setActiveSub(data);
+
+    if(data.plan==="Free Trial"){
+      subscription_plans.shift();
+    }
   };
 
   // const fetchSucscriptionPlans = async () => {

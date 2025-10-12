@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { RoomStatus } from '@/utils/contants';
+import { RentFrequency, RoomStatus } from '@/utils/contants';
 
 const RoomSchema = new Schema(
   {
@@ -8,11 +8,11 @@ const RoomSchema = new Schema(
     name: String,
     type: String, // Example: 2BHK, 4 Bed
     amount: Number,
+    advanceAmount: Number,
     description: String,
     images: [String],
-    frequency: { type: String, enum: ['Day', 'Week', 'Month', 'Year'] },
+    frequency: { type: String, enum: RentFrequency },
     status: { type: String, default: RoomStatus.AVAILABLE },
-    advanceAmount: Number,
     noOfSlots: { type: Number, required: true, default: 1 },
     currentBooking: { type: Number, default: 0 },
     Bookings: [{ type: Types.ObjectId, ref: "Booking" }],

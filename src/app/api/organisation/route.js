@@ -23,13 +23,12 @@ export async function GET(request) {
       const currentDate = new Date();
       const endDate = new Date(organisation.subscription.endDate);
       if (currentDate > endDate) {
-        await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
+       organisation= await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
           status: SubscritptionStatus.EXPIRED,
           trialCompleted: true
-        })
+        },{ new: true }).populate("subscription").lean();
       }
 
-      organisation = await OrganisationModel.findById(user.organisationId).populate("subscription").lean();
     }
 
     return NextResponse.json(organisation, { status: 200 });

@@ -32,7 +32,7 @@ export default function OwnerDashboard() {
   const current_property = localStorageServiceSelectedOptions.getItem()?.property
 
   const setQRcodeUrl = () => {
-    setQrUrl(`http://arp.webcos.co/booking-form?property_id=${current_property?._id}`);
+    setQrUrl(`http://arp.webcos.co/user/${current_property?._id}`);
   }
 
   // Fetch status from backend API

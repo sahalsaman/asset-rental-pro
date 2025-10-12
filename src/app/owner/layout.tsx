@@ -90,6 +90,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     window.location.reload();
   };
 
+  const remainingDate = (endDate: string) => {
+    const currentDate = new Date();
+    const end = new Date(endDate);
+    currentDate.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    const diffTime = end.getTime() - currentDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) return "Your free trial has ended.";
+    return `You have ${diffDays} day${diffDays > 1 ? "s" : ""} remaining in your free trial.`;
+  };
+
+
 
   return (
     <div className="min-h-screen pb-24">
@@ -124,33 +137,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             ))}
           </div>
-            <div className='hidden md:block'>
-          {properties?.length ? <div >
-            {/* <p className='text-white'>Current Property</p> */}
-            <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
-              <Building2 className='ml-4 text-white' />
-              <select
-                name="frequency"
-                value={selectedPropertyId || ""}
-                onChange={handleChange}
-                className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
-                style={{ minWidth: "220px", border: "0px", height: "48px" }}
-                required
-              >
-                <option value=""> Select Property</option>
-                {properties.map((property: any) => (
-                  <option key={property?._id} value={property?._id}>
-                    {property?.name} - {property?.category}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div> :
-            <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition">
-              Start Free Trial
-            </Button>
-          }
-        </div>
+          <div className='hidden md:block'>
+            {properties?.length ? <div >
+              {/* <p className='text-white'>Current Property</p> */}
+              <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
+                <Building2 className='ml-4 text-white' />
+                <select
+                  name="frequency"
+                  value={selectedPropertyId || ""}
+                  onChange={handleChange}
+                  className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+                  style={{ minWidth: "220px", border: "0px", height: "48px" }}
+                  required
+                >
+                  <option value=""> Select Property</option>
+                  {properties.map((property: any) => (
+                    <option key={property?._id} value={property?._id}>
+                      {property?.name} - {property?.category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div> :
+              <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
+                Start Free Trial
+              </Button>
+            }
+          </div>
           {/* Profile Dropdown */}
           <div className="relative">
             <button
@@ -214,14 +227,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </select>
             </div>
           </div> :
-            <Button className="mt-3 w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition">
+            <Button className="mt-3 w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
               Start Free Trial
             </Button>
           }
         </div>
       </div>
       {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className="bg-amber-300 py-2 px-4 flex items-center justify-between text-sm">
-        {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? 'Your 14 days free trial is active' : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
+        {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? `${remainingDate(organisation?.subscription?.endDate)}` : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
       </div> : ""}
 
       {organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? <SubscriptionPlan /> : <main>{children}</main>}

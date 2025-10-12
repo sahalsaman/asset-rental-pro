@@ -23,23 +23,15 @@ interface Props {
   property_data?: IProperty
 }
 
-export default function BookingAddEditModal({ open, onClose, onSave, editData, roomData, property_data }: Props) {
+export default function CheckoutModal({ open, onClose, onSave, editData, roomData, property_data }: Props) {
   const property = property_data ? property_data : localStorageServiceSelectedOptions.getItem()?.property;
   const [formData, setFormData] = useState<Partial<IBooking>>({
     roomId: roomData ? roomData?._id : "",
     propertyId: property?._id || "",
-    fullName: "",
-    countryCode: "+91",
-    phone: "",
-    whatsappCountryCode: "+91",
+        whatsappCountryCode: "+91",
     whatsappNumber: "",
-    address: "",
-    verificationIdCard: "",
-    verificationIdCardNumber: "",
     checkIn: "",
     checkOut: "",
-    amount: roomData ? roomData?.amount : 0,
-    advanceAmount: roomData ? roomData?.advanceAmount : 0,
     status: BookingStatus.PENDING,
   });
   const [rooms, setRooms] = useState<IRoom[]>([]);
@@ -58,8 +50,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
       setFormData((prev) => ({
         ...prev,
         roomId: roomData?._id || "",
-        amount: roomData?.amount || 0,
-        advanceAmount: roomData?.advanceAmount || 0,
         propertyId: property?._id || "",
       }));
     }
@@ -72,8 +62,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     setFormData((prev) => ({
       ...prev,
       roomId: roomData?._id || "",
-      amount: roomData?.amount || 0,
-      advanceAmount: roomData?.advanceAmount || 0,
       propertyId: property?._id || "",
     }));
 
@@ -83,7 +71,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === "amount" || name === "advanceAmount" ? Number(value) : value,
+      [name]: value,
     }));
   };
 
@@ -93,17 +81,17 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
   };
 
   const handleSaveBooking = async (data: any) => {
-    const method = editData ? "PUT" : "POST";
     const url = editData ? `/api/booking?id=${editData._id}` : `/api/booking`;
 
     await fetch(url, {
-      method,
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
         ...data,
         roomId: roomData ? roomData?._id : data?.roomId,
         propertyId: property?._id,
+        status: BookingStatus.CHECKED_OUT
       }),
     });
     toast.success("Successfully saved booking");
@@ -136,47 +124,8 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
                 </option>))}
             </select>
           </div>}
-          <div>
-            <Label htmlFor="fullName">Full Name</Label>
-            <Input
-              id="fullName"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName || ""}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          {/* Phone */}
-          <div>
-            <Label htmlFor="phone">Phone</Label>
-            <div className="flex items-center gap-2">
-              <select
-                name="countryCode" // ✅ added
-                value={formData.countryCode || ""}
-                onChange={handleChange}
-                className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-                style={{ maxWidth: '80px' }}
-              >
-                {countryCodes.map((option) => (
-                  <option key={option.code} value={option.code}>
-                    {option.code}
-                  </option>
-                ))}
-              </select>
-              <Input
-                id="phone"
-                name="phone"
-                placeholder="Phone"
-                value={formData.phone || ""}
-                onChange={handleChange}
-                required
-                maxLength={10}
-              />
-            </div>
-          </div>
 
-          {/* WhatsApp Number */}
+             {/* WhatsApp Number */}
           <div>
             <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
             <div className="flex items-center gap-2">
@@ -206,50 +155,6 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
           </div>
 
 
-          {/* Address */}
-          <div>
-            <Label htmlFor="address">Address</Label>
-            <Input
-              id="address"
-              name="address"
-              placeholder="Address"
-              value={formData.address || ""}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Verification ID Type */}
-          <div>
-            <Label htmlFor="verificationIdCard">Verification ID Type</Label>
-            <select
-              id="verificationIdCard"
-              name="verificationIdCard"
-              value={formData.verificationIdCard || ""}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-            >
-              <option value="">Select ID Type</option>
-              <option value="Aadhar">Aadhar</option>
-              <option value="PAN">PAN</option>
-              <option value="VoterID">Voter ID</option>
-              <option value="Passport">Passport</option>
-              <option value="DrivingLicense">Driving License</option>
-            </select>
-          </div>
-
-          {/* Verification ID Number */}
-          <div>
-            <Label htmlFor="verificationIdCardNumber"> ID Number</Label>
-            <Input
-              id="verificationIdCardNumber"
-              name="verificationIdCardNumber"
-              placeholder="Verification ID Number"
-              value={formData.verificationIdCardNumber || ""}
-              onChange={handleChange}
-            />
-          </div>
-
           {/* Check-in */}
           <div>
             <Label htmlFor="checkIn">Check-In Date</Label>
@@ -257,6 +162,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
               id="checkIn"
               name="checkIn"
               type="date"
+              disabled
               value={
                 formData.checkIn
                   ? (typeof formData.checkIn === "string"
@@ -291,66 +197,13 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
           </div>
 
-          {/* Rent Amount */}
-          <div>
-            <Label htmlFor="amount">Rent Amount</Label>
-            <div className="flex items-center gap-1">
-              {property?.currency}
-              <Input
-                id="amount"
-                name="amount"
-                type="number"
-                placeholder="Rent Amount"
-                value={formData.amount || ""}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          {/* Advance Amount */}
-          <div>
-            <Label htmlFor="advanceAmount">Advance Amount</Label>
-            <div className="flex items-center gap-1">
-              {property?.currency}
-              <Input
-                id="advanceAmount"
-                name="advanceAmount"
-                type="number"
-                placeholder="Advance Amount"
-                value={formData.advanceAmount || ""}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Status */}
-          <div>
-            <Label htmlFor="status">Booking Status</Label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status || ""}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-              required
-            >
-              <option value="">Select room status</option>
-              {Object.values(BookingStatus).map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* Buttons */}
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
-        <Button type="button" variant="secondary" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button> 
+            </Button>
             <Button type="submit" className="w-full" variant="green">
-              {editData ? "Update" : "Submit"}
+              Check out
             </Button>
           </div>
         </form>
