@@ -19,16 +19,14 @@ export async function sendOTPText(
 ) {
   try {
     const formattedPhone = formatPhone(`${countryCode}${phone}`);
-
     const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
-
     const payload = {
       messaging_product: "whatsapp",
       to: formattedPhone,
       type: "text",
       text: {
         preview_url: false,
-        body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\n\nIt expires in 10 minutes. Please do not share it.\n\n– ARP Team`,
+        body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\n\nIt expires in 5 minutes. Please do not share it.\n\n– ARP Team`,
       },
     };
 

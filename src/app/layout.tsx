@@ -37,9 +37,9 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://arp.webcos.co',
+    canonical: '/',
     languages: {
-      'en-US': 'https://arp.webcos.co',
+       'en-IN': '/en-IN',
     },
   },
   openGraph: {

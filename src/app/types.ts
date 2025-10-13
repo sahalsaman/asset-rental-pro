@@ -41,7 +41,7 @@ export interface IUsageLimits {
 
 export interface IOrgSubscription {
   _id?: string;
-  organisation: string ;
+  organisation: string;
   plan: string;
   status: SubscritptionStatus;
   startDate: Date;
@@ -64,7 +64,7 @@ export interface IOrgSubscription {
 
 export interface ISubscriptionPayment {
   _id?: string;
-  organisation: string ;
+  organisation: string;
   subscription: string;
   plan: string;
   status: SubscritptionStatus;
@@ -99,6 +99,8 @@ export interface IProperty {
   images: string[];
   currency: string;
   managers?: any[]; // user IDs
+  is_paymentRecieveSelf: boolean,
+  selectedBank: any;
   disabled: boolean;
   deleted?: boolean;
   createdAt?: Date;
@@ -164,7 +166,7 @@ export interface IInvoice {
   amount: number;
   balance?: number;
   carryForwarded?: number;
-  type: RentAmountType|string;
+  type: RentAmountType | string;
   status: InvoiceStatus;
   dueDate: Date;
   paymentGateway: "razorpay" | "upi" | "cash" | "manual";

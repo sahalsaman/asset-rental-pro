@@ -11,8 +11,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; // fixed "Inut" typo
 import { Label } from '@radix-ui/react-label';
-import { CurrencyType, PropertyStatus, PropertyType } from '@/utils/contants';
+import { CurrencyType, PaymentRecieverOptios, PropertyStatus, PropertyType } from '@/utils/contants';
 import { Textarea } from './ui/textarea';
+import { Switch } from './ui/switch';
+import { apiFetch } from '@/lib/api';
 
 interface PropertyFormModalProps {
   open: boolean;
@@ -40,9 +42,20 @@ export default function PropertyFormModal({
     images: [],
     currency: CurrencyType.INR,
     disabled: false,
+    is_paymentRecieveSelf: false,
+    selectedBank: ""
   });
+  const [banksList, setBanksList] = useState([]);
+  const fetchBanks = async () => {
+    const res = await apiFetch("/api/banks");
+    const data = await res.json();
+    if (data.length > 0) {
+      setBanksList(data);
+    };
+  }
 
   useEffect(() => {
+    fetchBanks();
     if (initialData) {
       setFormData(initialData);
     } else {
@@ -85,6 +98,8 @@ export default function PropertyFormModal({
         images: [],
         currency: CurrencyType.INR,
         disabled: false,
+        is_paymentRecieveSelf: false,
+        selectedBank: ""
       }
     );
   }
@@ -117,6 +132,34 @@ export default function PropertyFormModal({
           <DialogTitle>{initialData ? 'Edit' : 'Add'} Property</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="multiple-room"
+              checked={formData?.is_paymentRecieveSelf || false}
+              onCheckedChange={(checked) =>
+                setFormData((prev) => ({ ...prev, is_paymentRecieveSelf: checked }))
+              }
+            />
+            <Label htmlFor="multiple-room">Receive Payment Yourself</Label>
+          </div>
+          {formData?.is_paymentRecieveSelf && <div>
+            <Label>Select Bank</Label>
+            <select
+              name="selectedBank"
+              value={formData.selectedBank || ""}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2"
+              required
+            >
+              {banksList.map((i: any) => (
+                <option key={i?._id} value={i?._id}>
+                  {i?.accountHolderName} - {i?.paymentRecieverOption === PaymentRecieverOptios.BANK ? i?.bankName : i?.paymentRecieverOptio}
+                </option>
+              ))}
+            </select>
+          </div>
+          }
+
           <Label>Property name</Label>
           <Input
             name="name"
@@ -209,7 +252,7 @@ export default function PropertyFormModal({
           <div className="w-full grid grid-cols-2 gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button> 
+            </Button>
             <Button type="submit" className='w-full' variant="green">
               {initialData ? 'Update' : 'Submit'}
             </Button>

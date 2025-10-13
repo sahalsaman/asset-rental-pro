@@ -26,7 +26,7 @@ export async function POST(req) {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpireTime = new Date(Date.now() + 5 * 60 * 1000);
+    const otpExpireTime = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
 
     await UserModel.findByIdAndUpdate(user._id, {
       $set: {
@@ -37,7 +37,7 @@ export async function POST(req) {
     });
 
     console.log(`🔄 OTP updated for ${phone}: ${otp}`);
-    // const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
+    // const result = await sendOTPText(countryCode,phone,otp,`${user?.firstName} ${user?.lastName}`)
 
   return NextResponse.json({ message: "OTP sent successfully",data:{
     otp: otp,
