@@ -57,7 +57,7 @@ export enum InvoiceStatus {
   BALANCE = "Balance",
   CANCELLED = "Cancelled",
   REFUNDED = "Refunded",
-  CARRYFORWORDED = "carry forworded",
+  CARRY_FORWARDED = "Carry forwarded",
 }
 
 // 📌 Transaction Type

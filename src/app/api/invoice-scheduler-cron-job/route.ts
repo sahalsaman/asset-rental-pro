@@ -1,7 +1,7 @@
 import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
-import { BookingStatus, RentFrequency } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency } from "@/utils/contants";
 import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 import { generateRazorpayLinkForInvoice } from "@/utils/razerPay";
 import { NextResponse } from "next/server";
@@ -24,21 +24,41 @@ export async function GET() {
 
       if (booking?.nextBillingDate && isSameDay(new Date(booking.nextBillingDate), today)) {
         const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
-        const paymentLink = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName);
+        // const paymentLink = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName);
+        const paymentLink = "test"
 
-        await InvoiceModel.create({
+        const lastInvoice = await InvoiceModel.findOne({
+          organisationId: booking.organisationId,
+          bookingId: booking._id,
+          propertyId: booking.propertyId,
+        }).sort({ createdAt: -1 }); 
+
+        let carryForwarded = 0;
+
+        if (lastInvoice && lastInvoice.status !== InvoiceStatus.PAID) {
+          carryForwarded = lastInvoice.balance || 0;
+          lastInvoice.status = InvoiceStatus.CARRY_FORWARDED; // You can add a new status if needed
+          await lastInvoice.save();
+        }
+
+
+        const newInvoice = await InvoiceModel.create({
           organisationId: booking.organisationId,
           bookingId: booking._id,
           propertyId: booking.propertyId,
           roomId: booking.roomId,
           invoiceId,
-          amount: booking.amount,
-          balance: booking.amount,
-          type: "Rent",
+          amount: booking.amount + carryForwarded, // Add unpaid amount to current invoice
+          balance: booking.amount + carryForwarded,
+          carryForwarded,
+          type: RentAmountType.RENT,
           dueDate: booking.checkIn || new Date(),
+          status: InvoiceStatus.PENDING,
+          paymentGateway: "razorpay",
         });
 
-        sendInvoiceToWhatsApp(booking.whatsappNumber, invoiceId, booking.amount, booking.fullName, paymentLink);
+        // sendInvoiceToWhatsApp(booking.whatsappNumber, invoiceId, booking.amount, booking.fullName, paymentLink);
+        return
       }
     }
 
