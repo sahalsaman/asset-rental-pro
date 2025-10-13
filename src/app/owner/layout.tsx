@@ -24,12 +24,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
-    { title: 'Properties', path: '/owner/properties' },
-    { title: 'Rooms', path: '/owner/rooms' },
-    { title: 'Bookings', path: '/owner/bookings' },
-    { title: 'Invoices', path: '/owner/invoices' },
-    { title: 'Managers', path: '/owner/managers' },
-    { title: 'Announcement', path: '/owner/announcement' },
+    { title: 'Organisation', path: '/owner/organisation' },
+    { title: 'Payments', path: '/owner/payments' },
   ];
 
   const mobileMenu = [
@@ -137,6 +133,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </div>
             ))}
           </div>
+          {/* Profile Dropdown */}
+          <div className="flex items-center gap-8">
+
           <div className='hidden md:block'>
             {properties?.length ? <div >
               {/* <p className='text-white'>Current Property</p> */}
@@ -164,7 +163,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </Button>
             }
           </div>
-          {/* Profile Dropdown */}
           <div className="relative">
             <button
               onClick={() => setOpen(!open)}
@@ -203,6 +201,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 </button>
               </div>
             )}
+          </div>
           </div>
         </div>
         <div className='block md:hidden'>

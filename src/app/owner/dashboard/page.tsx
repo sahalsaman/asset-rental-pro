@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Users, DollarSign, Calendar, NotepadTextDashed, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed } from "lucide-react";
+import { Building2, Users, DollarSign, Calendar, NotepadTextDashed, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed, Share } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
@@ -85,6 +85,23 @@ export default function OwnerDashboard() {
     setQrOpen(true)
   }
 
+    const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Check this out!",
+          text: "Hey, take a look at this awesome page!",
+          url: window.location.href,
+        });
+      } else {
+        // fallback for desktop browsers
+        alert("Sharing not supported in this browser.");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
+
   const options = [
     { title: 'Bookings', path: '/owner/bookings', icon: <Calendar className="w-6 h-6 min-w-6 min-h-6" /> },
     { title: 'Invoices', path: '/owner/invoices', icon: <NotepadTextDashed className="w-6 h-6 min-w-6 min-h-6" /> },
@@ -104,7 +121,7 @@ export default function OwnerDashboard() {
 
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-2  lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2  lg:grid-cols-3 gap-4">
         <DashboardCard title="Total Rooms" value={status?.total_rooms} icon={Building2} />
         <DashboardCard title="Available Rooms" value={status?.available_rooms} icon={Bed} />
         <DashboardCard title="Notice Period" value={status?.noticePeriod} icon={Paperclip} />
@@ -113,7 +130,7 @@ export default function OwnerDashboard() {
         <DashboardCard title="Monthly Received" value={`${current_property?.currency ?? ""}${status?.totalReceivedAmount?.toLocaleString()}`} icon={BadgeDollarSign} />
       </div>
 
-      <div className=" lg:hidden grid grid-cols-4 gap-4 md:gap-8 mt-8">
+      <div className="  grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-8 mt-8 md:mt-20">
         {options.map((card, idx) => (
           <div key={idx} className="flex flex-col justify-center items-center gap-1 "
             onClick={() => card.path === "BOOKING_FORM" ? setShowBookingModal(true) : card.path === "BOOKING_QR" ? openQR() : router.push(card.path)} >
@@ -143,13 +160,20 @@ export default function OwnerDashboard() {
             {/* <p className="text-sm text-gray-500 mt-2 break-all">
               {qrUrl}
             </p> */}
-
-            <Button
-              className="mt-4 w-full"
-              onClick={() => setQrOpen(false)}
-            >
-              Close
-            </Button>
+            <div className="space-y-2 mt-4">
+              <Button 
+                className=" w-full"
+                onClick={handleShare}
+              >
+                Share <Share/>
+              </Button>
+              <Button variant="outline"
+                className=" w-full"
+                onClick={() => setQrOpen(false)}
+              >
+                Close
+              </Button>
+            </div>
           </div>
         </div>
       )}

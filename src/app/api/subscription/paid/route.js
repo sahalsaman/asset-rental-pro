@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import Razorpay from "razorpay";
 import crypto from "crypto";
 import connectMongoDB from "@/../database/db";
 
