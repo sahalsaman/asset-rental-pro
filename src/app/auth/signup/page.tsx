@@ -7,6 +7,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import logo from "../../../../public/arp logo.png"
 import { countryCodes } from "@/utils/mock-data";
+import { app_config } from "@/utils/app-config";
 
 export default function LoginPage() {
 
@@ -61,7 +62,7 @@ export default function LoginPage() {
 
     <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 ">
         <div className="h-60 flex justify-center items-center">
-        <h2 className="text-3xl font-bold text-white text-center mb-4 ">Welcome to Asset Management</h2>
+        <h2 className="text-3xl font-bold text-white text-center mb-4 ">Welcome to {app_config?.APP_NAME}</h2>
       </div>
       <div className="absolute w-full" style={{ marginTop: "-35px" }}>
         <div className="flex justify-center items-center w-full">

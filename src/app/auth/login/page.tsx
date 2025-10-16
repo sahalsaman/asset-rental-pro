@@ -8,13 +8,13 @@ import logo from "../../../../public/arp logo.png"
 import Image from "next/image";
 import { log } from "node:console";
 import { countryCodes } from "@/utils/mock-data";
+import { app_config } from "@/utils/app-config";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("+91"); // Default to India
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
   const router = useRouter();
-
   const validatePhoneNumber = (phoneNumber: string) => {
     const phoneRegex = /^[0-9]{10}$/; // Validates 10-digit phone number
     return phoneRegex.test(phoneNumber);
@@ -56,7 +56,7 @@ export default function LoginPage() {
   return (
     <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 ">
       <div className="h-60 flex justify-center items-center">
-        <h2 className="text-3xl font-bold text-white text-center mb-4 ">Welcome to Asset Management</h2>
+        <h2 className="text-3xl font-bold text-white text-center mb-4 ">Welcome to {app_config?.APP_NAME}</h2>
       </div>
       <div className="absolute w-full" style={{ marginTop: "-35px" }}>
         <div className="flex justify-center items-center w-full">

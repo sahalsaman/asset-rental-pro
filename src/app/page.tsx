@@ -10,6 +10,7 @@ import appstore from "../../public/appstore.svg"
 import bannerBg from "../../public/banner.png"
 import Image from "next/image";
 import { subscription_plans } from "@/utils/mock-data";
+import { app_config } from "@/utils/app-config";
 
 // 1. Define the Interface for Props
 interface FAQItemProps {
@@ -80,7 +81,7 @@ export default function Home() {
       <header className="flex justify-between items-center px-4 md:px-24 py-3 md:py-4 shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <Image src={logo} alt="Logo" className='w-10 h-10 md:w-14 md:h-14 cursor-pointer' />
-          <h1 className="text-xl md:text-3xl font-bold text-green-700">Asset Rental Pro</h1>
+          <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
         </div>
         <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">
           <Link href="#setup-guide">Setup Guide</Link>
@@ -173,7 +174,7 @@ export default function Home() {
           {/* Text Content */}
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h2 className="text-5xl font-extrabold mb-4 text-gray-800  inline-block">Why Choose</h2>
-            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1">Asset Rental Pro (ARP)?</h2>
+            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1">{app_config?.APP_NAME} ?</h2>
             <p className="text-xl text-gray-600 mb-10 leading-relaxed">
               We're more than just software. We're your partner in maximizing **Return on Investment (ROI)** by replacing manual, error-prone tasks with intelligent automation.
             </p>
@@ -296,7 +297,7 @@ export default function Home() {
 
       {/* Stats Section */}
       <section id="stats" className="py-12 md:py-24 bg-green-700 bg-gradient-to-br from-green-600 to-green-800 text-center">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-20 text-white max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-30 text-white max-w-4xl mx-auto">
           <div className="flex flex-col items-center">
             {/* <Users className="w-10 h-10 mb-2" /> */}
             <p className="text-xl md:text-2xl text-center">

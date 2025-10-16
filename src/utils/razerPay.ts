@@ -1,6 +1,7 @@
 import Razorpay from 'razorpay';  // Or use axios for API calls
-import { app_base_config, razorpay_config } from './config';
+import { razorpay_config } from './config';
 import axios from "axios";
+import { app_config } from './app-config';
 
 const razorpay = new Razorpay({
   key_id: razorpay_config.RAZORPAY_KEY_ID,
@@ -42,7 +43,7 @@ export async function generateRazorpayLinkForInvoice(invoiceId: string, amount: 
       customer: { name },
       notify: { sms: false, email: false },
       reminder_enable: true,
-      callback_url: `${app_base_config.PUBLIC_BASE_URL}/api/razerpay-payment-callback`,  // Webhook for verification
+      callback_url: `${app_config.PUBLIC_BASE_URL}/api/razerpay-payment-callback`,  // Webhook for verification
     };
 
     const paymentLink = await razorpay.paymentLink.create(options);

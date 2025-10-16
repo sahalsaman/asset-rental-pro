@@ -9,7 +9,3 @@ export const razorpay_config = {
   RAZORPAY_WEBHOOK_SECRET:"",
   YOUR_RAZORPAY_VIRTUAL_ACCOUNT:""
 }
-
-export const app_base_config = {
-  PUBLIC_BASE_URL:"https://arp.webcos.co"
-}
