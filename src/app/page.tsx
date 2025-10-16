@@ -212,7 +212,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
           {/* Text Content */}
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h2 className="text-5xl font-extrabold mb-4 text-gray-800  inline-block">Why Choose </h2>
-            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1 pl-2"> {app_config?.APP_NAME} ?</h2>
+            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1"> {app_config?.APP_NAME} ?</h2>
             <p className="text-xl text-gray-600 mb-10 leading-relaxed">
               We're more than just software. We're your partner in maximizing **Return on Investment (ROI)** by replacing manual, error-prone tasks with intelligent automation.
             </p>
