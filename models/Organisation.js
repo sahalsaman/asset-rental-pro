@@ -1,5 +1,6 @@
 import { SubscritptionBillingCycle, SubscritptionStatus } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
+import { type } from 'os';
 
 
 const SubscriptionPaymentSchema = new Schema(
@@ -104,6 +105,8 @@ const OrganisationSchema = new Schema(
       type: Types.ObjectId,
       ref: "OrgSubscription"
     },
+    pendingPayout:{type:Number,default:0},
+    fundAccountId:{ type: Types.ObjectId, ref: "BankDetail"}
   },
   { timestamps: true }
 );

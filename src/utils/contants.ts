@@ -54,9 +54,9 @@ export enum InvoiceStatus {
   PENDING = "Pending",
   PAID = "Paid",
   OVERDUE = "Overdue",
-  BALANCE = "Balance",
-  CANCELLED = "Cancelled",
-  REFUNDED = "Refunded",
+  // BALANCE = "Balance",
+  // CANCELLED = "Cancelled",
+  // REFUNDED = "Refunded",
   CARRY_FORWARDED = "Carry forwarded",
 }
 
@@ -113,11 +113,8 @@ export enum BankStatus {
 }
 
 export enum PaymentStatus {
-  PENDING = "pending",
-  SUCCESS = "success",
-  FAILED = "failed",
-  REFUNDED = "refunded",
-  CANCELLED = "cancelled",
+  CREDIT = "Credit",
+  DEBIT = "Debit",
 }
 
 export enum PaymentMethod {
@@ -134,7 +131,7 @@ export enum PaymentType {
   REFUND = "refund",
 }
 
-export enum PaymentRecieverOptios{
+export enum PaymentRecieverOptions{
   BANK = "Bank",
   UPIPHONE = "UPI Phone",
   UPIQR = "UPI QR",
@@ -177,3 +174,5 @@ export const statusColorMap: Record<string, string> = {
   Refunded: "bg-pink-100 text-pink-800",
   "carry forworded": "bg-indigo-100 text-indigo-800",
 };
+
+

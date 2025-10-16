@@ -4,9 +4,9 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
-import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
+import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
 import RoomModel from "../../../../models/Room";
-import { BookingStatus, RoomStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
 import { OrgSubscriptionModel } from "../../../../models/Organisation";
 import { generateRazorpayLinkForInvoice } from "@/utils/razerPay";
 
@@ -89,17 +89,17 @@ export async function POST(request) {
     if (!room) {
       return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
     }
-    if (!room.status || (room.status !== RoomStatus.AVAILABLE&&room.status !== RoomStatus.PARTIALLY_BOOKED)) {
+    if (!room.status || (room.status !== RoomStatus.AVAILABLE && room.status !== RoomStatus.PARTIALLY_BOOKED)) {
       return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
     }
 
     const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
     const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
 
-     if (org?.status === SubscritptionStatus.EXPIRED) {
-        return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
-      }
-      
+    if (org?.status === SubscritptionStatus.EXPIRED) {
+      return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
+    }
+
     if (org?.usageLimits?.property == bookings_list?.length + 1) {
       return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
     }
@@ -119,147 +119,186 @@ export async function POST(request) {
 
       let invoiceId = `INV-${booking._id}-01-ADV`
       let paymentLink = null;
-      if (room.is_paymentRecieveSelf === false) {
-          paymentLink = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName);
-        }
-        invoices.push({
-          organisationId: user.organisationId,
-          bookingId: booking._id,
-          propertyId: booking.propertyId,
-          roomId: booking.roomId,
-          invoiceId: invoiceId, // generate ID
-          amount: booking.advanceAmount,
-          balance: booking.advanceAmount,
-          type: "Advance",
-          dueDate: booking.checkIn || new Date(),
-          paymentUrl: paymentLink ?? "SELF REVEIVE"
+      if (room?.propertyId?.is_paymentRecieveSelf === false) {
+        paymentLink = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName,booking);
+      }
+      invoices.push({
+        organisationId: user.organisationId,
+        bookingId: booking._id,
+        propertyId: booking.propertyId,
+        roomId: booking.roomId,
+        invoiceId: invoiceId, // generate ID
+        amount: booking.advanceAmount,
+        balance: booking.advanceAmount,
+        type: RentAmountType.ADVANCE,
+        status: InvoiceStatus.PENDING,
+        dueDate: booking.checkIn || new Date(),
+        paymentUrl: paymentLink ?? "SELF RECEIVE"
+      });
+      if (room?.propertyId?.is_paymentRecieveSelf === false) {
+        sendInvoiceToWhatsAppWithPaymentUrl(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, paymentLink);
+      } else {
+        sendInvoiceToWhatsAppWithSelfBank(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, room.propertyId?.selectedBank);
+      }
+    }
+
+    // --- First Rent Invoice ---
+    if (booking.amount && booking.amount > 0) {
+      let invoiceId = `INV-${booking._id}-02-RENT`
+      let paymentLink = "SELF RECEIVE";
+      if (room?.propertyId?.is_paymentRecieveSelf === false) {
+        paymentLink = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
+      }
+
+      invoices.push({
+        organisationId: user.organisationId,
+        bookingId: booking._id,
+        propertyId: booking.propertyId,
+        roomId: booking.roomId,
+        invoiceId: invoiceId, // generate ID
+        amount: booking.amount,
+        balance: booking.amount,
+        type: RentAmountType.ADVANCE,
+        status: InvoiceStatus.PENDING,
+        dueDate: booking.checkIn || new Date(),
+        paymentUrl: paymentLink ?? "SELF RECEIVE"
+      });
+
+      if (room?.propertyId?.is_paymentRecieveSelf === false) {
+        sendInvoiceToWhatsAppWithPaymentUrl(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, paymentLink);
+      } else {
+        sendInvoiceToWhatsAppWithSelfBank(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, room.propertyId?.selectedBank);
+      }
+    }
+
+
+    if (invoices.length > 0) {
+      await InvoiceModel.insertMany(invoices);
+    }
+
+
+    let nextBillingDate= null;
+
+    if (booking.status === BookingStatus.CHECKED_IN && body.frequency) {
+      const checkInDate = new Date(booking.checkIn);
+      const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
+
+      let calculatedDate = new Date(checkInDate);
+
+      switch (body.frequency) {
+        case RentFrequency.DAY:
+          calculatedDate.setDate(calculatedDate.getDate() + 1);
+          break;
+
+        case RentFrequency.WEEK:
+          calculatedDate.setDate(calculatedDate.getDate() + 7);
+          break;
+
+        case RentFrequency.MONTH:
+          calculatedDate.setMonth(calculatedDate.getMonth() + 1);
+          break;
+
+        case RentFrequency.YEAR:
+          calculatedDate.setFullYear(calculatedDate.getFullYear() + 1);
+          break;
+      }
+
+      // ✅ Only assign if next billing date is before checkout
+      if (checkOutDate && calculatedDate > checkOutDate) {
+        nextBillingDate = checkOutDate;
+      } else {
+        nextBillingDate = calculatedDate;
+      }
+    }
+
+
+    if (room.noOfSlots > 1 && room.currentBooking < room.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.CONFIRMED)) {
+      await RoomModel.findByIdAndUpdate(booking.roomId,
+        {
+          $inc: { currentBooking: 1 },
+          $addToSet: { Bookings: booking._id },
+          status: room.noOfSlots === 1 ? RoomStatus.BOOKED : room.currentBooking + 1 === room.noOfSlots ? RoomStatus.BOOKED : RoomStatus.PARTIALLY_BOOKED,
+          nextBillingDate
         });
-        sendInvoiceToWhatsApp(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, paymentLink);
-      }
-
-      // --- First Rent Invoice ---
-      if (booking.amount && booking.amount > 0) {
-        let invoiceId = `INV-${booking._id}-02-RENT`
-        let paymentLink = null;
-        if (room.is_paymentRecieveSelf === false) {
-            paymentLink = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName);
-          }
-
-          invoices.push({
-            organisationId: user.organisationId,
-            bookingId: booking._id,
-            propertyId: booking.propertyId,
-            roomId: booking.roomId,
-            invoiceId: invoiceId, // generate ID
-            amount: booking.amount,
-            balance: booking.amount,
-            type: "Rent",
-            dueDate: booking.checkIn || new Date(),
-            paymentUrl: paymentLink ?? "SELF RECEIVE"
-          });
-
-          sendInvoiceToWhatsApp(booking.whatsappNumber, invoiceId, booking.amount, booking?.fullName, paymentLink);
-        }
-
-
-        if (invoices.length > 0) {
-          await InvoiceModel.insertMany(invoices);
-        }
-
-        if (room.noOfSlots > 1 && room.currentBooking < room.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.CONFIRMED)) {
-          await RoomModel.findByIdAndUpdate(booking.roomId,
-            {
-              $inc: { currentBooking: 1 },
-              $addToSet: { Bookings: booking._id },
-              status: room.currentBooking + 1 === room.noOfSlots ? RoomStatus.BOOKED : RoomStatus.PARTIALLY_BOOKED
-            });
-        }
-
-        if (room.noOfSlots === 1 && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.CONFIRMED)) {
-          await RoomModel.findByIdAndUpdate(booking.roomId, {
-            status: RoomStatus.BOOKED,
-            $inc: { currentBooking: 1 },
-            $addToSet: { Bookings: booking._id }
-          });
-        }
-
-        return NextResponse.json(
-          { message: "Booking & invoices created", booking, invoices },
-          { status: 201 }
-        );
-      } catch (err) {
-        return NextResponse.json(
-          { error: "Failed to add booking", details: err.message },
-          { status: 400 }
-        );
-      }
     }
 
-    // PUT update booking
-    export async function PUT(request) {
-      try {
-        const { searchParams } = new URL(request.url);
-        const id = searchParams.get("id");
-        if (!id || !isValidObjectId(id)) {
-          return NextResponse.json({ error: "Invalid booking ID" }, { status: 400 });
-        }
+    return NextResponse.json(
+      { message: "Booking & invoices created", booking, invoices },
+      { status: 201 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Failed to add booking", details: err.message },
+      { status: 400 }
+    );
+  }
+}
 
-        await connectMongoDB();
-        const body = await request.json();
-        const updated = await BookingModel.findByIdAndUpdate(id, body, { new: true });
-
-        if (!updated) {
-          return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-        }
-
-        if (room.noOfSlots > 1 && booking.status === BookingStatus.CHECKED_OUT) {
-          await RoomModel.findByIdAndUpdate(booking.roomId,
-            {
-              $inc: { currentBooking: -1 },
-              $pull: { Bookings: booking._id },
-              status: room.currentBooking - 1 === 0 ? RoomStatus.AVAILABLE : RoomStatus.PARTIALLY_BOOKED
-            });
-        }
-
-        if (room.noOfSlots === 1 && booking.status === BookingStatus.CHECKED_OUT) {
-          await RoomModel.findByIdAndUpdate(booking.roomId, {
-            status: RoomStatus.AVAILABLE,
-            $inc: { currentBooking: -1 },
-            $pull: { Bookings: booking._id }
-          });
-        }
-
-
-        return NextResponse.json({ message: "Booking updated", updated });
-      } catch (err) {
-        return NextResponse.json(
-          { error: "Failed to update booking", details: err.message },
-          { status: 400 }
-        );
-      }
+// PUT update booking
+export async function PUT(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id || !isValidObjectId(id)) {
+      return NextResponse.json({ error: "Invalid booking ID" }, { status: 400 });
     }
 
-    // DELETE booking
-    export async function DELETE(request) {
-      try {
-        const { searchParams } = new URL(request.url);
-        const id = searchParams.get("id");
-        if (!id || !isValidObjectId(id)) {
-          return NextResponse.json({ error: "Invalid booking ID" }, { status: 400 });
-        }
+    await connectMongoDB();
+    const body = await request.json();
+    const updated = await BookingModel.findByIdAndUpdate(id, body, { new: true });
 
-        await connectMongoDB();
-        const deleted = await BookingModel.findByIdAndDelete(id);
-
-        if (!deleted) {
-          return NextResponse.json({ error: "Booking not found" }, { status: 404 });
-        }
-
-        return NextResponse.json({ message: "Booking deleted" });
-      } catch (err) {
-        return NextResponse.json(
-          { error: "Failed to delete booking", details: err.message },
-          { status: 500 }
-        );
-      }
+    if (!updated) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
+
+    if (room.noOfSlots > 1 && booking.status === BookingStatus.CHECKED_OUT) {
+      await RoomModel.findByIdAndUpdate(booking.roomId,
+        {
+          $inc: { currentBooking: -1 },
+          $pull: { Bookings: booking._id },
+          status: room.currentBooking - 1 === 0 ? RoomStatus.AVAILABLE : RoomStatus.PARTIALLY_BOOKED
+        });
+    }
+
+    if (room.noOfSlots === 1 && booking.status === BookingStatus.CHECKED_OUT) {
+      await RoomModel.findByIdAndUpdate(booking.roomId, {
+        status: RoomStatus.AVAILABLE,
+        $inc: { currentBooking: -1 },
+        $pull: { Bookings: booking._id }
+      });
+    }
+
+
+    return NextResponse.json({ message: "Booking updated", updated });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Failed to update booking", details: err.message },
+      { status: 400 }
+    );
+  }
+}
+
+// DELETE booking
+export async function DELETE(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id || !isValidObjectId(id)) {
+      return NextResponse.json({ error: "Invalid booking ID" }, { status: 400 });
+    }
+
+    await connectMongoDB();
+    const deleted = await BookingModel.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Booking deleted" });
+  } catch (err) {
+    return NextResponse.json(
+      { error: "Failed to delete booking", details: err.message },
+      { status: 500 }
+    );
+  }
+}

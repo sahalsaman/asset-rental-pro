@@ -27,7 +27,7 @@ export async function GET(request) {
       const diffTime = endDate.getTime() - currentDate.getTime();
       const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays <= 0) {
-          await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
+        await OrgSubscriptionModel.findByIdAndUpdate(organisation?.subscription?._id, {
           status: SubscritptionStatus.EXPIRED,
           trialCompleted: true
         }, { new: true })
@@ -47,3 +47,23 @@ export async function GET(request) {
   }
 }
 
+
+export async function PUT(request) {
+  await connectMongoDB();
+
+  const user = getTokenValue(request);
+  if (!user?.organisationId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (user.role !== UserRoles.OWNER) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+  const id = user.organisationId;
+  const body = await request.json();
+
+  const updated = await OrganisationModel.findByIdAndUpdate(id, body, {
+    new: true,
+  });
+  return NextResponse.json(updated);
+}

@@ -6,5 +6,10 @@ export const whatsapp_config = {
 export const razorpay_config = {
   RAZORPAY_KEY_ID:"rzp_test_RQajTWhiooP6Nm",
   RAZORPAY_KEY_SECRET:"ImkY0Rx0up8AmPCQjSskNbeS",
+  RAZORPAY_WEBHOOK_SECRET:"",
+  YOUR_RAZORPAY_VIRTUAL_ACCOUNT:""
 }
 
+export const app_base_config = {
+  PUBLIC_BASE_URL:"https://arp.webcos.co"
+}

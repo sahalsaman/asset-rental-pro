@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input'; // fixed "Inut" typo
 import { Label } from '@radix-ui/react-label';
-import { CurrencyType, PaymentRecieverOptios, PropertyStatus, PropertyType } from '@/utils/contants';
+import { CurrencyType, PaymentRecieverOptions, PropertyStatus, PropertyType } from '@/utils/contants';
 import { Textarea } from './ui/textarea';
 import { Switch } from './ui/switch';
 import { apiFetch } from '@/lib/api';
@@ -149,11 +149,11 @@ export default function PropertyFormModal({
               value={formData.selectedBank || ""}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
-              required
+              required={formData?.is_paymentRecieveSelf}
             >
               {banksList.map((i: any) => (
                 <option key={i?._id} value={i?._id}>
-                  {i?.accountHolderName} - {i?.paymentRecieverOption === PaymentRecieverOptios.BANK ? i?.bankName : i?.paymentRecieverOptio}
+                  {i?.accountHolderName} - {i?.paymentRecieverOption === PaymentRecieverOptions.BANK ? i?.bankName : i?.paymentRecieverOption}
                 </option>
               ))}
             </select>

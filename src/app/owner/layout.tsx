@@ -25,6 +25,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Organisation', path: '/owner/organisation' },
+    { title: 'Rooms', path: '/owner/rooms' },
     { title: 'Payments', path: '/owner/payments' },
   ];
 

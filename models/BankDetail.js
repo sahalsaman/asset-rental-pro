@@ -1,4 +1,4 @@
-import {  BankStatus, PaymentRecieverOptios } from '@/utils/contants';
+import {  BankStatus, PaymentRecieverOptions } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
 const BankDetailSchema = new Schema(
@@ -8,7 +8,7 @@ const BankDetailSchema = new Schema(
       ref: "Organisation",
       required: true
     },
-    paymentRecieverOption: { type: String, enum: PaymentRecieverOptios, required: true },
+    paymentRecieverOption: { type: String, enum: PaymentRecieverOptions, required: true },
     accountNo: String,
     ifsc: String,
     accountHolderName: String,

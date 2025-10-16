@@ -1,5 +1,6 @@
 import mongoose, { Schema, Types } from 'mongoose';
 import { InvoiceStatus, RentAmountType } from '@/utils/contants';
+import { type } from 'os';
 
 const InvoiceSchema = new Schema(
   {
@@ -20,6 +21,8 @@ const InvoiceSchema = new Schema(
       default: 'manual' 
     },  
     paymentUrl:{ type: String}, 
+    paymentId:{ type: String}, 
+    paidAt:{type:Date},
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
   },

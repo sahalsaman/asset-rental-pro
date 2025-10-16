@@ -10,6 +10,7 @@ import { apiFetch } from "@/lib/api";
 import InvoiceCard from "@/components/InvoiceCard";
 import { FullscreenLoader } from "@/components/Loader";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
+import { InvoiceStatus } from "@/utils/contants";
 
 export default function RoomDetailPage() {
   const data = useParams();
@@ -20,10 +21,11 @@ export default function RoomDetailPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [loader, setLoader] = useState(false);
   const property = localStorageServiceSelectedOptions.getItem()?.property;
+  const [selectedFilter, setselectedFilter] = useState("");
 
-  const fetchInvoices = () => {
+  const fetchInvoices = (status:string) => {
     setLoader(true);
-    apiFetch(`/api/list?page=invoice&&propertyId=${property?._id}`)
+    apiFetch(`/api/list?page=invoice&&propertyId=${property?._id}${status?'&&status='+status:''}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch invoices");
         return res.json();
@@ -41,11 +43,11 @@ export default function RoomDetailPage() {
     });
     setShowDelete(false);
     setDeleteId(null);
-    fetchInvoices();
+    fetchInvoices(selectedFilter);
   };
 
   useEffect(() => {
-    fetchInvoices();
+    fetchInvoices("");
   }, []);
 
   if (loader) return <FullscreenLoader />;
@@ -59,7 +61,30 @@ export default function RoomDetailPage() {
           {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
           <p className="text-gray-600">Price: ${room.price}</p> */}
         </div>
-        {/* <Button onClick={() => setShowInvoiceModal(true)}>Add Invoice</Button> */}
+  <div className="flex gap-2">
+  {[
+    { label: "All", value: "" },
+    { label: "Paid", value: InvoiceStatus.PAID },
+    { label: "Pending", value: InvoiceStatus.PENDING },
+  ].map((item) => (
+    <div
+      key={item.value || "all"}
+      onClick={() => {
+        setselectedFilter(item.value);
+        fetchInvoices(item.value);
+      }}
+      className={`rounded-full py-1 px-2.5 border text-sm shadow-sm cursor-pointer transition-all 
+        ${
+          selectedFilter === item.value
+            ? "bg-green-700 text-white border-green-700"
+            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+        }`}
+    >
+      {item.label}
+    </div>
+  ))}
+</div>
+
       </div>
 
       {/* Invoice List */}
@@ -95,7 +120,7 @@ export default function RoomDetailPage() {
         onSave={() => {
           setShowInvoiceModal(false);
           setEditInvoiceData(null);
-          fetchInvoices();
+          fetchInvoices(selectedFilter);
         }}
         editData={editInvoiceData}
       />

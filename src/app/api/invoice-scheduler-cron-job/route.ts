@@ -2,16 +2,18 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency } from "@/utils/contants";
-import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
-import { generateRazorpayLinkForInvoice } from "@/utils/razerPay";
+import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
+import { generateRazorpayLinkForInvoice, razorpayPayout } from "@/utils/razerPay";
 import { NextResponse } from "next/server";
+import { OrganisationModel } from "../../../../models/Organisation";
+import { razorpay_config } from "@/utils/config";
 
 export async function GET() {
 
   try {
     await connectMongoDB();
 
-    const bookings = await BookingModel.find({ disabled: false, status: BookingStatus.CHECKED_IN })
+    const bookings = await BookingModel.find({ disabled: false, status: BookingStatus.CHECKED_IN }).populate('propertyId')
 
     const today = new Date();
 
@@ -24,14 +26,14 @@ export async function GET() {
 
       if (booking?.nextBillingDate && isSameDay(new Date(booking.nextBillingDate), today)) {
         const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
-        // const paymentLink = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName);
-        const paymentLink = "test"
+        let paymentLink = "test"
+        paymentLink = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking);
 
         const lastInvoice = await InvoiceModel.findOne({
           organisationId: booking.organisationId,
           bookingId: booking._id,
           propertyId: booking.propertyId,
-        }).sort({ createdAt: -1 }); 
+        }).sort({ createdAt: -1 });
 
         let carryForwarded = 0;
 
@@ -41,6 +43,8 @@ export async function GET() {
           await lastInvoice.save();
         }
 
+        const dueDate = new Date();
+        dueDate.setDate(dueDate.getDate() + 5);
 
         const newInvoice = await InvoiceModel.create({
           organisationId: booking.organisationId,
@@ -52,14 +56,54 @@ export async function GET() {
           balance: booking.amount + carryForwarded,
           carryForwarded,
           type: RentAmountType.RENT,
-          dueDate: booking.checkIn || new Date(),
+          dueDate,
           status: InvoiceStatus.PENDING,
           paymentGateway: "razorpay",
+          paymentUrl: paymentLink ?? "SELF RECEIVE"
         });
 
-        // sendInvoiceToWhatsApp(booking.whatsappNumber, invoiceId, booking.amount, booking.fullName, paymentLink);
+        if (booking?.propertyId?.is_paymentRecieveSelf === false) {
+          sendInvoiceToWhatsAppWithPaymentUrl(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, paymentLink);
+        } else {
+          sendInvoiceToWhatsAppWithSelfBank(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, booking?.propertyId?.selectedBank);
+        }
         return
       }
+
+    }
+
+
+    const invoices = await InvoiceModel.find({ disabled: false, status: InvoiceStatus.PENDING }).populate('bookingId');
+
+
+    if (invoices.length > 0) {
+      for (const invoice of invoices) {
+        const dueDate = new Date(invoice.dueDate);
+        const today = new Date();
+
+        if (dueDate < today) {
+          invoice.status = InvoiceStatus.OVERDUE;
+          await invoice.save();
+        }
+
+        sendInvoiceToWhatsAppWithPaymentUrl(invoice?.bookingId?.whatsappNumber,
+          invoice?.invoiceId,
+          invoice?.amount,
+          invoice?.bookingId.fullName, invoice?.paymentUrl);
+      }
+    }
+
+    const organisations = await OrganisationModel.find({ pendingPayout: { $gt: 0 } });
+
+    for (const org of organisations) {
+      const payoutAmount = org.pendingPayout;
+
+      razorpayPayout(payoutAmount, org)
+
+      // Mark payout done
+      await OrganisationModel.findByIdAndUpdate(org._id, {
+        $set: { pendingPayout: 0 },
+      });
     }
 
     return NextResponse.json({ message: "Invoices generated successfully" });

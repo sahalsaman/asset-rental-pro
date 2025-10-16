@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { apiFetch } from "@/lib/api";
 import { countryCodes } from "@/utils/mock-data";
-import { PaymentRecieverOptios } from "@/utils/contants";
+import { PaymentRecieverOptions } from "@/utils/contants";
 
 export default function BankFormModal({ open, onClose, onSave, initialData }: any) {
     const [formData, setFormData] = useState({
@@ -71,14 +71,14 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                             className="w-full mt-1 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                         >
                             <option value="" disabled>Select an option</option>
-                            {Object.values(PaymentRecieverOptios).map((status) => (
+                            {Object.values(PaymentRecieverOptions).map((status) => (
                                 <option key={status} value={status}>
                                     {status}
                                 </option>
                             ))}
                         </select>
                     </div>
-                    {formData.paymentRecieverOption === PaymentRecieverOptios.BANK && <>
+                    {formData.paymentRecieverOption === PaymentRecieverOptions.BANK && <>
                         <div>
                             <Label>Bank Name</Label>
                             <Input className="mt-1" name="bankName" value={formData.bankName} onChange={handleChange} />
@@ -101,14 +101,14 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                         </div>
                     </>}
 
-                    {formData.paymentRecieverOption === PaymentRecieverOptios.UPIID &&
+                    {formData.paymentRecieverOption === PaymentRecieverOptions.UPIID &&
                         <>
                             <div>
                                 <Label>UPI ID</Label>
                                 <Input className="mt-1" name="upiId" value={formData.upiId} onChange={handleChange} />
                             </div>
                         </>}
-                    {formData.paymentRecieverOption === PaymentRecieverOptios.UPIPHONE &&
+                    {formData.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE &&
                         <>
                             <div>
                                 <Label>UPI Phone Number</Label>
@@ -130,7 +130,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                                 </div>
                             </div>
                         </>}
-                    {formData.paymentRecieverOption === PaymentRecieverOptios.UPIQR &&
+                    {formData.paymentRecieverOption === PaymentRecieverOptions.UPIQR &&
                         <div>
                             <Label>QR Code Link</Label>
                             <Input className="mt-1" name="qrcode_link" value={formData.qrcode_link} onChange={handleChange} />

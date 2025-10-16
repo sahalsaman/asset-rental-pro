@@ -9,6 +9,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { FullscreenLoader } from "@/components/Loader";
 import { Edit } from "lucide-react";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
+import OrganisationFormModal from "@/components/OrganisationFormModal";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -16,6 +17,7 @@ export default function PropertiesPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
   const [organisation, setOrganisation] = useState<any | null>(null);
+  const [orgModalOpen, setOrgModalOpen] = useState(false);
 
   useEffect(() => {
     fetchOrganisation();
@@ -28,7 +30,7 @@ export default function PropertiesPage() {
     setProperties(data);
     const ls = localStorageServiceSelectedOptions.getItem()
     if (!ls?.property?._id) {
-      localStorageServiceSelectedOptions.setItem({ property: data[0] ,organisation:organisation });
+      localStorageServiceSelectedOptions.setItem({ property: data[0], organisation: organisation });
     }
   };
 
@@ -59,7 +61,7 @@ export default function PropertiesPage() {
               <p className="text-sm">Organisation</p>
             </div>
           </div>
-          <Button size="icon" variant="outline" onClick={() => { }} >
+          <Button size="icon" variant="outline" onClick={() => { setOrgModalOpen(true)}} >
             <Edit className="w-4 h-4" />
           </Button>
         </div>
@@ -85,6 +87,15 @@ export default function PropertiesPage() {
           )}
         </div>
       </div>
+      <OrganisationFormModal
+        open={orgModalOpen}
+        onClose={() => setOrgModalOpen(false)}
+        onSave={() => {
+          setOrgModalOpen(false);
+          fetchOrganisation();
+        }}
+        initialData={organisation}
+      />
       <PropertyFormModal
         open={addEditOpen}
         onClose={() => {

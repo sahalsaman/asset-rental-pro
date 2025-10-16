@@ -52,7 +52,7 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsApp(phone: string, invoiceId: string, amount: number, name: string,paymentLink:any) {
+export async function sendInvoiceToWhatsAppWithPaymentUrl(phone: string, invoiceId: string, amount: number, name: string,paymentLink:any) {
   try {
     const formattedPhone = formatPhone("91"+phone);  // Ensure correct format
     const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
@@ -70,6 +70,44 @@ export async function sendInvoiceToWhatsApp(phone: string, invoiceId: string, am
         type: "text",
         text: {
           body: `📄 Hi ${name},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${paymentLink}`
+        }
+      },
+      { headers: { Authorization: `Bearer ${config?.WHATSAPP_TOKEN}`, "Content-Type": "application/json" } }
+    );
+
+    console.log("WhatsApp message sent successfully:", response.data);
+    return { success: true, messageId: response.data.messages?.[0]?.id };
+  } catch (error: any) {
+    console.error("WhatsApp send error:", error?.response?.data || error?.message);
+    if (error?.response?.data?.error?.code === 131030) {
+      console.warn("Add recipient phone to whitelist in Meta Business Manager.");
+    }
+    return { 
+      success: false, 
+      error: error?.response?.data?.error || error?.message,
+      code: error?.response?.data?.error?.code 
+    };
+  }
+}
+
+export async function sendInvoiceToWhatsAppWithSelfBank(phone: string, invoiceId: string, amount: number, name: string,bankDetail:any) {
+  try {
+    const formattedPhone = formatPhone("91"+phone);  // Ensure correct format
+    const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    const today = new Date();
+    const dueDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
+    dueDate.setHours(0, 0, 0, 0);
+    const dueDateStr = dueDate.toISOString().split('T')[0];
+
+    const response = await axios.post(
+      url,
+      {
+        messaging_product: "whatsapp",
+        to: formattedPhone, 
+        type: "text",
+        text: {
+          body: `📄 Hi ${name},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${bankDetail}`
         }
       },
       { headers: { Authorization: `Bearer ${config?.WHATSAPP_TOKEN}`, "Content-Type": "application/json" } }

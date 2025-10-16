@@ -74,7 +74,7 @@ export default function PropertyDetailPage() {
       <div className="p-5 md:pt-10 md:px-32 mb-10">
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Rooms</h1>
-          <Button onClick={() => setShowRoomModal(true)} variant="green" className="whitespace-nowrap sm:hidden block">
+          <Button onClick={() => setShowRoomModal(true)} variant="green" className="whitespace-nowrap ">
             + Add Room
           </Button>
         </div>

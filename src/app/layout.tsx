@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Rental Property Management - Efficient Solutions for Landlords',
   description: 'Discover top-tier rental property management services designed to maximize your rental income, simplify tenant management, streamline rent collection, and reduce operational hassles.',
-  keywords: 'rental property management, property managers, real estate management, pg management, hostel management, apartment management, rent collection, flat management, tenant screening, maintenance services, landlord solutions, WEBCOS',
+  keywords: 'rental property management, rent business,property managent, rent invoice, real estate management, pg management, hostel management, apartment management, rent collection, flat management, tenant screening, maintenance services, landlord solutions, WEBCOS',
   authors: [{ name: 'WEBCOS', url: 'https://webcos.co' }],
   creator: 'WEBCOS',
   publisher: 'WEBCOS',

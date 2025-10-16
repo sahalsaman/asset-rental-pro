@@ -19,27 +19,23 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const page = searchParams.get("page");
     const propertyId = searchParams.get("propertyId");
+      const status = searchParams.get("status")
 
     await connectMongoDB();
     let filter = {
       organisationId,
-      propertyId
+      propertyId,
     };
+
+    if(status?.length){
+      filter.status=status
+    }
+
+
     if (page === "booking") {
       const bookings = await BookingModel.find(filter).sort({ createdAt: -1 });
       return NextResponse.json(bookings);
     } else if (page === "invoice") {
-      const payments = searchParams.get("payments")
-      if (payments == 'true') {
-        const invoices = await InvoiceModel.find({
-          ...filter,
-          status: InvoiceStatus.PAID
-        }).populate("bookingId")
-        .sort({ createdAt: -1 })
-        .lean(false);
-
-        return NextResponse.json(invoices);
-      }
       const invoices = await InvoiceModel.find(filter)
         .populate("bookingId")
         .sort({ createdAt: -1 })

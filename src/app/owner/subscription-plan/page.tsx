@@ -133,7 +133,7 @@ export default function SubscriptionPlan() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
-      <section id="pricing" className="py-6 md:py-24 px-4 sm:px-6 bg-slate-50 text-left">
+      <section id="pricing" className="py-6 md:py-24 md:px-32 px-5 bg-slate-50 text-left">
         <h2 className="text-xl sm:text-2xl font-bold mb-4">Pricing Plans</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl sm:max-w-6xl mx-auto">
           {subscriptionPlans.map((plan, index) => (
@@ -141,7 +141,12 @@ export default function SubscriptionPlan() {
               key={index}
               className={`bg-white p-4 sm:p-6 rounded-xl shadow-lg md:shadow-2xl shadow-gray-200 border-2  relative overflow-hidden`}
               onClick={() => { setSelectedPlan(plan); setOpenDetailPopup(true); }}
-            >
+            >{activeSub?.plan==plan?.name?
+              <div className="absolute top-0 right-0 bg-green-700 text-white text-xs font-bold px-2 py-1 rounded-bl-xl">
+                CURRENT PLAN
+              </div>
+              :""
+            }
               <div className="flex justify-between items-center">
                 <div className="">
                   <h3 className="text-md md:text-2xl font-semibold text-green-700">{plan.name}</h3>

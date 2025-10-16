@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { countryCodes } from "@/utils/mock-data";
 import toast from "react-hot-toast";
 import { IUser } from "@/app/types";
+import { apiFetch } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
     const [formData, setFormData] = useState({
@@ -20,6 +22,7 @@ export default function ProfilePage() {
     const [newPhone, setNewPhone] = useState("");
     const [newCountryCode, setNewCountryCode] = useState("");
     const [otp, setOtp] = useState("");
+    const router = useRouter();
 
     async function fetchUser() {
         const res = await fetch("/api/me");
@@ -61,7 +64,8 @@ export default function ProfilePage() {
 
 
     // OTP Functions
-    const handleSendOtp = async () => {
+    const handleSendOtp = async (e: React.FormEvent) => {
+          e.preventDefault();
         if (!newPhone) return toast.error("Please enter a valid phone number");
 
         const body = {
@@ -70,24 +74,17 @@ export default function ProfilePage() {
             phone: user?.phone,
             countryCode: user?.countryCode,
         }
-
-        try {
-            const res = await fetch("/api/auth/send-otp-and-phone-update", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(body),
-            });
-            if (res.ok) {
-                setChangePhoneDialog(true)
-                toast.success("OTP sent successfully!");
-            } else {
-                toast.error("Failed to send OTP");
-            }
-        } catch (error) {
-            console.error(error);
-            toast.error("Error sending OTP");
+        const res = await apiFetch(`/api/auth/send-otp-and-phone-update`, {
+            method: "POST",
+            body: JSON.stringify(body),
+        });
+        if (res.ok) {
+            setChangePhoneDialog(true)
+            toast.success("OTP sent successfully!");
+        } else {
+            toast.error("Failed to send OTP");
         }
+
     };
 
     const handleVerifyOtp = async () => {
@@ -108,6 +105,8 @@ export default function ProfilePage() {
             if (res.ok) {
                 toast.success("Phone number updated successfully!");
                 setChangePhoneDialog(false);
+                router.push('/auth/login');
+                router
             } else {
                 toast.error("Invalid OTP");
             }
