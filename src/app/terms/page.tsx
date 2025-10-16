@@ -1,5 +1,6 @@
 "use client";
 
+import { app_config } from "@/utils/app-config";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -10,13 +11,13 @@ export default function TermsOfService() {
       <div className="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow">
         <h1 className="text-4xl font-bold text-green-700 mb-6">Terms of Service</h1>
         <p className="mb-4 text-gray-600">
-          Welcome to <strong>AssetRentalPro</strong>. By accessing or using our platform,
+          Welcome to <strong>{app_config?.APP_NAME}</strong>. By accessing or using our platform,
           you agree to comply with the following terms and conditions.
         </p>
 
         <h2 className="text-2xl font-semibold mt-8 mb-2">1. Acceptance of Terms</h2>
         <p className="text-gray-600 mb-3">
-          By registering or using AssetRentalPro, you confirm that you have read, understood,
+          By registering or using {app_config?.APP_NAME}, you confirm that you have read, understood,
           and agreed to these Terms of Service.
         </p>
 
@@ -35,7 +36,7 @@ export default function TermsOfService() {
 
         <h2 className="text-2xl font-semibold mt-8 mb-2">4. Limitation of Liability</h2>
         <p className="text-gray-600 mb-3">
-          AssetRentalPro is not liable for any indirect, incidental, or consequential damages
+          {app_config?.APP_NAME} is not liable for any indirect, incidental, or consequential damages
           arising from your use of our platform.
         </p>
 

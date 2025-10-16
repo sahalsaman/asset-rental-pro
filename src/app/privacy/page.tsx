@@ -1,5 +1,6 @@
 "use client";
 
+import { app_config } from "@/utils/app-config";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -10,7 +11,7 @@ export default function PrivacyPolicy() {
       <div className="max-w-4xl mx-auto bg-white p-8 md:p-10 rounded-2xl shadow">
         <h1 className="text-4xl font-bold text-green-700 mb-6">Privacy Policy</h1>
         <p className="mb-4 text-gray-600">
-          At <strong>AssetRentalPro</strong>, your privacy is our priority. This Privacy Policy
+          At <strong>{app_config?.APP_NAME}</strong>, your privacy is our priority. This Privacy Policy
           explains how we collect, use, and protect your personal data when you use our
           platform.
         </p>

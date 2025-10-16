@@ -56,7 +56,7 @@ export default function SubscriptionPlan() {
 
   const handlePlanSelect = async (plan: any) => {
     if (plan.id === "arp_subcription_cus74") {
-      window.location.href = "/contact"
+      window.location.href = plan.buttonLink
     }
 
     setOpenDetailPopup(false);
@@ -84,7 +84,7 @@ export default function SubscriptionPlan() {
         key: result?.key, // ✅ secure dynamic key
         amount: plan.amount * 100,
         currency: "INR",
-        name: "AssetRentalPro",
+        name: "{app_config?.APP_NAME}",
         description: `${plan.name} Plan Subscription`,
         order_id: result?.orderId,
         handler: async function (response: any) {

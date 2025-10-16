@@ -138,6 +138,14 @@ export enum PaymentRecieverOptions{
   UPIID = "UPI ID",
 }
 
+export enum EnquiryStatus{
+  NEW="New", 
+  CONTACTED="Contacted", 
+  PENDING="Pending",
+  REJECTED="Rejected",
+  CLOSED="Closed"
+}
+
 
 
 export const FLAT_TYPES = ["1BHK", "2BHK", "3BHK", "4BHK", "5BHK"];

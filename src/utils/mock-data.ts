@@ -1,3 +1,4 @@
+import { app_config } from "./app-config";
 import { SubscritptionBillingCycle } from "./contants";
 
  export const countryCodes = [
@@ -108,7 +109,7 @@ export const subscription_plans = [
     total_rooms:"UNLIMITED",
     total_bookings:"UNLIMITED",
     buttonText: "Contact Sales",
-    buttonLink: "/contact",
+    buttonLink: `${app_config.PUBLIC_BASE_URL}#contact`,
     buttonStyle: "bg-gray-200 text-gray-800 hover:bg-gray-300",
     borderColor: "border-transparent",
     highlight: false,

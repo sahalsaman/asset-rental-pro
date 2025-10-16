@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Key, Zap, ShieldCheck, FileText, LayoutDashboard, DollarSign, Briefcase, TrendingUp, SidebarClose, X } from "lucide-react";
+import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Key, Zap, ShieldCheck, FileText, LayoutDashboard, DollarSign, Briefcase, TrendingUp, SidebarClose, X, PhoneIcon, MailIcon, MapPinIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import logo from "../../public/arp logo.png"
@@ -11,6 +11,7 @@ import bannerBg from "../../public/banner.png"
 import Image from "next/image";
 import { subscription_plans } from "@/utils/mock-data";
 import { app_config } from "@/utils/app-config";
+import toast from "react-hot-toast";
 
 // 1. Define the Interface for Props
 interface FAQItemProps {
@@ -18,7 +19,52 @@ interface FAQItemProps {
   answer: string;
 }
 
-// 2. Use the Interface to Type the Component
+export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([])
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  useEffect(() => {
+    setSubscriptionPlans(subscription_plans.slice(1, 4))
+  }, [])
+
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        toast.success("Your message has been sent successfully!");
+        setForm({ name: "", email: "", phone: "", message: "" });
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 const FAQItem = ({ question, answer }: FAQItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -39,20 +85,10 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
   );
 };
 
-
-export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [subscriptionPlans, setSubscriptionPlans] = useState<any[]>([])
-
-  useEffect(() => {
-    setSubscriptionPlans(subscription_plans.slice(1, 4))
-  }, [])
-
-
   if (menuOpen) {
     return (
       <div className="bg-white  px-6 py-4 space-y-8 text-xl text-center flex flex-col">
-        <div className="flex justify-between m-5 mb-10">
+        <div className="flex justify-between mb-10">
           <div className="flex items-center gap-3">
             <Image src={logo} alt="Logo" width={60} className='cursor-pointer' />
           </div>
@@ -64,6 +100,7 @@ export default function Home() {
         <Link className="border-b pb-8" href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</Link>
         <Link className="border-b pb-8" href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
         <Link className="border-b pb-8" href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
+        <Link className="border-b pb-8" href="#contact" onClick={() => setMenuOpen(false)}>Contact</Link>
         <Link className="border-b pb-8" href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
         <Link href="/auth/signup">
           <button className="bg-green-700 text-white w-full py-2 rounded-xl">Get Started</button>
@@ -88,6 +125,7 @@ export default function Home() {
           <Link href="#pricing">Pricing</Link>
           <Link href="#downloads">Downloads</Link>
           <Link href="#faq">FAQ</Link>
+          <Link href="#contact">Contact</Link>
           <Link href="/auth/signup">
             <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm ">Get Started</button>
           </Link>
@@ -130,7 +168,7 @@ export default function Home() {
                 step: 1,
                 title: "Create Account & Profile",
                 icon: <Key className="w-8 h-8 text-white" />,
-                description: "Sign up, verify your email, and complete your property manager or owner profile."
+                description: "Sign up, verify your phone number, and complete owner profile."
               },
               {
                 step: 2,
@@ -173,8 +211,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
           <div className="w-full md:w-1/2 text-center md:text-left">
-            <h2 className="text-5xl font-extrabold mb-4 text-gray-800  inline-block">Why Choose</h2>
-            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1">{app_config?.APP_NAME} ?</h2>
+            <h2 className="text-5xl font-extrabold mb-4 text-gray-800  inline-block">Why Choose </h2>
+            <h2 className="text-4xl font-medium mb-8 text-gray-800  inline-block pb-1 pl-2"> {app_config?.APP_NAME} ?</h2>
             <p className="text-xl text-gray-600 mb-10 leading-relaxed">
               We're more than just software. We're your partner in maximizing **Return on Investment (ROI)** by replacing manual, error-prone tasks with intelligent automation.
             </p>
@@ -342,8 +380,8 @@ export default function Home() {
                 a: "The user/tenant limit depends on your chosen plan. The Basic plan supports a small number of properties, while the Pro and Enterprise plans allow for significantly more, or unlimited, users and tenants."
               },
               {
-                q: "Can I try AssetRentalPro before I subscribe?",
-                a: "Yes! Our Basic plan is completely free and allows you to manage up to 5 properties, giving you a comprehensive feel for the platform's core features before committing to a paid subscription."
+                q: `Can I try ${app_config?.APP_NAME} before I subscribe?`,
+                a: "Yes! Our Basic plan is 14 days free and allows you to manage 1 property, giving you a comprehensive feel for the platform's core features before committing to a paid subscription."
               }
             ].map((item, index) => (
               <FAQItem key={index} question={item.q} answer={item.a} />
@@ -353,6 +391,117 @@ export default function Home() {
       </section>
 
 
+      {/* Contact Section */}
+  <section id="contact" className="py-16 md:py-24 bg-white px-6">
+      <div className="max-w-5xl mx-auto text-center">
+        <h2 className="text-4xl font-bold text-green-700 mb-4">Get in Touch</h2>
+        <p className="text-lg text-gray-600 mb-12">
+          Have questions, feedback, or partnership inquiries? We'd love to hear from you!
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          {/* Contact Info */}
+          <div className="text-left space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="bg-green-100 p-3 rounded-full">
+                <PhoneIcon className="w-6 h-6 text-green-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Phone</h3>
+                <p className="text-gray-600">{app_config.PHONE_NUMBER}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="bg-green-100 p-3 rounded-full">
+                <MailIcon className="w-6 h-6 text-green-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Email</h3>
+                <p className="text-gray-600">{app_config.EMAIL}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="bg-green-100 p-3 rounded-full">
+                <MapPinIcon className="w-6 h-6 text-green-700" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Address</h3>
+                <p className="text-gray-600">{app_config.ADDRESS}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <form
+            onSubmit={handleSubmit}
+            className=" p-8 rounded-2xl border space-y-4 text-left"
+          >
+            <div>
+              <label className="block text-sm font-semibold mb-1 text-gray-700">Name*</label>
+              <input
+                name="name"
+                type="text"
+                placeholder="Your Name"
+                value={form.name}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1 text-gray-700">Email</label>
+              <input
+                name="email"
+                type="email"
+                placeholder="Your Email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: +91 9876543210)</span></label>
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Your Phone Number"
+                value={form.phone}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold mb-1 text-gray-700">Message*</label>
+              <textarea
+                name="message"
+                rows={4}
+                placeholder="Write your message here..."
+                value={form.message}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                required
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full cursor-pointer ${
+                loading ? "bg-green-400" : "bg-green-700 hover:bg-green-800"
+              } text-white font-semibold py-3 rounded-xl transition`}
+            >
+              {loading ? "Sending..." : "Send Message"}
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
 
 
 
