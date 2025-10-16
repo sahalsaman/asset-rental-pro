@@ -300,7 +300,7 @@ export default function Home() {
           <div className="flex flex-col items-center">
             {/* <Users className="w-10 h-10 mb-2" /> */}
             <p className="text-xl md:text-2xl text-center">
-              <span className="text-5xl md:text-6xl font-bold">2,500,000+</span><br />
+              <span className="text-5xl md:text-6xl font-bold">1,300+</span><br />
               <span>Properties</span>
             </p>
           </div>
