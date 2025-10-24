@@ -83,7 +83,7 @@ export default function LoginPage() {
                 </select>
                 <input
                   type="tel"
-                  placeholder="9876543210"
+                  placeholder="9876XXXXXX"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"

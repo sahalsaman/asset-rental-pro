@@ -1,5 +1,5 @@
 export const app_config = {
-    APP_NAME: "Asset Rentan Pro",
+    APP_NAME: "Rentities",
     PPP_LOGO:"",
     PPP_LOGO_DARK_THEME:"",
     PUBLIC_BASE_URL: "https://arp.webcos.co/",

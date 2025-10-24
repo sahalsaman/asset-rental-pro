@@ -37,6 +37,7 @@ export default function OwnerDashboard() {
 
   // Fetch status from backend API
   const fetchDashboardData = async (id?: any) => {
+    const start = Date.now();
     if (!current_property?._id && !id) {
       setLoader(false);
       return;
@@ -58,6 +59,7 @@ export default function OwnerDashboard() {
         noticePeriod: data.noticePeriod || 0
       });
       setLoader(false);
+console.log("Execution time:", Date.now() - start, "ms");
     } catch (err) {
       console.error(err);
       setLoader(false);

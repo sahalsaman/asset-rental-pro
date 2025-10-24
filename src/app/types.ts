@@ -146,6 +146,7 @@ export interface IBooking {
   verificationIdCardNumber?: string;
   checkIn?: Date | string;
   checkOut?: Date | string;
+  frequency: RentFrequency;
   amount: number;
   advanceAmount?: number;
   status: BookingStatus;

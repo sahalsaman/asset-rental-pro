@@ -40,7 +40,7 @@ export async function POST(req) {
     // const result = await sendOTPText(countryCode,phone,otp,`${user?.firstName} ${user?.lastName}`)
 
   return NextResponse.json({ message: "OTP sent successfully",data:{
-    otp: otp,
+    // otp: otp,
     countryCode: countryCode,
     phone: phone,
   } }, { status: 201 });

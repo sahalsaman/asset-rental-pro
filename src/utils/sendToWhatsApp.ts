@@ -23,15 +23,29 @@ export async function sendOTPText(
     const payload = {
       messaging_product: "whatsapp",
       to: formattedPhone,
-      type: "text",
-      text: {
-        preview_url: false,
-        body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\n\nIt expires in 5 minutes. Please do not share it.\n\n– ARP Team`,
+      // type: "text",
+      // text: {
+      //   preview_url: false,
+      //   body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\n\nIt expires in 5 minutes. Please do not share it.\n\n– ARP Team`,
+      // },
+      type: "template",
+      template: {
+        name: "hello_world", // Your approved template name, e.g., "otp_verification"
+        language: { code: "en_US" }, // Language code of the template
+        // components: [
+        //   {
+        //     type: "body",
+        //     parameters: [
+        //       { type: "text", text: otp }, // OTP code passed as template param
+        //       { type: "text", text: userName || "User" } // Optional: parameter with username if your template has placeholders for it
+        //     ],
+        //   },
+        // ],
       },
     };
 
     const headers = {
-      Authorization: `Bearer ${config.WHATSAPP_TOKEN}`,
+      Authorization: `Bearer ${whatsapp_config.SYSTEM_USER_TOKEN}`,
       "Content-Type": "application/json",
     };
 
@@ -52,9 +66,9 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsAppWithPaymentUrl(phone: string, invoiceId: string, amount: number, name: string,paymentLink:any) {
+export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount:number,invoiceId: string, paymentLink:any) {
   try {
-    const formattedPhone = formatPhone("91"+phone);  // Ensure correct format
+    const formattedPhone = formatPhone("91"+booking?.whatsappNumber);  // Ensure correct format
     const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
     const today = new Date();
@@ -69,7 +83,7 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(phone: string, invoice
         to: formattedPhone, 
         type: "text",
         text: {
-          body: `📄 Hi ${name},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${paymentLink}`
+          body: `📄 Hi ${booking?.fullName},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${paymentLink}`
         }
       },
       { headers: { Authorization: `Bearer ${config?.WHATSAPP_TOKEN}`, "Content-Type": "application/json" } }
@@ -90,9 +104,9 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(phone: string, invoice
   }
 }
 
-export async function sendInvoiceToWhatsAppWithSelfBank(phone: string, invoiceId: string, amount: number, name: string,bankDetail:any) {
+export async function sendInvoiceToWhatsAppWithSelfBank(booking: any, amount: number,invoiceId: string, bankDetail:any) {
   try {
-    const formattedPhone = formatPhone("91"+phone);  // Ensure correct format
+    const formattedPhone = formatPhone("91"+booking?.whatsappNumber);  // Ensure correct format
     const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
     const today = new Date();
@@ -107,7 +121,7 @@ export async function sendInvoiceToWhatsAppWithSelfBank(phone: string, invoiceId
         to: formattedPhone, 
         type: "text",
         text: {
-          body: `📄 Hi ${name},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${bankDetail}`
+          body: `📄 Hi ${booking?.fullName},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${bankDetail}`
         }
       },
       { headers: { Authorization: `Bearer ${config?.WHATSAPP_TOKEN}`, "Content-Type": "application/json" } }

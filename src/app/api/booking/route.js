@@ -135,19 +135,19 @@ export async function POST(request) {
         dueDate: booking.checkIn || new Date(),
         paymentUrl: paymentLink ?? "SELF RECEIVE"
       });
-      if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, paymentLink);
-      } else {
-        sendInvoiceToWhatsAppWithSelfBank(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, room.propertyId?.selectedBank);
-      }
+      // if (room?.propertyId?.is_paymentRecieveSelf === false) {
+      //   sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentLink);
+      // } else {
+      //   sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, room.propertyId?.selectedBank);
+      // }
     }
 
     // --- First Rent Invoice ---
     if (booking.amount && booking.amount > 0) {
       let invoiceId = `INV-${booking._id}-02-RENT`
-      let paymentLink = "SELF RECEIVE";
+      let paymentLink_2 = "SELF RECEIVE";
       if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        paymentLink = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
+        paymentLink_2 = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
       }
 
       invoices.push({
@@ -165,9 +165,9 @@ export async function POST(request) {
       });
 
       if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, paymentLink);
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId,paymentLink_2);
       } else {
-        sendInvoiceToWhatsAppWithSelfBank(booking.whatsappNumber, invoiceId, booking.advanceAmount, booking?.fullName, room.propertyId?.selectedBank);
+        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, room.propertyId?.selectedBank);
       }
     }
 
@@ -204,7 +204,7 @@ export async function POST(request) {
       }
 
       // ✅ Only assign if next billing date is before checkout
-      if (checkOutDate && calculatedDate > checkOutDate) {
+      if (checkOutDate && (checkOutDate?calculatedDate > checkOutDate:true)) {
         nextBillingDate = checkOutDate;
       } else {
         nextBillingDate = calculatedDate;

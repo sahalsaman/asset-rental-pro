@@ -11,6 +11,7 @@ const RoomSchema = new Schema(
     advanceAmount: Number,
     description: String,
     images: [String],
+    videoUrl: [String],
     frequency: { type: String, enum: RentFrequency },
     status: { type: String, default: RoomStatus.AVAILABLE },
     noOfSlots: { type: Number, required: true, default: 1 },

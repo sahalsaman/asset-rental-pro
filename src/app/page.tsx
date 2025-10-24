@@ -465,7 +465,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: +91 9876543210)</span></label>
+              <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: +91 987XXXXXXX)</span></label>
               <input
                 name="phone"
                 type="tel"

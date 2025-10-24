@@ -42,8 +42,8 @@ export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Pro
           <span> {(invoice?.bookingId as IBooking)?.fullName ?? ""}</span>
           <span>{property?.currency}{invoice.amount?.toLocaleString()}</span>
         </CardTitle>
-        <p className="text-gray-600 text-sm">   {invoice?.updatedAt
-          ? new Date(invoice.updatedAt).toLocaleDateString("en-GB", {
+        <p className="text-gray-600 text-sm">   {invoice?.dueDate
+          ? new Date(invoice.dueDate).toLocaleDateString("en-GB", {
             day: "numeric",
             month: "short",
             year: "numeric",

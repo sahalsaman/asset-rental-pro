@@ -10,6 +10,7 @@ const PropertySchema = new Schema(
     amenities: [String], 
     services: [String], 
     images: [String],
+    videoUrl: [String],
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
