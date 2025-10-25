@@ -12,7 +12,7 @@ import CronJobModel from "../../../../models/CronJob";
 
 export async function GET() {
 
-  try {
+  try { 
     await connectMongoDB();
     const cron = await CronJobModel.create({
       message: "started",
