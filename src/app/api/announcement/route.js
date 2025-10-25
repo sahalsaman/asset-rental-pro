@@ -37,8 +37,6 @@ export async function POST(request) {
 
     const body = await request.json();
 
-
-
     const newAnnouncement = new AnnouncementModel({
       ...body,
       organisationId: user.organisationId,
@@ -46,6 +44,8 @@ export async function POST(request) {
     });
 
     await newAnnouncement.save();
+
+    // add whatsapp message
 
     return NextResponse.json(newAnnouncement, { status: 201 });
   } catch (error) {

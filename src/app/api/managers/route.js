@@ -6,6 +6,7 @@ import { OrganisationModel } from "@/../models/Organisation";
 import { getTokenValue } from "@/utils/tokenHandler";
 import { UserRoles } from "@/utils/contants";
 import PropertyModel from "../../../../models/Property";
+import { defaultData } from "@/utils/data";
 
 // 📍 GET all managers for current org
 export async function GET(request) {
@@ -54,7 +55,7 @@ export async function POST(request) {
       firstName,
       lastName,
       phone,
-      countryCode: countryCode || "+91",
+      countryCode: countryCode || defaultData.countryCodes,
       organisationId,
       properties: properties || [],
       role: UserRoles.MANAGER,

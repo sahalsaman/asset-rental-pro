@@ -6,21 +6,31 @@ import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank 
 import { generateRazorpayLinkForInvoice, razorpayPayout } from "@/utils/razerPay";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../models/Organisation";
-import { calculateDueDate } from "@/utils/functions";
+import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import RoomModel from "../../../../models/Room";
+import CronJobModel from "../../../../models/cronJob";
 
 export async function GET() {
 
   try {
     await connectMongoDB();
+    const cron = await CronJobModel.create({
+      message: "started",
+      createdBy: "Vercel cron job",
+      type: "day"
+    })
     // new invoice generating
     await handleInvoice()
     // send overdue message
     await sendOverdueMessage()
     // daily collected mount payout to organisation
-    await payOutrazerpaytToOrganisation()
+    // await payOutrazerpaytToOrganisation()
 
     await handleCheckout()
+
+    await CronJobModel.findByIdAndUpdate(cron?._id, {
+      message: "completed"
+    })
 
     console.log("cron job is working.........", new Date());
 
@@ -34,70 +44,72 @@ export async function GET() {
 
 
 const handleInvoice = async () => {
-  const bookings = await BookingModel.find({ disabled: false, status: BookingStatus.CHECKED_IN }).populate('propertyId')
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
 
-  const today = new Date();
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
 
-  const isSameDay = (date1: any, date2: any) => {
-    if (date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate()) {
-      return true
-    } else {
-      return false
-    }
-  }
+  const bookings = await BookingModel.find({
+    disabled: false,
+    status: BookingStatus.CHECKED_IN,
+    nextBillingDate: { $gte: startOfDay, $lte: endOfDay },
+  }).populate('propertyId');
 
   for (const booking of bookings) {
 
-    if (booking?.nextBillingDate && isSameDay(new Date(booking.nextBillingDate), today)) {
+    const lastInvoice = await InvoiceModel.findOne({
+      organisationId: booking.organisationId,
+      bookingId: booking._id,
+      propertyId: booking.propertyId,
+    }).sort({ createdAt: -1 });
 
-      const lastInvoice = await InvoiceModel.findOne({
-        organisationId: booking.organisationId,
-        bookingId: booking._id,
-        propertyId: booking.propertyId,
-      }).sort({ createdAt: -1 });
+    let carryForwarded = 0;
 
-      let carryForwarded = 0;
-
-      if (lastInvoice && lastInvoice.status !== InvoiceStatus.PAID) {
-        carryForwarded = lastInvoice.balance || 0;
-        lastInvoice.status = InvoiceStatus.CARRY_FORWARDED; // You can add a new status if needed
-        await lastInvoice.save();
-      }
-
-      const dueDate = calculateDueDate(booking?.frequency)
-
-      const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
-      let paymentLink = "test"
-      paymentLink = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking);
-      let new_amount = booking.amount + carryForwarded
-      await InvoiceModel.create({
-        organisationId: booking.organisationId,
-        bookingId: booking._id,
-        propertyId: booking.propertyId,
-        roomId: booking.roomId,
-        invoiceId,
-        amount: new_amount, // Add unpaid amount to current invoice
-        balance: new_amount,
-        carryForwarded,
-        type: RentAmountType.RENT,
-        dueDate,
-        status: InvoiceStatus.PENDING,
-        paymentGateway: "razorpay",
-        paymentUrl: paymentLink ?? "SELF RECEIVE"
-      });
-
-      // if (booking?.propertyId?.is_paymentRecieveSelf === false) {
-      //   sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentLink);
-      // } else {
-      //   sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, booking.propertyId?.selectedBank);
-      // }
-      return
+    if (lastInvoice && lastInvoice.status !== InvoiceStatus.PAID) {
+      carryForwarded = lastInvoice.balance || 0;
+      lastInvoice.status = InvoiceStatus.CARRY_FORWARDED; // You can add a new status if needed
+      await lastInvoice.save();
     }
 
-  }
+    const dueDate = calculateDueDate(booking?.frequency)
 
+    const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
+    let paymentUrl = "SELF RECEIVE"
+    let paymentGateway = "manual"
+    // if (booking?.propertyId?.is_paymentRecieveSelf === false) {
+    //       paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking)
+    // paymentGateway="razorpay"
+    // }
+    let new_amount = booking.amount + carryForwarded
+    await InvoiceModel.create({
+      organisationId: booking.organisationId,
+      bookingId: booking._id,
+      propertyId: booking.propertyId,
+      roomId: booking.roomId,
+      invoiceId,
+      amount: new_amount, // Add unpaid amount to current invoice
+      balance: new_amount,
+      carryForwarded,
+      type: RentAmountType.RENT,
+      dueDate,
+      status: InvoiceStatus.PENDING,
+      paymentGateway,
+      paymentUrl
+    });
+
+    let nextBillingDate = calculateNextBillingdate(booking.checkInDate, booking.frequency)
+    await BookingModel.findByIdAndUpdate(booking._id, {
+      nextBillingDate
+    })
+
+    // if (booking?.propertyId?.is_paymentRecieveSelf === false) {
+    //   sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentLink);
+    // } else {
+    //   sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, booking.propertyId?.selectedBank);
+    // }
+    return
+  }
   console.log("cron handle nvoice working.........", new Date());
 }
 
@@ -140,51 +152,51 @@ const payOutrazerpaytToOrganisation = async () => {
 const handleCheckout = async () => {
 
 
-    // 🕓 Get today's date (midnight)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  // 🕓 Get today's date (midnight)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    // 🕓 Get tomorrow's date to match same-day checkouts
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
+  // 🕓 Get tomorrow's date to match same-day checkouts
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
 
-    // 1️⃣ Find all active bookings whose checkout date is today
-    const dueForCheckout = await BookingModel.find({
-      status: BookingStatus.CHECKED_IN,
-      checkOut: { $gte: today, $lt: tomorrow },
+  // 1️⃣ Find all active bookings whose checkout date is today
+  const dueForCheckout = await BookingModel.find({
+    status: BookingStatus.CHECKED_IN,
+    checkOut: { $gte: today, $lt: tomorrow },
+  });
+
+  if (dueForCheckout.length === 0) {
+    return NextResponse.json({ message: "No checkouts due today" });
+  }
+
+  for (const booking of dueForCheckout) {
+    // Update booking → CHECKED_OUT
+    booking.status = BookingStatus.CHECKED_OUT;
+    await booking.save();
+
+    // 2️⃣ Update room slots
+    const room = await RoomModel.findById(booking.roomId);
+    if (!room) continue;
+
+    let updatedStatus = RoomStatus.AVAILABLE;
+    let newCurrentBooking = Math.max(0, room.currentBooking - 1);
+
+    // if partially booked → check if more slots active
+    if (newCurrentBooking > 0 && newCurrentBooking < room.noOfSlots) {
+      updatedStatus = RoomStatus.PARTIALLY_BOOKED;
+    } else if (newCurrentBooking >= room.noOfSlots) {
+      updatedStatus = RoomStatus.BOOKED;
+    }
+
+    await RoomModel.findByIdAndUpdate(room._id, {
+      currentBooking: newCurrentBooking,
+      status: updatedStatus,
+      $pull: { Bookings: booking._id },
     });
+  }
 
-    if (dueForCheckout.length === 0) {
-      return NextResponse.json({ message: "No checkouts due today" });
-    }
-
-    for (const booking of dueForCheckout) {
-      // Update booking → CHECKED_OUT
-      booking.status = BookingStatus.CHECKED_OUT;
-      await booking.save();
-
-      // 2️⃣ Update room slots
-      const room = await RoomModel.findById(booking.roomId);
-      if (!room) continue;
-
-      let updatedStatus = RoomStatus.AVAILABLE;
-      let newCurrentBooking = Math.max(0, room.currentBooking - 1);
-
-      // if partially booked → check if more slots active
-      if (newCurrentBooking > 0 && newCurrentBooking < room.noOfSlots) {
-        updatedStatus = RoomStatus.PARTIALLY_BOOKED;
-      } else if (newCurrentBooking >= room.noOfSlots) {
-        updatedStatus = RoomStatus.BOOKED;
-      }
-
-      await RoomModel.findByIdAndUpdate(room._id, {
-        currentBooking: newCurrentBooking,
-        status: updatedStatus,
-        $pull: { Bookings: booking._id },
-      });
-    }
-
-    return 
+  return
 
 
 }

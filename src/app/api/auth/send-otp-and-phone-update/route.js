@@ -15,9 +15,14 @@ export async function POST(req) {
 
     await connectMongoDB();
 
-    const user = await UserModel.findOne({ phone: phone, countryCode: countryCode });
+    const oldTokenValue = getTokenValue(request);
+    if (!oldTokenValue?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await UserModel.findOne({ _id: oldTokenValue?.id, phone, countryCode })
     if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     if (user.disabled) {
@@ -40,7 +45,6 @@ export async function POST(req) {
 
     return NextResponse.json({
       message: "OTP sent successfully", data: {
-        otp: otp,
         countryCode: newCountryCode,
         phone: newPhone,
       }

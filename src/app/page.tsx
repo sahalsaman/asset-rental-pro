@@ -9,7 +9,7 @@ import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import bannerBg from "../../public/banner.png"
 import Image from "next/image";
-import { subscription_plans } from "@/utils/mock-data";
+import { defaultData, subscription_plans } from "@/utils/data";
 import { app_config } from "@/utils/app-config";
 import toast from "react-hot-toast";
 
@@ -465,7 +465,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: +91 987XXXXXXX)</span></label>
+              <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: {defaultData.countryCodes} 987XXXXXXX)</span></label>
               <input
                 name="phone"
                 type="tel"

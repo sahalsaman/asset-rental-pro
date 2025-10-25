@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes } from "@/utils/data";
 import toast from "react-hot-toast";
 import { IUser } from "@/app/types";
 import { apiFetch } from "@/lib/api";

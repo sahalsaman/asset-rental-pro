@@ -21,7 +21,7 @@ const BookingSchema = new Schema(
     amount: { type: Number, required: true },
     advanceAmount: Number,
     frequency: { type: String, enum: RentFrequency },
-    status: { type: String, default: BookingStatus.CONFIRMED },
+    status: { type: String, default: BookingStatus.CHECKED_IN },
     lastInvoiceId: { type: Types.ObjectId, ref: "Invoice" },
     nextBillingDate: { type: Date },
     disabled: { type: Boolean, required: true, default: false },

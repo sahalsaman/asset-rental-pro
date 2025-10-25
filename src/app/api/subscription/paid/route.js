@@ -4,7 +4,7 @@ import connectMongoDB from "@/../database/db";
 
 import { OrganisationModel, OrgSubscriptionModel, SubscriptionPaymentModel } from "@/../models/Organisation";
 import { razorpay_config } from "@/utils/config";
-import { subscription_plans } from "@/utils/mock-data";
+import { subscription_plans } from "@/utils/data";
 import { SubscritptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
 
 export async function PUT(req) {

@@ -7,12 +7,12 @@ import toast from "react-hot-toast";
 import logo from "../../../../public/arp logo.png"
 import Image from "next/image";
 import { log } from "node:console";
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes, defaultData } from "@/utils/data";
 import { app_config } from "@/utils/app-config";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
-  const [countryCode, setCountryCode] = useState("+91"); // Default to India
+  const [countryCode, setCountryCode] = useState(defaultData.countryCodes); // Default to India
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
   const router = useRouter();
   const validatePhoneNumber = (phoneNumber: string) => {

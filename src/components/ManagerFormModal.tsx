@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import MultiSelect from "./ui/multiselect";
 import { Label } from "./ui/label";
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes, defaultData } from "@/utils/data";
 
 export default function ManagerFormModal({ open, onClose, onSave, editData }: any) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    countryCode: "+91",
+    countryCode: defaultData.countryCodes,
     phone: "",
     properties: [] as string[],
   });

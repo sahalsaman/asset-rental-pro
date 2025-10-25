@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { subscription_plans } from "@/utils/mock-data";
+import { subscription_plans } from "@/utils/data";
 
 
 export async function GET(req) {

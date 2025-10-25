@@ -9,6 +9,11 @@ import { SubscritptionBillingCycle } from "./contants";
     { code: "+86", name: "China" },
   ];
 
+   export const defaultData ={
+    country:"India",
+    countryCodes:"+91",
+   }
+
 export const subscription_plans = [
     {
     id:"arp_subcription_trial",

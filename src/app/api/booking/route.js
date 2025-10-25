@@ -9,6 +9,7 @@ import RoomModel from "../../../../models/Room";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
 import { OrgSubscriptionModel } from "../../../../models/Organisation";
 import { generateRazorpayLinkForInvoice } from "@/utils/razerPay";
+import { calculateNextBillingdate } from "@/utils/functions";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -104,10 +105,22 @@ export async function POST(request) {
       return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
     }
 
+    let dueDate = calculateDueDate(booking?.frequency)
+
+    let nextBillingDate = null;
+
+    if (booking.status === BookingStatus.CHECKED_IN && body.frequency) {
+      const checkInDate = new Date(booking.checkIn);
+      const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
+      nextBillingDate = calculateNextBillingdate(checkInDate, body?.frequency)
+
+    }
+
 
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
+      nextBillingDate,
       organisationId: user.organisationId,
     });
 
@@ -118,10 +131,12 @@ export async function POST(request) {
     if (booking.advanceAmount && booking.advanceAmount > 0) {
 
       let invoiceId = `INV-${booking._id}-01-ADV`
-      let paymentLink = null;
-      if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        paymentLink = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName,booking);
-      }
+      let paymentUrl = "SELF RECEIVE";
+      let paymentGateway = "manual"
+      // if (room?.propertyId?.is_paymentRecieveSelf === false) {
+      //   paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
+      //     //let paymentGateway="razorpay"
+      // }
       invoices.push({
         organisationId: user.organisationId,
         bookingId: booking._id,
@@ -133,7 +148,8 @@ export async function POST(request) {
         type: RentAmountType.ADVANCE,
         status: InvoiceStatus.PENDING,
         dueDate: booking.checkIn || new Date(),
-        paymentUrl: paymentLink ?? "SELF RECEIVE"
+        paymentGateway,
+        paymentUrl
       });
       // if (room?.propertyId?.is_paymentRecieveSelf === false) {
       //   sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentLink);
@@ -145,10 +161,12 @@ export async function POST(request) {
     // --- First Rent Invoice ---
     if (booking.amount && booking.amount > 0) {
       let invoiceId = `INV-${booking._id}-02-RENT`
-      let paymentLink_2 = "SELF RECEIVE";
-      if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        paymentLink_2 = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
-      }
+      let paymentUrl_2 = "SELF RECEIVE";
+      let paymentGateway = "manual"
+      // if (room?.propertyId?.is_paymentRecieveSelf === false) {
+      //   paymentUrl_2 = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
+      //let paymentGateway="razorpay"
+      // }
 
       invoices.push({
         organisationId: user.organisationId,
@@ -161,64 +179,27 @@ export async function POST(request) {
         type: RentAmountType.ADVANCE,
         status: InvoiceStatus.PENDING,
         dueDate: booking.checkIn || new Date(),
-        paymentUrl: paymentLink ?? "SELF RECEIVE"
+        paymentGateway,
+        paymentUrl: paymentUrl_2
       });
 
       if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId,paymentLink_2);
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentLink_2);
       } else {
         sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, room.propertyId?.selectedBank);
       }
     }
 
-
     if (invoices.length > 0) {
       await InvoiceModel.insertMany(invoices);
     }
 
-
-    let nextBillingDate= null;
-
-    if (booking.status === BookingStatus.CHECKED_IN && body.frequency) {
-      const checkInDate = new Date(booking.checkIn);
-      const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
-
-      let calculatedDate = new Date(checkInDate);
-
-      switch (body.frequency) {
-        case RentFrequency.DAY:
-          calculatedDate.setDate(calculatedDate.getDate() + 1);
-          break;
-
-        case RentFrequency.WEEK:
-          calculatedDate.setDate(calculatedDate.getDate() + 7);
-          break;
-
-        case RentFrequency.MONTH:
-          calculatedDate.setMonth(calculatedDate.getMonth() + 1);
-          break;
-
-        case RentFrequency.YEAR:
-          calculatedDate.setFullYear(calculatedDate.getFullYear() + 1);
-          break;
-      }
-
-      // ✅ Only assign if next billing date is before checkout
-      if (checkOutDate && (checkOutDate?calculatedDate > checkOutDate:true)) {
-        nextBillingDate = checkOutDate;
-      } else {
-        nextBillingDate = calculatedDate;
-      }
-    }
-
-
-    if (room.noOfSlots > 1 && room.currentBooking < room.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.CONFIRMED)) {
+    if (room.noOfSlots > 1 && room.currentBooking < room.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.BOOKED)) {
       await RoomModel.findByIdAndUpdate(booking.roomId,
         {
           $inc: { currentBooking: 1 },
           $addToSet: { Bookings: booking._id },
           status: room.noOfSlots === 1 ? RoomStatus.BOOKED : room.currentBooking + 1 === room.noOfSlots ? RoomStatus.BOOKED : RoomStatus.PARTIALLY_BOOKED,
-          nextBillingDate
         });
     }
 

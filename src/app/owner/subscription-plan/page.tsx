@@ -10,7 +10,7 @@ import { FullscreenLoader } from "@/components/Loader";
 import { SubscritptionStatus } from "@/utils/contants";
 import toast from "react-hot-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { subscription_plans } from "@/utils/mock-data";
+import { subscription_plans } from "@/utils/data";
 // import { useToaster } from "react-hot-toast";
 
 export default function SubscriptionPlan() {

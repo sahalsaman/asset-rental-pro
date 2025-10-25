@@ -10,7 +10,7 @@ import { BookingStatus, RoomStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes, defaultData } from "@/utils/data";
 
 
 
@@ -28,11 +28,11 @@ export default function CheckoutModal({ open, onClose, onSave, editData, roomDat
   const [formData, setFormData] = useState<Partial<IBooking>>({
     roomId: roomData ? roomData?._id : "",
     propertyId: property?._id || "",
-        whatsappCountryCode: "+91",
+        whatsappCountryCode: defaultData.countryCodes,
     whatsappNumber: "",
     checkIn: "",
     checkOut: "",
-    status: BookingStatus.PENDING,
+    status: BookingStatus.CHECKED_OUT,
   });
   const [rooms, setRooms] = useState<IRoom[]>([]);
 

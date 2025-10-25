@@ -42,11 +42,11 @@ export enum RoomStatus {
 
 // 📌 Booking Status
 export enum BookingStatus {
-  PENDING = "Pending",
-  CONFIRMED = "Confirmed",
-  CANCELLED = "Cancelled",
+  // PENDING = "Pending",
+  BOOKED = "Booked",
   CHECKED_IN = "Checked-In",
   CHECKED_OUT = "Checked-Out",
+  // CANCELLED = "Booking Cancelled",
 }
 
 // 📌 Invoice Status

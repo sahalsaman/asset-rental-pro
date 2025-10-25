@@ -42,6 +42,7 @@ export async function POST(request) {
     otp,
     otpExpireTime,
     role: UserRoles.OWNER,
+    onboardingCompleted: true,
     disabled: false,
   });
 
@@ -56,7 +57,6 @@ export async function POST(request) {
       // const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
 
   return NextResponse.json({ message: "OTP sent successfully",data:{
-    otp: otp,
     countryCode: countryCode,
     phone: phone,
   } }, { status: 201 });

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import logo from "../../../../public/arp logo.png"
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes, defaultData } from "@/utils/data";
 import { app_config } from "@/utils/app-config";
 
 export default function LoginPage() {
@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [organisationName, setOrganisationName] = useState("");
-  const [countryCode, setCountryCode] = useState("+91"); // Default to India
+  const [countryCode, setCountryCode] = useState(defaultData.countryCodes); // Default to India
   const router = useRouter();
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
   const [nameValidationMessage, setNameValidationMessage] = useState("");

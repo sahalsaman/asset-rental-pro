@@ -10,7 +10,7 @@ import { BookingStatus, RoomStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes, defaultData } from "@/utils/data";
 
 
 
@@ -29,9 +29,9 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     roomId: roomData ? roomData?._id : "",
     propertyId: property?._id || "",
     fullName: "",
-    countryCode: "+91",
+    countryCode: defaultData.countryCodes,
     phone: "",
-    whatsappCountryCode: "+91",
+    whatsappCountryCode: defaultData.countryCodes,
     whatsappNumber: "",
     address: "",
     verificationIdCard: "",
@@ -40,7 +40,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     checkOut: "",
     amount: roomData ? roomData?.amount : 0,
     advanceAmount: roomData ? roomData?.advanceAmount : 0,
-    status: BookingStatus.PENDING,
+    status: BookingStatus.CHECKED_IN,
   });
   const [rooms, setRooms] = useState<IRoom[]>([]);
 

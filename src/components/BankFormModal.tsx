@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { apiFetch } from "@/lib/api";
-import { countryCodes } from "@/utils/mock-data";
+import { countryCodes, defaultData } from "@/utils/data";
 import { PaymentRecieverOptions } from "@/utils/contants";
 
 export default function BankFormModal({ open, onClose, onSave, initialData }: any) {
@@ -19,7 +19,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
         upiId: "",
         upiPhoneNumber: "",
         qrcode_link: "",
-        upiPhoneCountryCode: "+91"
+        upiPhoneCountryCode: defaultData.countryCodes
     });
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                 upiId: "",
                 upiPhoneNumber: "",
                 qrcode_link: "",
-                upiPhoneCountryCode: "+91",
+                upiPhoneCountryCode: defaultData.countryCodes,
             });
     }, [initialData]);
 
