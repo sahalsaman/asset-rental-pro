@@ -3,8 +3,8 @@ import connectMongoDB from "@/../database/db";
 import RoomModel from "@/../models/Room";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { OrgSubscriptionModel } from "../../../../models/Organisation";
 import { SubscritptionStatus } from "@/utils/contants";
+import { OrganisationModel } from "../../../../models/Organisation";
 
 
 export async function GET(request) {
@@ -62,15 +62,15 @@ export async function POST(request) {
 
   const body = await request.json();
   await connectMongoDB();
-  const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
   const rooms_list = await RoomModel.find({ organisationId: user.organisationId })
 
-  if (org?.status === SubscritptionStatus.EXPIRED) {
+  const organisation = await OrganisationModel.findById(user.organisationId)
+  if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
     return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
   }
 
   if (body.isMultipleRoom) {
-    if (body.numberOfRooms && org?.usageLimits?.property < rooms_list?.length + body.numberOfRooms) {
+    if (body.numberOfRooms && organisation?.subscription?.usageLimits?.property < rooms_list?.length + body.numberOfRooms) {
       return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
     }
 
@@ -86,7 +86,7 @@ export async function POST(request) {
 
   }
 
-  if (org?.usageLimits?.property == rooms_list?.length + 1) {
+  if (organisation?.subscription?.usageLimits?.property < (rooms_list?.length ?? 0) + 1) {
     return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
   }
 

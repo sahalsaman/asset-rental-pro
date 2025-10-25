@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import PropertyModel from "@/../models/Property";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { UserRoles } from "@/utils/contants";
-import { OrganisationModel, OrgSubscriptionModel } from "../../../../models/Organisation";
+import { SubscritptionStatus, UserRoles } from "@/utils/contants";
+import { OrganisationModel } from "../../../../models/Organisation";
 
 
 
@@ -60,15 +60,18 @@ export async function POST(request) {
 
   try {
 
-    const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
+    const organisation = await OrganisationModel.findById(user.organisationId)
+    if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
+      return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
+    }
     const properties_list = await PropertyModel.find({ organisationId: user.organisationId })
-     if (org?.status === SubscritptionStatus.EXPIRED) {
-        return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
-      }
-    if (org?.usageLimits?.property <= properties_list?.length + 1) {
+
+    if (organisation?.subscription?.usageLimits?.property < (properties_list?.length ?? 0) + 1) {
       return NextResponse.json({ error: "Property limit reached. Please upgrade your subscription." }, { status: 403 });
     }
-
+    if (!body.selctedSelfRecieveBankOrUpi) {
+      delete body.selctedSelfRecieveBankOrUpi;
+    }
     const property = await PropertyModel.create({
       ...body,
       organisationId: user.organisationId,

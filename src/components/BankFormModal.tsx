@@ -12,13 +12,10 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
     const [formData, setFormData] = useState({
         paymentRecieverOption: "",
         bankName: "",
-        accountNo: "",
+        value: "",
         ifsc: "",
         accountHolderName: "",
         branch: "",
-        upiId: "",
-        upiPhoneNumber: "",
-        qrcode_link: "",
         upiPhoneCountryCode: defaultData.countryCodes
     });
 
@@ -28,13 +25,10 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
             setFormData({
                 paymentRecieverOption: "",
                 bankName: "",
-                accountNo: "",
+                value: "",
                 ifsc: "",
                 accountHolderName: "",
                 branch: "",
-                upiId: "",
-                upiPhoneNumber: "",
-                qrcode_link: "",
                 upiPhoneCountryCode: defaultData.countryCodes,
             });
     }, [initialData]);
@@ -89,7 +83,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                         </div>
                         <div>
                             <Label>Account Number</Label>
-                            <Input className="mt-1" name="accountNo" type="number" value={formData.accountNo} onChange={handleChange} />
+                            <Input className="mt-1" name="value" type="number" value={formData.value} onChange={handleChange} />
                         </div>
                         <div>
                             <Label>IFSC Code</Label>
@@ -104,12 +98,20 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                     {formData.paymentRecieverOption === PaymentRecieverOptions.UPIID &&
                         <>
                             <div>
+                                <Label>Account Holder Name</Label>
+                                <Input className="mt-1" name="accountHolderName" value={formData.accountHolderName} onChange={handleChange} />
+                            </div>
+                            <div>
                                 <Label>UPI ID</Label>
-                                <Input className="mt-1" name="upiId" value={formData.upiId} onChange={handleChange} />
+                                <Input className="mt-1" name="value" value={formData.value} onChange={handleChange} />
                             </div>
                         </>}
                     {formData.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE &&
                         <>
+                            <div>
+                                <Label>Account Holder Name</Label>
+                                <Input className="mt-1" name="accountHolderName" value={formData.accountHolderName} onChange={handleChange} />
+                            </div>
                             <div>
                                 <Label>UPI Phone Number</Label>
                                 <div className="flex items-center gap-2">
@@ -126,15 +128,22 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: an
                                             </option>
                                         ))}
                                     </select>
-                                    <Input className="mt-1" name="upiPhoneNumber" value={formData.upiPhoneNumber} onChange={handleChange} maxLength={10} minLength={10} />
+                                    <Input className="mt-1" name="value" value={formData.value} onChange={handleChange} maxLength={10} minLength={10} />
                                 </div>
                             </div>
                         </>}
                     {formData.paymentRecieverOption === PaymentRecieverOptions.UPIQR &&
-                        <div>
-                            <Label>QR Code Link</Label>
-                            <Input className="mt-1" name="qrcode_link" value={formData.qrcode_link} onChange={handleChange} />
-                        </div>}
+                        <>
+                            <div>
+                                <Label>Account Holder Name</Label>
+                                <Input className="mt-1" name="accountHolderName" value={formData.accountHolderName} onChange={handleChange} />
+                            </div>
+                            <div>
+                                <Label>QR Code Link</Label>
+                                <Input className="mt-1" name="value" value={formData.value} onChange={handleChange} />
+                            </div>
+                        </>
+                    }
 
                     <div className="flex justify-end gap-3 mt-4">
                         <Button variant="outline" onClick={onClose}>

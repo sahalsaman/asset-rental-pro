@@ -3,7 +3,6 @@
 import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Key, Zap, ShieldCheck, FileText, LayoutDashboard, DollarSign, Briefcase, TrendingUp, SidebarClose, X, PhoneIcon, MailIcon, MapPinIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import logo from "../../public/arp logo.png"
 import about from "../../public/arp aboout.png"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
@@ -90,7 +89,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
       <div className="bg-white  px-6 py-4 space-y-8 text-xl text-center flex flex-col">
         <div className="flex justify-between mb-10">
           <div className="flex items-center gap-3">
-            <Image src={logo} alt="Logo" width={60} className='cursor-pointer' />
+            <Image src={app_config.APP_LOGO} alt="Logo" width={60} className='cursor-pointer' />
           </div>
           <button className="" onClick={() => setMenuOpen(!menuOpen)}>
             <X className="h-10 w-10 text-gray-700 font-light" />
@@ -117,7 +116,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
 
       <header className="flex justify-between items-center px-4 md:px-24 py-3 md:py-4 shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Image src={logo} alt="Logo" className='w-10 h-10 md:w-14 md:h-14 cursor-pointer' />
+          <Image src={app_config.APP_LOGO} alt="Logo" className='w-10 h-10 md:w-14 md:h-14 cursor-pointer' />
           <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
         </div>
         <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">

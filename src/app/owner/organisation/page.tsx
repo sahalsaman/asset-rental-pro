@@ -38,7 +38,6 @@ export default function PropertiesPage() {
     const res = await apiFetch("/api/organisation");
     const data = await res.json();
     setOrganisation(data);
-
   };
 
   const breadcrumbItems = [
@@ -69,7 +68,7 @@ export default function PropertiesPage() {
       <div className=" p-5 md:pt-10 md:px-32 mb-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Properties</h1>
-          {organisation.subscription && <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
+          {organisation?.subscription && <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
             Add Property
           </Button>}
         </div>

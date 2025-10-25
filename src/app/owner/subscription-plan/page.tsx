@@ -181,7 +181,7 @@ export default function SubscriptionPlan() {
             <h3 className="text-xl md:text-2xl font-bold text-green-700 text-center">{selectedPlan?.name}</h3>
             <div className="flex flex-col gap-4 md:flex-row md:gap-6 mb-6 md:mb-8">
               <div className="text-center md:text-left">
-                <p className="text-4xl sm:text-5xl font-extrabold mb-1">{selectedPlan?.price}</p>
+                <p className="text-5xl sm:text-5xl font-extrabold mb-1">{selectedPlan?.price}</p>
                 <p className="text-gray-500 text-sm sm:text-base">{selectedPlan?.period}</p>
               </div>
 
@@ -199,7 +199,7 @@ export default function SubscriptionPlan() {
 
             <button
               onClick={() => handlePlanSelect(selectedPlan)}
-              className={`${selectedPlan?.buttonStyle} font-semibold w-full py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base transition-all duration-200 hover:shadow-md active:scale-95 disabled:opacity-50`}
+              className={`${selectedPlan?.buttonStyle} bg-green-700 text-white font-semibold w-full py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base transition-all duration-200 hover:shadow-md active:scale-95 disabled:opacity-50`}
               disabled={loading}>
               {loading ? "Processing..." : selectedPlan?.buttonText}
             </button>

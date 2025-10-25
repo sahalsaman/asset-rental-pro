@@ -1,11 +1,11 @@
 import Razorpay from 'razorpay';  // Or use axios for API calls
-import { razorpay_config } from './config';
+import { env } from '../../environment';
 import axios from "axios";
 import { app_config } from './app-config';
 
 const razorpay = new Razorpay({
-  key_id: razorpay_config.RAZORPAY_KEY_ID,
-  key_secret: razorpay_config.RAZORPAY_KEY_SECRET,
+  key_id: env.RAZORPAY_KEY_ID,
+  key_secret: env.RAZORPAY_KEY_SECRET,
 });
 
 export async function generateRazorpayLinkForSubscription(amount: number, organisationId: string) {
@@ -61,7 +61,7 @@ export async function razorpayPayout(payoutAmount: number, org: any) {
     const response = await axios.post(
       "https://api.razorpay.com/v1/payouts",
       {
-        account_number: razorpay_config.YOUR_RAZORPAY_VIRTUAL_ACCOUNT,
+        account_number: env.YOUR_RAZORPAY_VIRTUAL_ACCOUNT,
         fund_account_id: org.fundAccountId,
         amount: payoutAmount * 100,
         currency: "INR",
@@ -71,8 +71,8 @@ export async function razorpayPayout(payoutAmount: number, org: any) {
       },
       {
         auth: {
-          username: razorpay_config.RAZORPAY_KEY_ID,
-          password: razorpay_config.RAZORPAY_KEY_SECRET,
+          username: env.RAZORPAY_KEY_ID,
+          password: env.RAZORPAY_KEY_SECRET,
         },
       }
     );

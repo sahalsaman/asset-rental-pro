@@ -62,7 +62,7 @@ export default function PropertiesPage() {
            {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
           Auto Payout <span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
         </a> : ""}
-           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-details')}>
+           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
           Bank & UPI Details
         </a> : ""}
         {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subscription-plan')}>

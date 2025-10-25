@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     siteName: 'WEBCOS',
     images: [
       {
-        url: '../../public/arp logo.png',
+        url: '../../public/logo green.png',
         width: 1200,
         height: 630,
         alt: 'Rental Property Management Solutions',
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Rental Property Management - Efficient Solutions',
     description: 'Simplify your rental management with ARP. Maximize profits, minimize hassle.',
-    images: ['../../public/arp logo.png'],
+    images: ['../../public/logo green.png'],
     creator: '@webcos',
   },
   // verification: {

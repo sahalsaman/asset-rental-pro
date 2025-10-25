@@ -1,5 +1,6 @@
 
 import jwt from "jsonwebtoken";
+import { env } from "../../environment";
 
  export interface IPayload  {
     id: string;
@@ -14,7 +15,7 @@ export function setTokenValue(user:any){
     organisationId:user.organisationId
   };
 
-  return  jwt.sign(payload, process.env.JWT_SECRET ?? "arp_userTokenKey", {
+  return  jwt.sign(payload, env.JWT_SECRET, {
     expiresIn: "7d",
   });
 }
@@ -25,7 +26,7 @@ export function getTokenValue(request:Request) {
   if (!match) return null;
 
   try {
-    return jwt.verify(match[1], process.env.JWT_SECRET ?? "arp_userTokenKey");
+    return jwt.verify(match[1], env.JWT_SECRET);
   } catch (err) {
     return null;
   }

@@ -1,24 +1,18 @@
 import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
-import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
 import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
 import { generateRazorpayLinkForInvoice, razorpayPayout } from "@/utils/razerPay";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import RoomModel from "../../../../models/Room";
-import CronJobModel from "../../../../models/CronJob";
 
 export async function GET() {
 
   try { 
     await connectMongoDB();
-    const cron = await CronJobModel.create({
-      message: "started",
-      createdBy: "Vercel cron job",
-      type: "day"
-    })
     // new invoice generating
     await handleInvoice()
     // send overdue message
@@ -28,16 +22,14 @@ export async function GET() {
 
     await handleCheckout()
 
-    await CronJobModel.findByIdAndUpdate(cron?._id, {
-      message: "completed"
-    })
+    await updateOrganisationSubscription()
 
-    console.log("cron job is working good.........", new Date());
+    console.log("cron job is working well.........", new Date());
 
-    return NextResponse.json({ message: "Invoices generated successfully" });
+    return NextResponse.json({ message: "working successfully" });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ message: "Error generating invoices" }, { status: 500 });
+    return NextResponse.json({ message: "Error cron job working" }, { status: 500 });
   }
 }
 
@@ -54,7 +46,7 @@ const handleInvoice = async () => {
     disabled: false,
     status: BookingStatus.CHECKED_IN,
     nextBillingDate: { $gte: startOfDay, $lte: endOfDay },
-  }).populate('propertyId');
+  }).populate('organisationId');
 
   for (const booking of bookings) {
 
@@ -77,13 +69,13 @@ const handleInvoice = async () => {
     const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
     let paymentUrl = "SELF RECEIVE"
     let paymentGateway = "manual"
-    // if (booking?.propertyId?.is_paymentRecieveSelf === false) {
+    // if (booking?.organisationId?.is_paymentRecieveSelf === false) {
     //       paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking)
     // paymentGateway="razorpay"
     // }
     let new_amount = booking.amount + carryForwarded
     await InvoiceModel.create({
-      organisationId: booking.organisationId,
+      organisationId: booking.organisationId?._id,
       bookingId: booking._id,
       propertyId: booking.propertyId,
       roomId: booking.roomId,
@@ -103,7 +95,7 @@ const handleInvoice = async () => {
       nextBillingDate
     })
 
-    // if (booking?.propertyId?.is_paymentRecieveSelf === false) {
+    // if (booking?.organisationId?.is_paymentRecieveSelf === false) {
     //   sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentLink);
     // } else {
     //   sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, booking.propertyId?.selectedBank);
@@ -200,3 +192,41 @@ const handleCheckout = async () => {
 
 
 }
+
+
+
+ const updateOrganisationSubscription = async () => {
+  try {
+    const organisations = await OrganisationModel.find({
+      disabled: false,
+      deleted: false,
+      "subscription.status": { $in: [SubscritptionStatus.TRIAL, SubscritptionStatus.ACTIVE] },
+    });
+
+    for (const org of organisations) {
+      const subscription = org.subscription;
+
+      if (!subscription?.endDate) continue;
+
+      const currentDate = new Date();
+      const endDate = new Date(subscription.endDate);
+
+      currentDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+
+      const diffTime = endDate.getTime() - currentDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays <= 0) {
+        org.subscription.status = SubscritptionStatus.EXPIRED;
+        org.subscription.trialCompleted = true;
+        await org.save();
+        console.log(`✅ Subscription expired for: ${org.name}`);
+      }
+    }
+
+    console.log("🕒 Cron job executed at:", new Date().toLocaleString());
+  } catch (error) {
+    console.error("❌ Error in updateOrganisationSubscription:", error);
+  }
+};

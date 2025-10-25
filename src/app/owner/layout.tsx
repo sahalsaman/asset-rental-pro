@@ -3,13 +3,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { User, XIcon, Home, Building2, BuildingIcon, BadgeDollarSign, UserCircle, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
-import logo from "../../../public/arp logo-white.png"
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
 import { SubscritptionStatus } from '@/utils/contants';
 import SubscriptionPlan from './subscription-plan/page';
 import { Button } from '@/components/ui/button';
+import { app_config } from '@/utils/app-config';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const prop = localStorageServiceSelectedOptions.getItem()?.property;
@@ -49,6 +49,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   };
 
+  const fetchUser = async () => {
+    const res = await apiFetch("/api/me");
+    const data = await res.json();
+    if (!data?.firstName) {
+      logout()
+    }
+
+  };
+
 
   const fetchProperties = async () => {
     const res = await apiFetch("/api/property");
@@ -73,6 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
   useEffect(() => {
+    fetchUser()
     fetchOrganisation();
     fetchProperties();
   }, []);
@@ -111,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className=" flex items-center gap-3"
             >
               {/* <ArrowLeft className={` text-white cursor-pointer   ${pathname === "/owner/dashboard" ? "hidden" : "block"}`} onClick={() => router.back()} /> */}
-              <Image src={logo} alt="Logo" width={40} className='cursor-pointer'
+              <Image src={app_config.APP_LOGO_DARK_THEME} alt="Logo" width={30} className='cursor-pointer'
                 onClick={() => router.push('/owner/dashboard')} />
             </div>
 
@@ -121,7 +131,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               onClick={() => router.push('/owner/dashboard')}
               className="text-2xl font-bold text-white mr-5 cursor-pointer"
             >
-              <Image src={logo} alt="Logo" width={50} className='cursor-pointer' />
+              <Image src={app_config.APP_LOGO_DARK_THEME} alt="Logo" width={30} className='cursor-pointer' />
             </h1>
             {options.map((card, idx) => (
               <div
@@ -137,77 +147,80 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Profile Dropdown */}
           <div className="flex items-center gap-8">
 
-          <div className='hidden md:block'>
-            {properties?.length ? <div >
-              {/* <p className='text-white'>Current Property</p> */}
-              <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
-                <Building2 className='ml-4 text-white' />
-                <select
-                  name="frequency"
-                  value={selectedPropertyId || ""}
-                  onChange={handleChange}
-                  className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
-                  style={{ minWidth: "220px", border: "0px", height: "48px" }}
-                  required
-                >
-                  <option value=""> Select Property</option>
-                  {properties.map((property: any) => (
-                    <option key={property?._id} value={property?._id}>
-                      {property?.name} - {property?.category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div> :
-              <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
-                Start Free Trial
-              </Button>
-            }
-          </div>
-          <div className="relative">
-            <button
-              onClick={() => setOpen(!open)}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"
-            >
-              {!open ? <User size={20} /> : <XIcon size={20} />}
-            </button>
-            {open && (
-              <div className="absolute right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    router.push('/owner/profile');
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  Profile
-                </button>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    router.push('/owner/organisation');
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  Help & Support
-                </button>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                    logout();
-                  }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+            <div className='hidden md:block'>
+              {properties?.length ? <div >
+                {/* <p className='text-white'>Current Property</p> */}
+                <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
+                  <Building2 className='ml-4 text-white' />
+                  <select
+                    name="frequency"
+                    value={selectedPropertyId || ""}
+                    onChange={handleChange}
+                    className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+                    style={{ minWidth: "220px", border: "0px", height: "48px" }}
+                    required
+                  >
+                    <option value=""> Select Property</option>
+                    {properties.map((property: any) => (
+                      <option key={property?._id} value={property?._id}>
+                        {property?.name} - {property?.category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div> :
+                organisation?.subscription ?
+                  <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/properties')}>
+                    Add Property
+                  </Button> :
+                  <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
+                    Start Free Trial
+                  </Button>
+              }
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"
+              >
+                {!open ? <User size={20} /> : <XIcon size={20} />}
+              </button>
+              {open && (
+                <div className="absolute right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      router.push('/owner/profile');
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      router.push('/owner/organisation');
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                  >
+                    Help & Support
+                  </button>
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      logout();
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <div className='block md:hidden'>
-          {properties?.length ? <div className='mt-2'>
-            {/* <p className='text-white'>Current Property</p> */}
+        <div className='block md:hidden mt-2'>
+          {properties?.length ? 
             <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
               <Building2 className='ml-2 text-white' />
               <select
@@ -226,10 +239,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 ))}
               </select>
             </div>
-          </div> :
-            <Button className="mt-3 w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
-              Start Free Trial
-            </Button>
+         :
+            organisation?.subscription ?
+              <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/properties')}>
+                Add Property
+              </Button> :
+              <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
+                Start Free Trial
+              </Button>
           }
         </div>
       </div>

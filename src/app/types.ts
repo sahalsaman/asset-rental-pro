@@ -19,6 +19,28 @@ export interface IUser {
   updatedAt?: Date;
 }
 
+ interface IUsageLimits {
+  property: number;
+  rooms: number;
+  bookings: number;
+}
+
+interface IOrgSubscription {
+  plan: string;
+  status: SubscritptionStatus;
+  startDate: Date;
+  endDate?: Date;
+  billingCycle: SubscritptionBillingCycle;
+  amount: number;
+  paymentMethod: string;
+  autoRenew: boolean;
+  trialDays: number;
+  trialCompleted: boolean;
+  usageLimits?: IUsageLimits;
+  lastPaymentDate?: Date;
+  nextBillingDate?: Date;
+}
+
 export interface IOrganisation {
   _id?: string;
   name: string;
@@ -28,44 +50,18 @@ export interface IOrganisation {
   website?: string;
   disabled: boolean;
   deleted: boolean;
-  subscription?: any; // Org_subscription reference
+  subscription?: IOrgSubscription; // Org_subscription reference
+  is_paymentRecieveSelf: boolean, 
+  selctedSelfRecieveBankOrUpi: any;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export interface IUsageLimits {
-  property: number;
-  rooms: number;
-  bookings: number;
-}
 
-export interface IOrgSubscription {
-  _id?: string;
-  organisation: string;
-  plan: string;
-  status: SubscritptionStatus;
-  startDate: Date;
-  endDate?: Date;
-  billingCycle: SubscritptionBillingCycle;
-  amount: number;
-  paymentMethod: string;
-  autoRenew: boolean;
-
-  trialDays: number;
-  trialCompleted: boolean;
-
-  usageLimits?: IUsageLimits;
-
-  lastPaymentDate?: Date;
-  nextBillingDate?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
 
 export interface ISubscriptionPayment {
   _id?: string;
   organisation: string;
-  subscription: string;
   plan: string;
   status: SubscritptionStatus;
   startDate: Date;
@@ -99,8 +95,8 @@ export interface IProperty {
   images: string[];
   currency: string;
   managers?: any[]; // user IDs
-  is_paymentRecieveSelf: boolean,
-  selectedBank: any;
+  is_paymentRecieveSelf: boolean, 
+  selctedSelfRecieveBankOrUpi: any;
   disabled: boolean;
   deleted?: boolean;
   createdAt?: Date;

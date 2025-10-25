@@ -13,11 +13,21 @@ export default function PropertiesPage() {
   const [addEditOpen, setAddEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+  const [organisation, setOrganisation] = useState<any | null>(null);
 
   const fetchProperties = async () => {
     const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
+    if(!data?.length){
+      fetchOrganisation()
+    }
+  };
+
+    const fetchOrganisation = async () => {
+    const res = await apiFetch("/api/organisation");
+    const data = await res.json();
+    setOrganisation(data);
   };
 
   useEffect(() => {
@@ -35,9 +45,9 @@ export default function PropertiesPage() {
       <Breadcrumbs items={breadcrumbItems} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
-        <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
+        {organisation?.subscription &&  <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
           Add Property
-        </Button>
+        </Button>}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

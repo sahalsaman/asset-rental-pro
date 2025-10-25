@@ -8,6 +8,7 @@ import { apiFetch } from "@/lib/api";
 import { FullscreenLoader } from "@/components/Loader";
 import BankFormModal from "@/components/BankFormModal";
 import { Edit } from "lucide-react";
+import { PaymentRecieverOptions } from "@/utils/contants";
 
 export default function BanksPage() {
     const [banks, setBanks] = useState([]);
@@ -69,17 +70,17 @@ export default function BanksPage() {
                             {bank.accountHolderName && (
                                 <p className="text-gray-600 text-sm"><b>Holder Name:</b> {bank.accountHolderName}</p>
                             )}
-                            {bank.accountNo && (
+                            {bank.value && (
                                 <p className="text-gray-600 text-sm">
-                                    <b> A/C No: </b>{bank.accountNo}
+                                    <b> {bank.paymentRecieverOption == PaymentRecieverOptions.BANK ? 'A/C No' :
+                                        bank.paymentRecieverOption == PaymentRecieverOptions.UPIPHONE ? 'UPI Phone' :
+                                            bank.paymentRecieverOption == PaymentRecieverOptions.UPIID ? 'UPI ID' : 'UPI QR'} :</b>{bank.paymentRecieverOption == PaymentRecieverOptions.UPIPHONE?bank?.upiPhoneCountryCode:""} {bank.value}
                                 </p>
                             )}
                             {bank.ifsc && (
                                 <p className="text-gray-600 text-sm"><b>IFSC: </b>{bank.ifsc}</p>
                             )}
-                            {bank.upiId && (
-                                <p className="text-gray-600 text-sm"><b>UPI:</b> {bank.upiId}</p>
-                            )}
+
 
                             <div className="flex gap-3 mt-3">
 

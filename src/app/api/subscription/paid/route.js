@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import connectMongoDB from "@/../database/db";
-
-import { OrganisationModel, OrgSubscriptionModel, SubscriptionPaymentModel } from "@/../models/Organisation";
-import { razorpay_config } from "@/utils/config";
+import { OrganisationModel, SubscriptionPaymentModel } from "@/../models/Organisation";
+import { env } from "../../../../../environment";
 import { subscription_plans } from "@/utils/data";
 import { SubscritptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
 
@@ -19,55 +18,49 @@ export async function PUT(req) {
     } = await req.json();
 
     const generated_signature = crypto
-      .createHmac("sha256", razorpay_config.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", env.RAZORPAY_KEY_SECRET)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
 
-    const selected_plan = subscription_plans.find((i) => i.id === plan);
-    if (!selected_plan) {
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
-    }
-
-    if (generated_signature !== razorpay_signature) {
+    if (generated_signature !== razorpay_signature)
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
-    }
+
+    const selected_plan = subscription_plans.find((i) => i.id === plan);
+    if (!selected_plan)
+      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
 
     const startDate = new Date();
     const endDate = new Date();
-
-    // Set end date based on plan cycle
     if (selected_plan.billingCycle === SubscritptionBillingCycle.YEARLY)
       endDate.setFullYear(endDate.getFullYear() + 1);
     else endDate.setMonth(endDate.getMonth() + 1);
 
-    // ✅ Update subscription
-    const subscription = await OrgSubscriptionModel.findOneAndUpdate(
-      { organisation: organisationId },
-      {
-        plan: selected_plan.name,
-        status: SubscritptionStatus.ACTIVE,
-        startDate,
-        endDate,
-        billingCycle:
-          selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
-        amount: selected_plan.amount,
-        paymentMethod: "razorpay",
-        lastPaymentDate: startDate,
-        nextBillingDate: endDate,
-        trialCompleted: true,
-        usageLimits: {
-          property: selected_plan.total_properties || 0,
-          rooms: selected_plan.total_rooms || 0,
-          bookings: selected_plan.total_bookings || 0,
-        },
-      },
-      { new: true }
-    );
+    const org = await OrganisationModel.findById(organisationId);
+    if (!org) return NextResponse.json({ error: "Organisation not found" }, { status: 404 });
 
-    // ✅ Record successful payment
+    org.subscription = {
+      plan: selected_plan.name,
+      status: SubscritptionStatus.ACTIVE,
+      startDate,
+      endDate,
+      billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
+      amount: selected_plan.amount,
+      paymentMethod: "razorpay",
+      lastPaymentDate: startDate,
+      nextBillingDate: endDate,
+      trialCompleted: true,
+      usageLimits: {
+        property: selected_plan.total_properties || 0,
+        rooms: selected_plan.total_rooms || 0,
+        bookings: selected_plan.total_bookings || 0,
+      },
+    };
+
+    await org.save();
+
     await SubscriptionPaymentModel.create({
-      organisation: organisationId,
-      subscription: subscription?._id,
+      organisationId,
+      subscriptionId: organisationId,
       plan: selected_plan.name,
       status: SubscritptionStatus.ACTIVE,
       startDate,

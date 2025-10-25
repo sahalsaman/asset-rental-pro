@@ -3,7 +3,7 @@ import crypto from "crypto";
 import connectMongoDB from "@/../database/db";
 import InvoiceModel from "@/../models/Invoice";
 import { InvoiceStatus } from "@/utils/contants";
-import { razorpay_config } from "@/utils/config";
+import { env } from "../../../../environment";
 import { OrganisationModel } from "../../../../models/Organisation";
 
 export async function POST(req) {
@@ -18,7 +18,7 @@ export async function POST(req) {
     }
 
     // 🔐 Verify signature using your Razorpay webhook secret
-    const secret = razorpay_config.RAZORPAY_WEBHOOK_SECRET;
+    const secret = env.RAZORPAY_WEBHOOK_SECRET;
     const expectedSignature = crypto
       .createHmac("sha256", secret)
       .update(body)

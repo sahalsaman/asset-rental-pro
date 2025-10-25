@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getTokenValue, IPayload } from "@/utils/tokenHandler";
 import connectMongoDB from "../../../../database/db";
-import { BankDetailnModel } from "../../../../models/BankDetail";
+import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 
 export async function GET(req) {
   try {
@@ -11,7 +11,7 @@ export async function GET(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const banks = await BankDetailnModel.find({ organisation: user?.organisationId }).sort({ isPrimary: -1 });
+    const banks = await SelfRecieveBankOrUpiModel.find({ organisation: user?.organisationId }).sort({ isPrimary: -1 });
     return NextResponse.json(banks);
   } catch (error) {
     console.error("GET /banks error:", error);
@@ -28,7 +28,7 @@ export async function POST(req) {
     }
 
     const body = await req.json();
-    const newBank = await BankDetailnModel.create({
+    const newBank = await SelfRecieveBankOrUpiModel.create({
       ...body,
       organisation: user.organisationId,
     });

@@ -15,6 +15,7 @@ import { CurrencyType, PaymentRecieverOptions, PropertyStatus, PropertyType } fr
 import { Textarea } from './ui/textarea';
 import { Switch } from './ui/switch';
 import { apiFetch } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 interface PropertyFormModalProps {
   open: boolean;
@@ -43,9 +44,10 @@ export default function PropertyFormModal({
     currency: CurrencyType.INR,
     disabled: false,
     is_paymentRecieveSelf: false,
-    selectedBank: ""
+    selctedSelfRecieveBankOrUpi: ""
   });
   const [banksList, setBanksList] = useState([]);
+  const router = useRouter()
   const fetchBanks = async () => {
     const res = await apiFetch("/api/banks");
     const data = await res.json();
@@ -99,7 +101,7 @@ export default function PropertyFormModal({
         currency: CurrencyType.INR,
         disabled: false,
         is_paymentRecieveSelf: false,
-        selectedBank: ""
+        selctedSelfRecieveBankOrUpi: ""
       }
     );
   }
@@ -142,23 +144,44 @@ export default function PropertyFormModal({
             />
             <Label htmlFor="multiple-room">Receive Payment Yourself</Label>
           </div>
-          {formData?.is_paymentRecieveSelf && <div>
-            <Label>Select Bank</Label>
-            <select
-              name="selectedBank"
-              value={formData.selectedBank || ""}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
-              required={formData?.is_paymentRecieveSelf}
-            >
-              {banksList.map((i: any) => (
-                <option key={i?._id} value={i?._id}>
-                  {i?.accountHolderName} - {i?.paymentRecieverOption === PaymentRecieverOptions.BANK ? i?.bankName : i?.paymentRecieverOption}
-                </option>
-              ))}
-            </select>
-          </div>
-          }
+          {formData?.is_paymentRecieveSelf && (
+            <div>
+              <Label>Select Bank</Label>
+              <div className="flex items-center gap-2">
+                <select
+                  name="selctedSelfRecieveBankOrUpi"
+                  value={formData.selctedSelfRecieveBankOrUpi || ""}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  required={formData?.is_paymentRecieveSelf}
+                >
+                  <option value="">Select Bank/UPI</option>
+                  {banksList.length > 0 ? (
+                    banksList.map((i: any) => (
+                      <option key={i?._id} value={i?._id}>
+                        {i?.accountHolderName} -{" "}
+                        {i?.paymentRecieverOption === PaymentRecieverOptions.BANK
+                          ? i?.bankName
+                          : i?.paymentRecieverOption}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>No Bank/UPI added</option>
+                  )}
+                </select>
+
+                {/* Add Bank Button */}
+                <button
+                  type="button"
+                  onClick={() => router.push("/owner/bank-upi-list")}
+                  className="px-3 py-1 bg-green-700 text-xs text-white rounded hover:bg-green-800"
+                >
+                  Add Bank/UPI
+                </button>
+              </div>
+            </div>
+          )}
+
 
           <Label>Property name</Label>
           <Input

@@ -1,7 +1,7 @@
 import {  BankStatus, PaymentRecieverOptions } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
-const BankDetailSchema = new Schema(
+const SelfRecieveBankOrUpiSchema = new Schema(
   {
      organisation: {
       type: Types.ObjectId,
@@ -9,14 +9,11 @@ const BankDetailSchema = new Schema(
       required: true
     },
     paymentRecieverOption: { type: String, enum: PaymentRecieverOptions, required: true },
-    accountNo: String,
+    accountHolderName: { type: String, required: true },
+    value: { type: String, required: true }, // accountNo, upiId, qrcode_link, upiPhoneNumber
     ifsc: String,
-    accountHolderName: String,
     bankName: String,
     branch: String,
-    upiId: String,
-    qrcode_link: String,
-    upiPhoneNumber: String,
     upiPhoneCountryCode: { type: String, default: "+91" },
     status: { type: String, enum: BankStatus, default: BankStatus.ACTIVE },
   },
@@ -24,4 +21,4 @@ const BankDetailSchema = new Schema(
 );
 
 
-export const BankDetailnModel = mongoose.models.BankDetail || mongoose.model("BankDetail", BankDetailSchema);
+export const SelfRecieveBankOrUpiModel = mongoose.models.SelfRecieveBankOrUpiUpi || mongoose.model("SelfRecieveBankOrUpi", SelfRecieveBankOrUpiSchema);

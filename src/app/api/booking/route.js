@@ -7,9 +7,8 @@ import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
 import RoomModel from "../../../../models/Room";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
-import { OrgSubscriptionModel } from "../../../../models/Organisation";
-import { generateRazorpayLinkForInvoice } from "@/utils/razerPay";
 import { calculateNextBillingdate } from "@/utils/functions";
+import { OrganisationModel } from "../../../../models/Organisation";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -74,34 +73,23 @@ export async function POST(request) {
       return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
     }
 
-    if (!isValidObjectId(body.propertyId)) {
-      const roomData = await RoomModel.findById(body.roomId)
-      if (!roomData?.propertyId) {
-        return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
-      }
-      body.propertyId = roomData?.propertyId
-    }
-
-    const room = await RoomModel.findOne({
-      _id: body.roomId,
-      propertyId: body.propertyId,
-    }).populate("propertyId");
+    const room = await RoomModel.findById(body.roomId).populate("organisationId")
 
     if (!room) {
       return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
     }
     if (!room.status || (room.status !== RoomStatus.AVAILABLE && room.status !== RoomStatus.PARTIALLY_BOOKED)) {
-      return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
+      return NextResponse.json({ error: "Room already booked" }, { status: 404 });
     }
 
-    const org = await OrgSubscriptionModel.findOne({ organisationId: user.organisationId })
-    const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
 
-    if (org?.status === SubscritptionStatus.EXPIRED) {
+    const organisation = await OrganisationModel.findById(user.organisationId)
+    if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
       return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
     }
 
-    if (org?.usageLimits?.property == bookings_list?.length + 1) {
+    const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
+    if (organisation?.usageLimits?.property < (bookings_list?.length??0) + 1) {
       return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
     }
 
@@ -112,14 +100,18 @@ export async function POST(request) {
     if (booking.status === BookingStatus.CHECKED_IN && body.frequency) {
       const checkInDate = new Date(booking.checkIn);
       const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
-      nextBillingDate = calculateNextBillingdate(checkInDate, body?.frequency)
-
+      let nextBillingDate = calculateNextBillingdate(checkInDate, body.frequency);
+      if (checkOutDate && checkOutDate < nextBillingDate) {
+        nextBillingDate = undefined;
+      }
     }
 
 
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
+      propertyId:room?.propertyId,
+      dueDate,
       nextBillingDate,
       organisationId: user.organisationId,
     });
@@ -133,7 +125,7 @@ export async function POST(request) {
       let invoiceId = `INV-${booking._id}-01-ADV`
       let paymentUrl = "SELF RECEIVE";
       let paymentGateway = "manual"
-      // if (room?.propertyId?.is_paymentRecieveSelf === false) {
+      // if (room?.organisationId?.is_paymentRecieveSelf === false) {
       //   paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
       //     //let paymentGateway="razorpay"
       // }
@@ -151,7 +143,7 @@ export async function POST(request) {
         paymentGateway,
         paymentUrl
       });
-      // if (room?.propertyId?.is_paymentRecieveSelf === false) {
+      // if (room?.organisationId?.is_paymentRecieveSelf === false) {
       //   sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentLink);
       // } else {
       //   sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, room.propertyId?.selectedBank);
@@ -163,7 +155,7 @@ export async function POST(request) {
       let invoiceId = `INV-${booking._id}-02-RENT`
       let paymentUrl_2 = "SELF RECEIVE";
       let paymentGateway = "manual"
-      // if (room?.propertyId?.is_paymentRecieveSelf === false) {
+      // if (room?.organisationId?.is_paymentRecieveSelf === false) {
       //   paymentUrl_2 = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
       //let paymentGateway="razorpay"
       // }
@@ -183,11 +175,11 @@ export async function POST(request) {
         paymentUrl: paymentUrl_2
       });
 
-      if (room?.propertyId?.is_paymentRecieveSelf === false) {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentLink_2);
-      } else {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, room.propertyId?.selectedBank);
-      }
+      // if (room?.organisationId?.is_paymentRecieveSelf === false) {
+      //   sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentLink_2);
+      // } else {
+      //   sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, room.propertyId?.selectedBank);
+      // }
     }
 
     if (invoices.length > 0) {

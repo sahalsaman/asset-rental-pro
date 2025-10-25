@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import logo from "../../../../public/arp logo.png"
 import { countryCodes, defaultData } from "@/utils/data";
 import { app_config } from "@/utils/app-config";
 
@@ -44,8 +43,7 @@ export default function LoginPage() {
     try {
       const res= await signUp(phone, countryCode, name,lastName ,organisationName)
       console.log("res..",res);
-      // toast.success("OTP sent successfully!");
-      toast.success("Your OTP : "+res.data.data.otp);
+      toast.success("OTP sent successfully!");
       router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
     } catch (err: any) {
         if (err?.response?.data?.message) {
@@ -62,13 +60,12 @@ export default function LoginPage() {
 
     <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 ">
         <div className="h-60 flex justify-center items-center">
-        <h2 className="text-3xl font-bold text-white text-center mb-4 ">Welcome to {app_config?.APP_NAME}</h2>
+                <Image src={app_config.APP_LOGO_DARK_THEME} alt="Logo" width={50} className='cursor-pointer' />
       </div>
       <div className="absolute w-full" style={{ marginTop: "-35px" }}>
         <div className="flex justify-center items-center w-full">
         <div className="w-full max-w-[450px] flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
           <div className="space-y-6 w-full">
-            {/* <div className="flex justify-center items-center"> <Image src={logo} alt="" width={100} /></div> */}
             <div className="text-center mb-10">
               <h2 className="text-3xl font-bold text-green-700 mb-2">Sign up </h2>
             </div>

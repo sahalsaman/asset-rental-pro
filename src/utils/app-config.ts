@@ -1,7 +1,10 @@
+import logo from "../../public/logo.png"
+import logo_green from "../../public/logo green.png"
+
 export const app_config = {
     APP_NAME: "Rentities",
-    PPP_LOGO:"",
-    PPP_LOGO_DARK_THEME:"",
+    APP_LOGO:logo_green,
+    APP_LOGO_DARK_THEME:logo,
     PUBLIC_BASE_URL: "https://arp.webcos.co/",
     EMAIL:"hello@webcos.in",
     PHONE_NUMBER:"+91 9947 9298 22",

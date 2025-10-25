@@ -1,9 +1,10 @@
 import axios from 'axios';  
-import { whatsapp_config } from './config';
+import { env } from '../../environment';
 
 export const config = {
-    WHATSAPP_TOKEN:whatsapp_config?.WHATSAPP_TOKEN,
-    WHATSAPP_PHONE_NUMBER_ID: whatsapp_config?.WHATSAPP_PHONE_NUMBER_ID
+    WHATSAPP_TOKEN:env?.WHATSAPP_TOKEN,
+    WHATSAPP_PHONE_NUMBER_ID: env?.WHATSAPP_PHONE_NUMBER_ID,
+    SYSTEM_USER_TOKEN:env.SYSTEM_USER_TOKEN
 }
 
 function formatPhone(phone: string): string {
@@ -45,7 +46,7 @@ export async function sendOTPText(
     };
 
     const headers = {
-      Authorization: `Bearer ${whatsapp_config.SYSTEM_USER_TOKEN}`,
+      Authorization: `Bearer ${config.SYSTEM_USER_TOKEN}`,
       "Content-Type": "application/json",
     };
 
