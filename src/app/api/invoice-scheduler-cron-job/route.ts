@@ -24,7 +24,7 @@ export async function GET() {
     // send overdue message
     await sendOverdueMessage()
     // daily collected mount payout to organisation
-    // await payOutrazerpaytToOrganisation()
+    // await payOutrazerpaytToOrganisation() // auto pay
 
     await handleCheckout()
 
@@ -133,21 +133,21 @@ const sendOverdueMessage = async () => {
   console.log("cron sendOverdueMessage working.........", new Date());
 }
 
-const payOutrazerpaytToOrganisation = async () => {
-  const organisations = await OrganisationModel.find({ pendingPayout: { $gt: 0 } });
+// const payOutrazerpaytToOrganisation = async () => {
+//   const organisations = await OrganisationModel.find({ pendingPayout: { $gt: 0 } });
 
-  for (const org of organisations) {
-    const payoutAmount = org.pendingPayout;
+//   for (const org of organisations) {
+//     const payoutAmount = org.pendingPayout;
 
-    razorpayPayout(payoutAmount, org)
+//     razorpayPayout(payoutAmount, org)
 
-    // Mark payout done
-    await OrganisationModel.findByIdAndUpdate(org._id, {
-      $set: { pendingPayout: 0 },
-    });
-  }
-  console.log("cron payOutrazerpaytToOrganisation working.........", new Date());
-}
+//     // Mark payout done
+//     await OrganisationModel.findByIdAndUpdate(org._id, {
+//       $set: { pendingPayout: 0 },
+//     });
+//   }
+//   console.log("cron payOutrazerpaytToOrganisation working.........", new Date());
+// }
 
 const handleCheckout = async () => {
 
