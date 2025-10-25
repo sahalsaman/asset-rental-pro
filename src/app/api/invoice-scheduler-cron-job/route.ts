@@ -32,7 +32,7 @@ export async function GET() {
       message: "completed"
     })
 
-    console.log("cron job is working.........", new Date());
+    console.log("cron job is working good.........", new Date());
 
     return NextResponse.json({ message: "Invoices generated successfully" });
   } catch (err) {
