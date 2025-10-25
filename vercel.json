@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/invoice-scheduler-cron-job",
-      "schedule":"* * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
