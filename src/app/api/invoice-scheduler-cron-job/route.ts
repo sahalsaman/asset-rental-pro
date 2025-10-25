@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import RoomModel from "../../../../models/Room";
-import CronJobModel from "../../../../models/cronJob";
+import CronJobModel from "../../../../models/CronJob";
 
 export async function GET() {
 
