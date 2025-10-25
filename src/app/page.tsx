@@ -116,7 +116,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
 
       <header className="flex justify-between items-center px-4 md:px-24 py-3 md:py-4 shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Image src={app_config.APP_LOGO} alt="Logo" className='w-10 h-10 md:w-14 md:h-14 cursor-pointer' />
+          <Image src={app_config.APP_LOGO} alt="Logo" className='w-8 h-8 cursor-pointer' />
           <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
         </div>
         <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">

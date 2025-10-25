@@ -89,18 +89,17 @@ export async function POST(request) {
     }
 
     const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
-    if (organisation?.usageLimits?.property < (bookings_list?.length??0) + 1) {
+    if (organisation?.usageLimits?.bookings < (bookings_list?.length ?? 0) + 1) {
       return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
     }
 
-    let dueDate = calculateDueDate(booking?.frequency)
-
     let nextBillingDate = null;
+    console.log(body.status, BookingStatus.CHECKED_IN, room.frequency, body.checkOut);
 
-    if (booking.status === BookingStatus.CHECKED_IN && body.frequency) {
-      const checkInDate = new Date(booking.checkIn);
+    if (body.status === BookingStatus.CHECKED_IN && room.frequency) {
+      const checkInDate = new Date(body.checkIn);
       const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
-      let nextBillingDate = calculateNextBillingdate(checkInDate, body.frequency);
+       nextBillingDate = calculateNextBillingdate(checkInDate, room.frequency);
       if (checkOutDate && checkOutDate < nextBillingDate) {
         nextBillingDate = undefined;
       }
@@ -110,9 +109,9 @@ export async function POST(request) {
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
-      propertyId:room?.propertyId,
-      dueDate,
+      propertyId: room?.propertyId,
       nextBillingDate,
+      frequency: room.frequency,
       organisationId: user.organisationId,
     });
 
@@ -217,32 +216,53 @@ export async function PUT(request) {
     }
 
     await connectMongoDB();
-    const body = await request.json();
-    const updated = await BookingModel.findByIdAndUpdate(id, body, { new: true });
 
-    if (!updated) {
+    const body = await request.json();
+
+    const existingBooking = await BookingModel.findById(id).populate("roomId")
+
+    if (!existingBooking) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    if (room.noOfSlots > 1 && booking.status === BookingStatus.CHECKED_OUT) {
-      await RoomModel.findByIdAndUpdate(booking.roomId,
+    const room = existingBooking?.roomId
+
+     body.nextBillingDate = null;
+
+    if (body.status === BookingStatus.CHECKED_IN && room.frequency) {
+      const checkInDate = new Date(body.checkIn);
+      const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
+       body.nextBillingDate = calculateNextBillingdate(checkInDate, room.frequency);
+      if (checkOutDate && checkOutDate < body.nextBillingDate) {
+        body.nextBillingDate = undefined;
+      }
+    }
+
+    const updatedBooking = await BookingModel.findByIdAndUpdate(id, body, { new: true });
+
+    if (!updatedBooking) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
+
+    if (room.noOfSlots > 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
+      await RoomModel.findByIdAndUpdate(updatedBooking.roomId,
         {
           $inc: { currentBooking: -1 },
-          $pull: { Bookings: booking._id },
+          $pull: { Bookings: updatedBooking._id },
           status: room.currentBooking - 1 === 0 ? RoomStatus.AVAILABLE : RoomStatus.PARTIALLY_BOOKED
         });
     }
 
-    if (room.noOfSlots === 1 && booking.status === BookingStatus.CHECKED_OUT) {
-      await RoomModel.findByIdAndUpdate(booking.roomId, {
+    if (room.noOfSlots === 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
+      await RoomModel.findByIdAndUpdate(updatedBooking.roomId, {
         status: RoomStatus.AVAILABLE,
         $inc: { currentBooking: -1 },
-        $pull: { Bookings: booking._id }
+        $pull: { Bookings: updatedBooking._id }
       });
     }
 
 
-    return NextResponse.json({ message: "Booking updated", updated });
+    return NextResponse.json({ message: "Booking updated", updatedBooking });
   } catch (err) {
     return NextResponse.json(
       { error: "Failed to update booking", details: err.message },

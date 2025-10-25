@@ -70,7 +70,7 @@ export async function POST(request) {
   }
 
   if (body.isMultipleRoom) {
-    if (body.numberOfRooms && organisation?.subscription?.usageLimits?.property < rooms_list?.length + body.numberOfRooms) {
+    if (body.numberOfRooms && organisation?.subscription?.usageLimits?.rooms < rooms_list?.length + body.numberOfRooms) {
       return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
     }
 
@@ -86,7 +86,7 @@ export async function POST(request) {
 
   }
 
-  if (organisation?.subscription?.usageLimits?.property < (rooms_list?.length ?? 0) + 1) {
+  if (organisation?.subscription?.usageLimits?.rooms < (rooms_list?.length ?? 0) + 1) {
     return NextResponse.json({ error: "Room limit reached. Please upgrade your subscription." }, { status: 403 });
   }
 
