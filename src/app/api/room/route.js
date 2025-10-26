@@ -36,7 +36,7 @@ export async function GET(request) {
     return NextResponse.json({ ...room.toObject(), bookingsCount: 0 });
   }
 
-  const rooms = await RoomModel.find({ propertyId });
+  const rooms = await RoomModel.find({ propertyId,organisationId:user?.organisationId });
 
   const roomsWithCounts = await Promise.all(
     rooms.map(async (room) => {

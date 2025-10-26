@@ -45,7 +45,7 @@ export default function PropertiesPage() {
               </Button>
             </div>
             <div className="mt-2">
-              <h1 className="text-2xl md:text-3xl font-bold">{user?.firstName}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">{user?.firstName} {user?.lastName}</h1>
               <p>{user?.countryCode} {user?.phone}</p>
               <Badge variant="default">{user?.role}</Badge>
             </div>

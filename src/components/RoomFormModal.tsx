@@ -9,6 +9,7 @@ import { FLAT_TYPES, RentFrequency, RoomStatus } from "@/utils/contants";
 import { Label } from "@radix-ui/react-label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
+import toast from "react-hot-toast";
 
 interface Props {
   property: IProperty | null;
@@ -22,7 +23,7 @@ interface Props {
 export default function RoomAddEditModal({ property, open, onClose, onSave, editData }: Props) {
   const [formData, setFormData] = useState<Partial<IRoom>>({});
   const [isMultipleRoom, setIsMultipleRoom] = useState(false);
-   useEffect(() => {
+  useEffect(() => {
     if (editData) {
       setFormData(editData);
       setIsMultipleRoom(false);
@@ -34,7 +35,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
     }
   }, [editData]);
 
- const handleChange = (
+  const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
@@ -42,9 +43,9 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
       ...prev,
       [name]:
         name === "amount" ||
-        name === "advanceAmount" ||
-        name === "noOfSlots" ||
-        name === "numberOfRooms"
+          name === "advanceAmount" ||
+          name === "noOfSlots" ||
+          name === "numberOfRooms"
           ? Number(value)
           : value,
     }));
@@ -59,15 +60,29 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
     const method = editData ? "PUT" : "POST";
     const url = editData ? `/api/room?id=${editData._id}` : `/api/room`;
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ ...data, propertyId: property?._id,isMultipleRoom }),
-    });
-    onSave();
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ ...data, propertyId: property?._id, isMultipleRoom }),
+      });
 
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result?.error || "Failed to save room");
+        return;
+      }
+
+      toast.success(editData ? "Room updated successfully" : "Room added successfully");
+      onSave();
+    } catch (err) {
+      console.error("Error saving room:", err);
+      toast.error("An error occurred. Please try again.");
+    }
   };
+
 
   const isHostelOrPG = property?.category?.toLowerCase().includes("hostel") || property?.category?.toLowerCase().includes("pg") || property?.category?.toLowerCase().includes("Co-Working");
   const isFlatOrApartment = property?.category?.toLowerCase().includes("flat") || property?.category?.toLowerCase().includes("apartment") || property?.category?.toLowerCase().includes("house");
@@ -79,7 +94,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
           <DialogTitle>{editData ? "Edit Room" : "Add Room"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
-           <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <Switch
               id="multiple-room"
               checked={isMultipleRoom}

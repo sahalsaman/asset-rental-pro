@@ -96,19 +96,33 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
     const method = editData ? "PUT" : "POST";
     const url = editData ? `/api/booking?id=${editData._id}` : `/api/booking`;
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({
-        ...data,
-        roomId: roomData ? roomData?._id : data?.roomId,
-        propertyId: property?._id,
-      }),
-    });
-    toast.success("Successfully saved booking");
-    onSave(data);
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          ...data,
+          roomId: roomData ? roomData._id : data?.roomId,
+          propertyId: property?._id,
+        }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result?.error || "Failed to save booking");
+        return;
+      }
+
+      toast.success(editData ? "Booking updated successfully" : "Booking added successfully");
+      onSave(result);
+    } catch (err) {
+      console.error("Error saving booking:", err);
+      toast.error("An error occurred. Please try again.");
+    }
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -346,9 +360,9 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, r
 
           {/* Buttons */}
           <div className="w-full grid grid-cols-2 gap-2 pt-2">
-        <Button type="button" variant="secondary" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </Button> 
+            </Button>
             <Button type="submit" className="w-full" variant="green">
               {editData ? "Update" : "Submit"}
             </Button>

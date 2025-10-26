@@ -80,7 +80,7 @@ export default function RoomDetailPage() {
           {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
           <p className="text-gray-600">Price: ${room.price}</p> */}
         </div>
-        <Button onClick={() => setShowAnnouncementModal(true)}>Add</Button>
+        <Button variant="green" onClick={() => setShowAnnouncementModal(true)}>Add</Button>
       </div>
 
       {/* Announcement List */}

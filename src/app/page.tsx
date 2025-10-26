@@ -4,6 +4,7 @@ import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Ke
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import about from "../../public/arp aboout.png"
+import home_banner from "../../public/home_banner_image.png"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import bannerBg from "../../public/banner.png"
@@ -64,32 +65,32 @@ export default function Home() {
     }
   };
 
-const FAQItem = ({ question, answer }: FAQItemProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-200 py-4">
-      <button
-        className="flex justify-between items-center w-full text-left font-semibold text-lg p-2"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span>{question}</span>
-        <span className="text-green-700">{isOpen ? '−' : '+'}</span>
-      </button>
-      {isOpen && (
-        <p className="mt-2 text-gray-600 p-2 pl-4 transition-all duration-300 ease-in-out">
-          {answer}
-        </p>
-      )}
-    </div>
-  );
-};
+  const FAQItem = ({ question, answer }: FAQItemProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <div className="border-b border-gray-200 py-4">
+        <button
+          className="flex justify-between items-center w-full text-left font-semibold text-lg p-2"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <span>{question}</span>
+          <span className="text-green-700">{isOpen ? '−' : '+'}</span>
+        </button>
+        {isOpen && (
+          <p className="mt-2 text-gray-600 p-2 pl-4 transition-all duration-300 ease-in-out">
+            {answer}
+          </p>
+        )}
+      </div>
+    );
+  };
 
   if (menuOpen) {
     return (
       <div className="bg-white  px-6 py-4 space-y-8 text-xl text-center flex flex-col">
         <div className="flex justify-between mb-10">
           <div className="flex items-center gap-3">
-            <Image src={app_config.APP_LOGO} alt="Logo" width={60} className='cursor-pointer' />
+            <Image src={app_config.APP_LOGO} alt="Logo" width={40} className='cursor-pointer' />
           </div>
           <button className="" onClick={() => setMenuOpen(!menuOpen)}>
             <X className="h-10 w-10 text-gray-700 font-light" />
@@ -116,7 +117,7 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
 
       <header className="flex justify-between items-center px-4 md:px-24 py-3 md:py-4 shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <Image src={app_config.APP_LOGO} alt="Logo" className='w-8 h-8 cursor-pointer' />
+          <Image src={app_config.APP_LOGO} alt="Logo" className='w-6 h-6 sm:w-8 sm:h-8 cursor-pointer' />
           <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
         </div>
         <nav className="hidden md:flex space-x-4 md:space-x-6 items-center text-sm md:text-base">
@@ -136,28 +137,32 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
       </header>
 
       {/* Hero Section */}
-      <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white py-32 px-6 md:py-40  text-center overflow-hidden`}  >
-        <div className="absolute top-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
-        <div className="max-w-4xl mx-auto z-10 relative">
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
-            Discover & Manage Your Rental Assets Effortlessly
-          </h1>
-          <p className="text-lg md:text-xl mb-8 text-gray-100">
-            Simplify bookings, automate rent, and scale faster with our smart rental platform.
-          </p>
-          <Link href="/auth/signup">
-            <button className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition">
-              Start Free
-            </button>
-          </Link>
+      <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white overflow-hidden py-28 md:py-18 px-6 text-center md:text-left`}  >
+        <div className="max-w-6xl mx-auto z-10 flex justify-between items-center gap-10">
+          <div className="">
+            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up">
+              Discover & Manage Your Rental Assets Effortlessly
+            </h1>
+            <p className="text-lg md:text-xl mb-4 text-gray-100">
+              Simplify bookings, automate rent, and scale faster with our smart rental platform.
+            </p>
+            <Link href="/auth/signup">
+              <button className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition">
+                Start Free
+              </button>
+            </Link>
+          </div>
+            <div className="hidden md:block w-full sm:min-w-[500px] max-w-[550px]">
+              <Image src={home_banner} alt="banner" className="w-full max-w-[550px]" />
+            </div>
         </div>
       </section>
 
-      {/* Setup Guide Section */}
-      <section id="setup-guide" className="py-12 md:py-24 px-6 w-full md:absolute top-[500px]">
-        <div className="max-w-6xl mx-auto w-full md:flex justify-center">
-          <h2 className="text-4xl font-bold mb-6 text-center text-green-700 block md:hidden">Quick Start Setup Guide</h2>
-          <p className="text-xl text-gray-600 mb-12 text-center block md:hidden">
+      {/* Setup Guide Section   md:absolute top-[500px]  block md:hidden*/}
+      <section id="setup-guide" className="py-12 md:py-24 px-6 w-full ">
+        <div className="max-w-6xl mx-auto w-full ">
+          <h2 className="text-4xl font-bold mb-6 text-center text-green-700">Quick Start Setup Guide</h2>
+          <p className="text-xl text-gray-600 mb-12 text-center ">
             Follow these simple steps to get your first property listed and automated in minutes!
           </p>
 
@@ -193,20 +198,11 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
               </div>
             ))}
           </div>
-
-          <div className="mt-12 text-center block md:hidden">
-            <Link href="/auth/signup">
-              <button className="bg-green-700 text-white font-semibold rounded-xl px-8 py-4 hover:bg-green-800 transition flex items-center justify-center mx-auto space-x-2">
-                <span>Start Setup Now</span>
-                <BookOpen className="w-5 h-5" />
-              </button>
-            </Link>
-          </div>
         </div>
       </section>
 
 
-      <section id="about" className="py-12 md:py-24 px-6 bg-white md:mt-40">
+      <section id="about" className="py-12 md:py-24 px-6 bg-white ">
         <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
           <div className="w-full md:w-1/2 text-center md:text-left">
@@ -360,6 +356,65 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
         </div>
       </section>
 
+      {/* Reviews Section */}
+      <section id="reviews" className="py-16 md:py-24  px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-green-700 mb-4">What Our Users Say</h2>
+          <p className="text-lg text-gray-600 mb-12">
+            Real stories from property owners and managers using {app_config.APP_NAME}.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Santhosh Reddy",
+                role: "Property Owner, Bengaluru",
+                review:
+                  "This platform has simplified my rent collection and maintenance tracking. Everything is automated — I don’t have to follow up manually anymore!",
+                rating: 5,
+              },
+              {
+                name: "Sara Thomas",
+                role: "Manager, Mumbai",
+                review:
+                  "The dashboard is intuitive and the support team is excellent. I manage multiple apartments easily from one place!",
+                rating: 5,
+              },
+              {
+                name: "Mohammed Rafi",
+                role: "Building Owner, Kochi",
+                review:
+                  "Highly recommend it for small business owners like me. The invoicing system and reports are a game-changer.",
+                rating: 4,
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="bg-white p-8 rounded-2xl shadow-lg text-left flex flex-col justify-between hover:shadow-green-200 transition"
+              >
+                <p className="text-gray-700 italic mb-6">“{item.review}”</p>
+                <div>
+                  <div className="flex items-center mb-2">
+                    {[...Array(item.rating)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className="w-5 h-5 text-yellow-400 fill-current"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.561-.955L10 0l2.951 5.955 6.561.955-4.756 4.635 1.122 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
+                  <p className="text-sm text-gray-500">{item.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
       {/* FAQ Section */}
       <section id="faq" className="py-12 md:py-24 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
@@ -391,121 +446,120 @@ const FAQItem = ({ question, answer }: FAQItemProps) => {
 
 
       {/* Contact Section */}
-  <section id="contact" className="py-16 md:py-24 bg-white px-6">
-      <div className="max-w-5xl mx-auto text-center">
-        <h2 className="text-4xl font-bold text-green-700 mb-4">Get in Touch</h2>
-        <p className="text-lg text-gray-600 mb-12">
-          Have questions, feedback, or partnership inquiries? We'd love to hear from you!
-        </p>
+      <section id="contact" className="py-16 md:py-24 bg-white px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-green-700 mb-4">Get in Touch</h2>
+          <p className="text-lg text-gray-600 mb-12">
+            Have questions, feedback, or partnership inquiries? We'd love to hear from you!
+          </p>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
-          {/* Contact Info */}
-          <div className="text-left space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="bg-green-100 p-3 rounded-full">
-                <PhoneIcon className="w-6 h-6 text-green-700" />
+          <div className="grid md:grid-cols-2 gap-12 items-start">
+            {/* Contact Info */}
+            <div className="text-left space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="bg-green-100 p-3 rounded-full">
+                  <PhoneIcon className="w-6 h-6 text-green-700" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Phone</h3>
+                  <p className="text-gray-600">{app_config.PHONE_NUMBER}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold">Phone</h3>
-                <p className="text-gray-600">{app_config.PHONE_NUMBER}</p>
+
+              <div className="flex items-center gap-4">
+                <div className="bg-green-100 p-3 rounded-full">
+                  <MailIcon className="w-6 h-6 text-green-700" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Email</h3>
+                  <p className="text-gray-600">{app_config.EMAIL}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="bg-green-100 p-3 rounded-full">
+                  <MapPinIcon className="w-6 h-6 text-green-700" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Address</h3>
+                  <p className="text-gray-600">{app_config.ADDRESS}</p>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="bg-green-100 p-3 rounded-full">
-                <MailIcon className="w-6 h-6 text-green-700" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Email</h3>
-                <p className="text-gray-600">{app_config.EMAIL}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="bg-green-100 p-3 rounded-full">
-                <MapPinIcon className="w-6 h-6 text-green-700" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Address</h3>
-                <p className="text-gray-600">{app_config.ADDRESS}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <form
-            onSubmit={handleSubmit}
-            className=" p-8 rounded-2xl border space-y-4 text-left"
-          >
-            <div>
-              <label className="block text-sm font-semibold mb-1 text-gray-700">Name*</label>
-              <input
-                name="name"
-                type="text"
-                placeholder="Your Name"
-                value={form.name}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-1 text-gray-700">Email</label>
-              <input
-                name="email"
-                type="email"
-                placeholder="Your Email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: {defaultData.countryCodes} 987XXXXXXX)</span></label>
-              <input
-                name="phone"
-                type="tel"
-                placeholder="Your Phone Number"
-                value={form.phone}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-1 text-gray-700">Message*</label>
-              <textarea
-                name="message"
-                rows={4}
-                placeholder="Write your message here..."
-                value={form.message}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
-                required
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full cursor-pointer ${
-                loading ? "bg-green-400" : "bg-green-700 hover:bg-green-800"
-              } text-white font-semibold py-3 rounded-xl transition`}
+            {/* Contact Form */}
+            <form
+              onSubmit={handleSubmit}
+              className=" p-8 rounded-2xl border space-y-4 text-left"
             >
-              {loading ? "Sending..." : "Send Message"}
-            </button>
-          </form>
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700">Name*</label>
+                <input
+                  name="name"
+                  type="text"
+                  placeholder="Your Name"
+                  value={form.name}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700">Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Your Email"
+                  value={form.email}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700">Phone* <span className="font-medium">(eg: {defaultData.countryCodes} 987XXXXXXX)</span></label>
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder="Your Phone Number"
+                  value={form.phone}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1 text-gray-700">Message*</label>
+                <textarea
+                  name="message"
+                  rows={4}
+                  placeholder="Write your message here..."
+                  value={form.message}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:ring-2 focus:ring-green-600 focus:outline-none"
+                  required
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full cursor-pointer ${loading ? "bg-green-400" : "bg-green-700 hover:bg-green-800"
+                  } text-white font-semibold py-3 rounded-xl transition`}
+              >
+                {loading ? "Sending..." : "Send Message"}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
 
 
       {/* CTA Section */}
-      <section className="py-20 bg-green-700 text-white text-center">
+      <section className="py-20 px-10 bg-green-700 text-white text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-4xl font-extrabold mb-4 drop-shadow">Ready to Take Control?</h2>
           <p className="text-xl mb-8 text-green-100 px-2">
