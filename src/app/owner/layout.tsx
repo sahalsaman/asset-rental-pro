@@ -6,7 +6,7 @@ import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
-import { SubscritptionStatus } from '@/utils/contants';
+import { SubscritptionStatus, UserRoles } from '@/utils/contants';
 import SubscriptionPlan from './subscription-plan/page';
 import { Button } from '@/components/ui/button';
 import { app_config } from '@/utils/app-config';
@@ -19,15 +19,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [properties, setProperties] = useState<IProperty[]>([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
   const [organisation, setOrganisation] = useState<any | null>(null);
-  const [app_data, setApp_data] = useState<any | null>(null);
+  const [user, setUser] = useState<any | null>(null);
 
 
-  const options = [
+  const [options, setOptions] = useState<any[]>([
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Organisation', path: '/owner/organisation' },
     { title: 'Rooms', path: '/owner/rooms' },
     { title: 'Payments', path: '/owner/payments' },
-  ];
+  ])
 
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={21} /> },
@@ -55,7 +55,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!data?.firstName) {
       logout()
     }
-
+    // if (data?.role == "Admin") {
+    //   setOptions([...options,
+    //   { title: 'Vendors', path: '/owner/organisation' },
+    //   { title: 'Organisations & Subscriptions', path: '/owner/organisation' },
+    //   { title: 'Vendors', path: '/owner/organisation' },
+    //   ])
+    // }
+    setUser(data)
   };
 
 
@@ -147,7 +154,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Profile Dropdown */}
           <div className="flex items-center gap-8">
 
-            <div className='hidden md:block'>
+           {user?.role==UserRoles.OWNER? <div className='hidden md:block'>
               {properties?.length ? <div >
                 {/* <p className='text-white'>Current Property</p> */}
                 <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
@@ -177,7 +184,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     Start Free Trial
                   </Button>
               }
-            </div>
+            </div>:""}
             <div className="relative">
               <button
                 onClick={() => setOpen(!open)}
@@ -219,8 +226,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
           </div>
         </div>
-        <div className='block md:hidden mt-2'>
-          {properties?.length ? 
+
+        {user?.role==UserRoles.OWNER? <div className='block md:hidden mt-2'>
+          {properties?.length ?
             <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
               <Building2 className='ml-2 text-white' />
               <select
@@ -239,7 +247,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 ))}
               </select>
             </div>
-         :
+            :
             organisation?.subscription ?
               <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/properties')}>
                 Add Property
@@ -248,7 +256,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 Start Free Trial
               </Button>
           }
-        </div>
+        </div>:""}
       </div>
       {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className=" bg-amber-300 py-2 md:px-32 px-5 flex items-center justify-between text-sm">
         {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? `${remainingDate(organisation?.subscription?.endDate)}` : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}

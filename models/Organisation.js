@@ -43,8 +43,22 @@ const OrgSubscriptionSchema = new Schema({
   nextBillingDate: Date,
 });
 
-const autoPaymentSchema = new Schema({
-    balance:{ type: Number, default: 0 },
+const vendorRazerpayAccountSchema = new Schema({
+  balance: { type: Number, default: 0 },
+  contact: {
+    name: { type: String },
+    email: { type: String },
+    contact: { type: String },
+    type: { type: String, default: "vendor" },
+  },
+  contact_id: { type: String },
+  account_type: { type: String, default: "bank_account" },
+  bank_account: {
+    name: { type: String },
+    ifsc: { type: String },
+    account_number: { type: String },
+  },
+  fundAccountId: { type: String },
 });
 
 const OrganisationSchema = new Schema(
@@ -57,7 +71,7 @@ const OrganisationSchema = new Schema(
     disabled: { type: Boolean, default: false },
     deleted: { type: Boolean, default: false },
     subscription: OrgSubscriptionSchema,
-    autoPayment: autoPaymentSchema,
+    vendorRazerpayAccount: vendorRazerpayAccountSchema,
     selctedSelfRecieveBankOrUpi: { type: Types.ObjectId, ref: "SelfRecieveBankOrUpi" },
     is_paymentRecieveSelf: { type: Boolean, default: true },
   },
