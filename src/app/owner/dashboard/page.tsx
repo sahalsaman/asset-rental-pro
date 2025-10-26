@@ -113,7 +113,7 @@ console.log("Execution time:", Date.now() - start, "ms");
     { title: 'New Booking', path: 'BOOKING_FORM', icon: <PlusIcon className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
 
     { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> }, { title: 'Subscription', path: '/owner/subscription-plan', icon: <DollarSign className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
-    { title: 'Support', path: '/owner/supoort', icon: <Headset className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
+    { title: 'Support', path: '/#contact', icon: <Headset className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
   ];
 
   if (loader) return <FullscreenLoader />;

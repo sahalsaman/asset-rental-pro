@@ -154,7 +154,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Profile Dropdown */}
           <div className="flex items-center gap-8">
 
-           {user?.role==UserRoles.OWNER? <div className='hidden md:block'>
+            {user?.role == UserRoles.OWNER ? <div className='hidden md:block'>
               {properties?.length ? <div >
                 {/* <p className='text-white'>Current Property</p> */}
                 <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
@@ -184,7 +184,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     Start Free Trial
                   </Button>
               }
-            </div>:""}
+            </div> : ""}
             <div className="relative">
               <button
                 onClick={() => setOpen(!open)}
@@ -194,40 +194,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               </button>
               {open && (
                 <div className="absolute right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
-                  <button
-                    onClick={() => {
-                      setOpen(false);
-                      router.push('/owner/profile');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                  >
-                    Profile
-                  </button>
-                  <button
-                    onClick={() => {
-                      setOpen(false);
-                      router.push('/owner/organisation');
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                  >
-                    Help & Support
-                  </button>
-                  <button
-                    onClick={() => {
-                      setOpen(false);
-                      logout();
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
-                  >
-                    Logout
-                  </button>
+                  <div className='flex flex-col'>
+                    <a
+                      onClick={() => {
+                        setOpen(false);
+                        router.push('/owner/profile');
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Profile
+                    </a>
+                    <a href='/#contact'
+                      target="_blank"
+                      onClick={() => {
+                        setOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    >
+                      Help & Support
+                    </a>
+                    <a
+                      onClick={() => {
+                        setOpen(false);
+                        logout();
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
+                    >
+                      Logout
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {user?.role==UserRoles.OWNER? <div className='block md:hidden mt-2'>
+        {user?.role == UserRoles.OWNER ? <div className='block md:hidden mt-2'>
           {properties?.length ?
             <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
               <Building2 className='ml-2 text-white' />
@@ -256,7 +258,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 Start Free Trial
               </Button>
           }
-        </div>:""}
+        </div> : ""}
       </div>
       {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className=" bg-amber-300 py-2 md:px-32 px-5 flex items-center justify-between text-sm">
         {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? `${remainingDate(organisation?.subscription?.endDate)}` : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}

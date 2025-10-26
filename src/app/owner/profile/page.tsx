@@ -56,28 +56,32 @@ export default function PropertiesPage() {
         {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/organisation')}>
           Organisation
         </a> : ""}
-            {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/properties')}>
+        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/properties')}>
           Properties
         </a> : ""}
-           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
-          Auto Payout <span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
+        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
+          Automated invoicing & payments <span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
         </a> : ""}
-           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
+        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
           Bank & UPI Details
         </a> : ""}
         {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subscription-plan')}>
           Subscription
         </a> : ""}
-        <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/privacy')}>
+        <a className="p-4 border-b-1 border-b-gray-200" href='/privacy'
+          target="_blank">
           Privacy and policy
         </a>
-        <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/terms')}>
+        <a className="p-4 border-b-1 border-b-gray-200" href='/terms'
+          target="_blank">
           Terms & Conditions
         </a>
-        <a className="p-4 border-b-1 border-b-gray-200" >
+        <a className="p-4 border-b-1 border-b-gray-200" href='/#faq'
+          target="_blank">
           FAQ
         </a>
-        <a className="p-4 border-b-1 border-b-gray-200"  >
+        <a className="p-4 border-b-1 border-b-gray-200" href='/#contact'
+          target="_blank">
           Support
         </a>
       </div>
