@@ -55,12 +55,6 @@ export default function PrivacyPolicy() {
           </a>
           .
         </p>
-
-        <div className="mt-10">
-             <a onClick={() => router.back()}  className="text-green-700 hover:underline">
-            ← Back to Home
-          </a>
-        </div>
       </div>
     </main>
   );

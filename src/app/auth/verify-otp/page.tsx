@@ -53,14 +53,13 @@ export default function VerifyOTPPage() {
   };
 
   return (
-
-    <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 ">
-      <div className="h-60 flex justify-center items-center">
-              <Image src={app_config.APP_LOGO_DARK_THEME} alt="Logo" width={50} className='cursor-pointer' />
+    <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 h-[100vh]">
+      <div className="h-3/12 flex justify-center items-center ">
+        <Image src={app_config.APP_LOGO_DARK_THEME} alt="Logo" width={50} className='cursor-pointer block sm:hidden' />
       </div>
-      <div className="absolute w-full" style={{ marginTop: "-35px" }}>
-        <div className="flex justify-center items-center w-full">
-          <div className="w-full max-w-[450px] flex flex-col items-center justify-between h-full bg-white py-10 px-5 rounded-4xl sm:shadow-2xl">
+      <div className="sm:flex justify-center items-center w-full h-9/12 sm:h-fit bg-white sm:bg-transparent rounded-tl-2xl rounded-tr-2xl" >
+        <div className="pt-20 sm:pt-0 w-full sm:w-fit  bg-white rounded-4xl sm:shadow-2xl">
+          <div className="w-full max-w-[450px]  h-full px-6 sm:p-10 ">
             <div className="space-y-6 w-full">
               <div className="text-center mb-10">
 

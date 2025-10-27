@@ -1,6 +1,6 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { User, XIcon, Home, Building2, BuildingIcon, BadgeDollarSign, UserCircle, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import Image from 'next/image';
@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
   const [organisation, setOrganisation] = useState<any | null>(null);
   const [user, setUser] = useState<any | null>(null);
-
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [options, setOptions] = useState<any[]>([
     { title: 'Dashboard', path: '/owner/dashboard' },
@@ -50,19 +50,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   const fetchUser = async () => {
-    const res = await apiFetch("/api/me");
-    const data = await res.json();
-    if (!data?.firstName) {
-      logout()
+    try {
+      const res = await apiFetch("/api/me");
+      const data = await res.json();
+      console.log(data);
+
+      // if (!data?.firstName) {
+      //   logout()
+      // }
+      // if (data?.role == "Admin") {
+      //   setOptions([...options,
+      //   { title: 'Vendors', path: '/owner/organisation' },
+      //   { title: 'Organisations & Subscriptions', path: '/owner/organisation' },
+      //   { title: 'Vendors', path: '/owner/organisation' },
+      //   ])
+      // }
+      setUser(data)
     }
-    // if (data?.role == "Admin") {
-    //   setOptions([...options,
-    //   { title: 'Vendors', path: '/owner/organisation' },
-    //   { title: 'Organisations & Subscriptions', path: '/owner/organisation' },
-    //   { title: 'Vendors', path: '/owner/organisation' },
-    //   ])
-    // }
-    setUser(data)
+    catch (err) {
+      console.log(err);
+    }
   };
 
 
@@ -93,6 +100,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     fetchOrganisation();
     fetchProperties();
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -185,7 +210,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </Button>
               }
             </div> : ""}
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setOpen(!open)}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"

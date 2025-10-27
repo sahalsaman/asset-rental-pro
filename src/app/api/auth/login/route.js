@@ -2,6 +2,7 @@ import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { sendOTPText } from "@/utils/sendToWhatsApp";
+import { aisensySendOTPText } from "@/utils/aisensySendToWhatsapp";
 
 export async function POST(req) {
   try {
@@ -37,7 +38,7 @@ export async function POST(req) {
     });
 
     console.log(`🔄 OTP updated for ${phone}: ${otp}`);
-    // const result = await sendOTPText(countryCode,phone,otp,`${user?.firstName} ${user?.lastName}`)
+    const result = await aisensySendOTPText(countryCode,phone,otp,`${user?.firstName} ${user?.lastName}`)
 
   return NextResponse.json({ message: "OTP sent successfully",data:{
     countryCode: countryCode,

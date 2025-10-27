@@ -152,8 +152,8 @@ export default function Home() {
               </button>
             </Link>
           </div>
-            <div className="hidden md:block w-full sm:min-w-[500px] max-w-[550px]">
-              <Image src={home_banner} alt="banner" className="w-full max-w-[550px]" />
+            <div className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]">
+              <Image src={home_banner} alt="banner" className="w-full max-w-[550px] drop-shadow-2xl" />
             </div>
         </div>
       </section>
