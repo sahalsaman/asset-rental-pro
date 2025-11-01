@@ -54,15 +54,18 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: number, invoiceId: string, paymentLink: any) {
+export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: number, invoiceId: string, paymentLink: any,
+  dueDate: Date) {
   try {
     const formattedPhone = formatPhone("91" + booking?.whatsappNumber);  // Ensure correct format
     const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
-    const today = new Date();
-    const dueDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
-    dueDate.setHours(0, 0, 0, 0);
-    const dueDateStr = dueDate.toISOString().split('T')[0];
+    const dueDateStr = dueDate.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
 
     const response = await axios.post(
       url,
@@ -98,7 +101,8 @@ export async function sendInvoiceToWhatsAppWithSelfBank(
   booking: any,
   amount: number,
   invoiceId: string,
-  bankDetail: any
+  bankDetail: any,
+  dueDate: Date
 ) {
   try {
     if (!booking?.whatsappNumber) throw new Error("Booking WhatsApp number missing.");
@@ -107,13 +111,14 @@ export async function sendInvoiceToWhatsAppWithSelfBank(
     const formattedPhone = formatPhone("91" + booking.whatsappNumber);
     const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
-    // Calculate due date (5 days from now)
-    const today = new Date();
-    const dueDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
-    const dueDateStr = dueDate.toISOString().split("T")[0];
-
     // 🧩 Build dynamic payment message
     let paymentMessage = "";
+
+    const dueDateStr = dueDate.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
 
     switch (bankDetail?.paymentRecieverOption) {
       case PaymentRecieverOptions.BANK:
@@ -156,7 +161,7 @@ Amount: ₹${amount}
 
 ${paymentMessage}
 
-Thank you! 💚`;
+Thank you!`;
 
     // 🚀 Send message via WhatsApp Cloud API
     const response = await axios.post(

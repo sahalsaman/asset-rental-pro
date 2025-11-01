@@ -7,7 +7,7 @@ import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
 import RoomModel from "../../../../models/Room";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
-import { calculateNextBillingdate } from "@/utils/functions";
+import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 
@@ -108,7 +108,6 @@ export async function POST(request) {
       }
     }
 
-
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
@@ -120,11 +119,13 @@ export async function POST(request) {
 
 
     let selected_bank
-    console.log("room.propertyId?.selctedSelfRecieveBankOrUpi", room.propertyId, selected_bank);
     if (room?.organisationId?.is_paymentRecieveSelf) {
       selected_bank = await SelfRecieveBankOrUpiModel.findById(room.propertyId?.selctedSelfRecieveBankOrUpi)
-      console.log("room.propertyId?.selctedSelfRecieveBankOrUpi", room.propertyId?.selctedSelfRecieveBankOrUpi, selected_bank);
     }
+
+    const dueDate = calculateDueDate(booking?.frequency)
+    console.log("dueDate",dueDate,booking?.frequency,room.frequency);
+    
 
     // 2️⃣ Generate invoices for this booking
     const invoices = [];
@@ -132,7 +133,7 @@ export async function POST(request) {
     // --- Advance Payment Invoice ---
     if (booking.advanceAmount && booking.advanceAmount > 0) {
 
-      let invoiceId = `INV-${booking._id}-01-ADV`
+      let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-01-ADV`
       let paymentUrl = "SELF RECEIVE";
       let paymentGateway = "manual"
       if (room?.organisationId?.is_paymentRecieveSelf === false) {
@@ -149,20 +150,20 @@ export async function POST(request) {
         balance: booking.advanceAmount,
         type: RentAmountType.ADVANCE,
         status: InvoiceStatus.PENDING,
-        dueDate: booking.checkIn || new Date(),
+        dueDate: dueDate || new Date(),
         paymentGateway,
         paymentUrl
       });
       if (room?.organisationId?.is_paymentRecieveSelf) {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, selected_bank);
+        sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, selected_bank,dueDate);
       } else {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentUrl);
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentUrl,dueDate);
       }
     }
 
     // --- First Rent Invoice ---
     if (booking.amount && booking.amount > 0) {
-      let invoiceId = `INV-${booking._id}-02-RENT`
+      let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-02-RENT`
       let paymentUrl_2 = "SELF RECEIVE";
       let paymentGateway = "manual"
       if (room?.organisationId?.is_paymentRecieveSelf === false) {
@@ -180,15 +181,15 @@ export async function POST(request) {
         balance: booking.amount,
         type: RentAmountType.ADVANCE,
         status: InvoiceStatus.PENDING,
-        dueDate: booking.checkIn || new Date(),
+        dueDate: dueDate || new Date(),
         paymentGateway,
         paymentUrl: paymentUrl_2
       });
 
       if (room?.organisationId?.is_paymentRecieveSelf) {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, selected_bank);
+        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, selected_bank,dueDate);
       } else {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentUrl_2);
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentUrl_2,dueDate);
       }
     }
 

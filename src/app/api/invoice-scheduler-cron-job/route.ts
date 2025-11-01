@@ -98,9 +98,9 @@ const handleInvoice = async () => {
 
     if (booking?.organisationId?.is_paymentRecieveSelf) {
       const selected_bank = await SelfRecieveBankOrUpiModel.findById(booking.propertyId?.selctedSelfRecieveBankOrUpi)
-      sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, selected_bank);
+      sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, selected_bank, dueDate);
     } else {
-      sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentUrl);
+      sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentUrl, dueDate);
     }
     return
   }
@@ -121,7 +121,7 @@ const sendOverdueMessage = async () => {
         await invoice.save();
       }
 
-      sendInvoiceToWhatsAppWithPaymentUrl(invoice?.bookingId, invoice?.amount, invoice?.invoiceId, invoice?.paymentUrl);
+      sendInvoiceToWhatsAppWithPaymentUrl(invoice?.bookingId, invoice?.amount, invoice?.invoiceId, invoice?.paymentUrl, dueDate);
     }
   }
   console.log("cron sendOverdueMessage working.........", new Date());
