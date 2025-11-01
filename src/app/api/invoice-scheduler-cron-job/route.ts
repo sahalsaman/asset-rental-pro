@@ -8,10 +8,11 @@ import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import RoomModel from "../../../../models/Room";
+import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 
 export async function GET() {
 
-  try { 
+  try {
     await connectMongoDB();
     // new invoice generating
     await handleInvoice()
@@ -46,7 +47,7 @@ const handleInvoice = async () => {
     disabled: false,
     status: BookingStatus.CHECKED_IN,
     nextBillingDate: { $gte: startOfDay, $lte: endOfDay },
-  }).populate('organisationId');
+  }).populate('organisationId').populate('propertyId');
 
   for (const booking of bookings) {
 
@@ -95,11 +96,12 @@ const handleInvoice = async () => {
       nextBillingDate
     })
 
-    // if (booking?.organisationId?.is_paymentRecieveSelf === false) {
-    //   sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentLink);
-    // } else {
-    //   sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, booking.propertyId?.selectedBank);
-    // }
+    if (booking?.organisationId?.is_paymentRecieveSelf) {
+      const selected_bank = await SelfRecieveBankOrUpiModel.findById(booking.propertyId?.selctedSelfRecieveBankOrUpi)
+      sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, selected_bank);
+    } else {
+      sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentUrl);
+    }
     return
   }
   console.log("cron handle nvoice working.........", new Date());
@@ -119,7 +121,7 @@ const sendOverdueMessage = async () => {
         await invoice.save();
       }
 
-      // sendInvoiceToWhatsAppWithPaymentUrl(invoice?.bookingId, invoice?.amount, invoice?.invoiceId, invoice?.paymentUrl);
+      sendInvoiceToWhatsAppWithPaymentUrl(invoice?.bookingId, invoice?.amount, invoice?.invoiceId, invoice?.paymentUrl);
     }
   }
   console.log("cron sendOverdueMessage working.........", new Date());
@@ -195,7 +197,7 @@ const handleCheckout = async () => {
 
 
 
- const updateOrganisationSubscription = async () => {
+const updateOrganisationSubscription = async () => {
   try {
     const organisations = await OrganisationModel.find({
       disabled: false,

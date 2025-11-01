@@ -4,6 +4,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast'
+import { Analytics } from "@vercel/analytics/next"
+import { app_config } from "@/utils/app-config";
+import Head from "next/head";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +17,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-
 
 
 export const metadata: Metadata = {
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
     languages: {
-       'en-IN': '/en-IN',
+      'en-IN': '/en-IN',
     },
   },
   openGraph: {
@@ -78,10 +79,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <title>{app_config.APP_NAME} – Smart Rental Management</title>
+        <meta name="description" content="Automate rent collection, track maintenance, and manage properties effortlessly." />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >{children}
-            <Toaster /> 
+        <Analytics />
+        <Toaster />
       </body>
     </html>
   );

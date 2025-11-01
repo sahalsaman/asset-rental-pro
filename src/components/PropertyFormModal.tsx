@@ -43,7 +43,7 @@ export default function PropertyFormModal({
     images: [],
     currency: CurrencyType.INR,
     disabled: false,
-    is_paymentRecieveSelf: false,
+    is_paymentRecieveSelf: true,
     selctedSelfRecieveBankOrUpi: ""
   });
   const [banksList, setBanksList] = useState([]);
@@ -100,7 +100,7 @@ export default function PropertyFormModal({
         images: [],
         currency: CurrencyType.INR,
         disabled: false,
-        is_paymentRecieveSelf: false,
+        is_paymentRecieveSelf: true,
         selctedSelfRecieveBankOrUpi: ""
       }
     );
@@ -137,12 +137,13 @@ export default function PropertyFormModal({
           <div className="flex items-center space-x-2">
             <Switch
               id="multiple-room"
-              checked={formData?.is_paymentRecieveSelf || false}
-              onCheckedChange={(checked) =>
-                setFormData((prev) => ({ ...prev, is_paymentRecieveSelf: checked }))
-              }
+              // checked={formData?.is_paymentRecieveSelf || false}
+              // onCheckedChange={(checked) =>
+              //   setFormData((prev) => ({ ...prev, is_paymentRecieveSelf: checked }))
+              // }
+              checked={true}
             />
-            <Label htmlFor="multiple-room">Receive Payment Yourself</Label>
+            <Label htmlFor="multiple-room">Receive Payment Yourself </Label>
           </div>
           {formData?.is_paymentRecieveSelf && (
             <div>

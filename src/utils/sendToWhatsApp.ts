@@ -1,10 +1,11 @@
-import axios from 'axios';  
+import axios from 'axios';
 import { env } from '../../environment';
+import { PaymentRecieverOptions } from './contants';
 
-export const config = {
-    WHATSAPP_TOKEN:env?.WHATSAPP_TOKEN,
-    WHATSAPP_PHONE_NUMBER_ID: env?.WHATSAPP_PHONE_NUMBER_ID,
-    SYSTEM_USER_TOKEN:env.SYSTEM_USER_TOKEN
+const config = {
+  WHATSAPP_TOKEN: env?.WHATSAPP_TOKEN,
+  WHATSAPP_PHONE_NUMBER_ID: env?.WHATSAPP_PHONE_NUMBER_ID,
+  WHATSAPP_SYSTEM_USER_TOKEN: env.WHATSAPP_SYSTEM_USER_TOKEN
 }
 
 function formatPhone(phone: string): string {
@@ -24,29 +25,15 @@ export async function sendOTPText(
     const payload = {
       messaging_product: "whatsapp",
       to: formattedPhone,
-      // type: "text",
-      // text: {
-      //   preview_url: false,
-      //   body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\n\nIt expires in 5 minutes. Please do not share it.\n\n– ARP Team`,
-      // },
-      type: "template",
-      template: {
-        name: "hello_world", // Your approved template name, e.g., "otp_verification"
-        language: { code: "en_US" }, // Language code of the template
-        // components: [
-        //   {
-        //     type: "body",
-        //     parameters: [
-        //       { type: "text", text: otp }, // OTP code passed as template param
-        //       { type: "text", text: userName || "User" } // Optional: parameter with username if your template has placeholders for it
-        //     ],
-        //   },
-        // ],
+      type: "text",
+      text: {
+        preview_url: false,
+        body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\nIt expires in 5 minutes. Please do not share it.`,
       },
     };
 
     const headers = {
-      Authorization: `Bearer ${config.SYSTEM_USER_TOKEN}`,
+      Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
       "Content-Type": "application/json",
     };
 
@@ -67,10 +54,10 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount:number,invoiceId: string, paymentLink:any) {
+export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: number, invoiceId: string, paymentLink: any) {
   try {
-    const formattedPhone = formatPhone("91"+booking?.whatsappNumber);  // Ensure correct format
-    const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+    const formattedPhone = formatPhone("91" + booking?.whatsappNumber);  // Ensure correct format
+    const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
     const today = new Date();
     const dueDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
@@ -81,13 +68,13 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount:n
       url,
       {
         messaging_product: "whatsapp",
-        to: formattedPhone, 
+        to: formattedPhone,
         type: "text",
         text: {
           body: `📄 Hi ${booking?.fullName},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${paymentLink}`
         }
       },
-      { headers: { Authorization: `Bearer ${config?.WHATSAPP_TOKEN}`, "Content-Type": "application/json" } }
+      { headers: { Authorization: `Bearer ${config?.WHATSAPP_SYSTEM_USER_TOKEN}`, "Content-Type": "application/json" } }
     );
 
     console.log("WhatsApp message sent successfully:", response.data);
@@ -97,79 +84,111 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount:n
     if (error?.response?.data?.error?.code === 131030) {
       console.warn("Add recipient phone to whitelist in Meta Business Manager.");
     }
-    return { 
-      success: false, 
+    return {
+      success: false,
       error: error?.response?.data?.error || error?.message,
-      code: error?.response?.data?.error?.code 
+      code: error?.response?.data?.error?.code
     };
   }
 }
 
-export async function sendInvoiceToWhatsAppWithSelfBank(booking: any, amount: number,invoiceId: string, bankDetail:any) {
-  try {
-    const formattedPhone = formatPhone("91"+booking?.whatsappNumber);  // Ensure correct format
-    const url = `https://graph.facebook.com/v20.0/${config?.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
+
+export async function sendInvoiceToWhatsAppWithSelfBank(
+  booking: any,
+  amount: number,
+  invoiceId: string,
+  bankDetail: any
+) {
+  try {
+    if (!booking?.whatsappNumber) throw new Error("Booking WhatsApp number missing.");
+    if (!bankDetail) throw new Error("Bank details not provided.");
+
+    const formattedPhone = formatPhone("91" + booking.whatsappNumber);
+    const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+    // Calculate due date (5 days from now)
     const today = new Date();
     const dueDate = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
-    dueDate.setHours(0, 0, 0, 0);
-    const dueDateStr = dueDate.toISOString().split('T')[0];
+    const dueDateStr = dueDate.toISOString().split("T")[0];
 
+    // 🧩 Build dynamic payment message
+    let paymentMessage = "";
+
+    switch (bankDetail?.paymentRecieverOption) {
+      case PaymentRecieverOptions.BANK:
+        paymentMessage = `🏦 *Bank Transfer Details:*
+Account Name: ${bankDetail?.accountHolderName}
+Account No: ${bankDetail?.value}
+IFSC: ${bankDetail?.ifsc || "N/A"}
+Bank: ${bankDetail?.bankName || "N/A"}
+Branch: ${bankDetail?.branch || "N/A"}`;
+        break;
+
+      case PaymentRecieverOptions.UPIPHONE:
+        paymentMessage = `📱 *Pay via UPI Phone:*
+UPI Number: ${bankDetail?.upiPhoneCountryCode || "+91"} ${bankDetail?.value}
+Account Name: ${bankDetail?.accountHolderName}`;
+        break;
+
+      case PaymentRecieverOptions.UPIID:
+        paymentMessage = `💳 *Pay via UPI ID:*
+UPI ID: ${bankDetail?.value}
+Account Name: ${bankDetail?.accountHolderName}`;
+        break;
+
+      case PaymentRecieverOptions.UPIQR:
+        paymentMessage = `📸 *Scan this QR to pay:*
+QR Link: ${bankDetail?.value}
+Account Name: ${bankDetail?.accountHolderName}`;
+        break;
+
+      default:
+        paymentMessage = `Payment details not available.`;
+    }
+
+    // 🧾 Final message body
+    const messageBody = `📄 *Hi ${booking?.fullName || "Customer"},*
+
+Invoice #${invoiceId}
+Due Date: ${dueDateStr}
+Amount: ₹${amount}
+
+${paymentMessage}
+
+Thank you! 💚`;
+
+    // 🚀 Send message via WhatsApp Cloud API
     const response = await axios.post(
       url,
       {
         messaging_product: "whatsapp",
-        to: formattedPhone, 
+        to: formattedPhone,
         type: "text",
-        text: {
-          body: `📄 Hi ${booking?.fullName},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated! Pay here: ${bankDetail}`
-        }
+        text: { body: messageBody },
       },
-      { headers: { Authorization: `Bearer ${config?.WHATSAPP_TOKEN}`, "Content-Type": "application/json" } }
+      {
+        headers: {
+          Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      }
     );
 
-    console.log("WhatsApp message sent successfully:", response.data);
-    return { success: true, messageId: response.data.messages?.[0]?.id };
+    console.log("✅ WhatsApp message sent successfully:", response.data);
+    return { success: true, messageId: response.data?.messages?.[0]?.id };
   } catch (error: any) {
-    console.error("WhatsApp send error:", error?.response?.data || error?.message);
+    console.error("❌ WhatsApp send error:", error?.response?.data || error.message);
     if (error?.response?.data?.error?.code === 131030) {
-      console.warn("Add recipient phone to whitelist in Meta Business Manager.");
+      console.warn("⚠️ Add recipient phone number to WhatsApp Business 'Test numbers' list.");
     }
-    return { 
-      success: false, 
-      error: error?.response?.data?.error || error?.message,
-      code: error?.response?.data?.error?.code 
+    return {
+      success: false,
+      error: error?.response?.data?.error || error.message,
+      code: error?.response?.data?.error?.code,
     };
   }
 }
 
-// Optional: Interactive version with buttons (for in-session only; requires user to message first)
-// async function sendInteractiveInvoice(phone: string, invoiceId: string, amount: number, name: string, paymentLink: string) {
-//   // ... (same setup as above)
-//   const formattedPhone = formatPhone(phone);
-
-//   const response = await axios.post(url, {
-//     messaging_product: "whatsapp",
-//     to: formattedPhone,
-//     type: "interactive",
-//     interactive: {
-//       type: "button",
-//       body: {
-//         text: `📄 Hi ${name},\n\nInvoice #${invoiceId}\nDue: ${dueDateStr}\nAmount: ₹${amount}\n\nPayment appreciated!`
-//       },
-//       action: {
-//         buttons: [
-//           {
-//             type: "url",
-//             url: paymentLink,  // Direct HTTPS link (e.g., Razorpay)
-//             title: "Pay Now"
-//           }
-//         ]
-//       }
-//     }
-//   }, { headers: { /* ... */ } });
-
-//   // ... (return as above)
-// }
 
 

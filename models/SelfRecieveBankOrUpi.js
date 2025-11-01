@@ -21,4 +21,4 @@ const SelfRecieveBankOrUpiSchema = new Schema(
 );
 
 
-export const SelfRecieveBankOrUpiModel = mongoose.models.SelfRecieveBankOrUpiUpi || mongoose.model("SelfRecieveBankOrUpi", SelfRecieveBankOrUpiSchema);
+export const SelfRecieveBankOrUpiModel = mongoose.models.SelfRecieveBankOrUpi || mongoose.model("SelfRecieveBankOrUpi", SelfRecieveBankOrUpiSchema);

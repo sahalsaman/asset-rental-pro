@@ -7,11 +7,11 @@ import about from "../../public/arp aboout.png"
 import home_banner from "../../public/home_banner_image.png"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
-import bannerBg from "../../public/banner.png"
 import Image from "next/image";
 import { defaultData, subscription_plans } from "@/utils/data";
 import { app_config } from "@/utils/app-config";
 import toast from "react-hot-toast";
+import PropertyTypeSlider from "@/components/PropertiesSlider";
 
 // 1. Define the Interface for Props
 interface FAQItemProps {
@@ -115,7 +115,7 @@ export default function Home() {
     <main className="min-h-screen bg-white text-gray-800 ">
       {/* Navbar */}
 
-      <header className="flex justify-between items-center px-4 md:px-24 py-3 md:py-4 shadow-md bg-white sticky top-0 z-50">
+      <header className="flex justify-between items-center px-4 md:px-24 py-4 md:py-4 shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <Image src={app_config.APP_LOGO} alt="Logo" className='w-6 h-6 sm:w-8 sm:h-8 cursor-pointer' />
           <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
@@ -152,9 +152,9 @@ export default function Home() {
               </button>
             </Link>
           </div>
-            <div className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]">
-              <Image src={home_banner} alt="banner" className="w-full max-w-[550px] drop-shadow-2xl" />
-            </div>
+          <div className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]">
+            <Image src={home_banner} alt="banner" className="w-full max-w-[550px] drop-shadow-2xl" />
+          </div>
         </div>
       </section>
 
@@ -255,7 +255,7 @@ export default function Home() {
         </div>
       </section>
 
-
+      <PropertyTypeSlider />
 
 
       {/* Pricing Section */}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
+import { env } from "../../environment";
 
 
 export function middleware(request: NextRequest) {
@@ -9,7 +10,7 @@ export function middleware(request: NextRequest) {
   if (!token) return NextResponse.redirect(new URL("/auth/login", request.url));
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET??"arp_userTokenKey");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET??env.JWT_SECRET);
 
     const role = decoded;
 
