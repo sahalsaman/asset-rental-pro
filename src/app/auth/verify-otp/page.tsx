@@ -2,7 +2,7 @@
 
 import api, { login } from "@/lib/api";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { UserRoles } from "@/utils/contants";
@@ -11,11 +11,19 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function VerifyOTPPage() {
-
-  const searchParams = useSearchParams();
-  const phone = searchParams.get("phone");
-  const countryCode = searchParams.get("countryCode");
+  const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [otp, setOtp] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search).get("phone") || "";
+      const c = new URLSearchParams(window.location.search).get("countryCode") || "";
+      setPhone(p);
+      setCountryCode(c);
+    }
+  }, []);
+
 
   const resendOtp = async () => {
     if (!phone || !countryCode) {
