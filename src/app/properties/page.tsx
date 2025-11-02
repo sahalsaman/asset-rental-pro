@@ -5,49 +5,53 @@ import { useState } from "react";
 import PropertyPublicCard from "@/components/PropertyPublicCard";
 import Image from "next/image";
 import Link from "next/link";
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../../app-config";
+import dummy_image from "../../../public/dummy-property.jpg";
+import { useRouter } from "next/navigation";
 
 export default function PropertiesPage() {
 
   const propertyTypes = [
-  {
-    name: "Flat / Apartment",
-  },
-  {
-    name: "PG / Hostel / Lodge",
-  },
-  {
-    name: "House",
-  },
-  {
-    name: "Co-working",
-  },
-  {
-    name: "Office Space",
-  },
-  {
-    name: "Resort",
-  },
-  {
-    name: "Turf",
-  },
-  {
-    name: "Auditorium",
-  },
-];
+    {
+      name: "Flat / Apartment",
+    },
+    {
+      name: "PG / Hostel / Lodge",
+    },
+    {
+      name: "House",
+    },
+    {
+      name: "Co-working",
+    },
+    {
+      name: "Office Space",
+    },
+    {
+      name: "Resort",
+    },
+    {
+      name: "Turf",
+    },
+    {
+      name: "Auditorium",
+    },
+  ];
 
   const properties = [
     {
-      name: "Alif Apartment",
+      id: 1,
+      name: "Olive",
       price: "2500",
       type: "1 BHK",
       bath: "1",
       ac: true,
       wifi: true,
       location: "Thrikkakara, Kochi",
-      image: "/images/property1.jpg",
+      image: dummy_image,
     },
     {
+      id: 2,
       name: "Deluxe A",
       price: "3000",
       type: "2 BHK",
@@ -55,12 +59,12 @@ export default function PropertiesPage() {
       ac: true,
       wifi: true,
       location: "Thrikkakara, Kochi",
-      image: "/images/property2.jpg",
+      image: dummy_image,
     },
     // Add more
   ];
 
-   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
 
   if (menuOpen) {
@@ -87,8 +91,8 @@ export default function PropertiesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-          <header className="flex justify-between items-center px-4 md:px-24 py-4 md:py-4 shadow-md bg-white sticky top-0 z-50">
+    <main className="min-h-screen ">
+      <header className="flex justify-between items-center px-4 md:px-24 py-4 md:py-4 shadow-md bg-white sticky top-0 z-50">
         <a className="flex items-center gap-3" href="/">
           <Image src={app_config.APP_LOGO} alt="Logo" className='w-6 h-6 sm:w-8 sm:h-8 cursor-pointer' />
           <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
@@ -109,21 +113,20 @@ export default function PropertiesPage() {
         </button>
       </header>
       {/* Banner */}
-      <div className="relative h-64 bg-[url('/images/property-banner.jpg')] bg-cover bg-center">
+      <div className="relative h-64 bg-green-700 bg-gradient-to-br from-green-500 to-green-700">
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-3xl font-bold">
-          Find Your Perfect Rental Property
+          <h1 className="mb-5">Find Your Perfect Rental Property</h1>
         </div>
       </div>
 
       {/* Search Section */}
-      <div className="bg-white shadow-md rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between max-w-6xl mx-auto mt-[-50px] relative z-10">
-     
+      <div className="bg-white shadow-md rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between max-w-3xl mx-auto mt-[-50px] relative z-10">
+
         {/* Search Inputs */}
-        <div className="flex flex-wrap md:flex-nowrap gap-4 mt-3 md:mt-0 w-full md:w-auto">
-          <select className="px-4 py-2 border rounded-xl text-gray-600">
+        <div className="flex flex-wrap md:flex-nowrap gap-4 mt-3 md:mt-0 w-full md:w-full">
+          <select className="px-4 py-2 border rounded-xl text-gray-600 max-w-40">
             <option>All</option>
-       {propertyTypes.map( (i)=>    <option>{i.name}</option>)}
-          
+            {propertyTypes.map((i) => <option key={i.name}>{i.name}</option>)}
           </select>
           <div className="flex items-center border rounded-xl px-3 py-2 w-full">
             <MapPin className="text-gray-400 mr-2" size={18} />
@@ -145,7 +148,7 @@ export default function PropertiesPage() {
           <h2 className="text-2xl font-bold mb-6 text-gray-800">Available Properties</h2>
           <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
             {properties.map((p, i) => (
-              <PropertyPublicCard key={i} property={p} />
+              <PropertyPublicCard key={p.id} property={p}/>
             ))}
           </div>
         </div>

@@ -19,12 +19,9 @@ export default function PropertiesPage() {
     const res = await apiFetch("/api/property");
     const data = await res.json();
     setProperties(data);
-    if(!data?.length){
-      fetchOrganisation()
-    }
   };
 
-    const fetchOrganisation = async () => {
+  const fetchOrganisation = async () => {
     const res = await apiFetch("/api/organisation");
     const data = await res.json();
     setOrganisation(data);
@@ -32,20 +29,21 @@ export default function PropertiesPage() {
 
   useEffect(() => {
     fetchProperties();
+      fetchOrganisation()
   }, []);
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
     { label: "Properties" },
   ];
-    if (!properties) return <FullscreenLoader />;
+  if (!properties) return <FullscreenLoader />;
 
   return (
     <div className=" p-5 md:pt-10 md:px-32 mb-10">
       <Breadcrumbs items={breadcrumbItems} />
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Properties</h1>
-        {organisation?.subscription &&  <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
+        {organisation?.subscription && <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
           Add Property
         </Button>}
       </div>
@@ -70,7 +68,7 @@ export default function PropertiesPage() {
         }}
         onSave={() => {
           setAddEditOpen(false);
-          fetchProperties();
+          window.location.reload()
         }}
         initialData={selectedProperty}
       />

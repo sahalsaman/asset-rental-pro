@@ -9,7 +9,7 @@ import { IProperty } from '../types';
 import { SubscritptionStatus, UserRoles } from '@/utils/contants';
 import SubscriptionPlan from './subscription-plan/page';
 import { Button } from '@/components/ui/button';
-import { app_config } from '@/utils/app-config';
+import { app_config } from '../../../app-config';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const prop = localStorageServiceSelectedOptions.getItem()?.property;
@@ -137,8 +137,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const diffTime = end.getTime() - currentDate.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 0) return "Your subscription has expired. Please renew to continue using our services.";
-    return `You have ${diffDays} day${diffDays > 1 ? "s" : ""} remaining in your free trial.`;
+    // if (diffDays <= 0) return "Your subscription has expired. Please renew to continue using our services.";
+    // return `You have ${diffDays} day${diffDays > 1 ? "s" : ""} remaining in your free trial.`;
+    return "Your free trial is active."
   };
 
 
@@ -159,12 +160,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
           </div>
           <div className="hidden lg:flex items-center gap-4">
-            <h1
-              onClick={() => router.push('/owner/dashboard')}
-              className="text-2xl font-bold text-white mr-5 cursor-pointer"
-            >
+            <div className="flex items-center gap-4">
               <Image src={app_config.APP_LOGO_DARK_THEME} alt="Logo" width={30} className='cursor-pointer' />
-            </h1>
+              <h1
+                onClick={() => router.push('/owner/dashboard')}
+                className="text-3xl font-bold text-white mr-5 cursor-pointer"
+              >
+                Rentities
+              </h1></div>
             {options.map((card, idx) => (
               <div
                 key={idx}

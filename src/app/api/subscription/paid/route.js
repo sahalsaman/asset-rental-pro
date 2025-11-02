@@ -73,6 +73,28 @@ export async function PUT(req) {
       razorpay_status: "captured",
     });
 
+    const subscription = {
+      plan: selected_plan.name,
+      planId: selected_plan.id,
+      status: SubscritptionStatus.ACTIVE,
+      startDate,
+      endDate,
+      billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
+      amount: selected_plan.amount,
+      paymentMethod: "razorpay",
+      usageLimits: {
+        property: selected_plan.total_properties || 0,
+        rooms: selected_plan.total_rooms || 0,
+        bookings: selected_plan.total_bookings || 0,
+      },
+    };
+
+    await OrganisationModel.findByIdAndUpdate(
+      organisationId,
+      { subscription },
+      { new: true }
+    );
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("PUT /subscription error:", error);

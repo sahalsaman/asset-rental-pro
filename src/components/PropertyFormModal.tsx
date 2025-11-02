@@ -16,6 +16,9 @@ import { Textarea } from './ui/textarea';
 import { Switch } from './ui/switch';
 import { apiFetch } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { propertyAmenities, propertyServices } from '@/utils/data';
+import MultiSelect from './ui/multiselect';
 
 interface PropertyFormModalProps {
   open: boolean;
@@ -41,6 +44,8 @@ export default function PropertyFormModal({
     country: '',
     zipCode: '',
     images: [],
+    services: [],
+    amenities: [],
     currency: CurrencyType.INR,
     disabled: false,
     is_paymentRecieveSelf: true,
@@ -98,6 +103,8 @@ export default function PropertyFormModal({
         country: '',
         zipCode: '',
         images: [],
+        services: [],
+        amenities: [],
         currency: CurrencyType.INR,
         disabled: false,
         is_paymentRecieveSelf: true,
@@ -108,24 +115,40 @@ export default function PropertyFormModal({
 
 
   const handleSave = async (formData: any) => {
-    if (initialData?._id) {
-      await fetch(`/api/property?id=${initialData?._id}`, {
-        method: "PUT",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" },
-      });
-      resetForm()
-      onSave()
-    } else {
-      await fetch("/api/property", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" },
-      });
-      resetForm()
-      onSave()
+    try {
+      let res;
+
+      if (initialData?._id) {
+        // Update existing property
+        res = await fetch(`/api/property?id=${initialData._id}`, {
+          method: "PUT",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+      } else {
+        // Create new property
+        res = await fetch("/api/property", {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to save property");
+      }
+
+      toast.success(initialData?._id ? "Property updated successfully!" : "Property added successfully!");
+      resetForm();
+      onSave();
+
+    } catch (error: any) {
+      console.error("Save error:", error);
+      toast.error(error.message || "Something went wrong. Please try again.");
     }
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -192,7 +215,7 @@ export default function PropertyFormModal({
             placeholder="Property name"
             required
           />
-          <Label>Description</Label>
+          <Label>Property Overview</Label>
           <Textarea
             name="description"
             value={formData.description}
@@ -225,64 +248,89 @@ export default function PropertyFormModal({
             placeholder="State"
             required
           />
-          <Label>Status</Label>
-          <select
-            name="status"
-            value={formData.status || ""}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            required
-          >
-            <option value="">Select a status</option>
-            {Object.values(PropertyStatus).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+          <Label>Amenities</Label>
+          <MultiSelect
+            options={propertyAmenities.map((a) => ({
+              label: a.name,
+              value: a.value,
+            }))}
+            value={formData.amenities}
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, amenities: val }))
+            }
+            placeholder="Select amenities"
+          />
+          <Label>Services</Label>
+          <MultiSelect
+            options={propertyServices.map((s) => ({
+              label: s.name,
+              value: s.value,
+            }))}
+            value={formData.services}
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, services: val }))
+            }
+            placeholder="Select services"
+          />
+   
+        <Label>Status</Label>
+        <select
+          name="status"
+          value={formData.status || ""}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          required
+        >
+          <option value="">Select a status</option>
+          {Object.values(PropertyStatus).map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
 
 
-          <Label>Category</Label>
-          <select
-            name="category"
-            value={formData.category || ""}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            required
-          >
-            <option value="">Select a category</option>
-            {Object.values(PropertyType).map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
+        <Label>Category</Label>
+        <select
+          name="category"
+          value={formData.category || ""}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          required
+        >
+          <option value="">Select a category</option>
+          {Object.values(PropertyType).map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
 
-          <Label>Currency</Label>
-          <select
-            name="currency"
-            value={formData.currency || "₹"}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
-            required
-          >
-            {Object.entries(CurrencyType).map(([code, symbol]) => (
-              <option key={code} value={symbol}>
-                {code} - {symbol}
-              </option>
-            ))}
-          </select>
+        <Label>Currency</Label>
+        <select
+          name="currency"
+          value={formData.currency || "₹"}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded px-3 py-2"
+          required
+        >
+          {Object.entries(CurrencyType).map(([code, symbol]) => (
+            <option key={code} value={symbol}>
+              {code} - {symbol}
+            </option>
+          ))}
+        </select>
 
-          <div className="w-full grid grid-cols-2 gap-2">
-            <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" className='w-full' variant="green">
-              {initialData ? 'Update' : 'Submit'}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+        <div className="w-full grid grid-cols-2 gap-2">
+          <Button type="button" variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" className='w-full' variant="green">
+            {initialData ? 'Update' : 'Submit'}
+          </Button>
+        </div>
+      </form>
+    </DialogContent>
+    </Dialog >
   );
 }

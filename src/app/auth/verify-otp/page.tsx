@@ -1,27 +1,40 @@
 "use client";
 
-import api from "@/lib/api";
+import api, { login } from "@/lib/api";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { UserRoles } from "@/utils/contants";
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../../../app-config";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function VerifyOTPPage() {
-  const [phone, setPhone] = useState("");
-  const [countryCode, setCountryCode] = useState("");
+
+  const searchParams = useSearchParams();
+  const phone = searchParams.get("phone");
+  const countryCode = searchParams.get("countryCode");
   const [otp, setOtp] = useState("");
 
-  // Get phone only on client
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const p = new URLSearchParams(window.location.search).get("phone") || "";
-      const c = new URLSearchParams(window.location.search).get("countryCode") || "";
-      setPhone(p);
-      setCountryCode(c);
+  const resendOtp = async () => {
+    if (!phone || !countryCode) {
+      toast.error("Phone or country code missing from URL");
+      return;
     }
-  }, []);
+
+    try {
+      const res = await login(phone, countryCode);
+      toast.success("OTP sent successfully via WhatsApp!");
+    } catch (err: any) {
+      if (err?.response?.data?.message) {
+        toast.error(err?.response?.data?.message);
+      } else {
+        toast.error("An error occurred. Please try again.");
+        console.error("Login error:", err);
+      }
+    }
+  };
 
   const verifyOtp = async () => {
     if (!otp) {
@@ -34,7 +47,7 @@ export default function VerifyOTPPage() {
       const role = res.data.role;
 
       if (role === UserRoles.ADMIN) location.href = "/admin/dashboard";
-      else if (role === UserRoles.OWNER||role === UserRoles.MANAGER) location.href = "/owner/dashboard";
+      else if (role === UserRoles.OWNER || role === UserRoles.MANAGER) location.href = "/owner/dashboard";
       else location.href = "/user/dashboard";
 
       toast.success("Logged in successfully!");
@@ -51,6 +64,10 @@ export default function VerifyOTPPage() {
   const handleOtpChange = (value: string) => {
     setOtp(value);
   };
+
+  function startWhatsAppVerification() {
+    window.open('https://wa.me/919074793799?text=Hi Rentities', '_blank');
+  }
 
   return (
     <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 h-[100vh]">
@@ -101,11 +118,18 @@ export default function VerifyOTPPage() {
                 >
                   Verify OTP
                 </button>
+                <Button
+                  variant="outline"
+                  className="w-full py-5  text-gray-600"
+                  onClick={startWhatsAppVerification}
+                >
+                  Send OTP via WhatsApp
+                </Button>
               </form>
 
               <p className="text-sm text-gray-600 text-center">
                 Didn’t receive it?{" "}
-                <a href="/auth/login" className="text-green-600 hover:underline">
+                <a onClick={resendOtp} className="text-green-600 hover:underline">
                   Resend OTP
                 </a>
               </p>

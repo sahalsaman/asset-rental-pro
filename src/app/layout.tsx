@@ -5,7 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast'
 import { Analytics } from "@vercel/analytics/next"
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../app-config";
 import Head from "next/head";
 
 const geistSans = Geist({

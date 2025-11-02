@@ -1,7 +1,7 @@
 import Razorpay from 'razorpay';  // Or use axios for API calls
 import { env } from '../../environment';
 import axios from "axios";
-import { app_config } from './app-config';
+import { app_config } from '../../app-config';
 
 const razorpay = new Razorpay({
   key_id: env.RAZORPAY_KEY_ID,

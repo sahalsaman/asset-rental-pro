@@ -2,19 +2,21 @@ import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../../models/Organisation";
-import { UserRoles } from "@/utils/contants";
+import { SubscritptionBillingCycle, SubscritptionStatus, UserRoles } from "@/utils/contants";
+import { subscription_plans } from "@/utils/data";
+import { sendOTPText } from "@/utils/sendToWhatsApp";
 
 export async function POST(request) {
   await connectMongoDB();
 
-  const body = await request.json(); 
-  const { phone,countryCode, name ,organisationName, lastName} = body;
+  const body = await request.json();
+  const { phone, countryCode, name, organisationName, lastName } = body;
 
   if (!name) {
     return NextResponse.json({ error: "User Name is required" }, { status: 400 });
   }
 
-    if (!phone) {
+  if (!phone) {
     return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
   }
 
@@ -34,9 +36,9 @@ export async function POST(request) {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   const otpExpireTime = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
-  const newUser=await UserModel.create({    
+  const newUser = await UserModel.create({
     firstName: name,
-    lastName:lastName,
+    lastName: lastName,
     phone,
     countryCode,
     otp,
@@ -46,18 +48,43 @@ export async function POST(request) {
     disabled: false,
   });
 
-  const org=await OrganisationModel.create({    
+  const selected_plan = subscription_plans.find((i) => i.id === "arp_subcription_trial");
+
+  const startDate = new Date();
+  const endDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+
+  const subscription = {
+    plan: selected_plan.name,
+    planId: selected_plan.id,
+    status: SubscritptionStatus.TRIAL,
+    startDate,
+    endDate,
+    billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
+    amount: selected_plan.amount,
+    paymentMethod: "free",
+    usageLimits: {
+      property: selected_plan.total_properties || 0,
+      rooms: selected_plan.total_rooms || 0,
+      bookings: selected_plan.total_bookings || 0,
+    },
+  };
+
+
+  const org = await OrganisationModel.create({
     name: organisationName,
-    owner: newUser._id
+    owner: newUser._id,
+    subscription,
   });
 
-  await UserModel.findByIdAndUpdate(newUser._id,{organisationId:org?._id})
+  await UserModel.findByIdAndUpdate(newUser._id, { organisationId: org?._id })
 
-  console.log(`✅ OTP for ${countryCode+phone}: ${otp}`);
-      // const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
+  console.log(`✅ OTP for ${countryCode + phone}: ${otp}`);
+  const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
 
-  return NextResponse.json({ message: "OTP sent successfully",data:{
-    countryCode: countryCode,
-    phone: phone,
-  } }, { status: 201 });
+  return NextResponse.json({
+    message: "OTP sent successfully", data: {
+      countryCode: countryCode,
+      phone: phone,
+    }
+  }, { status: 201 });
 }

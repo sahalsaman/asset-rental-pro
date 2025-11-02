@@ -1,6 +1,6 @@
 "use client";
 
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../../app-config";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

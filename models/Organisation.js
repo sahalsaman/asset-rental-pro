@@ -25,6 +25,7 @@ const SubscriptionPaymentSchema = new Schema(
 
 const OrgSubscriptionSchema = new Schema({
   plan: { type: String, required: true },
+  planId: { type: String, required: true,default:"arp_subcription_trial" },
   status: { type: String, enum: Object.values(SubscritptionStatus), default: SubscritptionStatus.TRIAL },
   startDate: { type: Date, required: true },
   endDate: { type: Date },
@@ -32,7 +33,7 @@ const OrgSubscriptionSchema = new Schema({
   amount: { type: Number, required: true },
   paymentMethod: { type: String, required: true },
   autoRenew: { type: Boolean, default: true },
-  trialDays: { type: Number, default: 14 },
+  trialDays: { type: Number, default:  365 },
   trialCompleted: { type: Boolean, default: false },
   usageLimits: {
     property: { type: Number, default: 0 },
@@ -73,7 +74,7 @@ const OrganisationSchema = new Schema(
     subscription: OrgSubscriptionSchema,
     vendorRazerpayAccount: vendorRazerpayAccountSchema,
     selctedSelfRecieveBankOrUpi: { type: Types.ObjectId, ref: "SelfRecieveBankOrUpi" },
-    is_paymentRecieveSelf: { type: Boolean, default: true },
+    is_paymentRecieveSelf: { type: Boolean },
   },
   { timestamps: true }
 );

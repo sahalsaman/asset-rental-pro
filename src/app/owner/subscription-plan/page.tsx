@@ -11,6 +11,7 @@ import { SubscritptionStatus } from "@/utils/contants";
 import toast from "react-hot-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { subscription_plans } from "@/utils/data";
+import { app_config } from "../../../../app-config";
 // import { useToaster } from "react-hot-toast";
 
 export default function SubscriptionPlan() {
@@ -33,22 +34,15 @@ export default function SubscriptionPlan() {
     const res = await apiFetch("/api/subscription");
     const data = await res.json();
     setActiveSub(data);
-    if (data.status) {
-      setSubscriptionPlans(subscription_plans.slice(1, 4))
-    } else {
+    // if (data.status) {
+    //   setSubscriptionPlans(subscription_plans.slice(1, 4))
+    // } else {
       setSubscriptionPlans(subscription_plans)
-    }
+    // }
   };
-
-  // const fetchSucscriptionPlans = async () => {
-  //   fetch("/api/subscription/plans")
-  //     .then((res) => res.json())
-  //     .then(setSubscription_plans);
-  // };
 
 
   useEffect(() => {
-    // fetchSucscriptionPlans()
     fetchUser();
     fetchSucscription()
   }, []);
@@ -84,7 +78,7 @@ export default function SubscriptionPlan() {
         key: result?.key, // ✅ secure dynamic key
         amount: plan.amount * 100,
         currency: "INR",
-        name: "{app_config?.APP_NAME}",
+        name: app_config?.APP_NAME,
         description: `${plan.name} Plan Subscription`,
         order_id: result?.orderId,
         handler: async function (response: any) {
@@ -155,7 +149,7 @@ export default function SubscriptionPlan() {
                 </div>
                 <div className={`${!plan.no_price && 'border-l-1'} pl-5 flex`}>
                   {!plan.no_price ? <div>
-                    <p className="text-2xl sm:text-5xl font-extrabold">{plan.price}</p>
+                    <p className="text-2xl  font-extrabold">{plan.price}</p>
                     <p className="text-gray-500 text-sm sm:text-base">{plan.period}</p>
                   </div> : ""}
                   <ChevronRight size={50} className="text-gray-300" />
@@ -168,7 +162,7 @@ export default function SubscriptionPlan() {
 
       <Dialog open={openDetailPopup} onOpenChange={setOpenDetailPopup}>
         <DialogContent>
-          <DialogTitle>Plan Detail</DialogTitle>
+          <DialogTitle className="text-xl md:text-2xl font-bold text-green-700">{selectedPlan?.name}</DialogTitle>
           <div
             className={`bg-white  ${selectedPlan?.borderColor} relative overflow-hidden`}
           >
@@ -178,10 +172,10 @@ export default function SubscriptionPlan() {
               </div>
             )}
 
-            <h3 className="text-xl md:text-2xl font-bold text-green-700 text-center">{selectedPlan?.name}</h3>
-            <div className="flex flex-col gap-4 md:flex-row md:gap-6 mb-6 md:mb-8">
+          
+            <div className="flex flex-col gap-4  md:gap-6 mb-6 md:mb-8">
               <div className="text-center md:text-left">
-                <p className="text-5xl sm:text-5xl font-extrabold mb-1">{selectedPlan?.price}</p>
+                <p className="text-5xl font-extrabold mb-1">{selectedPlan?.price}</p>
                 <p className="text-gray-500 text-sm sm:text-base">{selectedPlan?.period}</p>
               </div>
 
@@ -197,12 +191,12 @@ export default function SubscriptionPlan() {
               </div>
             </div>
 
-            <button
+          { selectedPlan?.id!="arp_subcription_trial" ?<button
               onClick={() => handlePlanSelect(selectedPlan)}
               className={`${selectedPlan?.buttonStyle} bg-green-700 text-white font-semibold w-full py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base transition-all duration-200 hover:shadow-md active:scale-95 disabled:opacity-50`}
               disabled={loading}>
               {loading ? "Processing..." : selectedPlan?.buttonText}
-            </button>
+            </button>:""}
           </div>
         </DialogContent>
       </Dialog>

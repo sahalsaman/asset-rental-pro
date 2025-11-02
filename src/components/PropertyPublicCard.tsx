@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { Bed, Bath, Wifi, Snowflake } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-export default function PropertyPublicCard({ property }:{property:any}) {
+export default function PropertyPublicCard({ property }: { property: any }) {
   const p = property;
+  const router = useRouter();
   return (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition border" key={p.name}>
+    <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition border" key={p.name} onClick={() => router.push("/properties/"+p.id)}>
       <div className="relative">
         <Image
           src={p.image}
@@ -13,7 +15,7 @@ export default function PropertyPublicCard({ property }:{property:any}) {
           height={250}
           className="rounded-t-2xl object-cover w-full h-48"
         />
-        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+        <span className="absolute top-3 left-3 bg-green-700 text-white text-xs font-semibold px-3 py-1 rounded-full">
           For Rental
         </span>
       </div>

@@ -93,6 +93,8 @@ export interface IProperty {
   status: PropertyStatus;
   category: PropertyType;
   images: string[];
+   services:string[],
+    amenities:string[],
   currency: string;
   managers?: any[]; // user IDs
   is_paymentRecieveSelf: boolean, 

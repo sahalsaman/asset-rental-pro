@@ -9,7 +9,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Building2 } from "lucide-react";
 import CheckoutModal from "@/components/ChecoutModal";
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../../../app-config";
 
 export default function UserByProperty() {
     const [property, setProperty] = useState<IProperty | null>(null);

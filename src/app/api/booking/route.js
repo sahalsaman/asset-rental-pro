@@ -23,6 +23,11 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
 
+    const user = getTokenValue(request);
+    if (!user?.organisationId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (bookingId) {
       const bookings = await BookingModel.findById(bookingId)
 
@@ -33,7 +38,9 @@ export async function GET(request) {
     const propertyId = searchParams.get("propertyId");
     const roomId = searchParams.get("roomId");
 
-    let filter = {};
+    let filter = {
+      organisationId:user?.organisationId
+    };
     if (propertyId) {
       if (!isValidObjectId(propertyId)) {
         return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
@@ -124,8 +131,8 @@ export async function POST(request) {
     }
 
     const dueDate = calculateDueDate(booking?.frequency)
-    console.log("dueDate",dueDate,booking?.frequency,room.frequency);
-    
+    console.log("dueDate", dueDate, booking?.frequency, room.frequency);
+
 
     // 2️⃣ Generate invoices for this booking
     const invoices = [];
@@ -155,9 +162,9 @@ export async function POST(request) {
         paymentUrl
       });
       if (room?.organisationId?.is_paymentRecieveSelf) {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, selected_bank,dueDate);
+        sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, selected_bank, dueDate);
       } else {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentUrl,dueDate);
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentUrl, dueDate);
       }
     }
 
@@ -187,9 +194,9 @@ export async function POST(request) {
       });
 
       if (room?.organisationId?.is_paymentRecieveSelf) {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, selected_bank,dueDate);
+        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, selected_bank, dueDate);
       } else {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentUrl_2,dueDate);
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentUrl_2, dueDate);
       }
     }
 

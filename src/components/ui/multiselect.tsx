@@ -1,13 +1,22 @@
 "use client";
 
 import * as React from "react";
+import { Check, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 interface MultiSelectProps {
   options: { label: string; value: string }[];
@@ -22,7 +31,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   onChange,
   placeholder = "Select options",
 }) => {
-  const toggle = (val: string) => {
+  const [open, setOpen] = React.useState(false);
+
+  const toggleOption = (val: string) => {
     if (value.includes(val)) {
       onChange(value.filter((v) => v !== val));
     } else {
@@ -31,36 +42,50 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   return (
-    <Select>
-      <SelectTrigger className="w-full">
-        <SelectValue
-          placeholder={placeholder}
-          aria-label={value.join(", ")}
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className="w-full justify-between"
         >
-          {placeholder}
-        </SelectValue>
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem
-            key={option.value}
-            value={option.value}
-            onClick={() => toggle(option.value)}
-          >
-            <input
-              type="checkbox"
-              checked={value.includes(option.value)}
-              readOnly
-              className="mr-2"
-            />
-            {option.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-      <div>
-        { value.join(", ") }
-      </div>
-    </Select>
+          {value.length > 0
+            ? `${value.length} selected`
+            : placeholder}
+          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder="Search..." />
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={option.value}
+                  onSelect={() => toggleOption(option.value)}
+                >
+                  <div
+                    className={cn(
+                      "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                      value.includes(option.value)
+                        ? "bg-primary text-primary-foreground"
+                        : "opacity-50"
+                    )}
+                  >
+                    {value.includes(option.value) && (
+                      <Check className="h-3 w-3" />
+                    )}
+                  </div>
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };
 

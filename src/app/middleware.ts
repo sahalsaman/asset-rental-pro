@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
   if (!token) return NextResponse.redirect(new URL("/auth/login", request.url));
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET??env.JWT_SECRET);
+    const decoded = jwt.verify(token, env.JWT_SECRET);
 
     const role = decoded;
 

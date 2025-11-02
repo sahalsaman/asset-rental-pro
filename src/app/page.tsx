@@ -9,7 +9,7 @@ import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import Image from "next/image";
 import { defaultData, subscription_plans } from "@/utils/data";
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../app-config";
 import toast from "react-hot-toast";
 import PropertyTypeSlider from "@/components/PropertiesSlider";
 
@@ -31,7 +31,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    setSubscriptionPlans(subscription_plans.slice(1, 4))
+    setSubscriptionPlans(subscription_plans)
   }, [])
 
 

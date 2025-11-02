@@ -102,6 +102,12 @@ export enum SubscritptionStatus {
   PENDING = 'pending',
 }
 
+export enum SubscritptionPaymentStatus {
+  PENDING = 'pending',
+  ACTIVE = 'active',
+  EXPIRED = 'expired',
+}
+
 export enum SubscritptionBillingCycle {
   MONTHLY = 'monthly',
   YEARLY = 'yearly',

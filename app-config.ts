@@ -1,5 +1,5 @@
-import logo from "../../public/logo.png"
-import logo_green from "../../public/logo green.png"
+import logo from "./public/logo.png"
+import logo_green from "./public/logo green.png"
 
 export const app_config = {
     APP_NAME: "Rentities",

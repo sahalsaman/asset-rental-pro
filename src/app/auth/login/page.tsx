@@ -6,7 +6,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { countryCodes, defaultData } from "@/utils/data";
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../../../app-config";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
     try {
       const res = await login(phone, countryCode);
-      toast.success("OTP sent successfully!");
+      toast.success("OTP sent successfully via WhatsApp!");
       router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
     } catch (err: any) {
       if (err?.response?.data?.message) {

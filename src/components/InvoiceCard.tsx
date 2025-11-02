@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { IBooking, IInvoice, IProperty } from "@/app/types";
 import { Edit, MessageCircle, Send, Trash } from "lucide-react";
 import { InvoiceStatus, statusColorMap } from "@/utils/contants";
-import { app_config } from "@/utils/app-config";
+import { app_config } from "../../app-config";
 
 interface Props {
   invoice: IInvoice;

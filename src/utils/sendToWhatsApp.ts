@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { env } from '../../environment';
 import { PaymentRecieverOptions } from './contants';
+// import crypto from 'crypto';
 
 const config = {
   WHATSAPP_TOKEN: env?.WHATSAPP_TOKEN,
@@ -12,6 +13,11 @@ function formatPhone(phone: string): string {
   return phone.replace(/^\+/, '').replace(/\s|-/g, '');  // e.g., "+91 98765 43210" → "919876543210"
 }
 
+// function generateShortCode(otp: string, phone: string): string {
+//   const hash = crypto.createHash('md5').update(phone + otp).digest('hex');
+//   return hash.substring(0, 10).toUpperCase(); // Max 10 chars
+// }
+
 
 export async function sendOTPText(
   countryCode: string,
@@ -19,8 +25,10 @@ export async function sendOTPText(
   otp: string,
   userName?: string
 ) {
+
   try {
     const formattedPhone = formatPhone(`${countryCode}${phone}`);
+    // const shortCode = generateShortCode(otp, formattedPhone);
     const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
     const payload = {
       messaging_product: "whatsapp",
@@ -31,7 +39,41 @@ export async function sendOTPText(
         body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\nIt expires in 5 minutes. Please do not share it.`,
       },
     };
-
+    // const payload = {
+    //   messaging_product: "whatsapp",
+    //   to: formattedPhone,
+    //   type: "template",
+    //   template: {
+    //     name: "otp",
+    //     language: { code: "en_US" },
+    //     components: [
+    //       {
+    //         type: "body",
+    //         parameters: [
+    //           { type: "text", text: otp }
+    //         ]
+    //       },
+    //       {
+    //         type: "button",
+    //         index: 0,
+    //         sub_type: "url",
+    //         parameters: [
+    //           { type: "text", text: shortCode }  // ← REQUIRED
+    //         ]
+    //       }
+    //     ]
+    //   }
+    // };
+    //  const payload = {
+    //   messaging_product: "whatsapp",
+    //   to: formattedPhone,
+    //   type: "template",
+    //   template: {
+    //     name: "hello_world",
+    //     language: { code: "en_US" },
+      
+    //   }
+    // };
     const headers = {
       Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
       "Content-Type": "application/json",
