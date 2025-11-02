@@ -22,7 +22,7 @@
 export const env: any = {
     DB_PASSWORD: "ydEjlYTJtUXPiGuS",
     DB_USER_NAME: "sahal",
-    DB_NAME: "ARP_PROD",
+    DB_NAME: "ARP_QA",
     JWT_SECRET: "arp_rentitirsByWebcos01_userTokenKey",
 
     WHATSAPP_PHONE_NUMBER_ID: "838907125976720",

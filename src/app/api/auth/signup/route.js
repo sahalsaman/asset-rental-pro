@@ -13,24 +13,24 @@ export async function POST(request) {
   const { phone, countryCode, name, organisationName, lastName } = body;
 
   if (!name) {
-    return NextResponse.json({ error: "User Name is required" }, { status: 400 });
+    return NextResponse.json({ message: "User Name is required" }, { status: 400 });
   }
 
   if (!phone) {
-    return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+    return NextResponse.json({ message: "Phone number is required" }, { status: 400 });
   }
 
   if (!countryCode) {
-    return NextResponse.json({ error: "Country code is required" }, { status: 400 });
+    return NextResponse.json({ message: "Country code is required" }, { status: 400 });
   }
 
   if (!organisationName) {
-    return NextResponse.json({ error: "Organisation Name is required" }, { status: 400 });
+    return NextResponse.json({ message: "Organisation Name is required" }, { status: 400 });
   }
 
   const existingUser = await UserModel.findOne({ phone });
   if (existingUser) {
-    return NextResponse.json({ error: "Phone number already exist" }, { status: 409 });
+    return NextResponse.json({ message: "Phone number already exist" }, { status: 409 });
   }
 
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -79,7 +79,7 @@ export async function POST(request) {
   await UserModel.findByIdAndUpdate(newUser._id, { organisationId: org?._id })
 
   console.log(`✅ OTP for ${countryCode + phone}: ${otp}`);
-  const result = await sendOTPText(countryCode,phone,otp,user?.firstName)
+  const result = await sendOTPText(countryCode,phone,otp,newUser?.firstName+" "+newUser?.lastName)
 
   return NextResponse.json({
     message: "OTP sent successfully", data: {
