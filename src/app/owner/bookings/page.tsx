@@ -34,12 +34,12 @@ export default function BookingListPage() {
 
   return (
     <div className="p-5 md:pt-10 md:px-32 mb-10">
-      {/* Room Header */}
+      {/* Unit Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Bookings</h1>
-          {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
-          <p className="text-gray-600">Price: ${room.price}</p> */}
+          {/* <p className="text-gray-600">Capacity: {unit.capacity}</p>
+          <p className="text-gray-600">Price: ${unit.price}</p> */}
         </div>
         {/* <Button onClick={() => setShowBookingModal(true)}>Add Booking</Button> */}
       </div>
@@ -56,7 +56,7 @@ export default function BookingListPage() {
               />
             ))
           ) : (
-            <p className="text-gray-500">No bookings yet for this room.</p>
+            <p className="text-gray-500">No bookings yet for this unit.</p>
           )}
         </div>
       </div>

@@ -22,8 +22,8 @@ export default function OwnerDashboard() {
   const [loader, setLoader] = useState(true);
 
   const [status, setStatus] = useState({
-    total_rooms: 0,
-    available_rooms: 0,
+    total_units: 0,
+    available_units: 0,
     enrollments: 0,
     totalInvoiceAmount: 0,
     totalReceivedAmount: 0,
@@ -51,8 +51,8 @@ export default function OwnerDashboard() {
       if (!res.ok) throw new Error("Failed to fetch dashboard status");
       const data = await res.json();
       setStatus({
-        total_rooms: data.total_rooms,
-        available_rooms: data.available_rooms,
+        total_units: data.total_units,
+        available_units: data.available_units,
         enrollments: data.enrollments,
         totalInvoiceAmount: data.totalInvoiceAmount,
         totalReceivedAmount: data.totalReceivedAmount,
@@ -124,8 +124,8 @@ console.log("Execution time:", Date.now() - start, "ms");
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-2  lg:grid-cols-3 gap-4">
-        <DashboardCard title="Total Rooms" value={status?.total_rooms} icon={Building2} />
-        <DashboardCard title="Available Rooms" value={status?.available_rooms} icon={Bed} />
+        <DashboardCard title="Total Units" value={status?.total_units} icon={Building2} />
+        <DashboardCard title="Available Units" value={status?.available_units} icon={Bed} />
         <DashboardCard title="Notice Period" value={status?.noticePeriod} icon={Paperclip} />
         <DashboardCard title="Enrollments" value={status?.enrollments} icon={Users} />
         <DashboardCard title="Monthly Target" value={`${current_property?.currency ?? ""}${status?.totalInvoiceAmount?.toLocaleString()}`} icon={Tickets} />

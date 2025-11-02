@@ -1,4 +1,4 @@
-import { AnnouncementType, BookingStatus, InvoiceStatus, PropertyStatus, PropertyType, RentAmountType, RentFrequency, RoomStatus, SubscritptionBillingCycle, SubscritptionStatus, TransactionType, UserRoles } from "@/utils/contants";
+import { AnnouncementType, BookingStatus, InvoiceStatus, PropertyStatus, PropertyType, RentAmountType, RentFrequency, UnitStatus, SubscritptionBillingCycle, SubscritptionStatus, TransactionType, UserRoles } from "@/utils/contants";
 
 export interface IUser {
   _id?: string;
@@ -21,7 +21,7 @@ export interface IUser {
 
  interface IUsageLimits {
   property: number;
-  rooms: number;
+  units: number;
   bookings: number;
 }
 
@@ -106,18 +106,18 @@ export interface IProperty {
 }
 
 
-export interface IRoom {
+export interface IUnit {
   _id?: string;
   organisationId: any;
   propertyId: any;
   name: string;
-  numberOfRooms?: number; // For multiple rooms addition //only in frontend
+  numberOfUnits?: number; // For multiple units addition //only in frontend
   type: string; // Example: 2BHK, 4 Bed
   amount: number;
   description?: string;
   images: string[];
   frequency: RentFrequency;
-  status: RoomStatus;
+  status: UnitStatus;
   advanceAmount?: number;
   noOfSlots: number;
   currentBooking?: number;
@@ -133,7 +133,7 @@ export interface IBooking {
   _id?: string;
   organisationId: any;
   propertyId: any;
-  roomId: any;
+  unitId: any;
   fullName: string;
   countryCode: string;
   phone: string;
@@ -160,7 +160,7 @@ export interface IInvoice {
   organisationId: any;
   bookingId: any;
   propertyId: any;
-  roomId: any;
+  unitId: any;
   invoiceId: string;
   amount: number;
   balance?: number;

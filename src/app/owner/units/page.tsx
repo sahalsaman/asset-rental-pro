@@ -2,35 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { IRoom } from "@/app/types";
+import { IUnit } from "@/app/types";
 import { Badge } from "@/components/ui/badge";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
-import RoomCard from "@/components/RoomCard";
+import UnitCard from "@/components/UnitCard";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import RoomAddEditModal from "@/components/RoomFormModal";
+import UnitAddEditModal from "@/components/UnitFormModal";
 import  { FullscreenLoader, } from "@/components/Loader";
 
 export default function PropertyDetailPage() {
      const property=localStorageServiceSelectedOptions.getItem()?.property
-  const [rooms, setRooms] = useState<IRoom[]>([]);
-  const [showRoomModal, setShowRoomModal] = useState(false);
-  const [editRoomData, setEditRoomData] = useState<IRoom | null>(null);
+  const [units, setUnits] = useState<IUnit[]>([]);
+  const [showUnitModal, setShowUnitModal] = useState(false);
+  const [editUnitData, setEditUnitData] = useState<IUnit | null>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<IRoom | null>(null);
+  const [selectedUnit, setSelectedUnit] = useState<IUnit | null>(null);
 
 
   useEffect(() => {
-    fetchRooms();
+    fetchUnits();
   }, []);
 
 
-  const fetchRooms = () => {
-    apiFetch(`/api/room?propertyId=${property?._id}`)
+  const fetchUnits = () => {
+    apiFetch(`/api/unit?propertyId=${property?._id}`)
       .then(res => res.json())
-      .then(setRooms);
+      .then(setUnits);
   };
 
   const breadcrumbItems = [
@@ -38,7 +38,7 @@ export default function PropertyDetailPage() {
     { label: property?.name || "Property" },
   ];
 
-  if (!rooms) return <FullscreenLoader />;
+  if (!units) return <FullscreenLoader />;
 
   return (
     <div className="">
@@ -66,53 +66,53 @@ export default function PropertyDetailPage() {
           </div>
           <div className="flex gap-2"> 
          
-            <Button onClick={() => setShowRoomModal(true)} className="whitespace-nowrap hidden sm:block">
-              Add Room
+            <Button onClick={() => setShowUnitModal(true)} className="whitespace-nowrap hidden sm:block">
+              Add Unit
             </Button></div>
         </div>
       </div> */}
       <div className="p-5 md:pt-10 md:px-32 mb-10">
         <div className="flex justify-between  items-center  mb-5">
-          <h1 className="text-2xl font-bold">Rooms</h1>
-          <Button onClick={() => setShowRoomModal(true)} variant="green" className="whitespace-nowrap ">
-            + Add Room
+          <h1 className="text-2xl font-bold">Units</h1>
+          <Button onClick={() => setShowUnitModal(true)} variant="green" className="whitespace-nowrap ">
+            + Add Unit
           </Button>
         </div>
-        {/* Rooms Grid */}
-              {rooms.length === 0 ? (
-        <p className="text-gray-500 text-center">No rooms/space found. <br/>Add a room/space to get started.</p>
+        {/* Units Grid */}
+              {units.length === 0 ? (
+        <p className="text-gray-500 text-center">No units/space found. <br/>Add a unit/space to get started.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {rooms.map(room => (
-            <RoomCard
-              key={room._id}
-              room={room}
+          {units.map(unit => (
+            <UnitCard
+              key={unit._id}
+              unit={unit}
               property={property}
-              onEdit={(room) => {
-                setEditRoomData(room);
-                setShowRoomModal(true);
+              onEdit={(unit) => {
+                setEditUnitData(unit);
+                setShowUnitModal(true);
               }}
               onDelete={(id) => {
                 setDeleteId(id);
                 setShowDelete(true);
               }}
-              onBook={(room) => {
-                setSelectedRoom(room);
+              onBook={(unit) => {
+                setSelectedUnit(unit);
                 setShowBookingModal(true);
               }}
             />
           ))}
         </div>)}
       </div>
-     <RoomAddEditModal
+     <UnitAddEditModal
         property={property}
-        open={showRoomModal}
+        open={showUnitModal}
         onClose={() => {
-          setShowRoomModal(false);
+          setShowUnitModal(false);
         }}
         onSave={() => {
-          setShowRoomModal(false);
-          fetchRooms();
+          setShowUnitModal(false);
+          fetchUnits();
         }}
       />
 

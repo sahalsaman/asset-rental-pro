@@ -18,7 +18,7 @@ import { statusColorMap } from "@/utils/contants";
 export default function BookingDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { roomId } = useParams();
+  const { unitId } = useParams();
   const [booking, setBooking] = useState<IBooking | null>(null);
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
@@ -60,7 +60,7 @@ export default function BookingDetailPage() {
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
-    { label: "Room", href: `/owner/rooms/${roomId}` },
+    { label: "Unit", href: `/owner/units/${unitId}` },
     { label: booking.fullName || "Enrolment", },
   ];
 
@@ -143,7 +143,7 @@ export default function BookingDetailPage() {
         onClose={() => setShowDelete(false)}
         onConfirm={() => {
           setShowDelete(false);
-          window.location.href = `/owner/rooms/${roomId}`;
+          window.location.href = `/owner/units/${unitId}`;
         }}
         item={booking}
         type="booking"

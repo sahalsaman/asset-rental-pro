@@ -5,7 +5,7 @@ const BookingSchema = new Schema(
   {
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
     propertyId: { type: Types.ObjectId, ref: "Property", required: true },
-    roomId: { type: Types.ObjectId, ref: "Room", required: true },
+    unitId: { type: Types.ObjectId, ref: "Unit", required: true },
     fullName: { type: String, required: true },
     countryCode: { type: String, required: true, default: "+91" },
     phone: { type: String, required: true },

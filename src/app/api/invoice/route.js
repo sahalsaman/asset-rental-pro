@@ -10,14 +10,14 @@ function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-// GET invoices (optionally filter by bookingId, propertyId, roomId)
+// GET invoices (optionally filter by bookingId, propertyId, unitId)
 export async function GET(request) {
   try {
     await connectMongoDB();
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get("bookingId");
     const propertyId = searchParams.get("propertyId");
-    const roomId = searchParams.get("roomId");
+    const unitId = searchParams.get("unitId");
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
@@ -31,8 +31,8 @@ export async function GET(request) {
     if (propertyId) {
       filter.propertyId = propertyId;
     }
-    if (roomId) {
-      filter.roomId = roomId;
+    if (unitId) {
+      filter.unitId = unitId;
     }
     if (user?.organisationId) {
       filter.organisationId = user.organisationId;
@@ -64,8 +64,8 @@ export async function POST(request) {
     if (!isValidObjectId(body.propertyId)) {
       return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
     }
-    if (!isValidObjectId(body.roomId)) {
-      return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
+    if (!isValidObjectId(body.unitId)) {
+      return NextResponse.json({ error: "Invalid unitId" }, { status: 400 });
     }
 
     const invoice = await InvoiceModel.create(body);

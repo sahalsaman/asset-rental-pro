@@ -3,60 +3,60 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { IRoom, IBooking } from "@/app/types";
+import { IUnit, IBooking } from "@/app/types";
 import BookingCard from "../../../../components/BookingCard";
 import BookingAddEditModal from "../../../../components/BookingFormModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { Edit, Pencil, ReceiptIndianRupee, Trash } from "lucide-react";
-import RoomAddEditModal from "@/components/RoomFormModal";
+import UnitAddEditModal from "@/components/UnitFormModal";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
 import { FullscreenLoader } from "@/components/Loader";
-import { RoomStatus } from "@/utils/contants";
+import { UnitStatus } from "@/utils/contants";
 
-export default function RoomDetailPage() {
-  const { roomId } = useParams();
+export default function UnitDetailPage() {
+  const { unitId } = useParams();
   const router = useRouter();
-  const [room, setRoom] = useState<IRoom | null>(null);
+  const [unit, setUnit] = useState<IUnit | null>(null);
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [editBookingData, setEditBookingData] = useState<IBooking | null>(null);
   const [showDelete, setShowDelete] = useState(false);
-  const [showRoomModal, setShowRoomModal] = useState(false);
+  const [showUnitModal, setShowUnitModal] = useState(false);
   const current_property = localStorageServiceSelectedOptions.getItem()?.property;
 
 
   useEffect(() => {
-    if (!roomId || !current_property?._id) router.push(`/owner/rooms`);
-    fetchRoom()
+    if (!unitId || !current_property?._id) router.push(`/owner/units`);
+    fetchUnit()
     fetchBookings();
-  }, [current_property?._id, roomId]);
+  }, [current_property?._id, unitId]);
 
-  const fetchRoom = () => {
-    apiFetch(`/api/room?propertyId=${current_property?._id}&roomId=${roomId}`)
+  const fetchUnit = () => {
+    apiFetch(`/api/unit?propertyId=${current_property?._id}&unitId=${unitId}`)
       .then(res => res.json())
-      .then(setRoom);
+      .then(setUnit);
   };
 
   const fetchBookings = () => {
-    apiFetch(`/api/booking?propertyId=${current_property?._id}&roomId=${roomId}`)
+    apiFetch(`/api/booking?propertyId=${current_property?._id}&unitId=${unitId}`)
       .then(res => res.json())
       .then(setBookings);
   };
 
-  if (!room) return <FullscreenLoader />;
+  if (!unit) return <FullscreenLoader />;
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
-    { label: "Rooms", href: `/owner/rooms/${roomId}` },
-    { label: room.name || "Room" },
+    { label: "Units", href: `/owner/units/${unitId}` },
+    { label: unit.name || "Unit" },
   ];
 
 
   return (
     <div >
-      {/* Room Header */}
+      {/* Unit Header */}
       <div className="flex flex-col justify-between items-start  gap-6 mb-6 bg-slate-50 p-8 pt-5 shadow-sm border md:px-32 px-5">
         <Breadcrumbs items={breadcrumbItems} />
         <div className="w-full flex justify-between">
@@ -65,39 +65,39 @@ export default function RoomDetailPage() {
               R
             </div>
 
-            {/* Room Info */}
+            {/* Unit Info */}
             <div>
-              <h1 className="text-2xl font-bold">{room?.name}</h1>
-              {/* {room?.description && (
-              <p className="text-sm text-gray-600 line-clamp-2">{room.description}</p>
+              <h1 className="text-2xl font-bold">{unit?.name}</h1>
+              {/* {unit?.description && (
+              <p className="text-sm text-gray-600 line-clamp-2">{unit.description}</p>
             )} */}
 
-              {room?.type && (
+              {unit?.type && (
                 <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs">
-                  {room.type}
+                  {unit.type}
                 </span>
               )}
               <div className="flex flex-wrap items-center gap-1 ">
 
                 <p className=" text-xs flex gap-1">
                   <ReceiptIndianRupee size={16} className="text-gray-700" />
-                  <span>  {current_property?.currency}{room.amount?.toLocaleString()} {room?.frequency && ` Per ${room.frequency}`}</span>
+                  <span>  {current_property?.currency}{unit.amount?.toLocaleString()} {unit?.frequency && ` Per ${unit.frequency}`}</span>
                 </p>
-                {room?.advanceAmount && room?.advanceAmount > 0 ? (
+                {unit?.advanceAmount && unit?.advanceAmount > 0 ? (
                   <span className=" text-xs">
-                    Advance: {current_property?.currency}{room.advanceAmount?.toLocaleString()}
+                    Advance: {current_property?.currency}{unit.advanceAmount?.toLocaleString()}
                   </span>
                 ) : ""}
-                {room?.noOfSlots > 1 && (
+                {unit?.noOfSlots > 1 && (
                   <span className="px-2 py-1 bg-pink-100 text-pink-800 rounded-md text-xs">
-                    Available Slots: {room.noOfSlots - (room?.currentBooking ?? 0)}
+                    Available Slots: {unit.noOfSlots - (unit?.currentBooking ?? 0)}
                   </span>
                 )}
               </div>
             </div>
           </div>
           <div className="flex gap-2">
-            <Button size="icon" variant="outline" onClick={() => { setShowRoomModal(true) }} >
+            <Button size="icon" variant="outline" onClick={() => { setShowUnitModal(true) }} >
               <Edit className="w-4 h-4" />
             </Button>
             {/* <Trash className="w-4 h-4 text-red-600 mr-1 mt-2" onClick={() => {
@@ -110,7 +110,7 @@ export default function RoomDetailPage() {
         <div className="flex justify-between  items-center  mb-5">
           <h1 className="text-2xl font-bold">Bookings</h1>
           {/* Booking Button */}
-          {room.status === RoomStatus.AVAILABLE || room.status === RoomStatus.PARTIALLY_BOOKED ? <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
+          {unit.status === UnitStatus.AVAILABLE || unit.status === UnitStatus.PARTIALLY_BOOKED ? <Button onClick={() => setShowBookingModal(true)} variant="green" className="whitespace-nowrap">
             Add Booking
           </Button> : ""}
         </div>
@@ -123,7 +123,7 @@ export default function RoomDetailPage() {
               />
             ))
           ) : (
-            <p className="text-gray-500">No bookings yet for this room.</p>
+            <p className="text-gray-500">No bookings yet for this unit.</p>
           )}
         </div>
       </div>
@@ -138,10 +138,10 @@ export default function RoomDetailPage() {
         onSave={() => {
           setShowBookingModal(false);
           setEditBookingData(null);
-          fetchRoom()
+          fetchUnit()
           fetchBookings();
         }}
-        roomData={room}
+        unitData={unit}
       />
 
       {/* Booking Delete Dialog */}
@@ -152,22 +152,22 @@ export default function RoomDetailPage() {
           setShowDelete(false);
           fetchBookings();
         }}
-        item={room}
+        item={unit}
       />
 
 
-      {/* Room Modals */}
-      <RoomAddEditModal
+      {/* Unit Modals */}
+      <UnitAddEditModal
         property={current_property}
-        open={showRoomModal}
+        open={showUnitModal}
         onClose={() => {
-          setShowRoomModal(false);
+          setShowUnitModal(false);
         }}
         onSave={() => {
-          setShowRoomModal(false);
-          fetchRoom();
+          setShowUnitModal(false);
+          fetchUnit();
         }}
-        editData={room}
+        editData={unit}
       />
 
     </div>

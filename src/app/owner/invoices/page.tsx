@@ -12,7 +12,7 @@ import { FullscreenLoader } from "@/components/Loader";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { InvoiceStatus } from "@/utils/contants";
 
-export default function RoomDetailPage() {
+export default function UnitDetailPage() {
   const data = useParams();
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
@@ -54,12 +54,12 @@ export default function RoomDetailPage() {
 
   return (
     <div className="p-5 md:pt-10 md:px-32 mb-10">
-      {/* Room Header */}
+      {/* Unit Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Invoices</h1>
-          {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
-          <p className="text-gray-600">Price: ${room.price}</p> */}
+          {/* <p className="text-gray-600">Capacity: {unit.capacity}</p>
+          <p className="text-gray-600">Price: ${unit.price}</p> */}
         </div>
   <div className="flex gap-2">
   {[

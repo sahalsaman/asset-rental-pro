@@ -15,7 +15,7 @@ interface BookingCardProps {
 
 export default function BookingCard({ booking, onEdit, onDelete }: BookingCardProps) {
   const router = useRouter();
-  const { id, roomId } = useParams();
+  const { id, unitId } = useParams();
   const current_property = localStorageServiceSelectedOptions.getItem()?.property
   return (
     <div className="border rounded-lg p-4 md:p-5 shadow-sm  hover:shadow-md transition">
@@ -97,7 +97,7 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
 
         </div>
         <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-          onClick={() => router.push(`/owner/rooms/${booking.roomId}/${booking._id}`)}
+          onClick={() => router.push(`/owner/units/${booking.unitId}/${booking._id}`)}
         >  <span className="text-sm">View Details</span>
           <ArrowRight size={18} />
         </button>

@@ -52,7 +52,7 @@ export async function POST(req) {
       paymentMethod: "razorpay",
       usageLimits: {
         property: selected_plan.total_properties || 0,
-        rooms: selected_plan.total_rooms || 0,
+        units: selected_plan.total_units || 0,
         bookings: selected_plan.total_bookings || 0,
       },
     };

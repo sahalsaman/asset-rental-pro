@@ -1,7 +1,7 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { RentFrequency, RoomStatus } from '@/utils/contants';
+import { RentFrequency, UnitStatus } from '@/utils/contants';
 
-const RoomSchema = new Schema(
+const UnitSchema = new Schema(
   {
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
     propertyId: { type: Types.ObjectId, ref: "Property", required: true },
@@ -13,7 +13,7 @@ const RoomSchema = new Schema(
     images: [String],
     videoUrl: [String],
     frequency: { type: String, enum: RentFrequency },
-    status: { type: String, default: RoomStatus.AVAILABLE },
+    status: { type: String, default: UnitStatus.AVAILABLE },
     noOfSlots: { type: Number, required: true, default: 1 },
     currentBooking: { type: Number, default: 0 },
     Bookings: [{ type: Types.ObjectId, ref: "Booking" }],
@@ -24,5 +24,5 @@ const RoomSchema = new Schema(
 );
 
 
-const RoomModel = mongoose.models.Room || mongoose.model('Room', RoomSchema);
-export default RoomModel;
+const UnitModel = mongoose.models.Unit || mongoose.model('Unit', UnitSchema);
+export default UnitModel;

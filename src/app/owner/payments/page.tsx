@@ -12,7 +12,7 @@ import { FullscreenLoader } from "@/components/Loader";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import PaymentCard from "@/components/PaymentCard";
 
-export default function RoomDetailPage() {
+export default function UnitDetailPage() {
 
     const property = localStorageServiceSelectedOptions.getItem()?.property;
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
@@ -43,7 +43,7 @@ export default function RoomDetailPage() {
 
   return (
     <div className="p-5 md:pt-10 md:px-32 mb-10">
-      {/* Room Header */}
+      {/* Unit Header */}
       <div className="flex justify-between items-center  mb-6">
         <h1 className="text-2xl font-bold">Payments</h1>
       </div>

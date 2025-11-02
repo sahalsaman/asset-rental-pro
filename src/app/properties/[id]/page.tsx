@@ -32,7 +32,7 @@ const fetchPropertyDetails = (propertyId: any) => {
             ac: true,
             wifi: true,
             location: "Thrikkakara, Kochi",
-            description: "Spacious 2 BHK apartment with modern fittings. Ideal for families. Enjoy reliable WiFi and AC in both bedrooms. The locality is peaceful and family-friendly.",
+            description: "Spacious 2 BHK apartment with modern fittings. Ideal for families. Enjoy reliable WiFi and AC in both bedunits. The locality is peaceful and family-friendly.",
             amenities: ["Gym Access", "Elevator", "Power Backup"],
             images: [dummy_image, dummy_image],
         },

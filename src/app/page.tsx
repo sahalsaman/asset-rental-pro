@@ -178,7 +178,7 @@ export default function Home() {
                 step: 2,
                 title: "List Your First Property",
                 icon: <Building2 className="w-8 h-8 text-white" />,
-                description: "Enter property details, add photos, and define rooms/units with their specific rates."
+                description: "Enter property details, add photos, and define units/rooms with their specific rates."
               },
               {
                 step: 3,
@@ -423,7 +423,7 @@ export default function Home() {
             {[
               {
                 q: "What types of rental assets can I manage?",
-                a: "You can manage virtually any type of rental property, including rooms, apartments, houses, entire hostels, and even commercial properties. Our system is flexible to support various unit configurations."
+                a: "You can manage virtually any type of rental property, including units, apartments, houses, entire hostels, and even commercial properties. Our system is flexible to support various unit configurations."
               },
               {
                 q: "How does the automated invoicing work?",

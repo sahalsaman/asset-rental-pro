@@ -7,7 +7,7 @@ const InvoiceSchema = new Schema(
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
     bookingId: { type: Types.ObjectId, ref: "Booking", required: true },
     propertyId: { type: Types.ObjectId, ref: "Property", required: true },
-    roomId: { type: Types.ObjectId, ref: "Room", required: true },
+    unitId: { type: Types.ObjectId, ref: "Unit", required: true },
     invoiceId: { type: String, required: true },  // Fixed: 'require' → 'required'
     amount: { type: Number, required: true },  // Added: required for consistency
     balance: { type: Number, default: 0 },  // Tracks remaining amount

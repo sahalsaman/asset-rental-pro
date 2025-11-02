@@ -5,8 +5,8 @@ import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
-import RoomModel from "../../../../models/Room";
-import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
+import UnitModel from "../../../../models/Unit";
+import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
@@ -16,7 +16,7 @@ function isValidObjectId(id) {
   return mongoose.Types.ObjectId.isValid(id);
 }
 
-// GET bookings (optionally filter by propertyId and/or roomId)
+// GET bookings (optionally filter by propertyId and/or unitId)
 export async function GET(request) {
   try {
     await connectMongoDB();
@@ -36,7 +36,7 @@ export async function GET(request) {
 
 
     const propertyId = searchParams.get("propertyId");
-    const roomId = searchParams.get("roomId");
+    const unitId = searchParams.get("unitId");
 
     let filter = {
       organisationId:user?.organisationId
@@ -47,16 +47,16 @@ export async function GET(request) {
       }
       filter.propertyId = propertyId;
     }
-    if (roomId) {
-      if (!isValidObjectId(roomId)) {
-        return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
+    if (unitId) {
+      if (!isValidObjectId(unitId)) {
+        return NextResponse.json({ error: "Invalid unitId" }, { status: 400 });
       }
-      filter.roomId = roomId;
+      filter.unitId = unitId;
     }
 
     const bookings = await BookingModel.find(filter)
     // .populate("property")
-    // .populate("room");
+    // .populate("unit");
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(
@@ -77,19 +77,19 @@ export async function POST(request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isValidObjectId(body.roomId)) {
-      return NextResponse.json({ error: "Invalid roomId" }, { status: 400 });
+    if (!isValidObjectId(body.unitId)) {
+      return NextResponse.json({ error: "Invalid unitId" }, { status: 400 });
     }
 
-    const room = await RoomModel.findById(body.roomId).populate("organisationId").populate("propertyId")
+    const unit = await UnitModel.findById(body.unitId).populate("organisationId").populate("propertyId")
 
 
 
-    if (!room) {
-      return NextResponse.json({ error: "Room not found for the given property" }, { status: 404 });
+    if (!unit) {
+      return NextResponse.json({ error: "Unit not found for the given property" }, { status: 404 });
     }
-    if (!room.status || (room.status !== RoomStatus.AVAILABLE && room.status !== RoomStatus.PARTIALLY_BOOKED)) {
-      return NextResponse.json({ error: "Room already booked" }, { status: 404 });
+    if (!unit.status || (unit.status !== UnitStatus.AVAILABLE && unit.status !== UnitStatus.PARTIALLY_BOOKED)) {
+      return NextResponse.json({ error: "Unit already booked" }, { status: 404 });
     }
 
 
@@ -104,12 +104,12 @@ export async function POST(request) {
     }
 
     let nextBillingDate = null;
-    console.log(body.status, BookingStatus.CHECKED_IN, room.frequency, body.checkOut);
+    console.log(body.status, BookingStatus.CHECKED_IN, unit.frequency, body.checkOut);
 
-    if (body.status === BookingStatus.CHECKED_IN && room.frequency) {
+    if (body.status === BookingStatus.CHECKED_IN && unit.frequency) {
       const checkInDate = new Date(body.checkIn);
       const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
-      nextBillingDate = calculateNextBillingdate(checkInDate, room.frequency);
+      nextBillingDate = calculateNextBillingdate(checkInDate, unit.frequency);
       if (checkOutDate && checkOutDate < nextBillingDate) {
         nextBillingDate = undefined;
       }
@@ -118,20 +118,20 @@ export async function POST(request) {
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
-      propertyId: room?.propertyId?._id,
+      propertyId: unit?.propertyId?._id,
       nextBillingDate,
-      frequency: room.frequency,
+      frequency: unit.frequency,
       organisationId: user.organisationId,
     });
 
 
     let selected_bank
-    if (room?.organisationId?.is_paymentRecieveSelf) {
-      selected_bank = await SelfRecieveBankOrUpiModel.findById(room.propertyId?.selctedSelfRecieveBankOrUpi)
+    if (unit?.propertyId?.is_paymentRecieveSelf) {
+      selected_bank = await SelfRecieveBankOrUpiModel.findById(unit.propertyId?.selctedSelfRecieveBankOrUpi)
     }
 
     const dueDate = calculateDueDate(booking?.frequency)
-    console.log("dueDate", dueDate, booking?.frequency, room.frequency);
+    console.log("dueDate", dueDate, booking?.frequency, unit.frequency);
 
 
     // 2️⃣ Generate invoices for this booking
@@ -143,7 +143,7 @@ export async function POST(request) {
       let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-01-ADV`
       let paymentUrl = "SELF RECEIVE";
       let paymentGateway = "manual"
-      if (room?.organisationId?.is_paymentRecieveSelf === false) {
+      if (unit?.propertyId?.is_paymentRecieveSelf === false) {
         paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
         paymentGateway = "razorpay"
       }
@@ -151,7 +151,7 @@ export async function POST(request) {
         organisationId: user.organisationId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
-        roomId: booking.roomId,
+        unitId: booking.unitId,
         invoiceId: invoiceId, // generate ID
         amount: booking.advanceAmount,
         balance: booking.advanceAmount,
@@ -161,7 +161,7 @@ export async function POST(request) {
         paymentGateway,
         paymentUrl
       });
-      if (room?.organisationId?.is_paymentRecieveSelf) {
+      if (unit?.propertyId?.is_paymentRecieveSelf) {
         sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, selected_bank, dueDate);
       } else {
         sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentUrl, dueDate);
@@ -173,7 +173,7 @@ export async function POST(request) {
       let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-02-RENT`
       let paymentUrl_2 = "SELF RECEIVE";
       let paymentGateway = "manual"
-      if (room?.organisationId?.is_paymentRecieveSelf === false) {
+      if (unit?.propertyId?.is_paymentRecieveSelf === false) {
         paymentUrl_2 = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
         paymentGateway = "razorpay"
       }
@@ -182,7 +182,7 @@ export async function POST(request) {
         organisationId: user.organisationId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
-        roomId: booking.roomId,
+        unitId: booking.unitId,
         invoiceId: invoiceId, // generate ID
         amount: booking.amount,
         balance: booking.amount,
@@ -193,7 +193,7 @@ export async function POST(request) {
         paymentUrl: paymentUrl_2
       });
 
-      if (room?.organisationId?.is_paymentRecieveSelf) {
+      if (unit?.propertyId?.is_paymentRecieveSelf) {
         sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, selected_bank, dueDate);
       } else {
         sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentUrl_2, dueDate);
@@ -204,12 +204,12 @@ export async function POST(request) {
       await InvoiceModel.insertMany(invoices);
     }
 
-    if (room.noOfSlots >= 1 && room.currentBooking < room.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.BOOKED)) {
-      await RoomModel.findByIdAndUpdate(booking.roomId,
+    if (unit.noOfSlots >= 1 && unit.currentBooking < unit.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.BOOKED)) {
+      await UnitModel.findByIdAndUpdate(booking.unitId,
         {
           $inc: { currentBooking: 1 },
           $addToSet: { Bookings: booking._id },
-          status: room.noOfSlots === 1 ? RoomStatus.BOOKED : room.currentBooking + 1 === room.noOfSlots ? RoomStatus.BOOKED : RoomStatus.PARTIALLY_BOOKED,
+          status: unit.noOfSlots === 1 ? UnitStatus.BOOKED : unit.currentBooking + 1 === unit.noOfSlots ? UnitStatus.BOOKED : UnitStatus.PARTIALLY_BOOKED,
         });
     }
 
@@ -238,20 +238,20 @@ export async function PUT(request) {
 
     const body = await request.json();
 
-    const existingBooking = await BookingModel.findById(id).populate("roomId")
+    const existingBooking = await BookingModel.findById(id).populate("unitId")
 
     if (!existingBooking) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    const room = existingBooking?.roomId
+    const unit = existingBooking?.unitId
 
     body.nextBillingDate = null;
 
-    if (body.status === BookingStatus.CHECKED_IN && room.frequency) {
+    if (body.status === BookingStatus.CHECKED_IN && unit.frequency) {
       const checkInDate = new Date(body.checkIn);
       const checkOutDate = body?.checkOut ? new Date(body.checkOut) : null;
-      body.nextBillingDate = calculateNextBillingdate(checkInDate, room.frequency);
+      body.nextBillingDate = calculateNextBillingdate(checkInDate, unit.frequency);
       if (checkOutDate && checkOutDate < body.nextBillingDate) {
         body.nextBillingDate = undefined;
       }
@@ -263,18 +263,18 @@ export async function PUT(request) {
       return NextResponse.json({ error: "Booking not found" }, { status: 404 });
     }
 
-    if (room.noOfSlots > 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
-      await RoomModel.findByIdAndUpdate(updatedBooking.roomId,
+    if (unit.noOfSlots > 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
+      await UnitModel.findByIdAndUpdate(updatedBooking.unitId,
         {
           $inc: { currentBooking: -1 },
           $pull: { Bookings: updatedBooking._id },
-          status: room.currentBooking - 1 === 0 ? RoomStatus.AVAILABLE : RoomStatus.PARTIALLY_BOOKED
+          status: unit.currentBooking - 1 === 0 ? UnitStatus.AVAILABLE : UnitStatus.PARTIALLY_BOOKED
         });
     }
 
-    if (room.noOfSlots === 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
-      await RoomModel.findByIdAndUpdate(updatedBooking.roomId, {
-        status: RoomStatus.AVAILABLE,
+    if (unit.noOfSlots === 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
+      await UnitModel.findByIdAndUpdate(updatedBooking.unitId, {
+        status: UnitStatus.AVAILABLE,
         $inc: { currentBooking: -1 },
         $pull: { Bookings: updatedBooking._id }
       });

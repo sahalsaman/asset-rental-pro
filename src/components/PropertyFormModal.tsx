@@ -159,14 +159,14 @@ export default function PropertyFormModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex items-center space-x-2">
             <Switch
-              id="multiple-room"
+              id="multiple-unit"
               // checked={formData?.is_paymentRecieveSelf || false}
               // onCheckedChange={(checked) =>
               //   setFormData((prev) => ({ ...prev, is_paymentRecieveSelf: checked }))
               // }
               checked={true}
             />
-            <Label htmlFor="multiple-room">Receive Payment Yourself </Label>
+            <Label htmlFor="multiple-unit">Receive Payment Yourself </Label>
           </div>
           {formData?.is_paymentRecieveSelf && (
             <div>

@@ -12,7 +12,7 @@ const SubscriptionPaymentSchema = new Schema(
     paymentMethod: { type: String, required: true },
     usageLimits: {
       property: { type: Number, default: 0 },
-      rooms: { type: Number, default: 0 },
+      units: { type: Number, default: 0 },
       bookings: { type: Number, default: 0 },
     },
     razorpay_orderId: String,
@@ -37,7 +37,7 @@ const OrgSubscriptionSchema = new Schema({
   trialCompleted: { type: Boolean, default: false },
   usageLimits: {
     property: { type: Number, default: 0 },
-    rooms: { type: Number, default: 0 },
+    units: { type: Number, default: 0 },
     bookings: { type: Number, default: 0 },
   },
   lastPaymentDate: Date,

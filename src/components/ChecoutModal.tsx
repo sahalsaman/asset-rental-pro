@@ -4,9 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { IBooking, IProperty, IRoom } from "@/app/types";
+import { IBooking, IProperty, IUnit } from "@/app/types";
 import { Label } from "@radix-ui/react-label";
-import { BookingStatus, RoomStatus } from "@/utils/contants";
+import { BookingStatus, UnitStatus } from "@/utils/contants";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
@@ -19,14 +19,14 @@ interface Props {
   onClose: () => void;
   onSave: (data: Partial<IBooking>) => void;
   editData?: IBooking | null;
-  roomData?: IRoom | null;
+  unitData?: IUnit | null;
   property_data?: IProperty
 }
 
-export default function CheckoutModal({ open, onClose, onSave, editData, roomData, property_data }: Props) {
+export default function CheckoutModal({ open, onClose, onSave, editData, unitData, property_data }: Props) {
   const property = property_data ? property_data : localStorageServiceSelectedOptions.getItem()?.property;
   const [formData, setFormData] = useState<Partial<IBooking>>({
-    roomId: roomData ? roomData?._id : "",
+    unitId: unitData ? unitData?._id : "",
     propertyId: property?._id || "",
         whatsappCountryCode: defaultData.countryCodes,
     whatsappNumber: "",
@@ -34,34 +34,34 @@ export default function CheckoutModal({ open, onClose, onSave, editData, roomDat
     checkOut: "",
     status: BookingStatus.CHECKED_OUT,
   });
-  const [rooms, setRooms] = useState<IRoom[]>([]);
+  const [units, setUnits] = useState<IUnit[]>([]);
 
-  const fetchRooms = () => {
-    apiFetch(`/api/room?propertyId=${property?._id}`)
+  const fetchUnits = () => {
+    apiFetch(`/api/unit?propertyId=${property?._id}`)
       .then(res => res.json())
-      .then(setRooms);
+      .then(setUnits);
   };
 
   useEffect(() => {
     if (editData) {
       setFormData(editData);
     } else {
-      if (!roomData) fetchRooms();
+      if (!unitData) fetchUnits();
       setFormData((prev) => ({
         ...prev,
-        roomId: roomData?._id || "",
+        unitId: unitData?._id || "",
         propertyId: property?._id || "",
       }));
     }
-  }, [editData, roomData]);
+  }, [editData, unitData]);
 
-  const handleRoomChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleUnitChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     handleChange(e)
     const { name, value } = e.target;
-    roomData = rooms.find(i => i._id === value)
+    unitData = units.find(i => i._id === value)
     setFormData((prev) => ({
       ...prev,
-      roomId: roomData?._id || "",
+      unitId: unitData?._id || "",
       propertyId: property?._id || "",
     }));
 
@@ -89,7 +89,7 @@ export default function CheckoutModal({ open, onClose, onSave, editData, roomDat
       credentials: "include",
       body: JSON.stringify({
         ...data,
-        roomId: roomData ? roomData?._id : data?.roomId,
+        unitId: unitData ? unitData?._id : data?.unitId,
         propertyId: property?._id,
         status: BookingStatus.CHECKED_OUT
       }),
@@ -107,20 +107,20 @@ export default function CheckoutModal({ open, onClose, onSave, editData, roomDat
 
         <form onSubmit={handleSubmit} className="space-y-4 overflow-auto">
           {/* Full Name */}
-          {!roomData && !editData && <div>
-            <Label htmlFor="roomId">Room</Label>
+          {!unitData && !editData && <div>
+            <Label htmlFor="unitId">Unit</Label>
             <select
-              id="roomId"
-              name="roomId"
-              value={formData.roomId as string || ""}
-              onChange={handleRoomChange}
+              id="unitId"
+              name="unitId"
+              value={formData.unitId as string || ""}
+              onChange={handleUnitChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
-              required={!roomData ? true : false}
+              required={!unitData ? true : false}
             >
-              <option value="">Select Room</option>
-              {rooms.map((room) => (room.status === RoomStatus.AVAILABLE &&
-                <option key={room._id} value={room._id}>
-                  {room.name} - {property?.currency}{room.amount}
+              <option value="">Select Unit</option>
+              {units.map((unit) => (unit.status === UnitStatus.AVAILABLE &&
+                <option key={unit._id} value={unit._id}>
+                  {unit.name} - {property?.currency}{unit.amount}
                 </option>))}
             </select>
           </div>}

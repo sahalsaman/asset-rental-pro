@@ -1,14 +1,14 @@
 import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
-import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, RoomStatus, SubscritptionStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus } from "@/utils/contants";
 import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
 import { generateRazorpayLinkForInvoice, razorpayPayout } from "@/utils/razerPay";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
-import RoomModel from "../../../../models/Room";
 import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
+import UnitModel from "../../../../models/Unit";
 
 export async function GET() {
 
@@ -70,16 +70,16 @@ const handleInvoice = async () => {
     const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
     let paymentUrl = "SELF RECEIVE"
     let paymentGateway = "manual"
-    // if (booking?.organisationId?.is_paymentRecieveSelf === false) {
-    //       paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking)
-    // paymentGateway="razorpay"
-    // }
+    if (booking?.propertyId?.is_paymentRecieveSelf === false) {
+          paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking)
+    paymentGateway="razorpay"
+    }
     let new_amount = booking.amount + carryForwarded
     await InvoiceModel.create({
       organisationId: booking.organisationId?._id,
       bookingId: booking._id,
       propertyId: booking.propertyId,
-      roomId: booking.roomId,
+      unitId: booking.unitId,
       invoiceId,
       amount: new_amount, // Add unpaid amount to current invoice
       balance: new_amount,
@@ -96,7 +96,7 @@ const handleInvoice = async () => {
       nextBillingDate
     })
 
-    if (booking?.organisationId?.is_paymentRecieveSelf) {
+    if (booking?.propertyId?.is_paymentRecieveSelf) {
       const selected_bank = await SelfRecieveBankOrUpiModel.findById(booking.propertyId?.selctedSelfRecieveBankOrUpi)
       sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, selected_bank, dueDate);
     } else {
@@ -169,21 +169,21 @@ const handleCheckout = async () => {
     booking.status = BookingStatus.CHECKED_OUT;
     await booking.save();
 
-    // 2️⃣ Update room slots
-    const room = await RoomModel.findById(booking.roomId);
-    if (!room) continue;
+    // 2️⃣ Update unit slots
+    const unit = await UnitModel.findById(booking.unitId);
+    if (!unit) continue;
 
-    let updatedStatus = RoomStatus.AVAILABLE;
-    let newCurrentBooking = Math.max(0, room.currentBooking - 1);
+    let updatedStatus = UnitStatus.AVAILABLE;
+    let newCurrentBooking = Math.max(0, unit.currentBooking - 1);
 
     // if partially booked → check if more slots active
-    if (newCurrentBooking > 0 && newCurrentBooking < room.noOfSlots) {
-      updatedStatus = RoomStatus.PARTIALLY_BOOKED;
-    } else if (newCurrentBooking >= room.noOfSlots) {
-      updatedStatus = RoomStatus.BOOKED;
+    if (newCurrentBooking > 0 && newCurrentBooking < unit.noOfSlots) {
+      updatedStatus = UnitStatus.PARTIALLY_BOOKED;
+    } else if (newCurrentBooking >= unit.noOfSlots) {
+      updatedStatus = UnitStatus.BOOKED;
     }
 
-    await RoomModel.findByIdAndUpdate(room._id, {
+    await UnitModel.findByIdAndUpdate(unit._id, {
       currentBooking: newCurrentBooking,
       status: updatedStatus,
       $pull: { Bookings: booking._id },

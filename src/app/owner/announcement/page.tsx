@@ -8,7 +8,7 @@ import { apiFetch } from "@/lib/api";
 import AnnouncementCard from "@/components/AnnouncementCard";
 import { FullscreenLoader } from "@/components/Loader";
 
-export default function RoomDetailPage() {
+export default function UnitDetailPage() {
   const [announcements, setAnnouncements] = useState<IAnnouncement[]>([]);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [editAnnouncementData, setEditAnnouncementData] = useState<IAnnouncement | null>(null);
@@ -47,7 +47,7 @@ export default function RoomDetailPage() {
       body: JSON.stringify({
         ...data,
         // id,
-        // roomId
+        // unitId
       }),
     });
 
@@ -73,12 +73,12 @@ export default function RoomDetailPage() {
 
   return (
     <div className="p-5 md:pt-10 md:px-32 mb-10">
-      {/* Room Header */}
+      {/* Unit Header */}
       <div className="flex justify-between items-center  mb-6">
         <div>
           <h1 className="text-2xl font-bold">Announcements</h1>
-          {/* <p className="text-gray-600">Capacity: {room.capacity}</p>
-          <p className="text-gray-600">Price: ${room.price}</p> */}
+          {/* <p className="text-gray-600">Capacity: {unit.capacity}</p>
+          <p className="text-gray-600">Price: ${unit.price}</p> */}
         </div>
         <Button variant="green" onClick={() => setShowAnnouncementModal(true)}>Add</Button>
       </div>

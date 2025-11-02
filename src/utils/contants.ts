@@ -9,7 +9,7 @@ export enum UserRoles {
 export enum PropertyType {
   SHOP_BUILDING = "Shop Building",
   HOTEL = "Hotel",
-  LODGE_ROOM = "Lodge/Room",
+  LODGE_ROOM = "Lodge/Unit",
   PG_HOSTEL = "PG/Hostel",
   HOUSE = "House",
   FLAT_APARTMENT = "Flat/Apartment",
@@ -17,10 +17,10 @@ export enum PropertyType {
   CONFERENCE_HALL = "Conference Hall",
   AUDITORIUM = "Auditorium",
   GODOWN = "Godown",
-  OFFICE_SPACE = "Office Room",
-  CO_WORKING_SPACE = "Co-Working Room",
-  LAND_SPACE = "Land Room",
-  REST_SPACE = "Rest Room",
+  OFFICE_SPACE = "Office Unit",
+  CO_WORKING_SPACE = "Co-Working Unit",
+  LAND_SPACE = "Land Unit",
+  REST_SPACE = "Rest Unit",
   RESORT = "Resort",
 }
 
@@ -32,8 +32,8 @@ export enum PropertyStatus {
   DRAFT = "Draft",
 }
 
-// 📌 Room Status (inside property: room, bed, hall, etc.)
-export enum RoomStatus {
+// 📌 Unit Status (inside property: unit, bed, hall, etc.)
+export enum UnitStatus {
   AVAILABLE = "Available",
    PARTIALLY_BOOKED = "Partially Booked",
   MAINTENANCE = "Maintenance",
@@ -165,7 +165,7 @@ export const statusColorMap: Record<string, string> = {
   Pending: "bg-yellow-100 text-yellow-800",
   Draft: "bg-slate-100 text-slate-800",
 
-  // 🛏️ Room Status
+  // 🛏️ Unit Status
   Available: "bg-green-100 text-green-800",
   "Partially Occupied": "bg-yellow-100 text-yellow-800",
   Occupied: "bg-red-100 text-red-800",

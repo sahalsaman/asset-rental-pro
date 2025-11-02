@@ -32,7 +32,7 @@ export async function GET(request) {
 
     const bookings = await BookingModel.find(filter)
     // .populate("property")
-    // .populate("room");
+    // .populate("unit");
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(

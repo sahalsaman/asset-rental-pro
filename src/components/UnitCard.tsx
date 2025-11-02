@@ -1,59 +1,59 @@
 "use client";
 
-import { IProperty, IRoom } from "@/app/types";
+import { IProperty, IUnit } from "@/app/types";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { statusColorMap } from "@/utils/contants";
 
-interface RoomCardProps {
-  room: IRoom;
+interface UnitCardProps {
+  unit: IUnit;
   property: IProperty;
-  onEdit: (room: IRoom) => void;
+  onEdit: (unit: IUnit) => void;
   onDelete: (id: string) => void;
-  onBook: (room: IRoom) => void;
+  onBook: (unit: IUnit) => void;
 }
 
-export default function RoomCard({ room, property, onEdit, onDelete, onBook }: RoomCardProps) {
+export default function UnitCard({ unit, property, onEdit, onDelete, onBook }: UnitCardProps) {
   const router = useRouter();
   return (
-    <Card className="shadow-md py-3" onClick={() => router.push(`/owner/rooms/${room._id}`)}>
+    <Card className="shadow-md py-3" onClick={() => router.push(`/owner/units/${unit._id}`)}>
 
       <CardContent className="px-3 ">
 
         <CardTitle className="flex justify-between items-center">
           <span
-            className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[room.status] || "bg-gray-100 text-gray-800"
+            className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[unit.status] || "bg-gray-100 text-gray-800"
               }`}
           >
-            {room.status}
+            {unit.status}
           </span>
           <p className="font-bold">
-            {property?.currency}{room.amount?.toLocaleString()}
+            {property?.currency}{unit.amount?.toLocaleString()}
           </p>
         </CardTitle>
-        <h2>{room.name}</h2>
+        <h2>{unit.name}</h2>
 
-        {/* <p className="text-gray-700">{room.description}</p> */}
+        {/* <p className="text-gray-700">{unit.description}</p> */}
 
-        {room.type && <p className="text-sm text-gray-500">Type: {room.type}</p>}
+        {unit.type && <p className="text-sm text-gray-500">Type: {unit.type}</p>}
 
-        {room.noOfSlots > 1 && <p className="text-sm text-gray-500">Slots: {(room?.currentBooking ?? 0)}/{room.noOfSlots}</p>}
+        {unit.noOfSlots > 1 && <p className="text-sm text-gray-500">Slots: {(unit?.currentBooking ?? 0)}/{unit.noOfSlots}</p>}
 
         <div className="flex justify-between gap-2 mt-4">
-          {/* <Button variant="secondary" onClick={() => onEdit(room)}>
+          {/* <Button variant="secondary" onClick={() => onEdit(unit)}>
             <Pencil className="w-4 h-4 mr-1" /> Edit
           </Button> */}
-          {/* <Button variant="destructive" onClick={() => onDelete(room._id!)}>
+          {/* <Button variant="destructive" onClick={() => onDelete(unit._id!)}>
             <Trash2 className="w-4 h-4 mr-1" /> Delete
           </Button> */}
-          {/* <Button variant="default" onClick={() => onBook(room)}>
+          {/* <Button variant="default" onClick={() => onBook(unit)}>
             Add Enrolment
           </Button> */}
           <p></p>
           <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-            onClick={() => router.push(`/owner/properties/${property._id}/${room._id}`)}
+            onClick={() => router.push(`/owner/properties/${property._id}/${unit._id}`)}
           >  <span className="text-sm">View Details</span>
             <ArrowRight size={18} />
           </button>

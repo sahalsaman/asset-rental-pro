@@ -3,9 +3,9 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IProperty, IRoom } from "@/app/types";
+import { IProperty, IUnit } from "@/app/types";
 import { useState, useEffect } from "react";
-import { FLAT_TYPES, RentFrequency, RoomStatus } from "@/utils/contants";
+import { FLAT_TYPES, RentFrequency, UnitStatus } from "@/utils/contants";
 import { Label } from "@radix-ui/react-label";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
@@ -16,21 +16,21 @@ interface Props {
   open: boolean;
   onClose: () => void;
   onSave: () => void;
-  editData?: IRoom | null;
+  editData?: IUnit | null;
 }
 
 
-export default function RoomAddEditModal({ property, open, onClose, onSave, editData }: Props) {
-  const [formData, setFormData] = useState<Partial<IRoom>>({});
-  const [isMultipleRoom, setIsMultipleRoom] = useState(false);
+export default function UnitAddEditModal({ property, open, onClose, onSave, editData }: Props) {
+  const [formData, setFormData] = useState<Partial<IUnit>>({});
+  const [isMultipleUnit, setIsMultipleUnit] = useState(false);
   useEffect(() => {
     if (editData) {
       setFormData(editData);
-      setIsMultipleRoom(false);
+      setIsMultipleUnit(false);
     } else {
       setFormData({
         frequency: RentFrequency.MONTH,
-        status: RoomStatus.AVAILABLE,
+        status: UnitStatus.AVAILABLE,
       });
     }
   }, [editData]);
@@ -45,7 +45,7 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
         name === "amount" ||
           name === "advanceAmount" ||
           name === "noOfSlots" ||
-          name === "numberOfRooms"
+          name === "numberOfUnits"
           ? Number(value)
           : value,
     }));
@@ -53,32 +53,32 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleSaveRoom(formData);
+    handleSaveUnit(formData);
   };
 
-  const handleSaveRoom = async (data: Partial<IRoom>) => {
+  const handleSaveUnit = async (data: Partial<IUnit>) => {
     const method = editData ? "PUT" : "POST";
-    const url = editData ? `/api/room?id=${editData._id}` : `/api/room`;
+    const url = editData ? `/api/unit?id=${editData._id}` : `/api/unit`;
 
     try {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ ...data, propertyId: property?._id, isMultipleRoom }),
+        body: JSON.stringify({ ...data, propertyId: property?._id, isMultipleUnit }),
       });
 
       const result = await res.json();
 
       if (!res.ok) {
-        toast.error(result?.error || "Failed to save room");
+        toast.error(result?.error || "Failed to save unit");
         return;
       }
 
-      toast.success(editData ? "Room updated successfully" : "Room added successfully");
+      toast.success(editData ? "Unit updated successfully" : "Unit added successfully");
       onSave();
     } catch (err) {
-      console.error("Error saving room:", err);
+      console.error("Error saving unit:", err);
       toast.error("An error occurred. Please try again.");
     }
   };
@@ -91,25 +91,25 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{editData ? "Edit Room" : "Add Room"}</DialogTitle>
+          <DialogTitle>{editData ? "Edit Unit" : "Add Unit"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="flex items-center space-x-2">
             <Switch
-              id="multiple-room"
-              checked={isMultipleRoom}
-              onCheckedChange={(checked) => setIsMultipleRoom(checked)}
+              id="multiple-unit"
+              checked={isMultipleUnit}
+              onCheckedChange={(checked) => setIsMultipleUnit(checked)}
             />
-            <Label htmlFor="multiple-room">Multiple Rooms (Same Details)</Label>
+            <Label htmlFor="multiple-unit">Multiple Units (Same Details)</Label>
           </div>
 
-          {/* Conditionally show Room Number or Number of Rooms */}
-          {!isMultipleRoom ? (
+          {/* Conditionally show Unit Number or Number of Units */}
+          {!isMultipleUnit ? (
             <>
-              <Label>Room Number</Label>
+              <Label>Unit Number</Label>
               <Input
                 name="name"
-                placeholder="eg : Room 101"
+                placeholder="eg : Unit 101"
                 value={formData.name || ""}
                 onChange={handleChange}
                 required
@@ -117,12 +117,12 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
             </>
           ) : (
             <>
-              <Label>Number of Rooms</Label>
+              <Label>Number of Units</Label>
               <Input
-                name="numberOfRooms"
+                name="numberOfUnits"
                 type="number"
                 placeholder="eg: 5"
-                value={formData.numberOfRooms || ""}
+                value={formData.numberOfUnits || ""}
                 onChange={handleChange}
                 required
               />
@@ -216,8 +216,8 @@ export default function RoomAddEditModal({ property, open, onClose, onSave, edit
             className="w-full border border-gray-300 rounded px-3 py-2"
             required
           >
-            <option value="">Select room status</option>
-            {Object.values(RoomStatus).map((status) => (
+            <option value="">Select unit status</option>
+            {Object.values(UnitStatus).map((status) => (
               <option key={status} value={status}>
                 {status}
               </option>

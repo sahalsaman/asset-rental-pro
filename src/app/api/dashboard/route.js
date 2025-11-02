@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import RoomModel from "@/../models/Room";
+import UnitModel from "@/../models/Unit";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { BookingStatus, InvoiceStatus, RoomStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, UnitStatus } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -22,14 +22,14 @@ export async function GET(request) {
 
     await connectMongoDB();
 
-    const roomCount = await RoomModel.countDocuments({
+    const unitCount = await UnitModel.countDocuments({
       organisationId: user.organisationId,
       propertyId: prop
     });
 
-    const availableRoomsCount = await RoomModel.countDocuments({
+    const availableUnitsCount = await UnitModel.countDocuments({
       organisationId: user.organisationId,
-      status: RoomStatus.AVAILABLE,
+      status: UnitStatus.AVAILABLE,
       propertyId: prop
     });
 
@@ -76,8 +76,8 @@ export async function GET(request) {
 
 
     return NextResponse.json({
-      total_rooms: roomCount,
-      available_rooms: availableRoomsCount,
+      total_units: unitCount,
+      available_units: availableUnitsCount,
       enrollments: enrollmentsCount,
       totalInvoiceAmount: totalInvoiceAmount,
       totalReceivedAmount: totalReceivedAmount,

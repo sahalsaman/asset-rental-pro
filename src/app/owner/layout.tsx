@@ -25,13 +25,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [options, setOptions] = useState<any[]>([
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Organisation', path: '/owner/organisation' },
-    { title: 'Rooms', path: '/owner/rooms' },
+    { title: 'Units', path: '/owner/units' },
     { title: 'Payments', path: '/owner/payments' },
   ])
 
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={21} /> },
-    { title: 'Rooms', path: '/owner/rooms', icon: <BuildingIcon size={21} /> },
+    { title: 'Units', path: '/owner/units', icon: <BuildingIcon size={21} /> },
     { title: 'Payments', path: '/owner/payments', icon: <BadgeDollarSign size={21} /> },
     // { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
     { title: 'Profile', path: '/owner/profile', icon: <UserCircle size={21} /> },
