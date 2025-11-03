@@ -14,6 +14,11 @@ const SelfRecieveBankOrUpiSchema = new Schema(
     ifsc: String,
     bankName: String,
     branch: String,
+    image:{
+      id:String,
+      url:String,
+      delete_url:String
+    },
     upiPhoneCountryCode: { type: String, default: "+91" },
     status: { type: String, enum: BankStatus, default: BankStatus.ACTIVE },
   },

@@ -9,12 +9,16 @@ const PropertySchema = new Schema(
     description: String,
     amenities: [String],
     services: [String],
-    images: [String],
+    images: [{
+      id: String,
+      url: String,
+      delete_url: String
+    }],
     videoUrl: [String],
     address: { type: String, required: true },
     city: { type: String, required: true },
     state: { type: String, required: true },
-    country: { type: String,default:"india"},
+    country: { type: String, default: "india" },
     zipCode: { type: String },
     status: { type: String, default: PropertyStatus.AVAILABLE },
     category: { type: String, required: true },

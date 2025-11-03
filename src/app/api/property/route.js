@@ -5,6 +5,8 @@ import PropertyModel from "@/../models/Property";
 import { getTokenValue } from "@/utils/tokenHandler";
 import { SubscritptionStatus, UserRoles } from "@/utils/contants";
 import { OrganisationModel } from "../../../../models/Organisation";
+import { deleteFromImgbb, uploadToImgbb } from "@/utils/upload_image";
+import { env } from "../../../../environment";
 
 
 
@@ -72,6 +74,22 @@ export async function POST(request) {
     if (!body.selctedSelfRecieveBankOrUpi) {
       delete body.selctedSelfRecieveBankOrUpi;
     }
+
+    if (body?.new_images?.length) {
+      const uploadedImages = [];
+
+      for (const image of body.new_images) {
+        const uploaded = await uploadToImgbb(image, env.IMAGE_PROPERTIES);
+        if (uploaded?.url) {
+          uploadedImages.push(uploaded);
+        }
+      }
+
+      body.images = uploadedImages;
+    }
+
+
+
     const property = await PropertyModel.create({
       ...body,
       organisationId: user.organisationId,
@@ -103,6 +121,43 @@ export async function PUT(request) {
   await connectMongoDB();
   const body = await request.json();
   try {
+    const existinProperty = await PropertyModel.findOne(
+      { _id: id, organisationId: user.organisationId }
+    );
+    if (!existinProperty) {
+      return NextResponse.json({ error: "Not found " }, { status: 404 });
+    }
+    if (body?.new_images?.length) {
+      const uploadedImages = [];
+
+      for (const image of body.new_images) {
+        const uploaded = await uploadToImgbb(image, env.IMAGE_PROPERTIES);
+        if (uploaded?.url) {
+          uploadedImages.push(uploaded);
+        }
+      }
+
+      body.images = uploadedImages;
+    }
+
+    if (body?.existingImages?.length) {
+      const deletedImages = existinProperty.images.filter(
+        (img) => !body.existingImages.includes(img.url)
+      );
+
+      if (deletedImages.length) {
+        for (const img of deletedImages) {
+          await deleteFromImgbb(img.delete_url);
+        }
+      }
+
+      // Keep only existing + new uploaded images
+      body.images = [
+        ...(body.images || []),
+        ...(body.existingImages || [])
+      ];
+    }
+
     const updated = await PropertyModel.findOneAndUpdate(
       { _id: id, organisationId: user.organisationId }, // ensure ownership
       body,

@@ -138,14 +138,13 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: 
 }
 
 
-
 export async function sendInvoiceToWhatsAppWithSelfBank(
   booking: any,
   amount: number,
   invoiceId: string,
   bankDetail: any,
   dueDate: Date
-) {
+): Promise<{ success: boolean; messageId?: string; qrUrl?: string; error?: any }> {
   try {
     if (!booking?.whatsappNumber) throw new Error("Booking WhatsApp number missing.");
     if (!bankDetail) throw new Error("Bank details not provided.");
@@ -153,8 +152,8 @@ export async function sendInvoiceToWhatsAppWithSelfBank(
     const formattedPhone = formatPhone("91" + booking.whatsappNumber);
     const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
-    // 🧩 Build dynamic payment message
-    let paymentMessage = "";
+    let caption = "";
+    let qrUrl: string | null = null;
 
     const dueDateStr = dueDate.toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -162,9 +161,19 @@ export async function sendInvoiceToWhatsAppWithSelfBank(
       year: "numeric",
     });
 
+    // 🔹 Create message caption
+    caption = `📄 *Hi ${booking?.fullName || "Customer"},*
+
+Invoice #${invoiceId}
+Due Date: ${dueDateStr}
+Amount: ₹${amount}`;
+
+    // 🔹 Add payment details
     switch (bankDetail?.paymentRecieverOption) {
       case PaymentRecieverOptions.BANK:
-        paymentMessage = `🏦 *Bank Transfer Details:*
+        caption += `
+
+🏦 *Bank Transfer Details:*
 Account Name: ${bankDetail?.accountHolderName}
 Account No: ${bankDetail?.value}
 IFSC: ${bankDetail?.ifsc || "N/A"}
@@ -173,47 +182,59 @@ Branch: ${bankDetail?.branch || "N/A"}`;
         break;
 
       case PaymentRecieverOptions.UPIPHONE:
-        paymentMessage = `📱 *Pay via UPI Phone:*
+        caption += `
+
+📱 *Pay via UPI Phone:*
 UPI Number: ${bankDetail?.upiPhoneCountryCode || "+91"} ${bankDetail?.value}
 Account Name: ${bankDetail?.accountHolderName}`;
         break;
 
       case PaymentRecieverOptions.UPIID:
-        paymentMessage = `💳 *Pay via UPI ID:*
+        caption += `
+
+💳 *Pay via UPI ID:*
 UPI ID: ${bankDetail?.value}
 Account Name: ${bankDetail?.accountHolderName}`;
         break;
 
       case PaymentRecieverOptions.UPIQR:
-        paymentMessage = `📸 *Scan this QR to pay:*
-QR Link: ${bankDetail?.value}
+        caption += `
+
+📸 *Scan this QR to pay:*
 Account Name: ${bankDetail?.accountHolderName}`;
+        // 🧠 Generate QR as base64 image
+        qrUrl = bankDetail?.value
         break;
 
       default:
-        paymentMessage = `Payment details not available.`;
+        caption += `
+
+Payment details not available.`;
     }
 
-    // 🧾 Final message body
-    const messageBody = `📄 *Hi ${booking?.fullName || "Customer"},*
-
-Invoice #${invoiceId}
-Due Date: ${dueDateStr}
-Amount: ₹${amount}
-
-${paymentMessage}
+    caption += `
 
 Thank you!`;
 
-    // 🚀 Send message via WhatsApp Cloud API
+    // 🚀 Send WhatsApp message
     const response = await axios.post(
       url,
-      {
-        messaging_product: "whatsapp",
-        to: formattedPhone,
-        type: "text",
-        text: { body: messageBody },
-      },
+      qrUrl
+        ? {
+            messaging_product: "whatsapp",
+            to: formattedPhone,
+            type: "image",
+            image: {
+              link: qrUrl, // base64 image
+              caption: caption,
+            },
+          }
+        : {
+            messaging_product: "whatsapp",
+            to: formattedPhone,
+            type: "text",
+            text: { body: caption },
+          },
       {
         headers: {
           Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
@@ -222,20 +243,22 @@ Thank you!`;
       }
     );
 
-    console.log("✅ WhatsApp message sent successfully:", response.data);
-    return { success: true, messageId: response.data?.messages?.[0]?.id };
+    console.log("✅ WhatsApp invoice message sent:", response.data);
+    return {
+      success: true,
+      messageId: response.data?.messages?.[0]?.id,
+      qrUrl: qrUrl || undefined,
+    };
   } catch (error: any) {
     console.error("❌ WhatsApp send error:", error?.response?.data || error.message);
-    if (error?.response?.data?.error?.code === 131030) {
-      console.warn("⚠️ Add recipient phone number to WhatsApp Business 'Test numbers' list.");
-    }
     return {
       success: false,
       error: error?.response?.data?.error || error.message,
-      code: error?.response?.data?.error?.code,
     };
   }
 }
+
+
 
 
 

@@ -21,24 +21,24 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
     >
       <div className='flex gap-2'>
         {property.images && property.images[0] && (
-          <div className="w-32 h-32 overflow-hidden rounded-md">
+          <div className="w-24 h-24 overflow-hidden rounded-md">
             <img
-              src={property.images[0]}
+              src={property.images[0]?.url}
               alt={property.name}
               className="w-full h-full object-cover"
             />
           </div>
         )}
 
-        <div className='w-full flex flex-col justify-between'>
+        <div className='w-full'>
 
           <div className='flex justify-between'>
             <h2 className="text-lg font-semibold mt-1">{property.name}</h2>
             <div className='flex  gap-3'>
-           
-                  <Button size="icon" variant="outline" onClick={() => onEdit(property)}>
-              <Edit className="w-4 h-4" />
-            </Button>
+
+              <Button size="icon" variant="outline" onClick={() => onEdit(property)}>
+                <Edit className="w-4 h-4" />
+              </Button>
               <button
                 onClick={() => onDelete(property)}
               >
@@ -52,7 +52,7 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
           <div>
             <p className="text-sm text-gray-500">{property.address}, {property.city}</p>
           </div>
-              <Badge className='mt-2' variant="default">{property.category}</Badge>
+          <Badge className='mt-2' variant="default">{property.category}</Badge>
           {/* <div className='flex justify-end  '>
           
             <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '

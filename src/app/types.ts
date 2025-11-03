@@ -92,7 +92,7 @@ export interface IProperty {
   zipCode?: string;
   status: PropertyStatus;
   category: PropertyType;
-  images: string[];
+  images: any[];
    services:string[],
     amenities:string[],
   currency: string;
