@@ -43,7 +43,7 @@ export default function PropertyPublicCard({ property }: { property: any }) {
         </div>
 
         <p className="mt-3 font-semibold text-gray-800">
-          ₹ {p.price} / Day <span className="text-gray-400 text-sm">+ GST</span>
+          ₹ {p.unit.amount} / {p.unit.frequency} <span className="text-gray-400 text-sm">+ GST</span>
         </p>
       </div>
     </div>

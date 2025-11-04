@@ -10,8 +10,6 @@ const UnitSchema = new Schema(
     amount: Number,
     advanceAmount: Number,
     description: String,
-    images: [String],
-    videoUrl: [String],
     frequency: { type: String, enum: RentFrequency },
     status: { type: String, default: UnitStatus.AVAILABLE },
     noOfSlots: { type: Number, required: true, default: 1 },
