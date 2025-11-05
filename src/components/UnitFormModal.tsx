@@ -166,7 +166,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
 
 
           {isFlatOrApartment && (
-            <>   <Label>Select Flat Type</Label>
+            <>   <Label>Select Unit Type</Label>
               <select
                 name="type"
                 value={formData.type || ""}
@@ -174,7 +174,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
                 className="w-full border border-gray-300 rounded px-3 py-2"
                 required
               >
-                <option value="">Select Flat Type</option>
+                <option value="">Select Unit Type</option>
                 {FLAT_TYPES.map(flat => (
                   <option key={flat} value={flat}>
                     {flat}

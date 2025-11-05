@@ -10,6 +10,9 @@ import { FullscreenLoader } from "@/components/Loader";
 import { Edit } from "lucide-react";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import OrganisationFormModal from "@/components/OrganisationFormModal";
+import { UserRoles } from "@/utils/contants";
+import { IUser } from "@/app/types";
+import { useRouter } from "next/navigation";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -18,8 +21,18 @@ export default function PropertiesPage() {
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
   const [organisation, setOrganisation] = useState<any | null>(null);
   const [orgModalOpen, setOrgModalOpen] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null);
+  const router = useRouter();
+
+
+  const fetchUser = async () => {
+    const res = await apiFetch("/api/me");
+    const data = await res.json();
+    setUser(data);
+  };
 
   useEffect(() => {
+    fetchUser();
     fetchOrganisation();
     fetchProperties();
   }, []);
@@ -60,59 +73,32 @@ export default function PropertiesPage() {
               <p className="text-sm">Organisation</p>
             </div>
           </div>
-          <Button size="icon" variant="outline" onClick={() => { setOrgModalOpen(true)}} >
+          <Button size="icon" variant="outline" onClick={() => { setOrgModalOpen(true) }} >
             <Edit className="w-4 h-4" />
           </Button>
         </div>
       </div>
-      <div className=" p-5 md:pt-10 md:px-32 mb-10">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Properties</h1>
-          {organisation?.subscription && <Button onClick={() => { setAddEditOpen(true); setSelectedProperty(null); }} variant="green">
-            Add Property
-          </Button>}
-        </div>
+      <div className=" p-1 md:pt-10 md:px-32 mb-10">
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {properties.length ? properties?.map((property: any) => (
-            <PropertyCard
-              key={property?._id}
-              property={property}
-              onEdit={(p: any) => { setSelectedProperty(p); setAddEditOpen(true); }}
-              onDelete={(p: any) => { setSelectedProperty(p); setDeleteOpen(true); }}
-            />
-          )) : (
-            <p className="text-gray-500">No properties.</p>
-          )}
+
+        <div className="flex flex-col text-md">
+          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/properties')}>
+            Properties
+          </a> : ""}
+          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
+            Automated invoicing & payments <br/><span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
+          </a> : ""}
+          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
+            Bank & UPI Details
+          </a> : ""}
+          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subscription-plan')}>
+            Subscription
+          </a> : ""}
+
         </div>
       </div>
-      <OrganisationFormModal
-        open={orgModalOpen}
-        onClose={() => setOrgModalOpen(false)}
-        onSave={() => {
-          setOrgModalOpen(false);
-          fetchOrganisation();
-        }}
-        initialData={organisation}
-      />
-      <PropertyFormModal
-        open={addEditOpen}
-        onClose={() => {
-          setAddEditOpen(false);
-        }}
-        onSave={() => {
-          setAddEditOpen(false);
-          window.location.reload();
-          // fetchProperties();
-        }}
-        initialData={selectedProperty}
-      />
-      <DeleteConfirmModal
-        open={deleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        onConfirm={fetchProperties}
-        item={selectedProperty}
-      />
+
+
     </div>
   );
 }

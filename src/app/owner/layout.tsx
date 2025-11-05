@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { User, XIcon, Home, Building2, BuildingIcon, BadgeDollarSign, UserCircle, } from 'lucide-react'; // icons
+import { User, XIcon, Home, Building2, Store, Building, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
@@ -15,56 +15,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const prop = localStorageServiceSelectedOptions.getItem()?.property;
   const router = useRouter();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
   const [properties, setProperties] = useState<IProperty[]>([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState("");
   const [organisation, setOrganisation] = useState<any | null>(null);
   const [user, setUser] = useState<any | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [options, setOptions] = useState<any[]>([
+  const options =[
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Organisation', path: '/owner/organisation' },
-    { title: 'Units', path: '/owner/units' },
-    { title: 'Payments', path: '/owner/payments' },
-  ])
+    { title: 'Properties', path: '/owner/properties' },
+    { title: 'Units / Rooms', path: '/owner/units' },
+  ]
 
   const mobileMenu = [
-    { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={21} /> },
-    { title: 'Units', path: '/owner/units', icon: <BuildingIcon size={21} /> },
-    { title: 'Payments', path: '/owner/payments', icon: <BadgeDollarSign size={21} /> },
-    // { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={20} /> },
-    { title: 'Profile', path: '/owner/profile', icon: <UserCircle size={21} /> },
+    { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={22} /> },
+    { title: 'Units/Rooms', path: '/owner/units', icon: <Store size={21} /> },
+    { title: 'Properties', path: '/owner/properties', icon: <Building size={22} /> },
+    { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={22} /> },
+    // { title: 'Profile', path: '/owner/profile', icon: <UserCircle size={21} /> },
   ];
-
-  const logout = async () => {
-    try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      router.push('/auth/login');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
 
   const fetchUser = async () => {
     try {
       const res = await apiFetch("/api/me");
       const data = await res.json();
-      console.log(data);
-
-      // if (!data?.firstName) {
-      //   logout()
-      // }
-      // if (data?.role == "Admin") {
-      //   setOptions([...options,
-      //   { title: 'Vendors', path: '/owner/organisation' },
-      //   { title: 'Organisations & Subscriptions', path: '/owner/organisation' },
-      //   { title: 'Vendors', path: '/owner/organisation' },
-      //   ])
-      // }
       setUser(data)
     }
     catch (err) {
@@ -101,23 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     fetchProperties();
   }, []);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    }
 
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -182,11 +141,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Profile Dropdown */}
           <div className="flex items-center gap-8">
 
-            {user?.role == UserRoles.OWNER ? <div className='hidden md:block'>
+            {user?.role == UserRoles.OWNER ? 
+            <div className='hidden md:block'>
               {properties?.length ? <div >
                 {/* <p className='text-white'>Current Property</p> */}
                 <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
-                  <Building2 className='ml-4 text-white' />
+                  <Building className='ml-4 text-white' />
                   <select
                     name="frequency"
                     value={selectedPropertyId || ""}
@@ -215,44 +175,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div> : ""}
             <div className="relative" ref={dropdownRef}>
               <button
-                onClick={() => setOpen(!open)}
-                className="flex items-center justify-center w-10 h-10 rounded-full bg-green-900 text-white cursor-pointer"
+                onClick={() => router.push('/owner/profile')}
+                className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-green-900 text-white cursor-pointer"
               >
-                {!open ? <User size={20} /> : <XIcon size={20} />}
+                <User size={20} /> 
               </button>
-              {open && (
-                <div className="absolute right-0 mt-2 min-w-80 w-full md:w-48  bg-white border rounded-md shadow-lg z-50">
-                  <div className='flex flex-col'>
-                    <a
-                      onClick={() => {
-                        setOpen(false);
-                        router.push('/owner/profile');
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                      Profile
-                    </a>
-                    <a href='/#contact'
-                      target="_blank"
-                      onClick={() => {
-                        setOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    >
-                      Help & Support
-                    </a>
-                    <a
-                      onClick={() => {
-                        setOpen(false);
-                        logout();
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600"
-                    >
-                      Logout
-                    </a>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -260,7 +187,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {user?.role == UserRoles.OWNER ? <div className='block md:hidden mt-2'>
           {properties?.length ?
             <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
-              <Building2 className='ml-2 text-white' />
+              <Building className='ml-3 text-white' />
               <select
                 name="frequency"
                 value={selectedPropertyId || ""}

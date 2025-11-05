@@ -24,6 +24,18 @@ export default function PropertiesPage() {
     fetchUser();
   }, []);
 
+  const logout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
     { label: "Profile" },
@@ -35,39 +47,23 @@ export default function PropertiesPage() {
       <div className="flex flex-col justify-between items-start md:items-center gap-3 bg-slate-100 md:p-14 md:px-32 p-8 shadow-sm">
         {/* <Breadcrumbs items={breadcrumbItems} /> */}
         <div className="w-full flex justify-between ">
-          <div className="w-full">
-            <div className="flex justify-between">
-              <div className="w-18 h-18 bg-blue-200 rounded-full flex items-center justify-center text-gray-500 text-2xl font-bold">
-                {user?.firstName?.slice(0, 2).toUpperCase()}
-              </div>
-              <Button size="icon" variant="outline" onClick={() => router.push('/owner/profile/edit')} >
-                <Edit className="w-4 h-4" />
-              </Button>
+          <div className="w-full flex flex-col md:flex-row md:gap-4 gap-2">
+            <div className="w-18 h-18 bg-blue-200 rounded-full flex items-center justify-center text-gray-500 text-2xl font-bold">
+              {user?.firstName?.slice(0, 2).toUpperCase()}
             </div>
-            <div className="mt-2">
+            <div >
               <h1 className="text-2xl md:text-3xl font-bold">{user?.firstName} {user?.lastName}</h1>
               <p>{user?.countryCode} {user?.phone}</p>
               <Badge variant="default">{user?.role}</Badge>
             </div>
           </div>
+
+          <Button size="icon" variant="outline" onClick={() => router.push('/owner/profile/edit')} >
+            <Edit className="w-4 h-4" />
+          </Button>
         </div>
       </div>
-      <div className="flex flex-col text-md m-4">
-        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/organisation')}>
-          Organisation
-        </a> : ""}
-        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/properties')}>
-          Properties
-        </a> : ""}
-        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
-          Automated invoicing & payments <span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
-        </a> : ""}
-        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
-          Bank & UPI Details
-        </a> : ""}
-        {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subscription-plan')}>
-          Subscription
-        </a> : ""}
+      <div className="flex flex-col text-md m-4 md:mx-32">
         <a className="p-4 border-b-1 border-b-gray-200" href='/privacy'
           target="_blank">
           Privacy and policy
@@ -82,7 +78,11 @@ export default function PropertiesPage() {
         </a>
         <a className="p-4 border-b-1 border-b-gray-200" href='/#contact'
           target="_blank">
-          Support
+          Help & Support
+        </a>
+        <a onClick={() => { logout(); }}
+          className="p-4 border-b-1 border-b-gray-200 text-red-600">
+          Logout
         </a>
       </div>
     </div>
