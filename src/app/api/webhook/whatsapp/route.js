@@ -20,35 +20,45 @@ export async function GET(req) {
 
 // ✅ POST: Handle incoming messages/events
 export async function POST(req) {
-     console.log("POST................");
+  console.log("📩 Incoming WhatsApp webhook POST...");
   try {
     const body = await req.json();
-     console.log("body................",body);
-     
-    if (body.object) {
-     console.log("body.object...............",body.object);
-      const entry = body.entry?.[0];
-     console.log("entry...............",entry);
-      const changes = entry?.changes?.[0];
-     console.log("changes...............",changes);
-      const message = changes?.value?.messages?.[0];
+    console.log("🌐 Webhook Body:", JSON.stringify(body, null, 2));
 
-      if (message) {
-        console.log("📩 Received WhatsApp message:", message);
+    if (body.object === "whatsapp_business_account") {
+      for (const entry of body.entry || []) {
+        for (const change of entry.changes || []) {
+          const value = change.value;
 
-        const from = message.from; // sender phone number
-        const text = message.text?.body;
+          // ✅ Handle incoming messages
+          if (value.messages) {
+            for (const message of value.messages) {
+              console.log("💬 Received message:", message);
 
-        // You can now reply or handle it as you wish
-        // Example: save message to DB, send auto-reply, etc.
+              const from = message.from; // sender number
+              const text = message.text?.body || null;
+
+              console.log(`👉 From: ${from} | Message: ${text}`);
+              // TODO: Save to DB or send auto-reply here
+            }
+          }
+
+          // ✅ Handle message status updates (sent, delivered, read)
+          if (value.statuses) {
+            for (const status of value.statuses) {
+              console.log("📦 Message status update:", status);
+              // TODO: update message status in DB
+            }
+          }
+        }
       }
-
-      return NextResponse.json({ status: "received" }, { status: 200 });
+      return NextResponse.json({ success: true }, { status: 200 });
     }
 
-    return new NextResponse("No content", { status: 404 });
+    console.warn("⚠️ Unrecognized webhook body:", body);
+    return new NextResponse("No valid content", { status: 404 });
   } catch (error) {
     console.error("❌ Webhook error:", error);
-    return new NextResponse("Error", { status: 500 });
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
