@@ -20,12 +20,17 @@ export async function GET(req) {
 
 // ✅ POST: Handle incoming messages/events
 export async function POST(req) {
+     console.log("POST................");
   try {
     const body = await req.json();
-
+     console.log("body................",body);
+     
     if (body.object) {
+     console.log("body.object...............",body.object);
       const entry = body.entry?.[0];
+     console.log("entry...............",entry);
       const changes = entry?.changes?.[0];
+     console.log("changes...............",changes);
       const message = changes?.value?.messages?.[0];
 
       if (message) {
