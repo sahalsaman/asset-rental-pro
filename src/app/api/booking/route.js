@@ -98,11 +98,6 @@ export async function POST(request) {
       return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
     }
 
-    const bookings_list = await BookingModel.find({ organisationId: user.organisationId })
-    if (organisation?.usageLimits?.bookings < (bookings_list?.length ?? 0) + 1) {
-      return NextResponse.json({ error: "Booking limit reached. Please upgrade your subscription." }, { status: 403 });
-    }
-
     let nextBillingDate = null;
     console.log(body.status, BookingStatus.CHECKED_IN, unit.frequency, body.checkOut);
 

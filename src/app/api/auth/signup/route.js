@@ -2,7 +2,7 @@ import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../../models/Organisation";
-import { SubscritptionBillingCycle, SubscritptionStatus, UserRoles } from "@/utils/contants";
+import { SubscriptionBillingCycle, SubscritptionStatus, UserRoles } from "@/utils/contants";
 import { subscription_plans } from "@/utils/data";
 import { sendOTPText } from "@/utils/sendToWhatsApp";
 
@@ -48,25 +48,20 @@ export async function POST(request) {
     disabled: false,
   });
 
-  const selected_plan = subscription_plans.find((i) => i.id === "arp_subcription_trial");
+  const selected_plan = subscription_plans.find((i) => i.id === "arp_subscription_trial");
 
   const startDate = new Date();
-  const endDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
+  // const endDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
   const subscription = {
     plan: selected_plan.name,
     planId: selected_plan.id,
-    status: SubscritptionStatus.TRIAL,
+    status: SubscritptionStatus.FREE,
     startDate,
-    endDate,
-    billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
-    amount: selected_plan.amount,
+    // endDate,
+    billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
+    unitPrice: selected_plan.amount,
     paymentMethod: "free",
-    usageLimits: {
-      property: selected_plan.total_properties || 0,
-      units: selected_plan.total_units || 0,
-      bookings: selected_plan.total_bookings || 0,
-    },
   };
 
 
@@ -79,7 +74,7 @@ export async function POST(request) {
   await UserModel.findByIdAndUpdate(newUser._id, { organisationId: org?._id })
 
   console.log(`✅ OTP for ${countryCode + phone}: ${otp}`);
-  const result = await sendOTPText(countryCode,phone,otp,newUser?.firstName+" "+newUser?.lastName)
+  await sendOTPText(countryCode, phone, otp, newUser?.firstName + " " + newUser?.lastName)
 
   return NextResponse.json({
     message: "OTP sent successfully", data: {

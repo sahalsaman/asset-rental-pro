@@ -137,7 +137,7 @@ export default function VerifyOTPPage() {
 
               <p className="text-sm text-gray-600 text-center">
                 Didn’t receive it?{" "}
-                <a onClick={resendOtp} className="text-green-600 hover:underline">
+                <a onClick={resendOtp} className="text-green-600 hover:underline cursor-pointer">
                   Resend OTP
                 </a>
               </p>

@@ -68,7 +68,7 @@ export default function SubscriptionPlan() {
 
       const result = await res.json(); // ✅ get key from backend
 
-      if (result && plan.id == "arp_subcription_trial") {
+      if (result && plan.id == "arp_subscription_trial") {
         toast.success("You have successfully activated the Free Trial plan.");
         window.location.href = "/owner/dashboard"
         return
@@ -191,7 +191,7 @@ export default function SubscriptionPlan() {
               </div>
             </div>
 
-          { selectedPlan?.id!="arp_subcription_trial" ?<button
+          { selectedPlan?.id!="arp_subscription_trial" ?<button
               onClick={() => handlePlanSelect(selectedPlan)}
               className={`${selectedPlan?.buttonStyle} bg-green-700 text-white font-semibold w-full py-3 px-4 sm:px-6 rounded-xl text-sm sm:text-base transition-all duration-200 hover:shadow-md active:scale-95 disabled:opacity-50`}
               disabled={loading}>

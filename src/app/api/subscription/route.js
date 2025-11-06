@@ -5,7 +5,7 @@ import { OrganisationModel, SubscriptionPaymentModel } from "@/../models/Organis
 import { env } from "../../../../environment";
 import { subscription_plans } from "@/utils/data";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { SubscritptionBillingCycle, SubscritptionPaymentStatus, SubscritptionStatus } from "@/utils/contants";
+import { SubscriptionBillingCycle, SubscritptionPaymentStatus, SubscritptionStatus } from "@/utils/contants";
 import { generateRazorpayLinkForSubscription } from "@/utils/razerPay";
 
 const razorpay = new Razorpay({
@@ -44,17 +44,12 @@ export async function POST(req) {
     const subscription = {
       plan: selected_plan.name,
       planId: selected_plan.id,
-      status: selected_plan=="arp_subcription_trial"?SubscritptionStatus.TRIAL:SubscritptionStatus.PENDING,
+      status: selected_plan=="arp_subscription_trial"?SubscritptionStatus.FREE:SubscritptionStatus.PENDING,
       startDate,
       endDate,
-      billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
+      billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
       amount: selected_plan.amount,
       paymentMethod: "razorpay",
-      usageLimits: {
-        property: selected_plan.total_properties || 0,
-        units: selected_plan.total_units || 0,
-        bookings: selected_plan.total_bookings || 0,
-      },
     };
 
     await OrganisationModel.findByIdAndUpdate(
@@ -64,7 +59,7 @@ export async function POST(req) {
     );
 
     // Skip Razorpay for trial
-    if (selected_plan.id === "arp_subcription_trial") {
+    if (selected_plan.id === "arp_subscription_trial") {
       return NextResponse.json({ success: true, subscription });
     }
 

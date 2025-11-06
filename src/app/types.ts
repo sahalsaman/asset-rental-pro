@@ -1,4 +1,4 @@
-import { AnnouncementType, BookingStatus, InvoiceStatus, PropertyStatus, PropertyType, RentAmountType, RentFrequency, UnitStatus, SubscritptionBillingCycle, SubscritptionStatus, TransactionType, UserRoles } from "@/utils/contants";
+import { AnnouncementType, BookingStatus, InvoiceStatus, PropertyStatus, PropertyType, RentAmountType, RentFrequency, UnitStatus, SubscriptionBillingCycle, SubscritptionStatus, TransactionType, UserRoles } from "@/utils/contants";
 
 export interface IUser {
   _id?: string;
@@ -19,24 +19,17 @@ export interface IUser {
   updatedAt?: Date;
 }
 
- interface IUsageLimits {
-  property: number;
-  units: number;
-  bookings: number;
-}
-
 interface IOrgSubscription {
   plan: string;
   status: SubscritptionStatus;
   startDate: Date;
   endDate?: Date;
-  billingCycle: SubscritptionBillingCycle;
+  billingCycle: SubscriptionBillingCycle;
   amount: number;
   paymentMethod: string;
   autoRenew: boolean;
   trialDays: number;
   trialCompleted: boolean;
-  usageLimits?: IUsageLimits;
   lastPaymentDate?: Date;
   nextBillingDate?: Date;
 }
@@ -68,7 +61,6 @@ export interface ISubscriptionPayment {
   endDate?: Date;
   amount: number;
   paymentMethod: string;
-  usageLimits?: IUsageLimits;
 
   razorpay_orderId?: string;
   razorpay_paymentId?: string;

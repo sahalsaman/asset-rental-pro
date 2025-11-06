@@ -202,7 +202,7 @@ const updateOrganisationSubscription = async () => {
     const organisations = await OrganisationModel.find({
       disabled: false,
       deleted: false,
-      "subscription.status": { $in: [SubscritptionStatus.TRIAL, SubscritptionStatus.ACTIVE] },
+      "subscription.status": { $in: [SubscritptionStatus.ACTIVE] },
     });
 
     for (const org of organisations) {

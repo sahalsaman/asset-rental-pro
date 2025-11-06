@@ -81,7 +81,7 @@ export default function PropertiesPage() {
           Help & Support
         </a>
         <a onClick={() => { logout(); }}
-          className="p-4 border-b-1 border-b-gray-200 text-red-600">
+          className="p-4 border-b-1 border-b-gray-200 text-red-600 cursor-pointer">
           Logout
         </a>
       </div>

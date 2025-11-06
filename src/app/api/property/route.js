@@ -66,11 +66,7 @@ export async function POST(request) {
     if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
       return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
     }
-    const properties_list = await PropertyModel.find({ organisationId: user.organisationId })
-
-    if (organisation?.subscription?.usageLimits?.property < (properties_list?.length ?? 0) + 1) {
-      return NextResponse.json({ error: "Property limit reached. Please upgrade your subscription." }, { status: 403 });
-    }
+  
     if (!body.selctedSelfRecieveBankOrUpi) {
       delete body.selctedSelfRecieveBankOrUpi;
     }

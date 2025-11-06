@@ -1,7 +1,7 @@
 export enum UserRoles {
   OWNER = 'Owner',
-  MANAGER = 'Manager', 
-  USER = 'User', 
+  MANAGER = 'Manager',
+  USER = 'User',
   ADMIN = 'Admin'
 }
 
@@ -35,7 +35,7 @@ export enum PropertyStatus {
 // 📌 Unit Status (inside property: unit, bed, hall, etc.)
 export enum UnitStatus {
   AVAILABLE = "Available",
-   PARTIALLY_BOOKED = "Partially Booked",
+  PARTIALLY_BOOKED = "Partially Booked",
   MAINTENANCE = "Maintenance",
   BOOKED = "Booked",
 }
@@ -95,20 +95,19 @@ export enum AnnouncementType {
 }
 
 export enum SubscritptionStatus {
+  FREE="free",
   ACTIVE = 'active',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',
-  TRIAL = 'trial',
-  PENDING = 'pending',
 }
 
 export enum SubscritptionPaymentStatus {
-  PENDING = 'pending',
-  ACTIVE = 'active',
-  EXPIRED = 'expired',
+  PENDING = "Pending",
+  PAID = "Paid",
+  OVERDUE = "Overdue",
 }
 
-export enum SubscritptionBillingCycle {
+export enum SubscriptionBillingCycle {
   MONTHLY = 'monthly',
   YEARLY = 'yearly',
 }
@@ -137,19 +136,19 @@ export enum PaymentType {
   REFUND = "refund",
 }
 
-export enum PaymentRecieverOptions{
+export enum PaymentRecieverOptions {
   BANK = "Bank",
   UPIPHONE = "UPI Phone",
   UPIQR = "UPI QR",
   UPIID = "UPI ID",
 }
 
-export enum EnquiryStatus{
-  NEW="New", 
-  CONTACTED="Contacted", 
-  PENDING="Pending",
-  REJECTED="Rejected",
-  CLOSED="Closed"
+export enum EnquiryStatus {
+  NEW = "New",
+  CONTACTED = "Contacted",
+  PENDING = "Pending",
+  REJECTED = "Rejected",
+  CLOSED = "Closed"
 }
 
 

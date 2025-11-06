@@ -1,20 +1,17 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { SubscritptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
+import { SubscriptionBillingCycle, SubscritptionPaymentStatus, SubscritptionStatus } from "@/utils/contants";
 
 const SubscriptionPaymentSchema = new Schema(
   {
     organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
     plan: { type: String, required: true },
-    status: { type: String, enum: Object.values(SubscritptionStatus), default: SubscritptionStatus.TRIAL },
+    status: { type: String, enum: Object.values(SubscritptionPaymentStatus)},
     startDate: { type: Date, required: true },
     endDate: { type: Date },
-    amount: { type: Number, required: true },
+    no_of_units: { type: Number, required: true },
+    unit_price: { type: Number, required: true },
+    total_price: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
-    usageLimits: {
-      property: { type: Number, default: 0 },
-      units: { type: Number, default: 0 },
-      bookings: { type: Number, default: 0 },
-    },
     razorpay_orderId: String,
     razorpay_paymentId: String,
     razorpay_signature: String,
@@ -25,24 +22,19 @@ const SubscriptionPaymentSchema = new Schema(
 
 const OrgSubscriptionSchema = new Schema({
   plan: { type: String, required: true },
-  planId: { type: String, required: true,default:"arp_subcription_trial" },
-  status: { type: String, enum: Object.values(SubscritptionStatus), default: SubscritptionStatus.TRIAL },
+  planId: { type: String, required: true,default:"arp_subscription_trial" },
+  status: { type: String, enum: Object.values(SubscritptionStatus), default: SubscritptionStatus.FREE },
   startDate: { type: Date, required: true },
   endDate: { type: Date },
-  billingCycle: { type: String, enum: Object.values(SubscritptionBillingCycle), required: true },
-  amount: { type: Number, required: true },
+  billingCycle: { type: String, enum: Object.values(SubscriptionBillingCycle), required: true },
+  unitPrice: { type: Number, required: true },
   paymentMethod: { type: String, required: true },
   autoRenew: { type: Boolean, default: true },
-  trialDays: { type: Number, default:  365 },
-  trialCompleted: { type: Boolean, default: false },
-  usageLimits: {
-    property: { type: Number, default: 0 },
-    units: { type: Number, default: 0 },
-    bookings: { type: Number, default: 0 },
-  },
   lastPaymentDate: Date,
   nextBillingDate: Date,
-});
+},
+  { timestamps: true }
+);
 
 const vendorRazerpayAccountSchema = new Schema({
   balance: { type: Number, default: 0 },
@@ -60,7 +52,9 @@ const vendorRazerpayAccountSchema = new Schema({
     account_number: { type: String },
   },
   fundAccountId: { type: String },
-});
+},
+  { timestamps: true }
+);
 
 const OrganisationSchema = new Schema(
   {

@@ -4,7 +4,7 @@ import connectMongoDB from "@/../database/db";
 import { OrganisationModel, SubscriptionPaymentModel } from "@/../models/Organisation";
 import { env } from "../../../../../environment";
 import { subscription_plans } from "@/utils/data";
-import { SubscritptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
+import { SubscriptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
 
 export async function PUT(req) {
   try {
@@ -31,7 +31,7 @@ export async function PUT(req) {
 
     const startDate = new Date();
     const endDate = new Date();
-    if (selected_plan.billingCycle === SubscritptionBillingCycle.YEARLY)
+    if (selected_plan.billingCycle === SubscriptionBillingCycle.YEARLY)
       endDate.setFullYear(endDate.getFullYear() + 1);
     else endDate.setMonth(endDate.getMonth() + 1);
 
@@ -43,17 +43,12 @@ export async function PUT(req) {
       status: SubscritptionStatus.ACTIVE,
       startDate,
       endDate,
-      billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
+      billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
       amount: selected_plan.amount,
       paymentMethod: "razorpay",
       lastPaymentDate: startDate,
       nextBillingDate: endDate,
       trialCompleted: true,
-      usageLimits: {
-        property: selected_plan.total_properties || 0,
-        units: selected_plan.total_units || 0,
-        bookings: selected_plan.total_bookings || 0,
-      },
     };
 
     await org.save();
@@ -79,14 +74,9 @@ export async function PUT(req) {
       status: SubscritptionStatus.ACTIVE,
       startDate,
       endDate,
-      billingCycle: selected_plan.billingCycle || SubscritptionBillingCycle.MONTHLY,
+      billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
       amount: selected_plan.amount,
       paymentMethod: "razorpay",
-      usageLimits: {
-        property: selected_plan.total_properties || 0,
-        units: selected_plan.total_units || 0,
-        bookings: selected_plan.total_bookings || 0,
-      },
     };
 
     await OrganisationModel.findByIdAndUpdate(

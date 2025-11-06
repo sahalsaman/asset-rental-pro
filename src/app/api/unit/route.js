@@ -62,7 +62,6 @@ export async function POST(request) {
 
   const body = await request.json();
   await connectMongoDB();
-  const units_list = await UnitModel.find({ organisationId: user.organisationId })
 
   const organisation = await OrganisationModel.findById(user.organisationId)
   if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
@@ -70,9 +69,7 @@ export async function POST(request) {
   }
 
   if (body.isMultipleUnit) {
-    if (body.numberOfUnits && organisation?.subscription?.usageLimits?.units < units_list?.length + body.numberOfUnits) {
-      return NextResponse.json({ error: "Unit limit reached. Please upgrade your subscription." }, { status: 403 });
-    }
+   
 
     const newUnits = [];
     for (let i = 0; i < (body.numberOfUnits || 1); i++) {
@@ -86,9 +83,7 @@ export async function POST(request) {
 
   }
 
-  if (organisation?.subscription?.usageLimits?.units < (units_list?.length ?? 0) + 1) {
-    return NextResponse.json({ error: "Unit limit reached. Please upgrade your subscription." }, { status: 403 });
-  }
+
 
   const unit = await UnitModel.create({ ...body, organisationId: user.organisationId });
   return NextResponse.json(unit, { status: 201 });

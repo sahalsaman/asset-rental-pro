@@ -88,19 +88,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     window.location.reload();
   };
 
-  const remainingDate = (endDate: string) => {
-    const currentDate = new Date();
-    const end = new Date(endDate);
-    currentDate.setHours(0, 0, 0, 0);
-    end.setHours(0, 0, 0, 0);
-    const diffTime = end.getTime() - currentDate.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-    // if (diffDays <= 0) return "Your subscription has expired. Please renew to continue using our services.";
-    // return `You have ${diffDays} day${diffDays > 1 ? "s" : ""} remaining in your free trial.`;
-    return "Your free trial is active."
-  };
-
 
 
   return (
@@ -216,7 +203,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div> : ""}
       </div>
       {organisation?.subscription?.status && organisation?.subscription?.status !== SubscritptionStatus.ACTIVE ? <div className=" bg-amber-300 py-2 md:px-32 px-5 flex items-center justify-between text-sm">
-        {organisation?.subscription?.status === SubscritptionStatus.TRIAL ? `${remainingDate(organisation?.subscription?.endDate)}` : organisation?.subscription?.status === SubscritptionStatus.PENDING ? 'Your subscription is pending' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
+        {organisation?.subscription?.status === SubscritptionStatus.FREE ? 'Your subscription is free' : organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : organisation?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
       </div> : ""}
 
       {organisation?.subscription?.status === SubscritptionStatus.EXPIRED ? <SubscriptionPlan /> : <main>{children}</main>}
