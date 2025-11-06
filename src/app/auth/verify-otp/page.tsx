@@ -7,9 +7,7 @@ import toast from "react-hot-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { UserRoles } from "@/utils/contants";
 import { app_config } from "../../../../app-config";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import CountdownTimer from "@/components/CountDown";
 
 export default function VerifyOTPPage() {
   const [phone, setPhone] = useState("");
