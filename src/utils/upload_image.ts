@@ -39,7 +39,9 @@ export async function deleteFromImgbb(deleteUrl: string) {
 
 export async function updateImgbbImage(oldUrl: string, base64Image: string, albumId?: string) {
   const res = await uploadToImgbb(base64Image, albumId)
-  if (res.url) {
+  console.log(res);
+  
+  if (res?.url) {
     await deleteFromImgbb(oldUrl)
   }
   return res;

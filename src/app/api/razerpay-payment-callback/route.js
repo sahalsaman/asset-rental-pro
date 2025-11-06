@@ -14,7 +14,7 @@ export async function POST(req) {
     const signature = req.headers.get("x-razorpay-signature");
 
     if (!signature) {
-      return NextResponse.json({ error: "Missing signature" }, { status: 400 });
+      return NextResponse.json({ message: "Missing signature" }, { status: 400 });
     }
 
     // 🔐 Verify signature using your Razorpay webhook secret
@@ -26,7 +26,7 @@ export async function POST(req) {
 
     if (signature !== expectedSignature) {
       console.error("Invalid Razorpay signature!");
-      return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+      return NextResponse.json({ message: "Invalid signature" }, { status: 403 });
     }
 
     const data = JSON.parse(body);
@@ -55,7 +55,7 @@ export async function POST(req) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Callback error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
 

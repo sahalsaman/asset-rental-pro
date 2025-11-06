@@ -123,7 +123,7 @@ export default function ProfilePage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-3 border p-6 rounded-lg shadow-sm bg-white">
                 <h2 className="text-lg font-semibold mb-2 text-gray-800 border-b-1 pb-2">Personal Information</h2>
                 <div>
-                    <Label htmlFor="fullName">First Name</Label>
+                    <Label htmlFor="fullName">First Name*</Label>
                     <Input
                         className="mt-1"
                         name="firstName"
@@ -152,7 +152,7 @@ export default function ProfilePage() {
                 <h2 className="text-lg font-semibold mb-2 text-gray-800 border-b-1 pb-2">Acoount Information</h2>
 
                 <div>
-                    <Label>Phone Number</Label>
+                    <Label>Phone Number*</Label>
                     <div className="flex items-center gap-2 mt-1">
                         <select
                             name="countryCode" // ✅ added

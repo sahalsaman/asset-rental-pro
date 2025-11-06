@@ -11,13 +11,13 @@ export async function GET(request) {
     const user = getTokenValue(request);
 
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const prop = request.nextUrl.searchParams.get("prop");
 
     if (!prop) {
-      return NextResponse.json({ error: "Select valid property" }, { status: 404 });
+      return NextResponse.json({ message: "Select valid property" }, { status: 404 });
     }
 
     await connectMongoDB();
@@ -86,7 +86,7 @@ export async function GET(request) {
   } catch (err) {
     // console.log(err);
     return NextResponse.json(
-      { error: "Failed to fetch dashboard data", details: err.message },
+      { message: "Failed to fetch dashboard data", details: err.message },
       { status: 500 }
     );
   }

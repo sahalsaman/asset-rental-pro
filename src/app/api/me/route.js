@@ -10,24 +10,24 @@ export async function GET(request) {
     const user = getTokenValue(request);
     
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     if (!user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const userData = await UserModel.findById(user.id).populate('organisationId', 'name address contactEmail contactPhone');
 
     if (!userData) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json(userData, { status: 200 });
   } catch (error) {
     console.error("Error fetching user:", error);
     return NextResponse.json(
-      { error: "Failed to fetch user" },
+      { message: "Failed to fetch user" },
       { status: 500 }
     );
   }
@@ -40,7 +40,7 @@ export async function PUT(request) {
     const user = getTokenValue(request);
 
     if (!user?.organisationId || !user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -58,7 +58,7 @@ export async function PUT(request) {
     )
 
     if (!updatedUser) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json(
@@ -68,7 +68,7 @@ export async function PUT(request) {
   } catch (error) {
     console.error("Error updating user:", error);
     return NextResponse.json(
-      { error: "Failed to update user" },
+      { message: "Failed to update user" },
       { status: 500 }
     );
   }

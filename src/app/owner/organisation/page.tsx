@@ -1,24 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import PropertyCard from "../../../components/PropertyCard";
-import PropertyFormModal from "../../../components/PropertyFormModal";
-import DeleteConfirmModal from "../../../components/DeleteConfirmModal";
 import { apiFetch } from "@/lib/api";
-import Breadcrumbs from "@/components/Breadcrumbs";
 import { FullscreenLoader } from "@/components/Loader";
-import { Edit } from "lucide-react";
-import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
-import OrganisationFormModal from "@/components/OrganisationFormModal";
+import { Edit, Globe, MapPin } from "lucide-react";
 import { UserRoles } from "@/utils/contants";
 import { IUser } from "@/app/types";
 import { useRouter } from "next/navigation";
+import EditOrganisationDialog from "@/components/OrganisationEditDialog";
+import toast from "react-hot-toast";
 
 export default function PropertiesPage() {
-  const [properties, setProperties] = useState([]);
-  const [addEditOpen, setAddEditOpen] = useState(false);
-  const [deleteOpen, setDeleteOpen] = useState(false);
-  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
   const [organisation, setOrganisation] = useState<any | null>(null);
   const [orgModalOpen, setOrgModalOpen] = useState(false);
   const [user, setUser] = useState<IUser | null>(null);
@@ -34,18 +26,7 @@ export default function PropertiesPage() {
   useEffect(() => {
     fetchUser();
     fetchOrganisation();
-    fetchProperties();
   }, []);
-
-  const fetchProperties = async () => {
-    const res = await apiFetch("/api/property");
-    const data = await res.json();
-    setProperties(data);
-    const ls = localStorageServiceSelectedOptions.getItem()
-    if (!ls?.property?._id) {
-      localStorageServiceSelectedOptions.setItem({ property: data[0], organisation: organisation });
-    }
-  };
 
   const fetchOrganisation = async () => {
     const res = await apiFetch("/api/organisation");
@@ -77,6 +58,10 @@ export default function PropertiesPage() {
             <Edit className="w-4 h-4" />
           </Button>
         </div>
+        <div>
+          {organisation?.address ? <p className="flex gap-1 items-center"><MapPin size={14} />{organisation?.address}</p> : ""}
+          {organisation?.website ? <p className="flex gap-1 items-center"><Globe size={14} />{organisation?.website}</p> : ""}
+        </div>
       </div>
       <div className=" p-1 md:pt-10 md:px-32 mb-10">
 
@@ -86,7 +71,7 @@ export default function PropertiesPage() {
             Properties
           </a> : ""}
           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
-            Automated invoicing & payments <br/><span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
+            Automated invoicing & payments <br /><span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
           </a> : ""}
           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
             Bank & UPI Details
@@ -97,7 +82,15 @@ export default function PropertiesPage() {
 
         </div>
       </div>
-
+      <EditOrganisationDialog
+        open={orgModalOpen}
+        onClose={() => setOrgModalOpen(false)}
+        organisation={organisation}
+        onUpdated={() => {
+          fetchOrganisation()
+          toast.success("Updated successfully!")
+        }}
+      />
 
     </div>
   );

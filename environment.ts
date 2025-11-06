@@ -1,6 +1,7 @@
 
 
 export const env: any = {
+    ENV: process.env.ENV,
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_USER_NAME: process.env.DB_USER_NAME,
     DB_NAME: process.env.DB_NAME,

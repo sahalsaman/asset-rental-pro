@@ -24,7 +24,7 @@ export async function GET(req) {
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch properties", details: err.message },
+      { message: "Failed to fetch properties", details: err.message },
       { status: 500 }
     );
   }
@@ -152,7 +152,7 @@ async function getPropertyDetail(propertyId) {
   );
 
   if (!property) {
-    return { error: "Property not found" };
+    return { message: "Property not found" };
   }
 
   const units = await UnitModel.find(

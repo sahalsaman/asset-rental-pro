@@ -9,6 +9,7 @@ import { UserRoles } from "@/utils/contants";
 import { app_config } from "../../../../app-config";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import CountdownTimer from "@/components/CountDown";
 
 export default function VerifyOTPPage() {
   const [phone, setPhone] = useState("");
@@ -60,8 +61,8 @@ export default function VerifyOTPPage() {
 
       toast.success("Logged in successfully!");
     } catch (err: any) {
-      if (err?.response?.data?.error) {
-        toast.error(err?.response?.data?.error);
+      if (err?.response?.data?.message) {
+        toast.error(err?.response?.data?.message);
       } else {
         toast.error("An error occurred. Please try again.");
         console.error("OTP verify error:", err);
@@ -85,8 +86,8 @@ export default function VerifyOTPPage() {
       <div className="sm:flex justify-center items-center w-full h-9/12 sm:h-fit bg-white sm:bg-transparent rounded-tl-2xl rounded-tr-2xl" >
         <div className="pt-20 sm:pt-0 w-full sm:w-fit  bg-white rounded-4xl sm:shadow-2xl">
           <div className="w-full max-w-[450px]  h-full px-6 sm:p-10 ">
-            <div className="space-y-6 w-full">
-              <div className="text-center mb-10">
+            <div className="space-y-4 w-full">
+              <div className="text-center mb-8">
 
                 <h2 className="text-3xl font-bold text-green-700 mb-2">Verify Your OTP</h2>
                 <p className="text-sm text-gray-600">

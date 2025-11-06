@@ -11,14 +11,14 @@ export async function GET(req) {
     await connectMongoDB();
     const user = getTokenValue(req);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const banks = await SelfRecieveBankOrUpiModel.find({ organisation: user?.organisationId }).sort({ isPrimary: -1 });
     return NextResponse.json(banks);
   } catch (error) {
     console.error("GET /banks error:", error);
-    return NextResponse.json({ error: "Failed to fetch banks" }, { status: 500 });
+    return NextResponse.json({ message: "Failed to fetch banks" }, { status: 500 });
   }
 }
 
@@ -27,7 +27,7 @@ export async function POST(req) {
     await connectMongoDB();
     const user = getTokenValue(req);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
@@ -47,6 +47,6 @@ export async function POST(req) {
     return NextResponse.json(newBank, { status: 201 });
   } catch (error) {
     console.error("POST /banks error:", error);
-    return NextResponse.json({ error: "Failed to add bank" }, { status: 500 });
+    return NextResponse.json({ message: "Failed to add bank" }, { status: 500 });
   }
 }

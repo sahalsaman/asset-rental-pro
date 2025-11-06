@@ -9,7 +9,7 @@ export async function GET(request) {
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const announcements = await AnnouncementModel.find({
@@ -20,7 +20,7 @@ export async function GET(request) {
   } catch (error) {
     console.error("Error fetching announcements:", error);
     return NextResponse.json(
-      { error: "Failed to fetch announcements" },
+      { message: "Failed to fetch announcements" },
       { status: 500 }
     );
   }
@@ -32,7 +32,7 @@ export async function POST(request) {
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
@@ -51,7 +51,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error creating announcement:", error);
     return NextResponse.json(
-      { error: "Failed to create announcement" },
+      { message: "Failed to create announcement" },
       { status: 500 }
     );
   }

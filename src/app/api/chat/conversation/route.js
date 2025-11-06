@@ -34,7 +34,7 @@ export async function GET(request, { params }) {
 
         return NextResponse.json(
             {
-                error: "Failed to send WhatsApp message",
+                message: "Failed to send WhatsApp message",
                 details: err.message,
                 api_response: err.response?.data // Include API error details if available
             },

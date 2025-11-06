@@ -10,13 +10,13 @@ import { OrganisationModel } from "../../../../models/Organisation";
 export async function GET(request) {
   const user = getTokenValue(request);
   if (!user?.organisationId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const url = new URL(request.url);
   const propertyId = url.searchParams.get("propertyId");
   if (!propertyId) {
-    return NextResponse.json({ error: "Missing propertyId" }, { status: 400 });
+    return NextResponse.json({ message: "Missing propertyId" }, { status: 400 });
   }
 
   const unitId = url.searchParams.get("unitId");
@@ -58,14 +58,14 @@ export async function GET(request) {
 // POST new unit
 export async function POST(request) {
   const user = getTokenValue(request);
-  if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user?.id) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const body = await request.json();
   await connectMongoDB();
 
   const organisation = await OrganisationModel.findById(user.organisationId)
   if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
-    return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
+    return NextResponse.json({ message: "Organisation subscription expired" }, { status: 403 });
   }
 
   if (body.isMultipleUnit) {
@@ -92,7 +92,7 @@ export async function POST(request) {
 // PUT update unit
 export async function PUT(request) {
   const user = getTokenValue(request);
-  if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user?.id) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const id = new URL(request.url).searchParams.get("id");
   const body = await request.json();
@@ -104,7 +104,7 @@ export async function PUT(request) {
 // DELETE unit
 export async function DELETE(request) {
   const user = getTokenValue(request);
-  if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user?.id) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const id = new URL(request.url).searchParams.get("id");
   await connectMongoDB();

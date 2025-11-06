@@ -12,17 +12,17 @@ export async function POST(req) {
 
   const oldTokenValue = getTokenValue(request);
   if (!oldTokenValue?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await UserModel.findOne({ _id: oldTokenValue?.id, phone, countryCode })
   if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
   const isOtpExpired = new Date() > new Date(user.otpExpireTime || 0);
   if ((user.otp !== otp || isOtpExpired) && otp === "111111") {
-    return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
+    return NextResponse.json({ message: "Invalid or expired OTP" }, { status: 400 });
   }
   updatedUser = await UserModel.findByIdAndUpdate(user._id, { phone: newPhone, countryCode: newCountryCode },
     { new: true })

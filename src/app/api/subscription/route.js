@@ -19,7 +19,7 @@ export async function GET(req) {
   const user = getTokenValue(req);
 
   if (!user?.organisationId)
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
   const org = await OrganisationModel.findById(user.organisationId);
   return NextResponse.json(org?.subscription || { message: "Not Activated" });
@@ -32,11 +32,11 @@ export async function POST(req) {
     const user = getTokenValue(req);
 
     if (!user?.organisationId)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { plan } = await req.json();
     const selected_plan = subscription_plans.find((i) => i.id === plan);
-    if (!selected_plan) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+    if (!selected_plan) return NextResponse.json({ message: "Invalid plan" }, { status: 400 });
 
     const startDate = new Date();
     const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -88,7 +88,7 @@ export async function POST(req) {
   } catch (error) {
     console.error("POST /subscription error:", error);
     return NextResponse.json(
-      { error: "Failed to create order" },
+      { message: "Failed to create order" },
       { status: 500 }
     );
   }

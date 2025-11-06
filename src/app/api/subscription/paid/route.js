@@ -23,11 +23,11 @@ export async function PUT(req) {
       .digest("hex");
 
     if (generated_signature !== razorpay_signature)
-      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid signature" }, { status: 400 });
 
     const selected_plan = subscription_plans.find((i) => i.id === plan);
     if (!selected_plan)
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid plan" }, { status: 400 });
 
     const startDate = new Date();
     const endDate = new Date();
@@ -36,7 +36,7 @@ export async function PUT(req) {
     else endDate.setMonth(endDate.getMonth() + 1);
 
     const org = await OrganisationModel.findById(organisationId);
-    if (!org) return NextResponse.json({ error: "Organisation not found" }, { status: 404 });
+    if (!org) return NextResponse.json({ message: "Organisation not found" }, { status: 404 });
 
     org.subscription = {
       plan: selected_plan.name,
@@ -88,6 +88,6 @@ export async function PUT(req) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("PUT /subscription error:", error);
-    return NextResponse.json({ error: "Verification failed" }, { status: 500 });
+    return NextResponse.json({ message: "Verification failed" }, { status: 500 });
   }
 }

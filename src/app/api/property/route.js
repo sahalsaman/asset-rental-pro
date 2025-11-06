@@ -16,35 +16,37 @@ export async function GET(request) {
     const user = getTokenValue(request);
 
     if (!user.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     if (!user.role) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const propertyId = new URL(request.url).searchParams.get("propertyId");
 
     await connectMongoDB();
+    const filter = {
+      organisationId: user.organisationId,
+      deleted: false,
+      disabled: false
+    }
     if (propertyId) {
-      const property = await PropertyModel.find({ _id: propertyId, organisationId: user.organisationId });
+      const property = await PropertyModel.find({ _id: propertyId, ...filter });
       return NextResponse.json(property[0] || null);
     } else {
       if (user.role === UserRoles.MANAGER) {
         const properties = await PropertyModel.find({
-          organisationId: user.organisationId,
           managers: user.id,
-          deleted: false,
-          disabled: false
         })
         return NextResponse.json(properties);
       } else {
-        const properties = await PropertyModel.find({ organisationId: user.organisationId });
+        const properties = await PropertyModel.find(filter);
         return NextResponse.json(properties);
       }
 
     }
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch properties", details: err.message },
+      { message: "Failed to fetch properties", details: err.message },
       { status: 500 }
     );
   }
@@ -54,7 +56,7 @@ export async function GET(request) {
 export async function POST(request) {
   const user = getTokenValue(request);
   if (!user?.organisationId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   await connectMongoDB();
@@ -64,9 +66,9 @@ export async function POST(request) {
 
     const organisation = await OrganisationModel.findById(user.organisationId)
     if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
-      return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
+      return NextResponse.json({ message: "Organisation subscription expired" }, { status: 403 });
     }
-  
+
     if (!body.selctedSelfRecieveBankOrUpi) {
       delete body.selctedSelfRecieveBankOrUpi;
     }
@@ -96,7 +98,7 @@ export async function POST(request) {
     );
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to add property", details: err.message },
+      { message: "Failed to add property", details: err.message },
       { status: 400 }
     );
   }
@@ -106,12 +108,12 @@ export async function POST(request) {
 export async function PUT(request) {
   const user = getTokenValue(request);
   if (!user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const id = new URL(request.url).searchParams.get("id");
   if (!id) {
-    return NextResponse.json({ error: "Missing property ID" }, { status: 400 });
+    return NextResponse.json({ message: "Missing property ID" }, { status: 400 });
   }
 
   await connectMongoDB();
@@ -121,7 +123,7 @@ export async function PUT(request) {
       { _id: id, organisationId: user.organisationId }
     );
     if (!existinProperty) {
-      return NextResponse.json({ error: "Not found " }, { status: 404 });
+      return NextResponse.json({ message: "Not found " }, { status: 404 });
     }
     if (body?.new_images?.length) {
       const uploadedImages = [];
@@ -160,12 +162,12 @@ export async function PUT(request) {
       { new: true }
     );
     if (!updated) {
-      return NextResponse.json({ error: "Not found or not authorized" }, { status: 404 });
+      return NextResponse.json({ message: "Not found or not authorized" }, { status: 404 });
     }
     return NextResponse.json({ message: "Property updated", updated });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to update property", details: err.message },
+      { message: "Failed to update property", details: err.message },
       { status: 400 }
     );
   }
@@ -175,12 +177,12 @@ export async function PUT(request) {
 export async function DELETE(request) {
   const user = getTokenValue(request);
   if (!user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const id = new URL(request.url).searchParams.get("id");
   if (!id) {
-    return NextResponse.json({ error: "Missing property ID" }, { status: 400 });
+    return NextResponse.json({ message: "Missing property ID" }, { status: 400 });
   }
 
   try {
@@ -190,12 +192,12 @@ export async function DELETE(request) {
       organisationId: user.organisationId, // ensure ownership
     });
     if (!deleted) {
-      return NextResponse.json({ error: "Not found or not authorized" }, { status: 404 });
+      return NextResponse.json({ message: "Not found or not authorized" }, { status: 404 });
     }
     return NextResponse.json({ message: "Property deleted" });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to delete property", details: err.message },
+      { message: "Failed to delete property", details: err.message },
       { status: 500 }
     );
   }

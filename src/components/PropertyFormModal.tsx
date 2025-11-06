@@ -305,7 +305,7 @@ export default function PropertyFormModal({
                   className="w-full border border-gray-300 rounded px-3 py-2"
                   required={formData?.is_paymentRecieveSelf}
                 >
-                  <option value="">Select Bank/UPI</option>
+                  <option value="">Select Bank/UPI*</option>
                   {banksList.length > 0 ? (
                     banksList.map((i: any) => (
                       <option key={i?._id} value={i?._id}>
@@ -333,7 +333,7 @@ export default function PropertyFormModal({
           )}
 
 
-          <Label>Property name</Label>
+          <Label>Property name*</Label>
           <Input
             name="name"
             value={formData.name}
@@ -341,7 +341,7 @@ export default function PropertyFormModal({
             placeholder="Property name"
             required
           />
-          <Label>Property Overview</Label>
+          <Label>Property Overview*</Label>
           <Textarea
             name="description"
             value={formData.description}
@@ -349,7 +349,7 @@ export default function PropertyFormModal({
             placeholder="Enter your amenities and services"
             required
           />
-          <Label>Address</Label>
+          <Label>Address*</Label>
           <Input
             name="address"
             value={formData.address}
@@ -357,7 +357,7 @@ export default function PropertyFormModal({
             placeholder="Address"
             required
           />
-          <Label>City</Label>
+          <Label>City*</Label>
           <Input
             name="city"
             value={formData.city}
@@ -366,7 +366,7 @@ export default function PropertyFormModal({
             required
           />
 
-          <Label>State</Label>
+          <Label>State*</Label>
           <Input
             name="state"
             value={formData.state}
@@ -399,7 +399,7 @@ export default function PropertyFormModal({
             placeholder="Select services"
           />
 
-          <Label>Status</Label>
+          <Label>Status*</Label>
           <select
             name="status"
             value={formData.status || ""}
@@ -416,7 +416,7 @@ export default function PropertyFormModal({
           </select>
 
 
-          <Label>Category</Label>
+          <Label>Category*</Label>
           <select
             name="category"
             value={formData.category || ""}
@@ -432,7 +432,7 @@ export default function PropertyFormModal({
             ))}
           </select>
 
-          <Label>Currency</Label>
+          <Label>Currency*</Label>
           <select
             name="currency"
             value={formData.currency || "₹"}

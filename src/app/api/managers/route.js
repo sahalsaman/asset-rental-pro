@@ -15,7 +15,7 @@ export async function GET(request) {
     const user = getTokenValue(request);
 
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     if (user.role == UserRoles.MANAGER) {
@@ -41,14 +41,14 @@ export async function POST(request) {
     const user = getTokenValue(request);
 
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const organisationId = user.organisationId;
     const { firstName, lastName, phone, properties, countryCode } = body;
 
     if (!firstName || !phone) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
     const newManager = await UserModel.create({
@@ -83,14 +83,14 @@ export async function PUT(request) {
     const user = getTokenValue(request);
 
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await request.json();
     const { managerId, firstName, lastName, phone, properties, countryCode } = body;
 
     if (!managerId) {
-      return NextResponse.json({ error: "Manager ID is required" }, { status: 400 });
+      return NextResponse.json({ message: "Manager ID is required" }, { status: 400 });
     }
 
     const existingManager = await UserModel.findOne({
@@ -100,7 +100,7 @@ export async function PUT(request) {
     });
 
     if (!existingManager) {
-      return NextResponse.json({ error: "Manager not found or unauthorized" }, { status: 404 });
+      return NextResponse.json({ message: "Manager not found or unauthorized" }, { status: 404 });
     }
 
     // ✅ Update allowed fields

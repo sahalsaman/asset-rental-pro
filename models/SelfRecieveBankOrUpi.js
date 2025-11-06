@@ -21,6 +21,8 @@ const SelfRecieveBankOrUpiSchema = new Schema(
     },
     upiPhoneCountryCode: { type: String, default: "+91" },
     status: { type: String, enum: BankStatus, default: BankStatus.ACTIVE },
+    disabled: { type: Boolean, required: true, default: false },
+    deleted: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

@@ -14,7 +14,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
 
@@ -25,7 +25,7 @@ export async function GET(request) {
     };
     if (propertyId) {
       if (!isValidObjectId(propertyId)) {
-        return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
+        return NextResponse.json({ message: "Invalid propertyId" }, { status: 400 });
       }
       filter.propertyId = propertyId;
     }
@@ -36,7 +36,7 @@ export async function GET(request) {
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch bookings", details: err.message },
+      { message: "Failed to fetch bookings", details: err.message },
       { status: 500 }
     );
   }

@@ -21,7 +21,7 @@ export async function GET(request) {
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     let filter = {};
@@ -46,7 +46,7 @@ export async function GET(request) {
     return NextResponse.json(invoices);
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch invoices", details: err.message },
+      { message: "Failed to fetch invoices", details: err.message },
       { status: 500 }
     );
   }
@@ -59,20 +59,20 @@ export async function POST(request) {
     const body = await request.json();
 
     if (!isValidObjectId(body.bookingId)) {
-      return NextResponse.json({ error: "Invalid bookingId" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid bookingId" }, { status: 400 });
     }
     if (!isValidObjectId(body.propertyId)) {
-      return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid propertyId" }, { status: 400 });
     }
     if (!isValidObjectId(body.unitId)) {
-      return NextResponse.json({ error: "Invalid unitId" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid unitId" }, { status: 400 });
     }
 
     const invoice = await InvoiceModel.create(body);
     return NextResponse.json({ message: "Invoice added", invoice }, { status: 201 });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to add invoice", details: err.message },
+      { message: "Failed to add invoice", details: err.message },
       { status: 400 }
     );
   }
@@ -84,7 +84,7 @@ export async function PUT(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id || !isValidObjectId(id)) {
-      return NextResponse.json({ error: "Invalid invoice ID" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid invoice ID" }, { status: 400 });
     }
 
     await connectMongoDB();
@@ -92,13 +92,13 @@ export async function PUT(request) {
     const updated = await InvoiceModel.findByIdAndUpdate(id, body, { new: true });
 
     if (!updated) {
-      return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
+      return NextResponse.json({ message: "Invoice not found" }, { status: 404 });
     }
 
     return NextResponse.json({ message: "Invoice updated", updated });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to update invoice", details: err.message },
+      { message: "Failed to update invoice", details: err.message },
       { status: 400 }
     );
   }
@@ -110,20 +110,20 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id || !isValidObjectId(id)) {
-      return NextResponse.json({ error: "Invalid invoice ID" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid invoice ID" }, { status: 400 });
     }
 
     await connectMongoDB();
     const deleted = await InvoiceModel.findByIdAndDelete(id);
 
     if (!deleted) {
-      return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
+      return NextResponse.json({ message: "Invoice not found" }, { status: 404 });
     }
 
     return NextResponse.json({ message: "Invoice deleted" });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to delete invoice", details: err.message },
+      { message: "Failed to delete invoice", details: err.message },
       { status: 500 }
     );
   }

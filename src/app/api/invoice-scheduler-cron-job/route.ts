@@ -75,7 +75,7 @@ const handleInvoice = async () => {
     paymentGateway="razorpay"
     }
     let new_amount = booking.amount + carryForwarded
-    await InvoiceModel.create({
+    const newInvoice=await InvoiceModel.create({
       organisationId: booking.organisationId?._id,
       bookingId: booking._id,
       propertyId: booking.propertyId,
@@ -93,7 +93,8 @@ const handleInvoice = async () => {
 
     let nextBillingDate = calculateNextBillingdate(booking.checkInDate, booking.frequency)
     await BookingModel.findByIdAndUpdate(booking._id, {
-      nextBillingDate
+      nextBillingDate,
+      lastInvoiceId:newInvoice._id
     })
 
     if (booking?.propertyId?.is_paymentRecieveSelf) {

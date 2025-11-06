@@ -134,7 +134,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
         <form onSubmit={handleSubmit} className="space-y-4 overflow-auto">
           {/* Full Name */}
           {!unitData && !editData && <div>
-            <Label htmlFor="unitId">Unit</Label>
+            <Label htmlFor="unitId">Unit*</Label>
             <select
               id="unitId"
               name="unitId"
@@ -151,7 +151,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
             </select>
           </div>}
           <div>
-            <Label htmlFor="fullName">Full Name</Label>
+            <Label htmlFor="fullName">Full Name*</Label>
             <Input
               id="fullName"
               name="fullName"
@@ -163,7 +163,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
           </div>
           {/* Phone */}
           <div>
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">Phone*</Label>
             <div className="flex items-center gap-2">
               <select
                 name="countryCode" // ✅ added
@@ -192,7 +192,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* WhatsApp Number */}
           <div>
-            <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+            <Label htmlFor="whatsappNumber">WhatsApp Number*</Label>
             <div className="flex items-center gap-2">
               <select
                 name="whatsappCountryCode" // ✅ added
@@ -222,7 +222,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* Address */}
           <div>
-            <Label htmlFor="address">Address</Label>
+            <Label htmlFor="address">Address*</Label>
             <Input
               id="address"
               name="address"
@@ -235,7 +235,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* Verification ID Type */}
           <div>
-            <Label htmlFor="verificationIdCard">Verification ID Type</Label>
+            <Label htmlFor="verificationIdCard">Verification ID Type*</Label>
             <select
               id="verificationIdCard"
               name="verificationIdCard"
@@ -254,7 +254,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* Verification ID Number */}
           <div>
-            <Label htmlFor="verificationIdCardNumber"> ID Number</Label>
+            <Label htmlFor="verificationIdCardNumber"> ID Number*</Label>
             <Input
               id="verificationIdCardNumber"
               name="verificationIdCardNumber"
@@ -266,7 +266,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* Check-in */}
           <div>
-            <Label htmlFor="checkIn">Check-In Date</Label>
+            <Label htmlFor="checkIn">Check-In Date*</Label>
             <Input
               id="checkIn"
               name="checkIn"
@@ -307,7 +307,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* Rent Amount */}
           <div>
-            <Label htmlFor="amount">Rent Amount</Label>
+            <Label htmlFor="amount">Rent Amount*</Label>
             <div className="flex items-center gap-1">
               {property?.currency}
               <Input
@@ -340,7 +340,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
           {/* Status */}
           <div>
-            <Label htmlFor="status">Booking Status</Label>
+            <Label htmlFor="status">Booking Status*</Label>
             <select
               id="status"
               name="status"
@@ -348,6 +348,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
               onChange={handleChange}
               className="w-full border border-gray-300 rounded px-3 py-2"
               required
+              disabled={editData?.status===BookingStatus.CHECKED_OUT}
             >
               <option value="">Select unit status</option>
               {Object.values(BookingStatus).map((status) => (
@@ -363,7 +364,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" className="w-full" variant="green">
+            <Button type="submit" className="w-full" variant="green"    disabled={editData?.status===BookingStatus.CHECKED_OUT}>
               {editData ? "Update" : "Submit"}
             </Button>
           </div>

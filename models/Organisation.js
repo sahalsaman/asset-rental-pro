@@ -63,12 +63,13 @@ const OrganisationSchema = new Schema(
     logo: String,
     owner: { type: Types.ObjectId, ref: "User", required: true },
     website: String,
-    disabled: { type: Boolean, default: false },
-    deleted: { type: Boolean, default: false },
     subscription: OrgSubscriptionSchema,
     vendorRazerpayAccount: vendorRazerpayAccountSchema,
     selctedSelfRecieveBankOrUpi: { type: Types.ObjectId, ref: "SelfRecieveBankOrUpi" },
     is_paymentRecieveSelf: { type: Boolean },
+    disabled: { type: Boolean, default: false },
+    deleted: { type: Boolean, default: false },
+    remark: { type: String },
   },
   { timestamps: true }
 );

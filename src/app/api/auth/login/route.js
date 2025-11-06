@@ -5,7 +5,7 @@ import { sendOTPText } from "@/utils/sendToWhatsApp";
 
 export async function POST(req) {
   try {
-    const { phone ,countryCode} = await req.json();
+    const { phone, countryCode } = await req.json();
 
     if (!phone) {
       return NextResponse.json({ message: "Phone number is required" }, { status: 400 });
@@ -16,14 +16,19 @@ export async function POST(req) {
 
     await connectMongoDB();
 
-    const user = await UserModel.findOne({ phone ,countryCode});
+    const user = await UserModel.findOne({ phone, countryCode });
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     if (user.disabled) {
-      return NextResponse.json({ message: "User is disabled" }, { status: 403 });
+      return NextResponse.json({ message: "User accound disabled, please contact rentities team " }, { status: 403 });
     }
+
+    if (user.deleted) {
+      return NextResponse.json({ message: "User accound deleted, please contact rentities team " }, { status: 403 });
+    }
+
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const otpExpireTime = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes from now
@@ -37,12 +42,14 @@ export async function POST(req) {
     });
 
     console.log(`🔄 OTP updated for ${phone}: ${otp}`);
-    const result = await sendOTPText(countryCode,phone,otp,`${user?.firstName} ${user?.lastName}`)
+    const result = await sendOTPText(countryCode, phone, otp, `${user?.firstName} ${user?.lastName}`)
 
-  return NextResponse.json({ message: "OTP sent successfully",data:{
-    countryCode: countryCode,
-    phone: phone,
-  } }, { status: 201 });
+    return NextResponse.json({
+      message: "OTP sent successfully", data: {
+        countryCode: countryCode,
+        phone: phone,
+      }
+    }, { status: 201 });
   } catch (err) {
     console.error("❌ OTP generation error:", err);
     return NextResponse.json(

@@ -1,4 +1,4 @@
-import { USER_ROLES, UserRoles } from '@/utils/contants';
+import { UserRoles } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
 const UserSchema = new Schema(
@@ -24,6 +24,7 @@ const UserSchema = new Schema(
     },
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
+    remark: { type: String },
   },
   { timestamps: true }
 );

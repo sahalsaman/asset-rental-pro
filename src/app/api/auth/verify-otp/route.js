@@ -2,20 +2,40 @@ import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { setTokenValue } from "@/utils/tokenHandler";
+import { UserRoles } from "@/utils/contants";
 
 export async function POST(req) {
   await connectMongoDB();
 
-  const { phone, otp,countryCode } = await req.json();
+  const { phone, otp, countryCode } = await req.json();
 
-  const user = await UserModel.findOne({ phone,countryCode }).populate()
+  const user = await UserModel.findOne({ phone, countryCode }).populate()
   if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  if (user.disabled) {
+    return NextResponse.json({ message: "User accound disabled, please contact rentities team " }, { status: 403 });
+  }
+
+  if (user.deleted) {
+    return NextResponse.json({ message: "User accound deleted, please contact rentities team " }, { status: 403 });
   }
 
   const isOtpExpired = new Date() > new Date(user.otpExpireTime || 0);
-  if ((user.otp !== otp || isOtpExpired) &&otp!=="111111") { // TEST MODE
-    return NextResponse.json({ error: "Invalid or expired OTP" }, { status: 400 });
+  if (isOtpExpired) {
+    return NextResponse.json({ message: "OTP Expired" }, { status: 400 });
+  }
+
+  if (user.role !== UserRoles.OWNER && user.role !== UserRoles.MANAGER) {
+    return NextResponse.json(
+      { message: "User does not have access to the vendor app. Please sign up with a different phone number" },
+      { status: 403 }
+    );
+  }
+
+  if (user.otp !== otp && otp !== "111111") { // TEST MODE
+    return NextResponse.json({ message: "Invalid OTP" }, { status: 400 });
   }
   const token = setTokenValue(user);
 

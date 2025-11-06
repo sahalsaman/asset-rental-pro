@@ -106,7 +106,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
           {/* Conditionally show Unit Number or Number of Units */}
           {!isMultipleUnit ? (
             <>
-              <Label>Unit Number</Label>
+              <Label>Unit Number*</Label>
               <Input
                 name="name"
                 placeholder="eg : Unit 101"
@@ -117,7 +117,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
             </>
           ) : (
             <>
-              <Label>Number of Units</Label>
+              <Label>Number of Units*</Label>
               <Input
                 name="numberOfUnits"
                 type="number"
@@ -136,7 +136,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
             onChange={handleChange}
           />
 
-          <Label>Amount</Label>
+          <Label>Rent Amount*</Label>
           <div className="flex items-center gap-1">
             {property?.currency}
             <Input
@@ -148,7 +148,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
               required
             />
           </div>
-          <Label>Select Rent Duration</Label>
+          <Label>Select Rent Duration*</Label>
           <select
             name="frequency"
             value={formData.frequency || ""}
@@ -166,7 +166,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
 
 
           {isFlatOrApartment && (
-            <>   <Label>Select Unit Type</Label>
+            <>   <Label>Select Unit Type*</Label>
               <select
                 name="type"
                 value={formData.type || ""}
@@ -208,7 +208,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
               onChange={handleChange}
             /></div>
 
-          <Label>Status</Label>
+          <Label>Status*</Label>
           <select
             name="status"
             value={formData.status || ""}

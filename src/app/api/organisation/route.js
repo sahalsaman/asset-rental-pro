@@ -10,11 +10,11 @@ export async function GET(request) {
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     if (user.role !== UserRoles.OWNER) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
     let organisation = await OrganisationModel.findById(user.organisationId).lean();
@@ -23,7 +23,7 @@ export async function GET(request) {
   } catch (error) {
     console.error("Error fetching organisation:", error);
     return NextResponse.json(
-      { error: "Failed to fetch organisation" },
+      { message: "Failed to fetch organisation" },
       { status: 500 }
     );
   }
@@ -35,11 +35,11 @@ export async function PUT(request) {
 
   const user = getTokenValue(request);
   if (!user?.organisationId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   if (user.role !== UserRoles.OWNER) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
   }
   const id = user.organisationId;
   const body = await request.json();

@@ -112,7 +112,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
         <div className="space-y-3">
           {/* Option */}
           <div>
-            <Label>Select Option</Label>
+            <Label>Select Option*</Label>
             <select
               name="paymentRecieverOption"
               value={formData.paymentRecieverOption || ""}
@@ -134,11 +134,11 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
           {formData.paymentRecieverOption === PaymentRecieverOptions.BANK && (
             <>
               <div>
-                <Label>Bank Name</Label>
+                <Label>Bank Name*</Label>
                 <Input className="mt-1" name="bankName" value={formData.bankName} onChange={handleChange} />
               </div>
               <div>
-                <Label>Account Holder Name</Label>
+                <Label>Account Holder Name*</Label>
                 <Input
                   className="mt-1"
                   name="accountHolderName"
@@ -147,15 +147,15 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
                 />
               </div>
               <div>
-                <Label>Account Number</Label>
+                <Label>Account Number*</Label>
                 <Input className="mt-1" name="value" type="number" value={formData.value} onChange={handleChange} />
               </div>
               <div>
-                <Label>IFSC Code</Label>
+                <Label>IFSC Code*</Label>
                 <Input className="mt-1" name="ifsc" value={formData.ifsc} onChange={handleChange} />
               </div>
               <div>
-                <Label>Branch</Label>
+                <Label>Branch*</Label>
                 <Input className="mt-1" name="branch" value={formData.branch} onChange={handleChange} />
               </div>
             </>
@@ -165,7 +165,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
           {formData.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE && (
             <>
               <div>
-                <Label>Account Holder Name</Label>
+                <Label>Account Holder Name*</Label>
                 <Input
                   className="mt-1"
                   name="accountHolderName"
@@ -174,20 +174,8 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
                 />
               </div>
               <div>
-                <Label>UPI Phone Number</Label>
+                <Label>UPI Phone Number*</Label>
                 <div className="flex items-center gap-2">
-                  <select
-                    name="countryCode"
-                    value={formData.upiPhoneCountryCode || ""}
-                    onChange={handleChange}
-                    className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-                  >
-                    {countryCodes.map((option) => (
-                      <option key={option.code} value={option.code}>
-                        {option.code}
-                      </option>
-                    ))}
-                  </select>
                   <Input
                     className="mt-1"
                     name="value"
@@ -205,7 +193,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
           {formData.paymentRecieverOption === PaymentRecieverOptions.UPIID && (
             <>
               <div>
-                <Label>Account Holder Name</Label>
+                <Label>Account Holder Name*</Label>
                 <Input
                   className="mt-1"
                   name="accountHolderName"
@@ -214,7 +202,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
                 />
               </div>
               <div>
-                <Label>UPI ID</Label>
+                <Label>UPI ID*</Label>
                 <Input className="mt-1" name="value" value={formData.value} onChange={handleChange} />
               </div>
             </>
@@ -224,7 +212,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
           {formData.paymentRecieverOption === PaymentRecieverOptions.UPIQR && (
             <>
               <div>
-                <Label>Account Holder Name</Label>
+                <Label>Account Holder Name*</Label>
                 <Input
                   className="mt-1"
                   name="accountHolderName"
@@ -234,7 +222,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
               </div>
 
               <div>
-                <Label>Upload QR Image</Label>
+                <Label>Upload QR Image*</Label>
                 <Input type="file" accept="image/*" onChange={handleQrUpload} className="mt-1" />
               </div>
 

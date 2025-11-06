@@ -13,7 +13,7 @@ export async function GET(request) {
     const user = getTokenValue(request);
 
     if (!user.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const organisationId = user.organisationId;
     const { searchParams } = new URL(request.url);
@@ -46,7 +46,7 @@ export async function GET(request) {
     return NextResponse.json();
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch bookings", details: err.message },
+      { message: "Failed to fetch bookings", details: err.message },
       { status: 500 }
     );
   }

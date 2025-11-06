@@ -6,7 +6,7 @@ import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
 import UnitModel from "../../../../models/Unit";
-import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus } from "@/utils/contants";
+import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import { OrganisationModel } from "../../../../models/Organisation";
 import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
@@ -25,7 +25,7 @@ export async function GET(request) {
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     if (bookingId) {
@@ -39,17 +39,17 @@ export async function GET(request) {
     const unitId = searchParams.get("unitId");
 
     let filter = {
-      organisationId:user?.organisationId
+      organisationId: user?.organisationId
     };
     if (propertyId) {
       if (!isValidObjectId(propertyId)) {
-        return NextResponse.json({ error: "Invalid propertyId" }, { status: 400 });
+        return NextResponse.json({ message: "Invalid propertyId" }, { status: 400 });
       }
       filter.propertyId = propertyId;
     }
     if (unitId) {
       if (!isValidObjectId(unitId)) {
-        return NextResponse.json({ error: "Invalid unitId" }, { status: 400 });
+        return NextResponse.json({ message: "Invalid unitId" }, { status: 400 });
       }
       filter.unitId = unitId;
     }
@@ -60,7 +60,7 @@ export async function GET(request) {
     return NextResponse.json(bookings);
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to fetch bookings", details: err.message },
+      { message: "Failed to fetch bookings", details: err.message },
       { status: 500 }
     );
   }
@@ -74,11 +74,11 @@ export async function POST(request) {
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     if (!isValidObjectId(body.unitId)) {
-      return NextResponse.json({ error: "Invalid unitId" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid unitId" }, { status: 400 });
     }
 
     const unit = await UnitModel.findById(body.unitId).populate("organisationId").populate("propertyId")
@@ -86,16 +86,29 @@ export async function POST(request) {
 
 
     if (!unit) {
-      return NextResponse.json({ error: "Unit not found for the given property" }, { status: 404 });
+      return NextResponse.json({ message: "Unit not found for the given property" }, { status: 404 });
     }
+
+    if (unit.propertyId?.status !== PropertyStatus.ACTIVE) {
+      return NextResponse.json({ message: "Property not active state" }, { status: 404 });
+    }
+
+    if (unit.propertyId?.disabled) {
+      return NextResponse.json({ message: "Property disabled, please contact rentities team" }, { status: 404 });
+    }
+    if (unit.propertyId?.deleted) {
+      return NextResponse.json({ message: "Property deleted, please contact rentities team" }, { status: 404 });
+    }
+
+
     if (!unit.status || (unit.status !== UnitStatus.AVAILABLE && unit.status !== UnitStatus.PARTIALLY_BOOKED)) {
-      return NextResponse.json({ error: "Unit already booked" }, { status: 404 });
+      return NextResponse.json({ message: "Unit already booked" }, { status: 404 });
     }
 
 
     const organisation = await OrganisationModel.findById(user.organisationId)
     if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
-      return NextResponse.json({ error: "Organisation subscription expired" }, { status: 403 });
+      return NextResponse.json({ message: "Organisation subscription expired" }, { status: 403 });
     }
 
     let nextBillingDate = null;
@@ -199,6 +212,10 @@ export async function POST(request) {
       await InvoiceModel.insertMany(invoices);
     }
 
+    await BookingModel.findByIdAndUpdate(booking._id, {
+      lastInvoiceId:invoices[invoices.length-1]._id
+    })
+
     if (unit.noOfSlots >= 1 && unit.currentBooking < unit.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.BOOKED)) {
       await UnitModel.findByIdAndUpdate(booking.unitId,
         {
@@ -214,7 +231,7 @@ export async function POST(request) {
     );
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to add booking", details: err.message },
+      { message: "Failed to add booking", details: err.message },
       { status: 400 }
     );
   }
@@ -226,7 +243,7 @@ export async function PUT(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id || !isValidObjectId(id)) {
-      return NextResponse.json({ error: "Invalid booking ID" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid booking ID" }, { status: 400 });
     }
 
     await connectMongoDB();
@@ -236,7 +253,7 @@ export async function PUT(request) {
     const existingBooking = await BookingModel.findById(id).populate("unitId")
 
     if (!existingBooking) {
-      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+      return NextResponse.json({ message: "Booking not found" }, { status: 404 });
     }
 
     const unit = existingBooking?.unitId
@@ -255,7 +272,7 @@ export async function PUT(request) {
     const updatedBooking = await BookingModel.findByIdAndUpdate(id, body, { new: true });
 
     if (!updatedBooking) {
-      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+      return NextResponse.json({ message: "Booking not found" }, { status: 404 });
     }
 
     if (unit.noOfSlots > 1 && updatedBooking.status === BookingStatus.CHECKED_OUT) {
@@ -279,7 +296,7 @@ export async function PUT(request) {
     return NextResponse.json({ message: "Booking updated", updatedBooking });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to update booking", details: err.message },
+      { message: "Failed to update booking", details: err.message },
       { status: 400 }
     );
   }
@@ -291,20 +308,20 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id || !isValidObjectId(id)) {
-      return NextResponse.json({ error: "Invalid booking ID" }, { status: 400 });
+      return NextResponse.json({ message: "Invalid booking ID" }, { status: 400 });
     }
 
     await connectMongoDB();
     const deleted = await BookingModel.findByIdAndDelete(id);
 
     if (!deleted) {
-      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+      return NextResponse.json({ message: "Booking not found" }, { status: 404 });
     }
 
     return NextResponse.json({ message: "Booking deleted" });
   } catch (err) {
     return NextResponse.json(
-      { error: "Failed to delete booking", details: err.message },
+      { message: "Failed to delete booking", details: err.message },
       { status: 500 }
     );
   }
