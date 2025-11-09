@@ -6,7 +6,7 @@ import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { IProperty } from '../types';
-import { SubscritptionStatus, UserRoles } from '@/utils/contants';
+import { PropertyStatus, SubscritptionStatus, UserRoles } from '@/utils/contants';
 import SubscriptionPlan from './subscription-plan/page';
 import { Button } from '@/components/ui/button';
 import { app_config } from '../../../app-config';
@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
   const fetchProperties = async () => {
-    const res = await apiFetch("/api/property");
+    const res = await apiFetch("/api/property?status="+PropertyStatus.ACTIVE);
     const data = await res.json();
     setProperties(data);
     if (data.length > 0) {

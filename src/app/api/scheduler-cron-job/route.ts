@@ -2,7 +2,7 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus } from "@/utils/contants";
-import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
+import { sendInvoiceToWhatsAppWithPaymentUrl } from "@/utils/sendToWhatsApp";
 import { generateRazorpayLinkForInvoice, razorpayPayout } from "@/utils/razerPay";
 import { NextResponse } from "next/server";
 import { OrganisationModel } from "../../../../models/Organisation";
@@ -68,14 +68,9 @@ const handleInvoice = async () => {
     const dueDate = calculateDueDate(booking?.frequency)
 
     const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
-    let paymentUrl = "SELF RECEIVE"
-    let paymentGateway = "manual"
-    if (booking?.propertyId?.is_paymentRecieveSelf === false) {
-          paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, booking.amount, booking.fullName, booking)
-    paymentGateway="razorpay"
-    }
+
     let new_amount = booking.amount + carryForwarded
-    const newInvoice=await InvoiceModel.create({
+    const newInvoice = await InvoiceModel.create({
       organisationId: booking.organisationId?._id,
       bookingId: booking._id,
       propertyId: booking.propertyId,
@@ -87,30 +82,23 @@ const handleInvoice = async () => {
       type: RentAmountType.RENT,
       dueDate,
       status: InvoiceStatus.PENDING,
-      paymentGateway,
-      paymentUrl
+
     });
 
     let nextBillingDate = calculateNextBillingdate(booking.checkInDate, booking.frequency)
     await BookingModel.findByIdAndUpdate(booking._id, {
       nextBillingDate,
-      lastInvoiceId:newInvoice._id
+      lastInvoiceId: newInvoice._id
     })
+    sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, dueDate);
 
-    if (booking?.propertyId?.is_paymentRecieveSelf) {
-      const selected_bank = await SelfRecieveBankOrUpiModel.findById(booking.propertyId?.selctedSelfRecieveBankOrUpi)
-      sendInvoiceToWhatsAppWithSelfBank(booking, new_amount, invoiceId, selected_bank, dueDate);
-    } else {
-      sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, paymentUrl, dueDate);
-    }
     return
   }
   console.log("cron handle nvoice working.........", new Date());
 }
 
 const sendOverdueMessage = async () => {
-  const invoices = await InvoiceModel.find({ disabled: false, status: InvoiceStatus.PENDING }).populate('bookingId');
-
+  const invoices = await InvoiceModel.find({ disabled: false, status: InvoiceStatus.PENDING }).populate('bookingId').populate('propertyId');
 
   if (invoices.length > 0) {
     for (const invoice of invoices) {
@@ -121,8 +109,10 @@ const sendOverdueMessage = async () => {
         invoice.status = InvoiceStatus.OVERDUE;
         await invoice.save();
       }
+      let booking = invoice?.bookingId
 
-      sendInvoiceToWhatsAppWithPaymentUrl(invoice?.bookingId, invoice?.amount, invoice?.invoiceId, invoice?.paymentUrl, dueDate);
+      sendInvoiceToWhatsAppWithPaymentUrl(booking, invoice.amount, invoice.invoiceId, dueDate);
+
     }
   }
   console.log("cron sendOverdueMessage working.........", new Date());

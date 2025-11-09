@@ -1,5 +1,5 @@
 import { app_config } from "../../app-config";
-import { SubscriptionBillingCycle } from "./contants";
+import { SubscriptionBillingCycle, SubscritptionPlan } from "./contants";
 
 export const countryCodes = [
   { code: "+91", name: "India" },
@@ -93,9 +93,11 @@ export const subscription_plans = [
   {
     id: "arp_subscription_trial",
     name: "Free",
+    plan: SubscritptionPlan.FREE,
     amount: 0,
     price: "₹0",
-    price_display: false, billingCycle: SubscriptionBillingCycle.MONTHLY,
+    price_display: false, 
+    billingCycle: SubscriptionBillingCycle.MONTHLY,
     period: "per month",
     description: "Perfect for new landlords managing a few assets.",
     features: [
@@ -112,6 +114,7 @@ export const subscription_plans = [
   {
     id: "arp_subscription_21",
     name: "Basic",
+    plan: SubscritptionPlan.BASIC,
     amount: 29,
     price: "₹29",
     price_display: true,
@@ -135,6 +138,7 @@ export const subscription_plans = [
   {
     id: "arp_subscription_pro47",
     name: "Pro",
+    plan: SubscritptionPlan.PRO,
     amount: 49,
     price: "₹49",
     price_display: true,

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { env } from '../../environment';
 import { PaymentRecieverOptions } from './contants';
+import { app_config } from '../../app-config';
 // import crypto from 'crypto';
 
 const config = {
@@ -95,7 +96,7 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: number, invoiceId: string, paymentLink: any,
+export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: number, invoiceId: string,
   dueDate: Date) {
   try {
     const formattedPhone = formatPhone("91" + booking?.whatsappNumber);  // Ensure correct format
@@ -107,6 +108,7 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: 
       year: "numeric",
     });
 
+    const paymentLink=app_config.PUBLIC_BASE_URL+"/payment/"+booking?.code
 
     const response = await axios.post(
       url,
@@ -132,127 +134,6 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: 
       success: false,
       error: error?.response?.data?.error || error?.message,
       code: error?.response?.data?.error?.code
-    };
-  }
-}
-
-
-export async function sendInvoiceToWhatsAppWithSelfBank(
-  booking: any,
-  amount: number,
-  invoiceId: string,
-  bankDetail: any,
-  dueDate: Date
-): Promise<{ success: boolean; messageId?: string; qrUrl?: string; error?: any }> {
-  try {
-    if (!booking?.whatsappNumber) throw new Error("Booking WhatsApp number missing.");
-    if (!bankDetail) throw new Error("Bank details not provided.");
-
-    const formattedPhone = formatPhone("91" + booking.whatsappNumber);
-    const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
-
-    let caption = "";
-    let qrUrl: string | null = null;
-
-    const dueDateStr = dueDate.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-
-    // 🔹 Create message caption
-    caption = `📄 *Hi ${booking?.fullName || "Customer"},*
-
-Invoice #${invoiceId}
-Due Date: ${dueDateStr}
-Amount: ₹${amount}`;
-
-    // 🔹 Add payment details
-    switch (bankDetail?.paymentRecieverOption) {
-      case PaymentRecieverOptions.BANK:
-        caption += `
-
-🏦 *Bank Transfer Details:*
-Account Name: ${bankDetail?.accountHolderName}
-Account No: ${bankDetail?.value}
-IFSC: ${bankDetail?.ifsc || "N/A"}
-Bank: ${bankDetail?.bankName || "N/A"}
-Branch: ${bankDetail?.branch || "N/A"}`;
-        break;
-
-      case PaymentRecieverOptions.UPIPHONE:
-        caption += `
-
-📱 *Pay via UPI Phone:*
-UPI Number: ${bankDetail?.upiPhoneCountryCode || "+91"} ${bankDetail?.value}
-Account Name: ${bankDetail?.accountHolderName}`;
-        break;
-
-      case PaymentRecieverOptions.UPIID:
-        caption += `
-
-💳 *Pay via UPI ID:*
-UPI ID: ${bankDetail?.value}
-Account Name: ${bankDetail?.accountHolderName}`;
-        break;
-
-      case PaymentRecieverOptions.UPIQR:
-        caption += `
-
-📸 *Scan this QR to pay:*
-Account Name: ${bankDetail?.accountHolderName}`;
-        // 🧠 Generate QR as base64 image
-        qrUrl = bankDetail?.value
-        break;
-
-      default:
-        caption += `
-
-Payment details not available.`;
-    }
-
-    caption += `
-
-Thank you!`;
-
-    // 🚀 Send WhatsApp message
-    const response = await axios.post(
-      url,
-      qrUrl
-        ? {
-          messaging_product: "whatsapp",
-          to: formattedPhone,
-          type: "image",
-          image: {
-            link: qrUrl, // base64 image
-            caption: caption,
-          },
-        }
-        : {
-          messaging_product: "whatsapp",
-          to: formattedPhone,
-          type: "text",
-          text: { body: caption },
-        },
-      {
-        headers: {
-          Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    console.log("✅ WhatsApp invoice message sent:", response.data);
-    return {
-      success: true,
-      messageId: response.data?.messages?.[0]?.id,
-      qrUrl: qrUrl || undefined,
-    };
-  } catch (error: any) {
-    console.error("❌ WhatsApp send error:", error?.response?.data || error.message);
-    return {
-      success: false,
-      error: error?.response?.data?.error || error.message,
     };
   }
 }

@@ -9,7 +9,7 @@ export async function POST(req) {
 
   const { phone, otp, countryCode } = await req.json();
 
-  const user = await UserModel.findOne({ phone, countryCode }).populate()
+  const user = await UserModel.findOne({ phone, countryCode }).populate("organisationId")
   if (!user) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }

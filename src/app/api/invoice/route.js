@@ -24,7 +24,11 @@ export async function GET(request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    let filter = {};
+    let filter = {
+      organisationId: user?.organisationId,
+      disabled: false,
+      deleted: false
+    };
     if (bookingId) {
       filter.bookingId = bookingId;
     }
@@ -34,14 +38,11 @@ export async function GET(request) {
     if (unitId) {
       filter.unitId = unitId;
     }
-    if (user?.organisationId) {
-      filter.organisationId = user.organisationId;
-    }
 
     const invoices = await InvoiceModel.find(filter)
-       .populate("bookingId")
-        .sort({ createdAt: -1 })
-        .lean(false);
+      .populate("bookingId")
+      .sort({ createdAt: -1 })
+      .lean(false);
 
     return NextResponse.json(invoices);
   } catch (err) {
@@ -53,32 +54,34 @@ export async function GET(request) {
 }
 
 // POST new invoice
-export async function POST(request) {
-  try {
-    await connectMongoDB();
-    const body = await request.json();
+// export async function POST(request) {
+//   try {
+//     await connectMongoDB();
+//     const body = await request.json();
 
-    if (!isValidObjectId(body.bookingId)) {
-      return NextResponse.json({ message: "Invalid bookingId" }, { status: 400 });
-    }
-    if (!isValidObjectId(body.propertyId)) {
-      return NextResponse.json({ message: "Invalid propertyId" }, { status: 400 });
-    }
-    if (!isValidObjectId(body.unitId)) {
-      return NextResponse.json({ message: "Invalid unitId" }, { status: 400 });
-    }
+//     if (!isValidObjectId(body.bookingId)) {
+//       return NextResponse.json({ message: "Invalid bookingId" }, { status: 400 });
+//     }
+//     if (!isValidObjectId(body.propertyId)) {
+//       return NextResponse.json({ message: "Invalid propertyId" }, { status: 400 });
+//     }
+//     if (!isValidObjectId(body.unitId)) {
+//       return NextResponse.json({ message: "Invalid unitId" }, { status: 400 });
+//     }
 
-    const invoice = await InvoiceModel.create(body);
-    return NextResponse.json({ message: "Invoice added", invoice }, { status: 201 });
-  } catch (err) {
-    return NextResponse.json(
-      { message: "Failed to add invoice", details: err.message },
-      { status: 400 }
-    );
-  }
-}
+//     const invoice = await InvoiceModel.create(body);
+//     return NextResponse.json({ message: "Invoice added", invoice }, { status: 201 });
+//   } catch (err) {
+//     return NextResponse.json(
+//       { message: "Failed to add invoice", details: err.message },
+//       { status: 400 }
+//     );
+//   }
+// }
 
 // PUT update invoice
+
+
 export async function PUT(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -89,6 +92,7 @@ export async function PUT(request) {
 
     await connectMongoDB();
     const body = await request.json();
+    body.paidAt = new Date()
     const updated = await InvoiceModel.findByIdAndUpdate(id, body, { new: true });
 
     if (!updated) {

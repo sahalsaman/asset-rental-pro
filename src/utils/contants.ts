@@ -62,10 +62,12 @@ export enum InvoiceStatus {
 
 // 📌 Transaction Type
 export enum TransactionType {
+  RAZORPAY = "razorpay",
+  MANUAL = "Manual",
   CREDIT = "Credit",
   DEBIT = "Debit",
   UPI = "UPI",
-  INHAND = "In hand",
+  BANK = "Bank",
 }
 
 export enum RentAmountType {
@@ -94,8 +96,14 @@ export enum AnnouncementType {
   USERS = 'users',
 }
 
+export enum SubscritptionPlan {
+  FREE = "free",
+  BASIC = 'basic',
+  PRO = 'pro',
+}
+
 export enum SubscritptionStatus {
-  FREE="free",
+  FREE = "free",
   ACTIVE = 'active',
   CANCELLED = 'cancelled',
   EXPIRED = 'expired',

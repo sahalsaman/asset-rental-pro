@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
     {
-      "path": "/api/invoice-scheduler-cron-job",
+      "path": "/api/scheduler-cron-job",
       "schedule": "0 0 * * *"
     }
   ]

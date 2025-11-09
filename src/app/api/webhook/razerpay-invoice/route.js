@@ -3,8 +3,8 @@ import crypto from "crypto";
 import connectMongoDB from "@/../database/db";
 import InvoiceModel from "@/../models/Invoice";
 import { InvoiceStatus } from "@/utils/contants";
-import { env } from "../../../../environment";
-import { OrganisationModel } from "../../../../models/Organisation";
+import { env } from "../../../../../environment";
+import { OrganisationModel } from "../../../../../models/Organisation";
 
 export async function POST(req) {
   try {
@@ -47,9 +47,9 @@ export async function POST(req) {
 
         }
       );
-      await OrganisationModel.findByIdAndUpdate(organisationId, {
-        $inc: { pendingPayout: payment.amount / 100 },
-      });
+      // await OrganisationModel.findByIdAndUpdate(organisationId, {
+      //   $inc: { pendingPayout: payment.amount / 100 },
+      // });
     }
 
     return NextResponse.json({ success: true });

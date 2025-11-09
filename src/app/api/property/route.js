@@ -22,12 +22,16 @@ export async function GET(request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const propertyId = new URL(request.url).searchParams.get("propertyId");
+    const status = new URL(request.url).searchParams.get("status");
 
     await connectMongoDB();
     const filter = {
       organisationId: user.organisationId,
       deleted: false,
-      disabled: false
+      disabled: false,
+    }
+    if(status){
+      filter.status=status
     }
     if (propertyId) {
       const property = await PropertyModel.find({ _id: propertyId, ...filter });

@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { SubscriptionBillingCycle, SubscritptionPaymentStatus, SubscritptionStatus } from "@/utils/contants";
+import { SubscriptionBillingCycle, SubscritptionPaymentStatus, SubscritptionPlan, SubscritptionStatus } from "@/utils/contants";
 
 const SubscriptionPaymentSchema = new Schema(
   {
@@ -21,7 +21,7 @@ const SubscriptionPaymentSchema = new Schema(
 );
 
 const OrgSubscriptionSchema = new Schema({
-  plan: { type: String, required: true },
+  plan: { type: String, enum:SubscritptionPlan, required: true },
   planId: { type: String, required: true,default:"arp_subscription_trial" },
   status: { type: String, enum: Object.values(SubscritptionStatus), default: SubscritptionStatus.FREE },
   startDate: { type: Date, required: true },

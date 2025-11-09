@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
-import Razorpay from "razorpay";
 import connectMongoDB from "@/../database/db";
-import { OrganisationModel, SubscriptionPaymentModel } from "@/../models/Organisation";
+import { OrganisationModel } from "@/../models/Organisation";
 import { env } from "../../../../environment";
 import { subscription_plans } from "@/utils/data";
 import { getTokenValue } from "@/utils/tokenHandler";
-import { SubscriptionBillingCycle, SubscritptionPaymentStatus, SubscritptionStatus } from "@/utils/contants";
-import { generateRazorpayLinkForSubscription } from "@/utils/razerPay";
+import { SubscriptionBillingCycle, SubscritptionStatus, TransactionType } from "@/utils/contants";
 
-const razorpay = new Razorpay({
-  key_id: env.RAZORPAY_KEY_ID,
-  key_secret: env.RAZORPAY_KEY_SECRET,
-});
 
 // 🔹 Get current subscription
 export async function GET(req) {
@@ -26,7 +20,7 @@ export async function GET(req) {
 }
 
 // 🔹 Update subscription
-export async function POST(req) {
+export async function PUT(req) {
   try {
     await connectMongoDB();
     const user = getTokenValue(req);
@@ -39,17 +33,15 @@ export async function POST(req) {
     if (!selected_plan) return NextResponse.json({ message: "Invalid plan" }, { status: 400 });
 
     const startDate = new Date();
-    const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     const subscription = {
       plan: selected_plan.name,
       planId: selected_plan.id,
-      status: selected_plan=="arp_subscription_trial"?SubscritptionStatus.FREE:SubscritptionStatus.PENDING,
+      status: selected_plan=="arp_subscription_trial"?SubscritptionStatus.FREE:SubscritptionStatus.ACTIVE,
       startDate,
-      endDate,
       billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
-      amount: selected_plan.amount,
-      paymentMethod: "razorpay",
+      unitPrice: selected_plan.amount,
+      paymentMethod: TransactionType.RAZORPAY,
     };
 
     await OrganisationModel.findByIdAndUpdate(
@@ -58,33 +50,7 @@ export async function POST(req) {
       { new: true }
     );
 
-    // Skip Razorpay for trial
-    if (selected_plan.id === "arp_subscription_trial") {
-      return NextResponse.json({ success: true, subscription });
-    }
-
-    // Razorpay order
-    const order = await generateRazorpayLinkForSubscription(
-      selected_plan.amount,
-      user.organisationId
-    );
-
-    await SubscriptionPaymentModel.create({
-      organisationId: user.organisationId,
-      subscriptionId: user.organisationId,
-      plan: selected_plan.name,
-      status: SubscritptionPaymentStatus.PENDING,
-      startDate,
-      amount: selected_plan.amount,
-      paymentMethod: "razorpay",
-      razorpay_orderId: order.id,
-    });
-
-    return NextResponse.json({
-      orderId: order.id,
-      key: razorpay.key_id,
-      subscription,
-    });
+    return NextResponse.json({ success: true, subscription });
   } catch (error) {
     console.error("POST /subscription error:", error);
     return NextResponse.json(

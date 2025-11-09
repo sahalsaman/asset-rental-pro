@@ -54,7 +54,7 @@ export async function POST(request) {
   // const endDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
   const subscription = {
-    plan: selected_plan.name,
+    plan: selected_plan.plan,
     planId: selected_plan.id,
     status: SubscritptionStatus.FREE,
     startDate,

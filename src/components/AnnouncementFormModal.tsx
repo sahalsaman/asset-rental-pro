@@ -4,9 +4,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { IAnnouncement } from "@/app/types";
+import { IAnnouncement, IProperty } from "@/app/types";
 import { Label } from "./ui/label";
-import { AnnouncementType } from "@/utils/contants";
+import { AnnouncementType, PropertyStatus } from "@/utils/contants";
+import { apiFetch } from "@/lib/api";
 
 interface Props {
   open: boolean;
@@ -18,9 +19,11 @@ interface Props {
 export default function AnnouncementFormModal({ open, onClose, onSave, editData }: Props) {
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
-  const [audienceType, setAudienceType] = useState<AnnouncementType|string>('');
+  const [audienceType, setAudienceType] = useState<AnnouncementType | string>('');
+  const [properties, setProperties] = useState<IProperty[]>([]);
 
   useEffect(() => {
+    fetchProperties()
     if (editData) {
       setTitle(editData.title);
       setMessage(editData.message);
@@ -31,6 +34,13 @@ export default function AnnouncementFormModal({ open, onClose, onSave, editData 
       setAudienceType("all");
     }
   }, [editData]);
+
+  const fetchProperties = async () => {
+    const res = await apiFetch("/api/property?status=" + PropertyStatus.ACTIVE);
+    const data = await res.json();
+    setProperties(data);
+
+  }
 
   const handleSubmit = () => {
     onSave({ title, message, audienceType });
@@ -62,8 +72,7 @@ export default function AnnouncementFormModal({ open, onClose, onSave, editData 
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="employees">Employees</SelectItem>
-                <SelectItem value="customers">Customers</SelectItem>
+                {properties.map(p => (<SelectItem key={p._id} value={p._id as string}>{p.name}</SelectItem>))}
               </SelectContent>
             </Select>
           </div>

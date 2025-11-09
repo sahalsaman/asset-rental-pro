@@ -6,13 +6,15 @@ import { env } from "../../environment";
     id: string;
     role: string;
     organisationId:string;
+    subscriptionPlan:string;
   };
 
 export function setTokenValue(user:any){
   const payload:IPayload = {
     id: user._id,
     role: user.role,
-    organisationId:user.organisationId
+    organisationId:user.organisationId?._id,
+    subscriptionPlan:user.organisationId?.subscription?.plan,
   };
 
   return  jwt.sign(payload, env.JWT_SECRET, {

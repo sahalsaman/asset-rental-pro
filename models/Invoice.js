@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from 'mongoose';
-import { InvoiceStatus, RentAmountType } from '@/utils/contants';
+import { InvoiceStatus, RentAmountType, TransactionType } from '@/utils/contants';
 import { type } from 'os';
 
 const InvoiceSchema = new Schema(
@@ -17,10 +17,9 @@ const InvoiceSchema = new Schema(
     dueDate: { type: Date, required: true },
     paymentGateway: { 
       type: String, 
-      enum: ['razorpay', 'upi', 'cash', 'manual'], 
-      default: 'manual' 
+      enum: TransactionType, 
+      default: TransactionType.MANUAL 
     },  
-    paymentUrl:{ type: String}, 
     paymentId:{ type: String}, 
     paidAt:{type:Date},
     disabled: { type: Boolean, required: true, default: false },

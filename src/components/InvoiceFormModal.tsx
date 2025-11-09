@@ -16,9 +16,9 @@ interface Props {
 }
 
 interface InvoiceFormData extends Partial<IInvoice> {
-  transactionId?: string;
-  transactionType?: TransactionType;
-  recivedDate?: string;
+  paymentId?: string;
+  paymentGateway?: TransactionType;
+  paidAt?: string;
 }
 
 export default function InvoiceFormModal({ open, onClose, onSave, editData }: Props) {
@@ -28,16 +28,16 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
     if (editData) {
       setFormData({
         ...editData,
-        transactionType: TransactionType.INHAND,
-        recivedDate: new Date().toISOString().split("T")[0],
+        paymentGateway: TransactionType.MANUAL,
+        paidAt: new Date().toISOString().split("T")[0],
       });
     } else {
       setFormData({
         disabled: false,
         status: InvoiceStatus.PENDING,
         type: RentAmountType.RENT,
-        transactionType: TransactionType.INHAND,
-        recivedDate: new Date().toISOString().split("T")[0],
+        paymentGateway: TransactionType.MANUAL,
+        paidAt: new Date().toISOString().split("T")[0],
       });
     }
   }, [editData]);
@@ -88,24 +88,24 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
 
           <Label>Transaction type</Label>
           <select
-            name="transactionType"
-            value={formData.transactionType || TransactionType.INHAND}
+            name="paymentGateway"
+            value={formData.paymentGateway || TransactionType.MANUAL}
             onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded px-3 py-2"
           >
-            {Object.values(TransactionType).map((transactionType) => (
-              <option key={transactionType} value={transactionType}>
-                {transactionType}
+            {Object.values(TransactionType).map((paymentGateway) => (
+              <option key={paymentGateway} value={paymentGateway}>
+                {paymentGateway}
               </option>
             ))}
           </select>
 
           <Label>Transaction Id</Label>
           <Input
-            name="transactionId"
+            name="paymentId"
             placeholder="Transaction Id"
-            value={formData.transactionId || ""}
+            value={formData.paymentId || ""}
             onChange={handleChange}
           />
 
@@ -126,9 +126,9 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
 
           <Label>Received date</Label>
           <Input
-            name="recivedDate"
+            name="paidAt"
             type="date"
-            value={formData.recivedDate || ""}
+            value={formData.paidAt || ""}
             onChange={handleChange}
           />
 

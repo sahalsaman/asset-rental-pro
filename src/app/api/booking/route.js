@@ -4,12 +4,11 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
-import { sendInvoiceToWhatsAppWithPaymentUrl, sendInvoiceToWhatsAppWithSelfBank } from "@/utils/sendToWhatsApp";
+import { sendInvoiceToWhatsAppWithPaymentUrl } from "@/utils/sendToWhatsApp";
 import UnitModel from "../../../../models/Unit";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import { OrganisationModel } from "../../../../models/Organisation";
-import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -39,7 +38,9 @@ export async function GET(request) {
     const unitId = searchParams.get("unitId");
 
     let filter = {
-      organisationId: user?.organisationId
+      organisationId: user?.organisationId,
+      disabled: false,
+      deleted: false
     };
     if (propertyId) {
       if (!isValidObjectId(propertyId)) {
@@ -123,6 +124,28 @@ export async function POST(request) {
       }
     }
 
+    function generateRandomCode() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let result = "";
+      for (let i = 0; i < 6; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    }
+
+    async function generateUniqueCode() {
+      let code;
+      let exists = true;
+
+      while (exists) {
+        code = generateRandomCode();
+        exists = await BookingModel.exists({ code });
+      }
+
+      return code;
+    }
+    const code = await generateUniqueCode();
+
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
@@ -130,13 +153,9 @@ export async function POST(request) {
       nextBillingDate,
       frequency: unit.frequency,
       organisationId: user.organisationId,
+      code
     });
 
-
-    let selected_bank
-    if (unit?.propertyId?.is_paymentRecieveSelf) {
-      selected_bank = await SelfRecieveBankOrUpiModel.findById(unit.propertyId?.selctedSelfRecieveBankOrUpi)
-    }
 
     const dueDate = calculateDueDate(booking?.frequency)
     console.log("dueDate", dueDate, booking?.frequency, unit.frequency);
@@ -149,12 +168,6 @@ export async function POST(request) {
     if (booking.advanceAmount && booking.advanceAmount > 0) {
 
       let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-01-ADV`
-      let paymentUrl = "SELF RECEIVE";
-      let paymentGateway = "manual"
-      if (unit?.propertyId?.is_paymentRecieveSelf === false) {
-        paymentUrl = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
-        paymentGateway = "razorpay"
-      }
       invoices.push({
         organisationId: user.organisationId,
         bookingId: booking._id,
@@ -166,25 +179,13 @@ export async function POST(request) {
         type: RentAmountType.ADVANCE,
         status: InvoiceStatus.PENDING,
         dueDate: dueDate || new Date(),
-        paymentGateway,
-        paymentUrl
       });
-      if (unit?.propertyId?.is_paymentRecieveSelf) {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.advanceAmount, invoiceId, selected_bank, dueDate);
-      } else {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.advanceAmount, invoiceId, paymentUrl, dueDate);
-      }
+
     }
 
     // --- First Rent Invoice ---
     if (booking.amount && booking.amount > 0) {
       let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-02-RENT`
-      let paymentUrl_2 = "SELF RECEIVE";
-      let paymentGateway = "manual"
-      if (unit?.propertyId?.is_paymentRecieveSelf === false) {
-        paymentUrl_2 = await generateRazorpayLinkForInvoice(invoiceId, amount, booking?.fullName, booking);
-        paymentGateway = "razorpay"
-      }
 
       invoices.push({
         organisationId: user.organisationId,
@@ -194,26 +195,23 @@ export async function POST(request) {
         invoiceId: invoiceId, // generate ID
         amount: booking.amount,
         balance: booking.amount,
-        type: RentAmountType.ADVANCE,
+        type: RentAmountType.RENT,
         status: InvoiceStatus.PENDING,
         dueDate: dueDate || new Date(),
-        paymentGateway,
-        paymentUrl: paymentUrl_2
       });
 
-      if (unit?.propertyId?.is_paymentRecieveSelf) {
-        sendInvoiceToWhatsAppWithSelfBank(booking, booking.amount, invoiceId, selected_bank, dueDate);
-      } else {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, invoiceId, paymentUrl_2, dueDate);
-      }
+
     }
 
     if (invoices.length > 0) {
-      await InvoiceModel.insertMany(invoices);
+      const res = await InvoiceModel.insertMany(invoices);
+      res?.map(i => {
+        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, i.invoiceId, dueDate);
+      })
     }
 
     await BookingModel.findByIdAndUpdate(booking._id, {
-      lastInvoiceId:invoices[invoices.length-1]._id
+      lastInvoiceId: invoices[invoices.length - 1]._id
     })
 
     if (unit.noOfSlots >= 1 && unit.currentBooking < unit.noOfSlots && (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.BOOKED)) {

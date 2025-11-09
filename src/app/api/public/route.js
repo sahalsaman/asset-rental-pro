@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import PropertyModel from "@/../models/Property";
 import UnitModel from "@/../models/Unit"; // Ensure this exists
+import BookingModel from "../../../../models/Booking";
+import InvoiceModel from "../../../../models/Invoice";
 
 
 export async function GET(req) {
@@ -9,25 +11,70 @@ export async function GET(req) {
     await connectMongoDB();
 
     const { searchParams } = new URL(req.url);
+
+    const type = searchParams.get("type");
     const id = searchParams.get("id"); // for detail page
     const search = searchParams.get("search")?.trim() || "";
     const category = searchParams.get("category")?.trim() || "";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
-    if (id) {
-      const data = await getPropertyDetail(id);
+    if (type == "pay") {
+      const payment = await getPaymentDetail(id)
+      return NextResponse.json(payment);
+    }
+    if (type == "property") {
+      if (id) {
+        const data = await getPropertyDetail(id);
+        return NextResponse.json(data);
+      }
+
+      const data = await getProperties(search, category, page, limit);
       return NextResponse.json(data);
     }
-
-    const data = await getProperties(search, category, page, limit);
-    return NextResponse.json(data);
+    return NextResponse.json(
+      { message: "type not found", details: err.message },
+      { status: 404 }
+    );
   } catch (err) {
     return NextResponse.json(
-      { message: "Failed to fetch properties", details: err.message },
+      { message: "Failed to fetch", details: err.message },
       { status: 500 }
     );
   }
+}
+
+
+async function getPaymentDetail(bookingCode) {
+  console.log(`Fetching payment detail for bookingCode: ${bookingCode}`);
+
+  const booking = await BookingModel.findOne(
+    { code: bookingCode, deleted: false, disabled: false },
+    {
+      _id: 1,
+      fullName: 1,
+      amount: 1,
+      frequency: 1,
+      status: 1,
+      whatsappCountryCode: 1,
+      whatsappNumber: 1,
+      createdAt: 1,
+    }
+  ).populate("propertyId").populate("unitId")
+
+  if (!booking) {
+    return NextResponse.json(
+      { message: "Booking not found", details: err.message },
+      { status: 404 }
+    );
+  }
+
+  const invoices = await InvoiceModel.find(
+    { bookingId: bookingId },
+    { _id: 1, amount: 1, type:1,status: 1, paidAt: 1, paymentGateway: 1,dueDate:1,createdAt:1,updatedAt:1 }
+  );
+
+  return { ...booking.toObject(), invoices };
 }
 
 
@@ -157,7 +204,7 @@ async function getPropertyDetail(propertyId) {
 
   const units = await UnitModel.find(
     { propertyId: property._id },
-    { _id: 1, name: 1, type: 1, amount: 1, status: 1,frequency:1, noOfSlots:1}
+    { _id: 1, name: 1, type: 1, amount: 1, status: 1, frequency: 1, noOfSlots: 1 }
   );
 
   return { ...property.toObject(), units };

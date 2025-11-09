@@ -68,7 +68,7 @@ export default function PropertiesPage() {
         }}
         onSave={() => {
           setAddEditOpen(false);
-          window.location.reload()
+          fetchProperties();
         }}
         initialData={selectedProperty}
       />

@@ -69,7 +69,7 @@ export async function PUT(req) {
     });
 
     const subscription = {
-      plan: selected_plan.name,
+      plan: selected_plan.plan,
       planId: selected_plan.id,
       status: SubscritptionStatus.ACTIVE,
       startDate,

@@ -126,6 +126,7 @@ export interface IBooking {
   organisationId: any;
   propertyId: any;
   unitId: any;
+  code:string;
   fullName: string;
   countryCode: string;
   phone: string;
@@ -160,7 +161,7 @@ export interface IInvoice {
   type: RentAmountType | string;
   status: InvoiceStatus;
   dueDate: Date;
-  paymentGateway: "razorpay" | "upi" | "cash" | "manual";
+  paymentGateway: TransactionType;
   disabled: boolean;
   deleted?: boolean;
   payments?: IPayment[];
@@ -172,7 +173,7 @@ export interface IPayment {
   date?: Date;
   amount: number;
   transactionId: string;
-  transactionType?: TransactionType | string;
+  paymentGateway?: TransactionType | string;
   razorpayPaymentId?: string;
   razorpayOrderId?: string;
   razorpaySignature?: string;

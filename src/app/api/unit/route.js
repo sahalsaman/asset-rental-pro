@@ -23,10 +23,17 @@ export async function GET(request) {
 
   await connectMongoDB();
 
+     let filter = {
+      propertyId,
+      organisationId: user?.organisationId,
+      disabled: false,
+      deleted: false
+    };
+
   if (unitId) {
     const unit = await UnitModel.findOne({
       _id: unitId,
-      propertyId,
+      ...filter
     });
 
     if (!unit) {
@@ -36,7 +43,7 @@ export async function GET(request) {
     return NextResponse.json({ ...unit.toObject(), bookingsCount: 0 });
   }
 
-  const units = await UnitModel.find({ propertyId,organisationId:user?.organisationId });
+  const units = await UnitModel.find(filter);
 
   const unitsWithCounts = await Promise.all(
     units.map(async (unit) => {
