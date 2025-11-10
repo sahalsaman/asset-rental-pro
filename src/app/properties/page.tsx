@@ -33,6 +33,7 @@ export default function PropertiesPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
+      params.append("type", "property");
       if (search) params.append("search", search);
       if (category && category !== "All") params.append("category", category);
 

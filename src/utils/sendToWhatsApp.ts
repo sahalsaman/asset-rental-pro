@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { env } from '../../environment';
-import { PaymentRecieverOptions } from './contants';
 import { app_config } from '../../app-config';
 // import crypto from 'crypto';
 
@@ -13,11 +12,6 @@ const config = {
 function formatPhone(phone: string): string {
   return phone.replace(/^\+/, '').replace(/\s|-/g, '');  // e.g., "+91 98765 43210" → "919876543210"
 }
-
-// function generateShortCode(otp: string, phone: string): string {
-//   const hash = crypto.createHash('md5').update(phone + otp).digest('hex');
-//   return hash.substring(0, 10).toUpperCase(); // Max 10 chars
-// }
 
 
 export async function sendOTPText(
@@ -108,7 +102,7 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: 
       year: "numeric",
     });
 
-    const paymentLink=app_config.PUBLIC_BASE_URL+"/payment/"+booking?.code
+    const paymentLink=app_config.PUBLIC_BASE_URL+"/user/payment/"+booking?.code
 
     const response = await axios.post(
       url,

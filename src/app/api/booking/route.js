@@ -167,7 +167,7 @@ export async function POST(request) {
     // --- Advance Payment Invoice ---
     if (booking.advanceAmount && booking.advanceAmount > 0) {
 
-      let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-01-ADV`
+      let invoiceId = `INV-${booking?.code}-01-ADV`
       invoices.push({
         organisationId: user.organisationId,
         bookingId: booking._id,
@@ -185,7 +185,7 @@ export async function POST(request) {
 
     // --- First Rent Invoice ---
     if (booking.amount && booking.amount > 0) {
-      let invoiceId = `INV-${booking._id?.toString()?.slice(-6, -1)}-02-RENT`
+      let invoiceId = `INV-${booking?.code}-02-RENT`
 
       invoices.push({
         organisationId: user.organisationId,

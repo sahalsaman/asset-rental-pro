@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Rental Property Management - Maximize Rental Income',
-    description: 'Professional rental property management services by WEBCOS. From tenant screening to rent collection, we handle it all for landlords and property owners.',
-    url: 'https://arp.webcos.co',
+    description: 'Professional rental property management application. From tenant screening to rent collection, we handle it all for landlords and property owners.',
+    url: 'https://rentities.in',
     siteName: 'WEBCOS',
     images: [
       {

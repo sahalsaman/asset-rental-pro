@@ -98,7 +98,7 @@ export const subscription_plans = [
     price: "₹0",
     price_display: false, 
     billingCycle: SubscriptionBillingCycle.MONTHLY,
-    period: "per month",
+    period: "booking per month",
     description: "Perfect for new landlords managing a few assets.",
     features: [
       "Digital invoices",
@@ -119,7 +119,7 @@ export const subscription_plans = [
     price: "₹29",
     price_display: true,
     billingCycle: SubscriptionBillingCycle.MONTHLY,
-    period: "per month",
+    period: "booking per month",
     description: "Per Unit/Room",
     features: [
       "Automated rent collection reminders",
@@ -143,7 +143,7 @@ export const subscription_plans = [
     price: "₹49",
     price_display: true,
     billingCycle: SubscriptionBillingCycle.MONTHLY,
-    period: "per month",
+    period: "booking per month",
     description: "Per Unit/Room",
     features: [
       "Automated rent collection with reminders",
