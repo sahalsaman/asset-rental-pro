@@ -31,15 +31,15 @@ export async function sendOTPText(
     const formattedPhone = formatPhone(`${countryCode}${phone}`);
     // const shortCode = generateShortCode(otp, formattedPhone);
     const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
-    // const payload = {
-    //   messaging_product: "whatsapp",
-    //   to: formattedPhone,
-    //   type: "text",
-    //   text: {
-    //     preview_url: false,
-    //     body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\nIt expires in 5 minutes. Please do not share it.`,
-    //   },
-    // };
+    const payload = {
+      messaging_product: "whatsapp",
+      to: formattedPhone,
+      type: "text",
+      text: {
+        preview_url: false,
+        body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\nIt expires in 5 minutes. Please do not share it.`,
+      },
+    };
     // const payload = {
     //   messaging_product: "whatsapp",
     //   to: formattedPhone,
@@ -65,15 +65,15 @@ export async function sendOTPText(
     //     ]
     //   }
     // };
-    const payload = {
-      messaging_product: "whatsapp",
-      to: formattedPhone,
-      type: "template",
-      template: {
-        name: "hello_world",
-        language: { code: "en_US" },
-      }
-    };
+    // const payload = {
+    //   messaging_product: "whatsapp",
+    //   to: formattedPhone,
+    //   type: "template",
+    //   template: {
+    //     name: "hello_world",
+    //     language: { code: "en_US" },
+    //   }
+    // };
     const headers = {
       Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
       "Content-Type": "application/json",
