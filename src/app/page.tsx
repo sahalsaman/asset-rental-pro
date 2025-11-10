@@ -8,10 +8,14 @@ import home_banner from "../../public/home_banner_image.png"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import Image from "next/image";
-import { defaultData, subscription_plans } from "@/utils/data";
+import { app_values, defaultData, faq_data, review_data, subscription_plans } from "@/utils/data";
 import { app_config } from "../../app-config";
 import toast from "react-hot-toast";
 import PropertyTypeSlider from "@/components/PropertiesSlider";
+import WhatsappButton from "@/components/WhatsappButton";
+
+// Import motion from framer-motion
+import { motion } from "framer-motion";
 
 // 1. Define the Interface for Props
 interface FAQItemProps {
@@ -137,28 +141,51 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
+      {/* For the hero section, you could animate the text elements individually on page load (not scroll)
+          or use a parallax effect on the background image. */}
       <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white overflow-hidden py-28 md:py-18 px-6 text-center md:text-left`}  >
         <div className="max-w-6xl mx-auto z-10 flex justify-between items-center gap-10">
           <div className="">
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up">
+            {/* Example: Initial fade-in for hero text on page load */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up"
+            >
               Discover & Manage Your Rental Assets Effortlessly
-            </h1>
-            <p className="text-lg md:text-xl mb-4 text-gray-100">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="text-lg md:text-xl mb-4 text-gray-100"
+            >
               Simplify bookings, automate rent, and scale faster with our smart rental platform.
-            </p>
+            </motion.p>
             <Link href="/auth/signup">
-              <button className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition">
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition"
+              >
                 Start Free
-              </button>
+              </motion.button>
             </Link>
           </div>
-          <div className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]">
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]"
+          >
             <Image src={home_banner} alt="banner" className="w-full max-w-[550px] drop-shadow-2xl" />
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Setup Guide Section   md:absolute top-[500px]  block md:hidden*/}
+      {/* Setup Guide Section */}
       <section id="setup-guide" className="py-12 md:py-24 px-6 w-full ">
         <div className="max-w-6xl mx-auto w-full ">
           <h2 className="text-4xl font-bold mb-6 text-center text-green-700">Quick Start Setup Guide</h2>
@@ -187,15 +214,23 @@ export default function Home() {
                 description: "Connect your payment gateway and set up recurring invoicing cycles for your tenants."
               }
             ].map((item, index) => (
-              <div key={index} className="flex flex-col items-center text-center p-8 bg-white rounded-xl shadow-2xl 
-              shadow-gray-200 transition duration-300 hover:shadow-green-300/50">
+              // Apply motion to each card
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }} // Start invisible and 50px below
+                whileInView={{ opacity: 1, y: 0 }} // Animate to visible and original position
+                viewport={{ once: true, amount: 0.5 }} // Trigger once when 50% of item is visible
+                transition={{ duration: 0.5, delay: index * 0.1 }} // Stagger delay for each card
+                className="flex flex-col items-center text-center p-8 bg-white rounded-xl shadow-2xl
+              shadow-gray-200 transition duration-300 hover:shadow-green-300/50"
+              >
                 <div className="w-14 h-14 bg-green-700 rounded-full flex items-center justify-center mb-4 shadow-lg">
                   {item.icon}
                 </div>
                 <p className="text-sm font-bold text-gray-500 uppercase">Step {item.step}</p>
                 <h3 className="text-xl font-bold mt-1 mb-3 text-green-800">{item.title}</h3>
                 <p className="text-gray-600 text-sm">{item.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -205,19 +240,31 @@ export default function Home() {
       <section id="about" className="py-12 md:py-24 px-6 bg-white ">
         <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
-          <div className="w-full md:w-1/2 text-center md:text-left">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6 }}
+            className="w-full md:w-1/2 text-center md:text-left"
+          >
             <h2 className="text-5xl font-extrabold mb-4 text-gray-700  inline-block">Why Choose </h2>
             <h2 className="text-5xl font-extrabold mb-8 text-green-700  inline-block pb-1 pl-3"> {app_config?.APP_NAME} ?</h2>
             <p className="text-xl text-gray-600 mb-10 leading-relaxed">
               We're more than just software. We're your partner in maximizing **Return on Investment (ROI)** by replacing manual, error-prone tasks with intelligent automation.
             </p>
 
-          </div>
+          </motion.div>
 
           {/* NEW IMAGE */}
-          <div className="w-full md:w-1/2 mt-10 md:mt-0">
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6 }}
+            className="w-full md:w-1/2 mt-10 md:mt-0"
+          >
             <Image src={about} alt="Logo" className="rounded-4xl" />
-          </div>
+          </motion.div>
         </div>
         <div className="max-w-6xl mx-auto mt-10">
           <div className="space-y-8 text-gray-700 grid  grid-cols-1 md:grid-cols-2">
@@ -243,13 +290,20 @@ export default function Home() {
                 detail: "Dedicated Owner Portals and instant, customizable reports give you the data needed to make **smart portfolio decisions**."
               }
             ].map((item, index) => (
-              <div key={index} className="flex items-start gap-4 p-2">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+                className="flex items-start gap-4 p-2"
+              >
                 <div className="p-2 bg-green-100 rounded-full">{item.icon}</div>
                 <div>
                   {item.text}
                   <p className="text-base text-gray-600 mt-1">{item.detail}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -265,8 +319,12 @@ export default function Home() {
 
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {subscriptionPlans.map((plan, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.5, delay: index * 0.15 }}
               className={`bg-white p-8 rounded-xl shadow-2xl shadow-gray-200 border-2 ${plan.borderColor} relative`}
             >
               {plan.highlight && (
@@ -296,7 +354,7 @@ export default function Home() {
                 {plan.buttonText}
               </button>
             </Link> */}
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -309,50 +367,37 @@ export default function Home() {
             Manage your properties on the go! Our native mobile app for iOS and Android keeps you connected to your portfolio and tenants 24/7.
           </p>
 
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col md:flex-row justify-center items-center gap-4"
+          >
             <Image src={playstore} alt="Play Store" width={220} className=" cursor-pointer" />
             <Image src={appstore} alt="App Store" width={220} className=" cursor-pointer" />
-          </div>
-
-          {/* <div className="flex justify-center space-x-8">
-            <div className="p-6 bg-gray-50 rounded-xl shadow-lg w-full max-w-sm">
-                <Download className="w-8 h-8 text-green-700 mx-auto mb-3"/>
-                <h3 className="text-2xl font-semibold mb-2">For Owners & Managers</h3>
-                <p className="text-gray-600 mb-4">Full access to dashboards, invoicing, and maintenance requests.</p>
-                <div className="space-y-3">
-                    <button className="w-full bg-gray-800 text-white py-3 rounded-xl hover:bg-gray-700">App Store (iOS)</button>
-                    <button className="w-full bg-green-700 text-white py-3 rounded-xl hover:bg-green-600">Google Play (Android)</button>
-                </div>
-            </div>
-          </div> */}
+          </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
       <section id="stats" className="py-12 md:py-24 bg-green-700 bg-gradient-to-br from-green-600 to-green-800 text-center">
         <div className="flex flex-col md:flex-row justify-center items-center gap-10 md:gap-30 text-white max-w-4xl mx-auto">
-          <div className="flex flex-col items-center">
-            {/* <Users className="w-10 h-10 mb-2" /> */}
-            <p className="text-xl md:text-2xl text-center">
-              <span className="text-5xl md:text-6xl font-bold">1,300+</span><br />
-              <span>Properties</span>
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            {/* <Building2 className="w-10 h-10 mb-2" /> */}
-            <p className="text-xl md:text-2xl text-center">
-              <span className="text-5xl md:text-6xl font-bold">98.5%</span><br />
-              <span className="text-nowrap">Average Occupainy Rate</span>
-            </p>
-          </div>
-          <div className="flex flex-col items-center">
-            {/* <Building2 className="w-10 h-10 mb-2" /> */}
-
-            <p className="text-xl md:text-2xl text-center">
-              <span className="text-5xl md:text-6xl font-bold">4.9/5</span><br />
-              <span className="text-nowrap">Owner Satisfaction Rating</span>
-            </p>
-          </div>
+          {app_values.map((stat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.7 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              className="flex flex-col items-center"
+            >
+              <p className="text-xl md:text-2xl text-center">
+                <span className="text-5xl md:text-6xl font-bold">{stat.value}</span><br />
+                <span className="text-nowrap">{stat.label}</span>
+              </p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -365,31 +410,13 @@ export default function Home() {
           </p>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Santhosh Reddy",
-                role: "Property Owner, Bengaluru",
-                review:
-                  "This platform has simplified my rent collection and maintenance tracking. Everything is automated — I don’t have to follow up manually anymore!",
-                rating: 5,
-              },
-              {
-                name: "Sara Thomas",
-                role: "Manager, Mumbai",
-                review:
-                  "The dashboard is intuitive and the support team is excellent. I manage multiple apartments easily from one place!",
-                rating: 5,
-              },
-              {
-                name: "Mohammed Rafi",
-                role: "Building Owner, Kochi",
-                review:
-                  "Highly recommend it for small business owners like me. The invoicing system and reports are a game-changer.",
-                rating: 4,
-              },
-            ].map((item, index) => (
-              <div
+            {review_data.map((item, index) => (
+              <motion.div
                 key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
                 className="bg-white p-8 rounded-2xl shadow-lg text-left flex flex-col justify-between hover:shadow-green-200 transition"
               >
                 <p className="text-gray-700 italic mb-6">“{item.review}”</p>
@@ -408,7 +435,7 @@ export default function Home() {
                   <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
                   <p className="text-sm text-gray-500">{item.role}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -419,28 +446,17 @@ export default function Home() {
       <section id="faq" className="py-12 md:py-24 px-6 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            {[
-              {
-                q: "What types of rental assets can I manage?",
-                a: "You can manage virtually any type of rental property, including units, apartments, houses, entire hostels, and even commercial properties. Our system is flexible to support various unit configurations."
-              },
-              {
-                q: "How does the automated invoicing work?",
-                a: "Our system automatically generates and sends rent invoices to tenants on a scheduled cycle (monthly, quarterly, etc.). It tracks payment status and sends automated reminders for overdue payments, simplifying your collection process."
-              },
-              {
-                q: "Is there a limit on the number of tenants or users?",
-                a: "The user/tenant limit depends on your chosen plan. The Basic plan supports a small number of properties, while the Pro and Enterprise plans allow for significantly more, or unlimited, users and tenants."
-              },
-              {
-                q: `Can I try ${app_config?.APP_NAME} before I subscribe?`,
-                a: "Yes! Our Basic plan is 14 days free and allows you to manage 1 property, giving you a comprehensive feel for the platform's core features before committing to a paid subscription."
-              }
-            ].map((item, index) => (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-xl shadow-lg p-6"
+          >
+            {faq_data.map((item, index) => (
               <FAQItem key={index} question={item.q} answer={item.a} />
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -455,7 +471,13 @@ export default function Home() {
 
           <div className="grid md:grid-cols-2 gap-12 items-start">
             {/* Contact Info */}
-            <div className="text-left space-y-6">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6 }}
+              className="text-left space-y-6"
+            >
               <div className="flex items-center gap-4">
                 <div className="bg-green-100 p-3 rounded-full">
                   <PhoneIcon className="w-6 h-6 text-green-700" />
@@ -485,11 +507,15 @@ export default function Home() {
                   <p className="text-gray-600">{app_config.ADDRESS}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Contact Form */}
-            <form
+            <motion.form
               onSubmit={handleSubmit}
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6 }}
               className=" p-8 rounded-2xl border space-y-4 text-left"
             >
               <div>
@@ -551,7 +577,7 @@ export default function Home() {
               >
                 {loading ? "Sending..." : "Send Message"}
               </button>
-            </form>
+            </motion.form>
           </div>
         </div>
       </section>
@@ -561,21 +587,93 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 px-10 bg-green-700 text-white text-center">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-4xl font-extrabold mb-4 drop-shadow">Ready to Take Control?</h2>
-          <p className="text-xl mb-8 text-green-100 px-2">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl font-extrabold mb-4 drop-shadow"
+          >
+            Ready to Take Control?
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-xl mb-8 text-green-100 px-2"
+          >
             Join thousands of landlords and managers simplifying their workflows and maximizing their profit today.
-          </p>
+          </motion.p>
           <Link href="/auth/signup">
-            <button className="rounded-full text-md px-8 py-4 bg-white text-green-700 font-semibold hover:bg-green-100 transition shadow-lg transform hover:scale-105">
+            <motion.button
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="rounded-full text-md px-8 py-4 bg-white text-green-700 font-semibold hover:bg-green-100 transition shadow-lg transform hover:scale-105"
+            >
               Create Your Free Account
-            </button>
+            </motion.button>
           </Link>
         </div>
       </section>
       {/* Footer */}
-      <footer className="py-6 text-center text-sm text-gray-500 bg-white">
-        © {new Date().getFullYear()} WEBCOS. All rights reserved.
+      <footer className="bg-white border-t border-gray-200">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-3">
+
+            <div className="col-span-2 lg:col-span-1">
+              <div className="flex items-center space-x-3">
+                <Image src={app_config.APP_LOGO} alt="Logo" width={30} className='cursor-pointer' />
+                <span className="text-3xl font-bold text-gray-900">{app_config.APP_NAME}</span>
+              </div>
+              <p className="mt-4 text-sm text-gray-600 max-w-xs">
+                Smart asset management platform trusted by owners and tenants worldwide.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">Company</h3>
+              <ul role="list" className="mt-4 space-y-4">
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">About Us</a></li>
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Careers</a></li>
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Blog</a></li>
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Pricing</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">Support</h3>
+              <ul role="list" className="mt-4 space-y-4">
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Help Center</a></li>
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Documentation</a></li>
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Contact Sales</a></li>
+                <li><a href="#" className="text-base text-gray-500 hover:text-green-700">Report a Bug</a></li>
+              </ul>
+            </div>
+
+          </div>
+
+          <div className="mt-8 border-t border-gray-200 pt-8">
+
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+
+              <p className="text-base text-gray-500 order-2 md:order-1">
+                &copy; 2025 {app_config.APP_NAME}, Inc. All rights reserved.
+              </p>
+
+              <div className="flex space-x-6 order-1 md:order-2">
+                <a href="#" className="text-base text-gray-500 hover:text-green-700">Privacy Policy</a>
+                <a href="#" className="text-base text-gray-500 hover:text-green-700">Terms of Service</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </footer>
+         <WhatsappButton />
     </main>
   );
 }

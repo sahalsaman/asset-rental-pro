@@ -96,7 +96,7 @@ export const subscription_plans = [
     plan: SubscritptionPlan.FREE,
     amount: 0,
     price: "₹0",
-    price_display: false, 
+    price_display: false,
     billingCycle: SubscriptionBillingCycle.MONTHLY,
     period: "booking per month",
     description: "Perfect for new landlords managing a few assets.",
@@ -165,3 +165,51 @@ export const subscription_plans = [
 ];
 
 
+export const faq_data = [
+  {
+    q: "What types of rental assets can I manage?",
+    a: "You can manage virtually any type of rental property, including units, apartments, houses, entire hostels, and even commercial properties. Our system is flexible to support various unit configurations."
+  },
+  {
+    q: "How does the automated invoicing work?",
+    a: "Our system automatically generates and sends rent invoices to tenants on a scheduled cycle (monthly, quarterly, etc.). It tracks payment status and sends automated reminders for overdue payments, simplifying your collection process."
+  },
+  {
+    q: "Is there a limit on the number of tenants or users?",
+    a: "The user/tenant limit depends on your chosen plan. The Basic plan supports a small number of properties, while the Pro and Enterprise plans allow for significantly more, or unlimited, users and tenants."
+  },
+  {
+    q: `Can I try ${app_config?.APP_NAME} before I subscribe?`,
+    a: "Yes! Our Basic plan is 14 days free and allows you to manage 1 property, giving you a comprehensive feel for the platform's core features before committing to a paid subscription."
+  }
+]
+
+export const review_data = [
+  {
+    name: "Santhosh Reddy",
+    role: "Property Owner, Bengaluru",
+    review:
+      "This platform has simplified my rent collection and maintenance tracking. Everything is automated — I don’t have to follow up manually anymore!",
+    rating: 5,
+  },
+  {
+    name: "Sara Thomas",
+    role: "Manager, Mumbai",
+    review:
+      "The dashboard is intuitive and the support team is excellent. I manage multiple apartments easily from one place!",
+    rating: 5,
+  },
+  {
+    name: "Mohammed Rafi",
+    role: "Building Owner, Kochi",
+    review:
+      "Highly recommend it for small business owners like me. The invoicing system and reports are a game-changer.",
+    rating: 4,
+  },
+]
+
+export const app_values = [
+  { value: "1,300+", label: "Properties" },
+  { value: "98.5%", label: "Average Occupancy Rate" },
+  { value: "4.9/5", label: "Owner Satisfaction Rating" }
+]

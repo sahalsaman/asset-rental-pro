@@ -8,5 +8,6 @@ export const app_config = {
     PUBLIC_BASE_URL: "https://rentities.in",
     EMAIL:"hello@rentities.in",
     PHONE_NUMBER:"+91 9947 9298 22",
+    WHATSAPP_NUMBER:"919947929822",
     ADDRESS:"Webcos Technologies, Kozhikode, Kerala, India"
 }
