@@ -19,7 +19,7 @@ export default function WhatsappButton() {
       <Image
         src={wa_logo}
         alt="whatsapp"
-        width={60}
+        width={50}
         className="cursor-pointer"
       />
     </div>

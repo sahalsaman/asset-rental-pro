@@ -150,7 +150,7 @@ export default function Home() {
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.4, delay: 0 }}
               className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up"
             >
               Discover & Manage Your Rental Assets Effortlessly
@@ -158,7 +158,7 @@ export default function Home() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.4, delay: 0 }}
               className="text-lg md:text-xl mb-4 text-gray-100"
             >
               Simplify bookings, automate rent, and scale faster with our smart rental platform.
@@ -167,7 +167,7 @@ export default function Home() {
               <motion.button
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.6 }}
+                transition={{ duration: 0.6, delay: 0 }}
                 className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition"
               >
                 Start Free
@@ -177,7 +177,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ duration: 0.4, delay: 0 }}
             className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]"
           >
             <Image src={home_banner} alt="banner" className="w-full max-w-[550px] drop-shadow-2xl" />
