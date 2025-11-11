@@ -12,6 +12,7 @@ import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import BookingAddEditModal from "@/components/BookingFormModal";
 import toast from "react-hot-toast";
 import { FullscreenLoader } from "@/components/Loader";
+import { app_config } from "../../../../app-config";
 
 
 export default function OwnerDashboard() {
@@ -32,7 +33,7 @@ export default function OwnerDashboard() {
   const current_property = localStorageServiceSelectedOptions.getItem()?.property
 
   const setQRcodeUrl = () => {
-    setQrUrl(`http://arp.webcos.co/user/${current_property?._id}`);
+    setQrUrl(`${app_config.PUBLIC_BASE_URL}/user/${current_property?._id}`);
   }
 
   // Fetch status from backend API

@@ -4,6 +4,7 @@ import PropertyModel from "@/../models/Property";
 import UnitModel from "@/../models/Unit"; // Ensure this exists
 import BookingModel from "../../../../models/Booking";
 import InvoiceModel from "../../../../models/Invoice";
+import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 
 
 export async function GET(req) {
@@ -22,6 +23,10 @@ export async function GET(req) {
     if (type == "pay") {
       const payment = await getPaymentDetail(id)
       return NextResponse.json(payment);
+    }
+    if (type == "ac") {
+      const ac = await getRecieveAccountDetail(id)
+      return NextResponse.json(ac);
     }
     if (type == "property") {
       if (id) {
@@ -70,11 +75,39 @@ async function getPaymentDetail(bookingCode) {
   }
 
   const invoices = await InvoiceModel.find(
-    { bookingId: bookingId },
-    { _id: 1, amount: 1, type:1,status: 1, paidAt: 1, paymentGateway: 1,dueDate:1,createdAt:1,updatedAt:1 }
+    { bookingId: booking._id, deleted: false, disabled: false },
+    { _id: 1, amount: 1, type: 1, status: 1, paidAt: 1, paymentGateway: 1, dueDate: 1, createdAt: 1, updatedAt: 1 }
   );
 
   return { ...booking.toObject(), invoices };
+}
+
+async function getRecieveAccountDetail(id) {
+
+  const acc = await SelfRecieveBankOrUpiModel.findOne(
+    { _id: id },
+    {
+      _id: 1,
+      paymentRecieverOption: 1,
+      accountHolderName: 1,
+      value: 1,
+      ifsc: 1,
+      bankName: 1,
+      branch: 1,
+      image: 1,
+      upiPhoneCountryCode: 1,
+      status: 1,
+    }
+  );
+  console.log(`Fetching recieve account detail for id: ${acc}, ${id}`);
+  if (!acc) {
+    return NextResponse.json(
+      { message: "Account not found" },
+      { status: 404 }
+    );
+  }
+
+  return acc;
 }
 
 

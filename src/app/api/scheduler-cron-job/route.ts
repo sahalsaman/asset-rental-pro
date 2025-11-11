@@ -67,7 +67,7 @@ const handleInvoice = async () => {
 
     const dueDate = calculateDueDate(booking?.frequency)
 
-    const invoiceId = `INV-${booking._id}-${Date.now()}-RENT`;
+    const invoiceId = `INV-${booking?.code}-${Date.now()}-RENT`;
 
     let new_amount = booking.amount + carryForwarded
     const newInvoice = await InvoiceModel.create({

@@ -6,17 +6,21 @@ import { apiFetch } from "@/lib/api";
 import { FullscreenLoader } from "@/components/Loader";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import { InvoiceStatus } from "@/utils/contants";
+import { InvoiceStatus, PaymentRecieverOptions } from "@/utils/contants";
 import { app_config } from "../../../../../app-config";
 import toast from "react-hot-toast";
 import Script from "next/script";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export default function UserBookingPayPage() {
   const [booking, setBooking] = useState<any | null>(null);
+  const [orgAccount, setOrgAccount] = useState<any | null>(null);
   const [loader, setLoader] = useState(true);
   const router = useRouter();
   const params = useParams();
   const bookingId = params.id;
+  const [userSelfPayPopup, setUserSelfPayPopup] = useState(false);
 
   const fetchBooking = async () => {
     try {
@@ -28,7 +32,24 @@ export default function UserBookingPayPage() {
     } catch (err) {
       console.error("Error fetching booking:", err);
       toast.error("Failed to load details");
-      router.push("/");
+      // router.push("/");
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const fetchOrgAccountDetail = async () => {
+    try {
+      setLoader(true);
+      const res = await apiFetch(`/api/public?id=${booking?.propertyId?.selctedSelfRecieveBankOrUpi}&&type=ac`);
+      if (!res.ok) throw new Error("Failed to fetch booking");
+      const data = await res.json();
+      setOrgAccount(data);
+      setUserSelfPayPopup(true);
+    } catch (err) {
+      console.error("Error fetching booking:", err);
+      toast.error("Failed to load details");
+      // router.push("/");
     } finally {
       setLoader(false);
     }
@@ -52,7 +73,7 @@ export default function UserBookingPayPage() {
       </div>
     );
 
-  const handlePayOnline = async (invoiceId: string, amount: number) => {
+  const payThroughRazerpay = async (invoiceId: string, amount: number) => {
     try {
       const res = await fetch("/api/invoice/payment", {
         method: "POST",
@@ -84,7 +105,7 @@ export default function UserBookingPayPage() {
           });
 
           const result = await verifyRes.json();
-          if (verifyRes.ok){ 
+          if (verifyRes.ok) {
             toast.success("Payment successful!");
             fetchBooking();
           }
@@ -100,6 +121,14 @@ export default function UserBookingPayPage() {
     }
   };
 
+  const handlePayOnline = async (invoiceId: string, amount: number) => {
+
+    if (booking?.propertyId?.is_paymentRecieveSelf) {
+      fetchOrgAccountDetail();
+    } else {
+      payThroughRazerpay(invoiceId, amount);
+    }
+  }
 
   const handlePayViaCash = async () => {
     alert("Cash payment recorded!");
@@ -116,9 +145,13 @@ export default function UserBookingPayPage() {
     });
   };
 
+  const onClose = () => {
+    setUserSelfPayPopup(false);
+  }
+
   return (
     <div className="min-h-screen flex justify-center bg-slate-100 h-full">
-         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
       <div className="w-full max-w-[500px] relateive bg-white ">
         {/* Header */}
         <div className="p-6 pb-10 flex justify-between items-center bg-green-700 text-white">
@@ -187,7 +220,7 @@ export default function UserBookingPayPage() {
                           className="bg-green-700 hover:bg-green-800 flex-1"
                           onClick={() => handlePayOnline(i._id, i.amount)}
                         >
-                          💳 Pay online
+                          {booking?.propertyId?.is_paymentRecieveSelf ? '' : '💳'} Pay online
                         </Button>
                         <Button
                           variant="outline"
@@ -245,6 +278,70 @@ export default function UserBookingPayPage() {
           </div>
         </div>
       </div>
+      <Dialog open={userSelfPayPopup} onOpenChange={onClose}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto overscroll-contain p-6">
+          <DialogHeader>
+            <DialogTitle>Payment Detail</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>
+              Please transfer the due amount to the following account:
+            </p>
+            <div className="bg-gray-100 p-4 rounded-md">
+              {orgAccount?.accountHolderName && (
+                <p className="text-gray-600 text-sm">
+                  <b>Holder Name:</b> {orgAccount?.accountHolderName}
+                </p>
+              )}
+
+              {orgAccount?.value && (
+                <p className="text-gray-600 text-sm">
+                  <b>
+                    {orgAccount?.paymentRecieverOption === PaymentRecieverOptions.BANK
+                      ? "A/C No"
+                      : orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE
+                        ? "UPI Phone"
+                        : orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIQR
+                          ? "UPI QR"
+                          : "UPI ID"}
+                    :
+                  </b>{" "}
+                  {orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE
+                    ? orgAccount?.upiPhoneCountryCode
+                    : ""}{" "}
+                  {orgAccount?.paymentRecieverOption != PaymentRecieverOptions.UPIQR ? orgAccount?.value : ""}
+                </p>
+              )}
+
+              {/* Generate QR Code dynamically for UPI QR */}
+              {orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIQR && (
+                <div className="mt-2 flex flex-col items-center">
+                  <img
+                    src={orgAccount?.value}
+                    alt="Generated QR Code"
+                    className="w-40 h-40 object-contain "
+                  />
+                </div>
+              )}
+
+              {orgAccount?.ifsc && (
+                <p className="text-gray-600 text-sm">
+                  <b>IFSC:</b> {orgAccount?.ifsc}
+                </p>
+              )}
+              <p className="mt-4 text-xs">
+                After completing the transfer, please notify the property owner to confirm your payment.
+              </p>
+            </div>
+            <Button
+              className=" w-full"
+              onClick={onClose}
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

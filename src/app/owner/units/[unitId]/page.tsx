@@ -77,16 +77,16 @@ export default function UnitDetailPage() {
                   {unit.type}
                 </span>
               )}
-              <div className="flex flex-wrap items-center gap-1 ">
+              <div className="flex flex-wrap items-center gap-3 mt-2 ">
 
                 <p className=" text-xs flex gap-1">
                   <ReceiptIndianRupee size={16} className="text-gray-700" />
                   <span>  {current_property?.currency}{unit.amount?.toLocaleString()} {unit?.frequency && ` Per ${unit.frequency}`}</span>
                 </p>
                 {unit?.advanceAmount && unit?.advanceAmount > 0 ? (
-                  <span className=" text-xs">
+                  <p className=" text-xs">
                     Advance: {current_property?.currency}{unit.advanceAmount?.toLocaleString()}
-                  </span>
+                  </p>
                 ) : ""}
                 {unit?.noOfSlots > 1 && (
                   <span className="px-2 py-1 bg-pink-100 text-pink-800 rounded-md text-xs">

@@ -33,7 +33,7 @@ export default function PropertyDetailPage() {
   async function fetchPropertyDetails() {
     try {
       setLoading(true);
-      const res = await fetch(`/api/public?id=${id}`);
+      const res = await fetch(`/api/public?id=${id}&&type=property`);
       const data = await res.json();
       setProperty(data);
     } catch (err) {
