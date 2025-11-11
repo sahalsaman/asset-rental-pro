@@ -9,6 +9,7 @@ import UnitModel from "../../../../models/Unit";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import { OrganisationModel } from "../../../../models/Organisation";
+import UserModel from "../../../../models/User";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
@@ -28,7 +29,7 @@ export async function GET(request) {
     }
 
     if (bookingId) {
-      const bookings = await BookingModel.findById(bookingId)
+      const bookings = await BookingModel.findById(bookingId).populate("userId");
 
       return NextResponse.json(bookings);
     }
@@ -74,7 +75,7 @@ export async function POST(request) {
     const body = await request.json();
 
     const user = getTokenValue(request);
-    if (!user?.organisationId) {
+    if (!user?.organisationId&&body.type!=="public") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -82,9 +83,7 @@ export async function POST(request) {
       return NextResponse.json({ message: "Invalid unitId" }, { status: 400 });
     }
 
-    const unit = await UnitModel.findById(body.unitId).populate("organisationId").populate("propertyId")
-
-
+    const unit = await UnitModel.findById(body.unitId).populate("propertyId")
 
     if (!unit) {
       return NextResponse.json({ message: "Unit not found for the given property" }, { status: 404 });
@@ -101,19 +100,16 @@ export async function POST(request) {
       return NextResponse.json({ message: "Property deleted, please contact rentities team" }, { status: 404 });
     }
 
-
     if (!unit.status || (unit.status !== UnitStatus.AVAILABLE && unit.status !== UnitStatus.PARTIALLY_BOOKED)) {
       return NextResponse.json({ message: "Unit already booked" }, { status: 404 });
     }
 
-
-    const organisation = await OrganisationModel.findById(user.organisationId)
+    const organisation = await OrganisationModel.findById(unit.organisationId);
     if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
       return NextResponse.json({ message: "Organisation subscription expired" }, { status: 403 });
     }
 
     let nextBillingDate = null;
-    console.log(body.status, BookingStatus.CHECKED_IN, unit.frequency, body.checkOut);
 
     if (body.status === BookingStatus.CHECKED_IN && unit.frequency) {
       const checkInDate = new Date(body.checkIn);
@@ -146,14 +142,21 @@ export async function POST(request) {
     }
     const code = await generateUniqueCode();
 
+    const userData = await UserModel.findById(body.userId);
+
+    if (!userData) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
     // 1️⃣ Create booking
     const booking = await BookingModel.create({
       ...body,
       propertyId: unit?.propertyId?._id,
       nextBillingDate,
       frequency: unit.frequency,
-      organisationId: user.organisationId,
-      code
+      organisationId: unit.organisationId,
+      code,
+      userId: userData._id,
     });
 
 
@@ -169,7 +172,7 @@ export async function POST(request) {
 
       let invoiceId = `INV-${booking?.code}-01-ADV`
       invoices.push({
-        organisationId: user.organisationId,
+        organisationId: unit.organisationId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
         unitId: booking.unitId,
@@ -188,7 +191,7 @@ export async function POST(request) {
       let invoiceId = `INV-${booking?.code}-02-RENT`
 
       invoices.push({
-        organisationId: user.organisationId,
+        organisationId: unit.organisationId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
         unitId: booking.unitId,
@@ -200,13 +203,12 @@ export async function POST(request) {
         dueDate: dueDate || new Date(),
       });
 
-
     }
 
     if (invoices.length > 0) {
       const res = await InvoiceModel.insertMany(invoices);
       res?.map(i => {
-        sendInvoiceToWhatsAppWithPaymentUrl(booking, booking.amount, i.invoiceId, dueDate);
+        sendInvoiceToWhatsAppWithPaymentUrl({...booking, userId: userData}, booking.amount, i.invoiceId, dueDate);
       })
     }
 

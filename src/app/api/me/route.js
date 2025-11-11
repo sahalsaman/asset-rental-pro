@@ -2,13 +2,19 @@ import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import UserModel from "@/../models/User";
 import { getTokenValue } from "@/utils/tokenHandler";
+import PropertyModel from "../../../../models/Property";
+import UnitModel from "../../../../models/Unit";
+import BookingModel from "../../../../models/Booking";
+import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
+import { OrganisationModel, SubscriptionPaymentModel } from "../../../../models/Organisation";
+import AnnouncementModel from "../../../../models/Announcement";
 
 export async function GET(request) {
   try {
     await connectMongoDB();
 
     const user = getTokenValue(request);
-    
+
     if (!user?.organisationId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
@@ -69,6 +75,43 @@ export async function PUT(request) {
     console.error("Error updating user:", error);
     return NextResponse.json(
       { message: "Failed to update user" },
+      { status: 500 }
+    );
+  }
+}
+
+
+export async function DELETE(request) {
+  try {
+    await connectMongoDB();
+
+    const user = getTokenValue(request);
+
+    if (!user?.organisationId || !user?.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const deletedUser = await UserModel.findByIdAndUpdate(user.id, { deleted: true }, { new: true });
+    await OrganisationModel.updateMany({ ownerId: user.id }, { deleted: true });
+    await SubscriptionPaymentModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+    await SelfRecieveBankOrUpiModel.updateMany({ ownerId: user.id }, { deleted: true });
+    await PropertyModel.updateMany({ ownerId: user.id }, { deleted: true });
+    await UnitModel.updateMany({ ownerId: user.id }, { deleted: true });
+    await BookingModel.updateMany({ userId: user.id }, { deleted: true });
+    await AnnouncementModel.updateMany({ createdBy: user.id }, { deleted: true });
+
+    if (!deletedUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "User deleted successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return NextResponse.json(
+      { message: "Failed to delete user" },
       { status: 500 }
     );
   }

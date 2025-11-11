@@ -57,7 +57,6 @@ async function getPaymentDetail(bookingCode) {
     { code: bookingCode, deleted: false, disabled: false },
     {
       _id: 1,
-      fullName: 1,
       amount: 1,
       frequency: 1,
       status: 1,
@@ -65,7 +64,7 @@ async function getPaymentDetail(bookingCode) {
       whatsappNumber: 1,
       createdAt: 1,
     }
-  ).populate("propertyId").populate("unitId")
+  ).populate("propertyId").populate("unitId").populate("userId");
 
   if (!booking) {
     return NextResponse.json(

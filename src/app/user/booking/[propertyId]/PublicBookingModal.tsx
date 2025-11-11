@@ -11,7 +11,7 @@ import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { apiFetch } from "@/lib/api";
 import toast from "react-hot-toast";
 import { countryCodes, defaultData } from "@/utils/data";
-import { Textarea } from "./ui/textarea";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Props {
   open: boolean;
@@ -101,6 +101,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
           address: formData.address,
           verificationIdCard: formData.verificationIdCard,
           verificationIdCardNumber: formData.verificationIdCardNumber,
+          type: "public"
         }),
       });
 
@@ -126,6 +127,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
           ...formData,
           propertyId: property?._id,
           userId,
+          type: "public"
         }),
       });
       const result = await res.json();

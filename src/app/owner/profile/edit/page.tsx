@@ -116,6 +116,28 @@ export default function ProfilePage() {
         }
     };
 
+    const deleteAcccount = async () => {
+        if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            return;
+        }
+        try {
+            const res = await fetch("/api/me", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+            });
+            if (res.ok) {
+                toast.success("Account deleted successfully!");
+                router.push('/auth/login');
+            } else {
+                toast.error("Failed to delete account");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Error deleting account");
+        }
+    }
+
     return (
         <div className="max-w-3xl mx-auto  p-6 ">
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">Edit Profile</h2>
@@ -123,7 +145,7 @@ export default function ProfilePage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-3 border p-6 rounded-lg shadow-sm bg-white">
                 <h2 className="text-lg font-semibold mb-2 text-gray-800 border-b-1 pb-2">Personal Information</h2>
                 <div>
-                    <Label htmlFor="fullName">First Name*</Label>
+                    <Label htmlFor="firstName">First Name*</Label>
                     <Input
                         className="mt-1"
                         name="firstName"
@@ -183,6 +205,9 @@ export default function ProfilePage() {
                     Change Phone number
                 </Button>
             </form>
+                <Button onClick={deleteAcccount} variant="destructive" className="w-full mt-6">
+                    Delete Account
+                </Button>
             {/* 📱 Change Phone Dialog */}
             <Dialog open={changePhoneDialog} onOpenChange={setChangePhoneDialog}>
                 <DialogContent>

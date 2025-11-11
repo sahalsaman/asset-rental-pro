@@ -47,7 +47,7 @@ const handleInvoice = async () => {
     disabled: false,
     status: BookingStatus.CHECKED_IN,
     nextBillingDate: { $gte: startOfDay, $lte: endOfDay },
-  }).populate('organisationId').populate('propertyId');
+  }).populate('organisationId').populate('propertyId').populate('userId');
 
   for (const booking of bookings) {
 
@@ -98,7 +98,13 @@ const handleInvoice = async () => {
 }
 
 const sendOverdueMessage = async () => {
-  const invoices = await InvoiceModel.find({ disabled: false, status: InvoiceStatus.PENDING }).populate('bookingId').populate('propertyId');
+  const invoices = await InvoiceModel.find({ disabled: false, status: InvoiceStatus.PENDING }).populate({
+        path: "bookingId",
+        populate: {
+          path: "userId",
+          model: "User",
+        },
+      }).populate('propertyId');
 
   if (invoices.length > 0) {
     for (const invoice of invoices) {

@@ -35,24 +35,26 @@ export default function PropertyFormModal({
   initialData,
   onSave
 }: PropertyFormModalProps) {
-  const [formData, setFormData] = useState<IProperty>({
-    name: '',
-    description: '',
-    address: '',
-    city: '',
-    category: PropertyType.FLAT_APARTMENT,
-    status: PropertyStatus.ACTIVE,
-    state: "",
-    country: '',
-    zipCode: '',
-    images: [],
-    services: [],
-    amenities: [],
-    currency: CurrencyType.INR,
-    disabled: false,
-    is_paymentRecieveSelf: true,
-    selctedSelfRecieveBankOrUpi: ""
-  });
+const [formData, setFormData] = useState<IProperty>({
+  organisationId: '', // optional now, but safe to include
+  name: '',
+  description: '',
+  address: '',
+  city: '',
+  category: PropertyType.FLAT_APARTMENT,
+  status: PropertyStatus.ACTIVE,
+  state: '',
+  country: '',
+  zipCode: '',
+  images: [],
+  services: [],
+  amenities: [],
+  currency: CurrencyType.INR,
+  disabled: false,
+  is_paymentRecieveSelf: true,
+  selctedSelfRecieveBankOrUpi: ''
+});
+
   const [banksList, setBanksList] = useState([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState([]);
@@ -99,6 +101,7 @@ export default function PropertyFormModal({
   function resetForm() {
     setFormData(
       {
+        organisationId: '', 
         name: '',
         description: '',
         address: '',
@@ -375,29 +378,32 @@ export default function PropertyFormModal({
             required
           />
           <Label>Amenities</Label>
-          <MultiSelect
-            options={propertyAmenities.map((a) => ({
-              label: a.name,
-              value: a.value,
-            }))}
-            value={formData.amenities}
-            onChange={(val) =>
-              setFormData((prev) => ({ ...prev, amenities: val }))
-            }
-            placeholder="Select amenities"
-          />
+                <MultiSelect
+  options={propertyAmenities.map((a) => ({
+    label: a.name,
+    value: a.value,
+  }))}
+  value={formData.amenities ?? []} // ✅ fallback
+  onChange={(val) =>
+    setFormData((prev) => ({ ...prev, amenities: val }))
+  }
+  placeholder="Select amenities"
+/>
           <Label>Services</Label>
-          <MultiSelect
-            options={propertyServices.map((s) => ({
-              label: s.name,
-              value: s.value,
-            }))}
-            value={formData.services}
-            onChange={(val) =>
-              setFormData((prev) => ({ ...prev, services: val }))
-            }
-            placeholder="Select services"
-          />
+
+
+<MultiSelect
+  options={propertyServices.map((s) => ({
+    label: s.name,
+    value: s.value,
+  }))}
+  value={formData.services ?? []} // ✅ fallback
+  onChange={(val) =>
+    setFormData((prev) => ({ ...prev, services: val }))
+  }
+  placeholder="Select services"
+/>
+
 
           <Label>Status*</Label>
           <select

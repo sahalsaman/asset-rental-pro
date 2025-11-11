@@ -2,26 +2,39 @@ import { UserRoles } from '@/utils/contants';
 import mongoose, { Schema, Types } from 'mongoose';
 
 const UserSchema = new Schema(
-  {    
+  {
     firstName: { type: String, required: true },
     lastName: { type: String },
     countryCode: { type: String, required: true, default: "+91" },
     phone: { type: String, required: true, unique: true, index: true },
+    email: { type: String, unique: true, },
     otp: { type: String },
-    role: { 
-      type: String, 
-      enum: UserRoles, 
-      required: true,
-      default: UserRoles.USER 
-    },
     otpExpireTime: { type: Date },
-    onboardingCompleted: { type: Boolean, required: true, default: false },
-    lastLogin: { type: Date },
+    otpVerified: { type: Boolean, required: true, default: false },
+    role: {
+      type: String,
+      enum: UserRoles,
+      required: true,
+      default: UserRoles.USER
+    },
+    // owner or manager of the properties
     properties: [{ type: Types.ObjectId, ref: "Property" }],
     organisationId: {
       type: Types.ObjectId,
       ref: "Organisation",
     },
+
+    // tenant details
+    address: { type: String, required: true },
+    image: {
+      id: String,
+      url: String,
+      delete_url: String
+    },
+    note: { type: String },
+    verificationIdCard: { type: String },
+    verificationIdCardNumber: { type: String },
+
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
     remark: { type: String },

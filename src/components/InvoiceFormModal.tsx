@@ -15,29 +15,24 @@ interface Props {
   editData?: IInvoice | null;
 }
 
-interface InvoiceFormData extends Partial<IInvoice> {
-  paymentId?: string;
-  paymentGateway?: TransactionType;
-  paidAt?: string;
-}
-
 export default function InvoiceFormModal({ open, onClose, onSave, editData }: Props) {
-  const [formData, setFormData] = useState<InvoiceFormData>({});
+  const [formData, setFormData] = useState<Partial<IInvoice>>({});
 
   useEffect(() => {
     if (editData) {
       setFormData({
         ...editData,
-        paymentGateway: TransactionType.MANUAL,
-        paidAt: new Date().toISOString().split("T")[0],
+        paymentGateway: editData.paymentGateway || TransactionType.MANUAL,
+        paidAt: editData.paidAt ? new Date(editData.paidAt) : new Date(),
       });
     } else {
       setFormData({
+        amount: 0,
         disabled: false,
         status: InvoiceStatus.PENDING,
         type: RentAmountType.RENT,
         paymentGateway: TransactionType.MANUAL,
-        paidAt: new Date().toISOString().split("T")[0],
+        paidAt: new Date(),
       });
     }
   }, [editData]);
@@ -52,6 +47,7 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     const method = editData ? "PUT" : "POST";
     const url = editData ? `/api/invoice?id=${editData._id}` : `/api/invoice`;
 
@@ -62,6 +58,8 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
       body: JSON.stringify({
         ...formData,
         bookingId: editData?.bookingId,
+        paidAt: formData.paidAt ? new Date(formData.paidAt) : undefined,
+        dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
       }),
     });
 
@@ -76,73 +74,93 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-3">
-          <Label>Amount</Label>
-          <Input
-            name="amount"
-            type="number"
-            placeholder="Amount"
-            value={formData.amount || ""}
-            onChange={handleChange}
-            required
-          />
+          <div>
+            <Label>Amount</Label>
+            <Input
+              name="amount"
+              type="number"
+              placeholder="Amount"
+              value={formData?.amount ?? ""}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <Label>Transaction type</Label>
-          <select
-            name="paymentGateway"
-            value={formData.paymentGateway || TransactionType.MANUAL}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          >
-            {Object.values(TransactionType).map((paymentGateway) => (
-              <option key={paymentGateway} value={paymentGateway}>
-                {paymentGateway}
-              </option>
-            ))}
-          </select>
+          <div>
+            <Label>Transaction type</Label>
+            <select
+              name="paymentGateway"
+              value={formData?.paymentGateway || TransactionType.MANUAL}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            >
+              {Object.values(TransactionType).map((pg) => (
+                <option key={pg} value={pg}>
+                  {pg}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <Label>Transaction Id</Label>
-          <Input
-            name="paymentId"
-            placeholder="Transaction Id"
-            value={formData.paymentId || ""}
-            onChange={handleChange}
-          />
+          <div>
+            <Label>Transaction Id</Label>
+            <Input
+              name="paymentId"
+              placeholder="Transaction Id"
+              value={formData?.paymentId || ""}
+              onChange={handleChange}
+            />
+          </div>
 
-          <Label>Payment Status</Label>
-          <select
-            name="status"
-            value={formData.status || InvoiceStatus.PENDING}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded px-3 py-2"
-          >
-            {Object.values(InvoiceStatus).map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
+          <div>
+            <Label>Payment Status</Label>
+            <select
+              name="status"
+              value={formData?.status || InvoiceStatus.PENDING}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded px-3 py-2"
+            >
+              {Object.values(InvoiceStatus).map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <Label>Received date</Label>
-          <Input
-            name="paidAt"
-            type="date"
-            value={formData.paidAt || ""}
-            onChange={handleChange}
-          />
+          <div>
+            <Label>Received date</Label>
+            <Input
+              name="paidAt"
+              type="date"
+              value={
+                typeof formData?.paidAt === "string"
+                  ? formData.paidAt
+                  : formData?.paidAt
+                  ? new Date(formData.paidAt).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleChange}
+            />
+          </div>
 
-          <Label>Due date</Label>
-          <Input
-            name="dueDate"
-            type="date"
-            value={
-              formData.dueDate
-                ? new Date(formData.dueDate).toISOString().split("T")[0]
-                : ""
-            }
-            onChange={handleChange}
-          />
+          <div>
+            <Label>Due date</Label>
+            <Input
+              name="dueDate"
+              type="date"
+              value={
+                typeof formData?.dueDate === "string"
+                  ? formData.dueDate
+                  : formData?.dueDate
+                  ? new Date(formData.dueDate).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleChange}
+            />
+          </div>
 
           <div className="w-full grid grid-cols-2 gap-2">
             <Button type="button" variant="secondary" onClick={onClose}>

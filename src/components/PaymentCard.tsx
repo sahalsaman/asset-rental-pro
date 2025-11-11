@@ -22,7 +22,7 @@ export default function PaymentCard({ invoice, property }: Props) {
       </p>
       <div className="flex  justify-between items-center">
         <h3 className="text-xl md:text-2xl font-semibold">
-          {(invoice?.bookingId as IBooking)?.fullName ?? ""}
+          {(invoice?.bookingId as IBooking)?.userId?.firstName ?? ""}
         </h3>
 
         <h3 className="text-lg md:text-2xl  font-semibold">

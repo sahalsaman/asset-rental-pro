@@ -25,11 +25,11 @@ interface Props {
 
 export default function CheckoutModal({ open, onClose, onSave, editData, unitData, property_data }: Props) {
   const property = property_data ? property_data : localStorageServiceSelectedOptions.getItem()?.property;
-  const [formData, setFormData] = useState<Partial<IBooking>>({
+  const [formData, setFormData] = useState<Partial<any>>({
     unitId: unitData ? unitData?._id : "",
     propertyId: property?._id || "",
-        whatsappCountryCode: defaultData.countryCodes,
-    whatsappNumber: "",
+    countryCodes: defaultData.countryCodes,
+    phone: "",
     checkIn: "",
     checkOut: "",
     status: BookingStatus.CHECKED_OUT,
@@ -125,7 +125,7 @@ export default function CheckoutModal({ open, onClose, onSave, editData, unitDat
             </select>
           </div>}
 
-             {/* WhatsApp Number */}
+          {/* WhatsApp Number */}
           <div>
             <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
             <div className="flex items-center gap-2">

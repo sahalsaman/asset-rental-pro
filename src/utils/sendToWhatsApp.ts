@@ -122,7 +122,7 @@ export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: 
             {
               type: "header",
               parameters: [
-                { type: "text", text: booking?.fullName || "Customer" }
+                { type: "text", text: `${booking?.userId?.firstName} ${booking?.userId?.lastName}` || "Customer" }
               ]
             },
             {

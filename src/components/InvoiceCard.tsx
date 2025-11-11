@@ -25,7 +25,7 @@ export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Pro
       year: "numeric",
     });
 
-    const message = `💼 *Payment Reminder*\n\nHello ${invoice?.bookingId?.fullName || "Customer"}, 👋\n\nThis is a friendly reminder that your *invoice* 🧾  
+    const message = `💼 *Payment Reminder*\n\nHello ${invoice?.bookingId?.userId?.firstName || "Customer"}, 👋\n\nThis is a friendly reminder that your *invoice* 🧾  
 (ID: *${invoice.invoiceId}*) for an amount of *${property?.currency || "₹"}${invoice.amount}* is due on *${dueDate}*. 📅\n\nPlease make the payment at your earliest convenience to avoid any interruption in service. 💰  
 \n\nThank you for your prompt attention! 🙏  
 – *From ${property?.name || app_config.APP_NAME}*`;
@@ -39,7 +39,9 @@ export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Pro
     <Card className="py-4">
       <CardContent className="px-4">
         <CardTitle className="text-lg font-semibold flex justify-between">
-          <span> {(invoice?.bookingId as IBooking)?.fullName ?? ""}</span>
+          <span> {(invoice?.bookingId as IBooking)?.userId?.firstName ?? ""}
+            {(invoice?.bookingId as IBooking)?.userId?.lastName ?? ""}
+          </span>
           <span>{property?.currency}{invoice.amount?.toLocaleString()}</span>
         </CardTitle>
         <p className="text-gray-600 text-sm">   {invoice?.dueDate

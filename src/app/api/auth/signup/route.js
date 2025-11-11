@@ -44,7 +44,6 @@ export async function POST(request) {
     otp,
     otpExpireTime,
     role: UserRoles.OWNER,
-    onboardingCompleted: true,
     disabled: false,
   });
 
