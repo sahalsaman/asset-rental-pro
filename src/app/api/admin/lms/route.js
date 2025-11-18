@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import LeadModel from "../../../../models/Lead";
+import LeadModel from "@/../models/Lead";
 import { UserRoles } from "@/utils/contants";
 import { getTokenValue } from "@/utils/tokenHandler";
 

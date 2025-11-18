@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import LeadModel from "../../../../../../models/Lead";
+import LeadModel from "@/../models/Lead";
 
 export async function PUT(req, { params }) {
   await connectMongoDB();
