@@ -25,7 +25,7 @@ const UserSchema = new Schema(
     },
 
     // tenant details
-    address: { type: String, required: true },
+    address: { type: String },
     image: {
       id: String,
       url: String,
