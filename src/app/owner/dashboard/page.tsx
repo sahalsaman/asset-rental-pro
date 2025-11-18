@@ -39,14 +39,14 @@ export default function OwnerDashboard() {
   // Fetch status from backend API
   const fetchDashboardData = async (id?: any) => {
     const start = Date.now();
-    if (!current_property?._id && !id) {
+    if (!id) {
       setLoader(false);
       return;
     }
 
     setLoader(true);
     try {
-      const res = await apiFetch(`/api/dashboard?prop=${current_property?._id ?? id}`); // replace with your API route
+      const res = await apiFetch(`/api/dashboard?prop=${id}`); // replace with your API route
       console.log(res);
 
       if (!res.ok) throw new Error("Failed to fetch dashboard status");
@@ -60,7 +60,6 @@ export default function OwnerDashboard() {
         noticePeriod: data.noticePeriod || 0
       });
       setLoader(false);
-console.log("Execution time:", Date.now() - start, "ms");
     } catch (err) {
       console.error(err);
       setLoader(false);
@@ -76,10 +75,9 @@ console.log("Execution time:", Date.now() - start, "ms");
   }
 
   useEffect(() => {
+    fetchDashboardData(current_property?._id);
     if (!current_property?._id) {
       fetchProperties();
-    } else {
-      fetchDashboardData();
     }
   }, []);
 
@@ -88,7 +86,7 @@ console.log("Execution time:", Date.now() - start, "ms");
     setQrOpen(true)
   }
 
-    const handleShare = async () => {
+  const handleShare = async () => {
     try {
       if (navigator.share) {
         await navigator.share({
@@ -164,11 +162,11 @@ console.log("Execution time:", Date.now() - start, "ms");
               {qrUrl}
             </p> */}
             <div className="space-y-2 mt-4">
-              <Button 
+              <Button
                 className=" w-full"
                 onClick={handleShare}
               >
-                Share <Share/>
+                Share <Share />
               </Button>
               <Button variant="outline"
                 className=" w-full"
