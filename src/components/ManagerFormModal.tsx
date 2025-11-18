@@ -67,7 +67,7 @@ export default function ManagerFormModal({ open, onClose, onSave, editData }: an
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <div>
-            <Label htmlFor="fullName">First Name</Label>
+            <Label htmlFor="firstName">First Name</Label>
             <Input
               className="mt-1"
               name="firstName"

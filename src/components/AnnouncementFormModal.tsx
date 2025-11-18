@@ -12,7 +12,7 @@ import { apiFetch } from "@/lib/api";
 interface Props {
   open: boolean;
   onClose: () => void;
-  onSave: (data: Partial<IAnnouncement>) => void;
+  onSave: (data: Partial<any>) => void;
   editData?: IAnnouncement | null;
 }
 

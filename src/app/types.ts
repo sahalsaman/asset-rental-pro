@@ -1,39 +1,90 @@
-import { AnnouncementType, BookingStatus, InvoiceStatus, PropertyStatus, PropertyType, RentAmountType, RentFrequency, UnitStatus, SubscriptionBillingCycle, SubscritptionStatus, TransactionType, UserRoles } from "@/utils/contants";
+import {
+  AnnouncementType,
+  BookingStatus,
+  InvoiceStatus,
+  PropertyStatus,
+  PropertyType,
+  RentAmountType,
+  RentFrequency,
+  UnitStatus,
+  SubscriptionBillingCycle,
+  SubscritptionStatus,
+  TransactionType,
+  UserRoles,
+  BankStatus,
+  PaymentRecieverOptions,
+  SubscritptionPaymentStatus,
+  SubscritptionPlan,
+  EnquiryStatus
+} from "@/utils/contants";
 
+// ✅ User Interface
 export interface IUser {
   _id?: string;
-  firstName: string;
+  firstName?: string;
   lastName?: string;
   countryCode?: string; // default "+91"
   phone: string;
+  email?: string;
   otp?: string;
-  role: UserRoles;
   otpExpireTime?: Date;
-  onboardingCompleted?: boolean;
-  lastLogin?: Date;
-  properties?: any[]; // Array of Property IDs
-  organisationId?: any;
+  otpVerified?: boolean;
+  role: UserRoles;
+  properties?: string[]; // Property IDs
+  organisationId?: string;
+  address: string;
+  image?: {
+    id?: string;
+    url?: string;
+    delete_url?: string;
+  };
+  note?: string;
+  verificationIdCard?: string;
+  verificationIdCardNumber?: string;
   disabled: boolean;
   deleted?: boolean;
+  remark?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface IOrgSubscription {
-  plan: string;
+// ✅ Organisation Subscription
+export interface IOrgSubscription {
+  plan: SubscritptionPlan;
+  planId: string;
   status: SubscritptionStatus;
   startDate: Date;
   endDate?: Date;
   billingCycle: SubscriptionBillingCycle;
-  amount: number;
+  unitPrice: number;
   paymentMethod: string;
   autoRenew: boolean;
-  trialDays: number;
-  trialCompleted: boolean;
   lastPaymentDate?: Date;
   nextBillingDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
+// ✅ Vendor Razorpay Account
+export interface IVendorRazorpayAccount {
+  balance?: number;
+  contact?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+    type?: string;
+  };
+  contact_id?: string;
+  account_type?: string;
+  bank_account?: {
+    name?: string;
+    ifsc?: string;
+    account_number?: string;
+  };
+  fundAccountId?: string;
+}
+
+// ✅ Organisation Interface
 export interface IOrganisation {
   _id?: string;
   name: string;
@@ -41,42 +92,51 @@ export interface IOrganisation {
   logo?: string;
   owner: string; // userId
   website?: string;
-  disabled: boolean;
-  deleted: boolean;
-  subscription?: IOrgSubscription; // Org_subscription reference
-  is_paymentRecieveSelf: boolean, 
-  selctedSelfRecieveBankOrUpi: any;
+  subscription?: IOrgSubscription;
+  vendorRazerpayAccount?: IVendorRazorpayAccount;
+  selctedSelfRecieveBankOrUpi?: string;
+  is_paymentRecieveSelf?: boolean;
+  disabled?: boolean;
+  deleted?: boolean;
+  remark?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-
-
+// ✅ Subscription Payment
 export interface ISubscriptionPayment {
   _id?: string;
-  organisation: string;
+  organisationId?: any;
   plan: string;
-  status: SubscritptionStatus;
+  status: SubscritptionPaymentStatus;
   startDate: Date;
   endDate?: Date;
-  amount: number;
+  no_of_units: number;
+  unit_price: number;
+  total_price: number;
   paymentMethod: string;
-
   razorpay_orderId?: string;
   razorpay_paymentId?: string;
   razorpay_signature?: string;
   razorpay_status?: string;
-
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-
+// ✅ Property
 export interface IProperty {
   _id?: string;
   organisationId?: any;
   name: string;
   description?: string;
+  amenities?: string[];
+  services?: string[];
+  images?: {
+    id?: string;
+    url: string;
+    delete_url?: string;
+  }[];
+  videoUrl?: string[];
   address: string;
   city: string;
   state: string;
@@ -84,75 +144,66 @@ export interface IProperty {
   zipCode?: string;
   status: PropertyStatus;
   category: PropertyType;
-  images: any[];
-   services:string[],
-    amenities:string[],
   currency: string;
-  managers?: any[]; // user IDs
-  is_paymentRecieveSelf: boolean, 
-  selctedSelfRecieveBankOrUpi: any;
   disabled: boolean;
   deleted?: boolean;
+  managers?: string[];
+  selctedSelfRecieveBankOrUpi?: string;
+  is_paymentRecieveSelf: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-
+// ✅ Unit
 export interface IUnit {
   _id?: string;
-  organisationId: any;
-  propertyId: any;
-  name: string;
-  numberOfUnits?: number; // For multiple units addition //only in frontend
-  type: string; // Example: 2BHK, 4 Bed
-  amount: number;
+  organisationId?: any;
+  propertyId?: any;
+  name?: string;
+  type?: string;
+  amount?: number;
+  advanceAmount?: number;
   description?: string;
-  images: string[];
   frequency: RentFrequency;
   status: UnitStatus;
-  advanceAmount?: number;
   noOfSlots: number;
+  numberOfUnits?: number;
   currentBooking?: number;
-  bookings?: any[]; // Array of booking IDs
+  bookings?: string[];
   disabled: boolean;
   deleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-
+// ✅ Booking
 export interface IBooking {
   _id?: string;
-  organisationId: any;
-  propertyId: any;
+  organisationId?: any;
+  propertyId?: any;
   unitId: any;
-  code:string;
-  fullName: string;
-  countryCode: string;
-  phone: string;
-  whatsappCountryCode: string;
-  whatsappNumber: string;
-  address: string;
-  verificationIdCard?: string;
-  verificationIdCardNumber?: string;
+  code: string;
+  userId: any;
   checkIn?: Date | string;
   checkOut?: Date | string;
-  frequency: RentFrequency;
   amount: number;
   advanceAmount?: number;
+  frequency: RentFrequency;
   status: BookingStatus;
+  lastInvoiceId?: string;
+  nextBillingDate?: Date;
   disabled: boolean;
   deleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-
+// ✅ Invoice
 export interface IInvoice {
   _id?: string;
-  organisationId: any;
+  organisationId?: any;
   bookingId: any;
-  propertyId: any;
+  propertyId?: any;
   unitId: any;
   invoiceId: string;
   amount: number;
@@ -161,37 +212,63 @@ export interface IInvoice {
   type: RentAmountType | string;
   status: InvoiceStatus;
   dueDate: Date;
-  paymentGateway: TransactionType;
+  paymentGateway?: TransactionType;
+  paymentId?: string;
+  paidAt?: Date ;
   disabled: boolean;
   deleted?: boolean;
-  payments?: IPayment[];
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export interface IPayment {
-  date?: Date;
-  amount: number;
-  transactionId: string;
-  paymentGateway?: TransactionType | string;
-  razorpayPaymentId?: string;
-  razorpayOrderId?: string;
-  razorpaySignature?: string;
-  gateway?: string;
-  notes?: string;
+// ✅ Self Receive Bank / UPI
+export interface ISelfRecieveBankOrUpi {
+  _id?: string;
+  organisation: string;
+  paymentRecieverOption: PaymentRecieverOptions;
+  accountHolderName: string;
+  value: string; // accountNo or upiId or qrcode_link
+  ifsc?: string;
+  bankName?: string;
+  branch?: string;
+  image?: {
+    id?: string;
+    url?: string;
+    delete_url?: string;
+  };
+  upiPhoneCountryCode?: string;
+  status: BankStatus;
+  disabled: boolean;
+  deleted?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
+// ✅ Announcement
 export interface IAnnouncement {
   _id?: string;
-  organisationId: any;
-  propertyId: any;
+  organisationId?: any;
+  propertyId?: string;
   title: string;
   message: string;
-  audienceType: AnnouncementType | string;
+  audienceType: AnnouncementType;
   attachments?: string[];
   createdBy: string;
   disabled: boolean;
   deleted?: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// ✅ Enquiry
+export interface IEnquiry {
+  _id?: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  message: string;
+  status: EnquiryStatus;
+  leadOperater?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

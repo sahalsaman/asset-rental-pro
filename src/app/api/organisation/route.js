@@ -6,11 +6,16 @@ import { SubscritptionStatus, UserRoles } from "@/utils/contants";
 
 export async function GET(request) {
   try {
-    await connectMongoDB();
 
     const user = getTokenValue(request);
     if (!user?.organisationId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    await connectMongoDB();
+
+    if (user.role == UserRoles.ADMIN) {
+      let organisations = await OrganisationModel.find().populate('owner', 'firstName lastName countryCode phone _id').lean();
+      return NextResponse.json(organisations, { status: 200 });
     }
 
     if (user.role !== UserRoles.OWNER) {

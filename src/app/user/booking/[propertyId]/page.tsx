@@ -3,13 +3,13 @@
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
-import BookingAddEditModal from "@/components/BookingFormModal";
 import { FullscreenLoader } from "@/components/Loader";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Building2 } from "lucide-react";
-import CheckoutModal from "@/components/ChecoutModal";
-import { app_config } from "../../../../app-config";
+import CheckoutModal from "@/app/user/booking/[propertyId]/ChecoutModal";
+import { app_config } from "../../../../../app-config";
+import PublicBookingModal from "./PublicBookingModal";
 
 export default function UserByProperty() {
     const [property, setProperty] = useState<IProperty | null>(null);
@@ -74,7 +74,7 @@ export default function UserByProperty() {
                     </div>
                 </div>
             </div>
-            <BookingAddEditModal
+            <PublicBookingModal
                 open={showBookingModal}
                 onClose={() => setShowBookingModal(false)}
                 onSave={() =>

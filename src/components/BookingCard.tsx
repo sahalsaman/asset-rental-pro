@@ -23,7 +23,7 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
       <div className="flex flex-col gap-1">
         {/* Name & Status */}
         <div className="flex items-center justify-between ">
-          <p className="text-lg font-semibold">{booking.fullName}</p>
+          <p className="text-lg font-semibold">{booking.userId?.firstName} {booking.userId?.lastName}</p>
           <span
             className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[booking?.status ?? ""] || "bg-gray-100 text-gray-800"
               }`}

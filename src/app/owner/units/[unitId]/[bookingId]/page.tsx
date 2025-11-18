@@ -11,9 +11,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { Edit, Pencil, Trash } from "lucide-react";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal";
-import BookingAddEditModal from "@/components/BookingFormModal";
 import { FullscreenLoader } from "@/components/Loader";
 import { statusColorMap } from "@/utils/contants";
+import BookingEditModal from "@/components/BookingEditModal";
 
 export default function BookingDetailPage() {
   const params = useParams();
@@ -61,7 +61,7 @@ export default function BookingDetailPage() {
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
     { label: "Unit", href: `/owner/units/${unitId}` },
-    { label: booking.fullName || "Enrolment", },
+    { label: booking.userId?.firstName || "Enrolment", },
   ];
 
   return (
@@ -71,15 +71,15 @@ export default function BookingDetailPage() {
         <Breadcrumbs items={breadcrumbItems} />
         <div className="w-full flex justify-between">
           <div className="flex items-center gap-4">
-            {/* Logo (first 2 letters of fullName) */}
+            {/* Logo (first 2 letters of firstName) */}
             <div className="w-20 h-20 flex items-center justify-center rounded-full bg-green-600 text-white text-3xl font-semibold">
 
-              {booking.fullName?.slice(0, 2).toUpperCase()}
+              {booking.userId?.firstName?.slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-xl font-semibold">{booking.fullName}</h1>
+              <h1 className="text-xl font-semibold">{booking.userId?.firstName}</h1>
               <p className="text-gray-600">
-                {booking.countryCode} {booking.phone}
+                {booking.userId?.countryCode} {booking.userId?.phone}
               </p>
               {booking.checkIn && booking.checkOut && (
                 <p className="text-gray-500 text-sm">
@@ -165,7 +165,7 @@ export default function BookingDetailPage() {
         editData={editInvoiceData}
       />
 
-      <BookingAddEditModal
+      <BookingEditModal
         open={showBookingModal}
         onClose={() => {
           setShowBookingModal(false);

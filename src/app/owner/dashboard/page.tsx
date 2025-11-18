@@ -33,7 +33,7 @@ export default function OwnerDashboard() {
   const current_property = localStorageServiceSelectedOptions.getItem()?.property
 
   const setQRcodeUrl = () => {
-    setQrUrl(`${app_config.PUBLIC_BASE_URL}/user/${current_property?._id}`);
+    setQrUrl(`${app_config.PUBLIC_BASE_URL}/user/booking/${current_property?._id}`);
   }
 
   // Fetch status from backend API

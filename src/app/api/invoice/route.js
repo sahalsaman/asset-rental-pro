@@ -40,9 +40,16 @@ export async function GET(request) {
     }
 
     const invoices = await InvoiceModel.find(filter)
-      .populate("bookingId")
+      .populate({
+        path: "bookingId",
+        populate: {
+          path: "userId",
+          model: "User",
+        },
+      })
       .sort({ createdAt: -1 })
       .lean(false);
+
 
     return NextResponse.json(invoices);
   } catch (err) {

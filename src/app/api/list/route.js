@@ -33,7 +33,7 @@ export async function GET(request) {
 
 
     if (page === "booking") {
-      const bookings = await BookingModel.find(filter).sort({ createdAt: -1 });
+      const bookings = await BookingModel.find(filter).populate("userId").sort({ createdAt: -1 });
       return NextResponse.json(bookings);
     } else if (page === "invoice") {
       const invoices = await InvoiceModel.find(filter)

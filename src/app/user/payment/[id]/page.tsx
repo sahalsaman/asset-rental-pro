@@ -157,14 +157,14 @@ export default function UserBookingPayPage() {
         <div className="p-6 pb-10 flex justify-between items-center bg-green-700 text-white">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-white text-green-700 flex items-center justify-center text-lg font-medium">
-              {booking.fullName ? booking.fullName[0].toUpperCase() : "U"}
+              {booking.userId?.firstName ? booking.userId?.firstName[0].toUpperCase() : "U"}
             </div>
             <div>
               <h2 className="text-xl font-semibold">
-                {booking.fullName || "User"}
+                {booking.userId?.firstName || "User"}
               </h2>
               <p className="text-xs -mt-1 opacity-80">
-                {booking.whatsappCountryCode} {booking.whatsappNumber}
+                {booking.userId?.countryCode} {booking.userId?.phone}
               </p>
             </div>
           </div>

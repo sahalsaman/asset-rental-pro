@@ -119,7 +119,7 @@ export default function Home() {
     <main className="min-h-screen bg-white text-gray-800 ">
       {/* Navbar */}
 
-      <header className="flex justify-between items-center px-4 md:px-24 py-4 md:py-4 shadow-md bg-white sticky top-0 z-50">
+      <header className="flex justify-between items-center px-4 md:px-24 py-5  shadow-md bg-white sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <Image src={app_config.APP_LOGO} alt="Logo" className='w-6 h-6 sm:w-8 sm:h-8 cursor-pointer' />
           <h1 className="text-xl md:text-3xl font-bold text-green-700">{app_config?.APP_NAME}</h1>
@@ -620,13 +620,13 @@ export default function Home() {
       </section>
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl py-12 px-8">
 
           <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-3">
 
             <div className="col-span-2 lg:col-span-1">
               <div className="flex items-center space-x-3">
-                <Image src={app_config.APP_LOGO} alt="Logo" width={30} className='cursor-pointer' />
+                {/* <Image src={app_config.APP_LOGO} alt="Logo" width={30} className='cursor-pointer' /> */}
                 <span className="text-3xl font-bold text-gray-900">{app_config.APP_NAME}</span>
               </div>
               <p className="mt-4 text-sm text-gray-600 max-w-xs">
@@ -658,15 +658,15 @@ export default function Home() {
 
           <div className="mt-8 border-t border-gray-200 pt-8">
 
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0 gap-4">
 
               <p className="text-base text-gray-500 order-2 md:order-1">
                 &copy; 2025 {app_config.APP_NAME}, Inc. All rights reserved.
               </p>
 
               <div className="flex space-x-6 order-1 md:order-2">
-                <a href="#" className="text-base text-gray-500 hover:text-green-700">Privacy Policy</a>
-                <a href="#" className="text-base text-gray-500 hover:text-green-700">Terms of Service</a>
+                <a href="/privacy" className="text-base text-gray-500 hover:text-green-700">Privacy Policy</a>
+                <a href="/terms" className="text-base text-gray-500 hover:text-green-700">Terms of Service</a>
               </div>
             </div>
           </div>
