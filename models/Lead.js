@@ -1,9 +1,9 @@
 
 import mongoose, { Schema, Types } from 'mongoose';
 
-const UserSchema = new Schema(
+const LeadSchema = new Schema(
   {    
-    Name: { type: String, required: true },
+    name: { type: String, required: true },
     countryCode: { type: String, required: true, default: "+91" },
     phone: { type: String, required: true, unique: true, index: true },
     email: { type: String },
@@ -24,5 +24,5 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
-const UserModel = mongoose.models.User || mongoose.model('User', UserSchema);
-export default UserModel;
+const LeadModel = mongoose.models.Lead || mongoose.model('Lead', LeadSchema);
+export default LeadModel;

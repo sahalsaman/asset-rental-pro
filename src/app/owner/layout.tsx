@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [user, setUser] = useState<any | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const options =[
+  const options = [
     { title: 'Dashboard', path: '/owner/dashboard' },
     { title: 'Organisation', path: '/owner/organisation' },
     { title: 'Properties', path: '/owner/properties' },
@@ -41,6 +41,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const res = await apiFetch("/api/me");
       const data = await res.json();
       setUser(data)
+      if (data.role !== UserRoles.OWNER && data.role !== UserRoles.MANAGER && data.role !== UserRoles.ADMIN) {
+        router.push('/');
+      }
     }
     catch (err) {
       console.log(err);
@@ -49,7 +52,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
   const fetchProperties = async () => {
-    const res = await apiFetch("/api/property?status="+PropertyStatus.ACTIVE);
+    const res = await apiFetch("/api/property?status=" + PropertyStatus.ACTIVE);
     const data = await res.json();
     setProperties(data);
     if (data.length > 0) {
@@ -128,44 +131,44 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* Profile Dropdown */}
           <div className="flex items-center gap-8">
 
-            {user?.role == UserRoles.OWNER ? 
-            <div className='hidden md:block'>
-              {properties?.length ? <div >
-                {/* <p className='text-white'>Current Property</p> */}
-                <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
-                  <Building className='ml-4 text-white' />
-                  <select
-                    name="frequency"
-                    value={selectedPropertyId || ""}
-                    onChange={handleChange}
-                    className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
-                    style={{ minWidth: "220px", border: "0px", height: "48px" }}
-                    required
-                  >
-                    <option value=""> Select Property</option>
-                    {properties.map((property: any) => (
-                      <option key={property?._id} value={property?._id}>
-                        {property?.name} - {property?.category}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div> :
-                organisation?.subscription ?
-                  <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/properties')}>
-                    Add Property
-                  </Button> :
-                  <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
-                    Start Free Trial
-                  </Button>
-              }
-            </div> : ""}
+            {user?.role == UserRoles.OWNER ?
+              <div className='hidden md:block'>
+                {properties?.length ? <div >
+                  {/* <p className='text-white'>Current Property</p> */}
+                  <div className='w-full  bg-green-800 border-green-800 border rounded-md flex items-center justify-between pr-2'>
+                    <Building className='ml-4 text-white' />
+                    <select
+                      name="frequency"
+                      value={selectedPropertyId || ""}
+                      onChange={handleChange}
+                      className=" text-white focus:outline-none hover:border-b-white border-0 outline-0 pr-2"
+                      style={{ minWidth: "220px", border: "0px", height: "48px" }}
+                      required
+                    >
+                      <option value=""> Select Property</option>
+                      {properties.map((property: any) => (
+                        <option key={property?._id} value={property?._id}>
+                          {property?.name} - {property?.category}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div> :
+                  organisation?.subscription ?
+                    <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/properties')}>
+                      Add Property
+                    </Button> :
+                    <Button className=" w-full bg-white text-green-700 font-semibold text-md rounded-xl px-8 py-6 hover:bg-green-100 transition" onClick={() => router.push('/owner/subscription-plan')}>
+                      Start Free Trial
+                    </Button>
+                }
+              </div> : ""}
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => router.push('/owner/profile')}
                 className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-green-900 text-white cursor-pointer"
               >
-                <User size={20} /> 
+                <User size={20} />
               </button>
             </div>
           </div>

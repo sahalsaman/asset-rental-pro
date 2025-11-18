@@ -27,9 +27,9 @@ export async function POST(req) {
     return NextResponse.json({ message: "OTP Expired" }, { status: 400 });
   }
 
-  if (user.role !== UserRoles.OWNER && user.role !== UserRoles.MANAGER) {
+  if (user.role !== UserRoles.OWNER && user.role !== UserRoles.MANAGER && user.role !== UserRoles.ADMIN) {
     return NextResponse.json(
-      { message: "User does not have access to the vendor app. Please sign up with a different phone number" },
+      { message: "User does not have access to the app. Please sign up with a different phone number" },
       { status: 403 }
     );
   }

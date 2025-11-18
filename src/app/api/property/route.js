@@ -25,13 +25,18 @@ export async function GET(request) {
     const status = new URL(request.url).searchParams.get("status");
 
     await connectMongoDB();
+
+    if (user.role == UserRoles.ADMIN) {
+      let properties = await PropertyModel.find().populate('organisationId', 'name').lean();
+      return NextResponse.json(properties, { status: 200 });
+    }
     const filter = {
       organisationId: user.organisationId,
       deleted: false,
       disabled: false,
     }
-    if(status){
-      filter.status=status
+    if (status) {
+      filter.status = status
     }
     if (propertyId) {
       const property = await PropertyModel.find({ _id: propertyId, ...filter });
