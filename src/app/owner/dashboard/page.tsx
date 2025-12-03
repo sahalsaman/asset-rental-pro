@@ -92,7 +92,7 @@ export default function OwnerDashboard() {
         await navigator.share({
           title: "Check this out!",
           text: "Hey, take a look at this awesome page!",
-          url: window.location.href,
+          url: `${app_config.PUBLIC_BASE_URL}/user/booking/${current_property?._id}`,
         });
       } else {
         // fallback for desktop browsers

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { apiFetch } from "@/lib/api";
 import { countryCodes } from "@/utils/data";
 import toast from "react-hot-toast";
+import { PropertyType } from "@/utils/contants";
 
 export default function LeadForm({ open, onClose, editData, refresh }) {
     const [form, setForm] = useState({
@@ -46,8 +47,8 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
     const handleSubmit = async () => {
         try {
             const url = editData
-                ? `/api/admin/lms/${editData._id}`
-                : "/api/admin/lms";
+                ? `/api/admin/lead/${editData._id}`
+                : "/api/admin/lead";
 
             const method = editData ? "PUT" : "POST";
 
@@ -97,7 +98,7 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
                                 name="countryCode" // ✅ added
                                 value={form.countryCode || ""}
                                 onChange={handleChange}
-                                className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                                className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                                 style={{ maxWidth: '80px' }}
                             >
                                 {countryCodes.map((option) => (
@@ -146,13 +147,14 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
                             name="status"
                             value={form.status}
                             onChange={handleChange}
-                            className="w-full border p-2 rounded"
+                            className="w-full border p-2 rounded h-12"
                         >
                             <option value="">Select</option>
                             <option value="new">New</option>
                             <option value="pending">Pending</option>
                             <option value="in-progress">In Progress</option>
                             <option value="closed">Closed</option>
+                            <option value="closed">Rejected</option>
                         </select>
                     </div>
 
@@ -162,13 +164,14 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
                             name="property_type"
                             value={form.property_type}
                             onChange={handleChange}
-                            className="w-full border p-2 rounded"
+                            className="w-full border p-2 rounded h-12"
                         >
                             <option value="">Select</option>
-                            <option value="apartment">Apartment</option>
-                            <option value="house">House</option>
-                            <option value="villa">Villa</option>
-                            <option value="commercial">Commercial</option>
+                          {Object.values(PropertyType).map((type) => (
+                                <option key={type} value={type}>
+                                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
@@ -178,7 +181,7 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
                             name="lead_from"
                             value={form.lead_from}
                             onChange={handleChange}
-                            className="w-full border p-2 rounded"
+                            className="w-full border p-2 rounded h-12"
                         >
                             <option value="">Select</option>
                             <option value="website">Website</option>
@@ -199,7 +202,7 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
                             name="label"
                             value={form.label}
                             onChange={handleChange}
-                            className="w-full border p-2 rounded"
+                            className="w-full border p-2 rounded h-12"
                         >
                             <option value="">Select</option>
                             <option value="hot">Hot</option>

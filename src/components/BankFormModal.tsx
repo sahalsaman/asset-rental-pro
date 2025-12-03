@@ -117,7 +117,7 @@ export default function BankFormModal({ open, onClose, onSave, initialData }: Ba
               name="paymentRecieverOption"
               value={formData.paymentRecieverOption || ""}
               onChange={handleChange}
-              className="w-full mt-1 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="w-full h-12 mt-1 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
             >
               <option value="" disabled>
                 Select an option

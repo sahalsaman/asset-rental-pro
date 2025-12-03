@@ -33,13 +33,12 @@ export default function UnitCard({ unit, property, onEdit, onDelete, onBook }: U
             {property?.currency}{unit.amount?.toLocaleString()}
           </p>
         </CardTitle>
-        <h2>{unit.name}</h2>
+        <h2 className="font-bold mt-1">{unit.name}</h2>
 
         {/* <p className="text-gray-700">{unit.description}</p> */}
 
         {unit.type && <p className="text-sm text-gray-500">Type: {unit.type}</p>}
 
-        {unit.noOfSlots > 1 && <p className="text-sm text-gray-500">Slots: {(unit?.currentBooking ?? 0)}/{unit.noOfSlots}</p>}
 
         <div className="flex justify-between gap-2 mt-4">
           {/* <Button variant="secondary" onClick={() => onEdit(unit)}>
@@ -51,7 +50,8 @@ export default function UnitCard({ unit, property, onEdit, onDelete, onBook }: U
           {/* <Button variant="default" onClick={() => onBook(unit)}>
             Add Enrolment
           </Button> */}
-          <p></p>
+       
+        {unit.noOfSlots > 1 ? <p className="text-sm text-gray-500">Slots: {(unit?.currentBooking ?? 0)}/{unit.noOfSlots}</p>:<p></p>}
           <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
             onClick={() => router.push(`/owner/properties/${property._id}/${unit._id}`)}
           >  <span className="text-sm">View Details</span>

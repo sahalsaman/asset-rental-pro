@@ -13,6 +13,7 @@ export default function VerifyOTPPage() {
   const [phone, setPhone] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [otp, setOtp] = useState("");
+  const [buttonLoader, setButtonLoader] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -30,9 +31,11 @@ export default function VerifyOTPPage() {
       return;
     }
 
+    setButtonLoader(true);
     try {
-      const res = await login(phone, countryCode);
+     await login(phone, countryCode);
       toast.success("OTP sent successfully via WhatsApp!");
+    setButtonLoader(false);
     } catch (err: any) {
       if (err?.response?.data?.message) {
         toast.error(err?.response?.data?.message);
@@ -40,6 +43,7 @@ export default function VerifyOTPPage() {
         toast.error("An error occurred. Please try again.");
         console.error("Login error:", err);
       }
+    setButtonLoader(false);
     }
   };
 
@@ -48,7 +52,7 @@ export default function VerifyOTPPage() {
       toast.error("Please enter the OTP.");
       return;
     }
-
+    setButtonLoader(true);
     try {
       const res = await api.post("/auth/verify-otp", { phone, countryCode, otp });
       const role = res.data.role;
@@ -58,6 +62,7 @@ export default function VerifyOTPPage() {
       else location.href = "/user/dashboard";
 
       toast.success("Logged in successfully!");
+      setButtonLoader(false);
     } catch (err: any) {
       if (err?.response?.data?.message) {
         toast.error(err?.response?.data?.message);
@@ -65,6 +70,7 @@ export default function VerifyOTPPage() {
         toast.error("An error occurred. Please try again.");
         console.error("OTP verify error:", err);
       }
+      setButtonLoader(false);
     }
   };
 
@@ -119,16 +125,19 @@ export default function VerifyOTPPage() {
                   </InputOTP>
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200 font-semibold"
+                  variant={"green"}
+                  className="w-full  py-3 transition duration-200  font-semibold h-12"
+                  loading={buttonLoader}
                 >
                   Verify OTP
-                </button>
+                </Button>
                 <Button
                   variant="outline"
                   className="w-full py-5  text-gray-600"
                   onClick={startWhatsAppVerification}
+                  disabled={buttonLoader}
                 >
                   Send OTP via WhatsApp
                 </Button>

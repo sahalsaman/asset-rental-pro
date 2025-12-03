@@ -8,6 +8,7 @@ import BookingModel from "../../../../models/Booking";
 import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 import { OrganisationModel, SubscriptionPaymentModel } from "../../../../models/Organisation";
 import AnnouncementModel from "../../../../models/Announcement";
+import { UserRoles } from "@/utils/contants";
 
 export async function GET(request) {
   try {
@@ -92,13 +93,15 @@ export async function DELETE(request) {
     }
 
     const deletedUser = await UserModel.findByIdAndUpdate(user.id, { deleted: true }, { new: true });
-    await OrganisationModel.updateMany({ ownerId: user.id }, { deleted: true });
-    await SubscriptionPaymentModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
-    await SelfRecieveBankOrUpiModel.updateMany({ ownerId: user.id }, { deleted: true });
-    await PropertyModel.updateMany({ ownerId: user.id }, { deleted: true });
-    await UnitModel.updateMany({ ownerId: user.id }, { deleted: true });
-    await BookingModel.updateMany({ userId: user.id }, { deleted: true });
-    await AnnouncementModel.updateMany({ createdBy: user.id }, { deleted: true });
+    if (user.role === UserRoles.OWNER) {
+      await OrganisationModel.updateMany({ ownerId: user.id }, { deleted: true });
+      await SubscriptionPaymentModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+      await SelfRecieveBankOrUpiModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+      await PropertyModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+      await UnitModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+      await BookingModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+      await AnnouncementModel.updateMany({ createdBy: user.id }, { deleted: true });
+    }
 
     if (!deletedUser) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

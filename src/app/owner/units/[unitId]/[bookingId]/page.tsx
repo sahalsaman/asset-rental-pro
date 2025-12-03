@@ -77,7 +77,7 @@ export default function BookingDetailPage() {
               {booking.userId?.firstName?.slice(0, 2).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-xl font-semibold">{booking.userId?.firstName}</h1>
+              <h1 className="text-xl font-semibold">{booking.userId?.firstName} {booking.userId?.lastName}</h1>
               <p className="text-gray-600">
                 {booking.userId?.countryCode} {booking.userId?.phone}
               </p>

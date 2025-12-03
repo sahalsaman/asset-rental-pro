@@ -153,7 +153,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
             name="frequency"
             value={formData.frequency || ""}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             required
           >
             <option value="">Select Rent Duration</option>
@@ -171,7 +171,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
                 name="type"
                 value={formData.type || ""}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                className="w-full h-12 border border-gray-300 rounded px-3 py-2"
                 required
               >
                 <option value="">Select Unit Type</option>
@@ -213,7 +213,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
             name="status"
             value={formData.status || ""}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             required
           >
             <option value="">Select unit status</option>

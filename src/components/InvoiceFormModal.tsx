@@ -93,7 +93,7 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
               value={formData?.paymentGateway || TransactionType.MANUAL}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             >
               {Object.values(TransactionType).map((pg) => (
                 <option key={pg} value={pg}>
@@ -120,7 +120,7 @@ export default function InvoiceFormModal({ open, onClose, onSave, editData }: Pr
               value={formData?.status || InvoiceStatus.PENDING}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             >
               {Object.values(InvoiceStatus).map((status) => (
                 <option key={status} value={status}>

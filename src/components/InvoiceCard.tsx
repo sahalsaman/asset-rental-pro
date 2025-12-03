@@ -39,9 +39,10 @@ export default function InvoiceCard({ invoice, onEdit, onDelete, property }: Pro
     <Card className="py-4">
       <CardContent className="px-4">
         <CardTitle className="text-lg font-semibold flex justify-between">
-          <span> {(invoice?.bookingId as IBooking)?.userId?.firstName ?? ""}
-            {(invoice?.bookingId as IBooking)?.userId?.lastName ?? ""}
-          </span>
+        <p>
+            <span> {(invoice?.bookingId as IBooking)?.userId?.firstName ?? ""} </span> 
+          <span> {(invoice?.bookingId as IBooking)?.userId?.lastName ?? ""}</span>
+        </p>
           <span>{property?.currency}{invoice.amount?.toLocaleString()}</span>
         </CardTitle>
         <p className="text-gray-600 text-sm">   {invoice?.dueDate
