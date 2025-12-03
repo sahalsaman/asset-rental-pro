@@ -113,39 +113,27 @@ export default function LoginPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Phone Number*
                   </label>
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={countryCode}
-                      onChange={(e) => setCountryCode(e.target.value)}
-                      className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-                      style={{ maxWidth: '80px' }}
-                    >
-                      {countryCodes.map((option) => (
-                        <option key={option.code} value={option.code}>
-                          {option.code}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="relative flex-1 mb-4">
                     <input
                       type="tel"
-                      maxLength={10}
-                      placeholder="e.g. 987XXXXXXX"
+                      placeholder="9876XXXXXX"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      required
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                      className="flex-1 w-full px-4 py-2 pl-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                      maxLength={10}
                     />
+                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-900">+91</span>
                   </div>
                   {mobileNumberValidationMessage && (
                     <p className="text-red-500 text-sm mt-1">{mobileNumberValidationMessage}</p>
                   )}
                 </>
-              <Button
-                onClick={sendOtp}
-                variant={"green"}
-                className="w-full  py-3 transition duration-200  font-semibold h-12"
-                loading={buttonLoader}
-              >
+                <Button
+                  onClick={sendOtp}
+                  variant={"green"}
+                  className="w-full  py-3 transition duration-200  font-semibold h-12"
+                  loading={buttonLoader}
+                >
                   Send OTP
                 </Button>
               </form>
