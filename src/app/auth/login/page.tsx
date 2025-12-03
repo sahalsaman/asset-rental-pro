@@ -37,7 +37,7 @@ export default function LoginPage() {
       setMobileNumberValidationMessage("Please enter a valid 10-digit phone number.");
       return;
     }
-setButtonLoader(true)
+    setButtonLoader(true)
     try {
       const res = await login(phone, countryCode);
       toast.success("OTP sent successfully via WhatsApp!");
@@ -69,26 +69,17 @@ setButtonLoader(true)
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <select
-                    value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
-                    className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-                    style={{ maxWidth: '80px' }}
-                  >
-                    {countryCodes.map((option) => (
-                      <option key={option.code} value={option.code}>
-                        {option.code}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="tel"
-                    placeholder="9876XXXXXX"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-                    maxLength={10}
-                  />
+                  <div className="relative flex-1">
+                    <input
+                      type="tel"
+                      placeholder="9876XXXXXX"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="flex-1 w-full px-4 py-2 pl-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                      maxLength={10}
+                    />
+                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-900">+91</span>
+                  </div>
                 </div>
                 {mobileNumberValidationMessage && (
                   <p className="text-red-500 text-sm mt-1">{mobileNumberValidationMessage}</p>
