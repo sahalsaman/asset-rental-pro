@@ -92,22 +92,22 @@ export default function Home() {
   if (menuOpen) {
     return (
       <div className="bg-white  px-6 py-4 space-y-8 text-xl text-center flex flex-col">
-        <div className="flex justify-between mb-10">
+        <div className="flex justify-between mb-8 mt-4">
           <div className="flex items-center gap-3">
-            <Image src={app_config.APP_LOGO} alt="Logo" width={40} className='cursor-pointer' />
+            <Image src={app_config.APP_LOGO} alt="Logo" width={30} className='cursor-pointer' />
           </div>
           <button className="" onClick={() => setMenuOpen(!menuOpen)}>
-            <X className="h-10 w-10 text-gray-700 font-light" />
+            <X className="h-8 w-8 text-gray-700 font-light" />
           </button>
         </div>
-        <Link className="border-b pb-8" href="#setup-guide" onClick={() => setMenuOpen(false)}>Setup Guide</Link>
-        <Link className="border-b pb-8" href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</Link>
-        <Link className="border-b pb-8" href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
-        <Link className="border-b pb-8" href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
-        <Link className="border-b pb-8" href="#contact" onClick={() => setMenuOpen(false)}>Contact</Link>
-        <Link className="border-b pb-8" href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
+        <Link className="border-b pb-6" href="#setup-guide" onClick={() => setMenuOpen(false)}>Setup Guide</Link>
+        <Link className="border-b pb-6" href="#pricing" onClick={() => setMenuOpen(false)}>Pricing</Link>
+        <Link className="border-b pb-6" href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
+        <Link className="border-b pb-6" href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
+        <Link className="border-b pb-6" href="#contact" onClick={() => setMenuOpen(false)}>Contact</Link>
+        <Link className="border-b pb-6" href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
         <Link href="/auth/signup">
-          <button className="bg-green-700 text-white w-full py-2 rounded-xl">Get Started</button>
+          <button className="bg-green-700 text-white w-full py-3 text-lg rounded-xl">Get Started</button>
         </Link>
       </div>)
   }
@@ -143,7 +143,7 @@ export default function Home() {
       {/* Hero Section */}
       {/* For the hero section, you could animate the text elements individually on page load (not scroll)
           or use a parallax effect on the background image. */}
-      <section className={`relative bg-green-700 bg-gradient-to-br from-green-700 to-green-900 text-white overflow-hidden py-28 md:py-18 px-6 text-center md:text-left`}  >
+      <section className={`relative bg-green-700 bg-gradient-to-br from-green-900 to-green-600 text-white overflow-hidden py-28 md:py-18 px-6 text-center md:text-left`}  >
         <div className="max-w-6xl mx-auto z-10 flex justify-between items-center gap-10">
           <div className="">
             {/* Example: Initial fade-in for hero text on page load */}

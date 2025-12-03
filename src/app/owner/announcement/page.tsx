@@ -8,7 +8,7 @@ import { apiFetch } from "@/lib/api";
 import AnnouncementCard from "@/components/AnnouncementCard";
 import { FullscreenLoader } from "@/components/Loader";
 
-export default function UnitDetailPage() {
+export default function Announcements() {
   const [announcements, setAnnouncements] = useState<IAnnouncement[]>([]);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const [editAnnouncementData, setEditAnnouncementData] = useState<IAnnouncement | null>(null);

@@ -22,11 +22,11 @@ export async function POST(req) {
     }
 
     if (user.disabled) {
-      return NextResponse.json({ message: "User accound disabled, please contact rentities team " }, { status: 403 });
+      return NextResponse.json({ message: "User account disabled, please contact rentities team " }, { status: 403 });
     }
 
     if (user.deleted) {
-      return NextResponse.json({ message: "User accound deleted, please contact rentities team " }, { status: 403 });
+      return NextResponse.json({ message: "User account deleted, please contact rentities team " }, { status: 403 });
     }
 
 

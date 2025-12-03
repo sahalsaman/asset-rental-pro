@@ -25,8 +25,10 @@ export async function POST(req) {
     return NextResponse.json({ message: "Invalid or expired OTP" }, { status: 400 });
   }
   updatedUser = await UserModel.findByIdAndUpdate(user._id, { phone: newPhone, countryCode: newCountryCode },
-    { new: true }).populate("organisationId")
+    { new: true })
 
+  const org = await OrganisationModel.findById(user.organisationId);
+  user.organisationId = org;
   const token = setTokenValue(updatedUser);
 
   return new NextResponse(JSON.stringify({ message: "successfully updated", role: user.role }), {

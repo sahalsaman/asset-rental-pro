@@ -12,8 +12,7 @@ import { FullscreenLoader } from "@/components/Loader";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import { InvoiceStatus } from "@/utils/contants";
 
-export default function UnitDetailPage() {
-  const data = useParams();
+export default function Invoices() {
   const [invoices, setInvoices] = useState<IInvoice[]>([]);
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
   const [editInvoiceData, setEditInvoiceData] = useState<IInvoice | null>(null);

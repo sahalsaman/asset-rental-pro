@@ -11,7 +11,7 @@ import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import UnitAddEditModal from "@/components/UnitFormModal";
 import  { FullscreenLoader, } from "@/components/Loader";
 
-export default function PropertyDetailPage() {
+export default function UnitListPage() {
      const property=localStorageServiceSelectedOptions.getItem()?.property
   const [units, setUnits] = useState<IUnit[]>([]);
   const [showUnitModal, setShowUnitModal] = useState(false);

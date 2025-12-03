@@ -180,7 +180,7 @@ export default function ProfilePage() {
                             name="countryCode" // ✅ added
                             value={newCountryCode}
                             onChange={(e) => setNewCountryCode(e.target.value)}
-                            className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+                            className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
                             style={{ maxWidth: '80px' }}
                         >
                             {countryCodes.map((option) => (

@@ -3,23 +3,24 @@ import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { setTokenValue } from "@/utils/tokenHandler";
 import { UserRoles } from "@/utils/contants";
+import { OrganisationModel } from "../../../../../models/Organisation";
 
 export async function POST(req) {
   await connectMongoDB();
 
   const { phone, otp, countryCode } = await req.json();
 
-  const user = await UserModel.findOne({ phone, countryCode }).populate("organisationId")
+  const user = await UserModel.findOne({ phone, countryCode })
   if (!user) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
   if (user.disabled) {
-    return NextResponse.json({ message: "User accound disabled, please contact rentities team " }, { status: 403 });
+    return NextResponse.json({ message: "User account disabled, please contact rentities team " }, { status: 403 });
   }
 
   if (user.deleted) {
-    return NextResponse.json({ message: "User accound deleted, please contact rentities team " }, { status: 403 });
+    return NextResponse.json({ message: "User account deleted, please contact rentities team " }, { status: 403 });
   }
 
   const isOtpExpired = new Date() > new Date(user.otpExpireTime || 0);
@@ -37,6 +38,10 @@ export async function POST(req) {
   if (user.otp !== otp && otp !== "111111") { // TEST MODE
     return NextResponse.json({ message: "Invalid OTP" }, { status: 400 });
   }
+
+  const org=await OrganisationModel.findById(user.organisationId);
+   user.organisationId=org;
+
   const token = setTokenValue(user);
 
   return new NextResponse(JSON.stringify({ message: "Login successful", role: user.role }), {

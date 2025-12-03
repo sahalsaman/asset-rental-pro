@@ -14,7 +14,7 @@ export default function LeadsPage() {
   const size = 10;
 
   const fetchLeads = async () => {
-    const res = await apiFetch("/api/admin/lms");
+    const res = await apiFetch("/api/admin/lead");
     const data = await res.json();
     setLeads(Array.isArray(data) ? data : []);
   };

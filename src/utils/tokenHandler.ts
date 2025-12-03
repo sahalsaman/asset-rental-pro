@@ -10,6 +10,7 @@ import { env } from "../../environment";
   };
 
 export function setTokenValue(user:any){
+  
   const payload:IPayload = {
     id: user._id,
     role: user.role,

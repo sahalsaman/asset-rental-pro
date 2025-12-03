@@ -7,9 +7,11 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { countryCodes, defaultData } from "@/utils/data";
 import { app_config } from "../../../../app-config";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
+  const [buttonLoader, setButtonLoader] = useState(false);
   const [countryCode, setCountryCode] = useState(defaultData.countryCodes); // Default to India
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
   const router = useRouter();
@@ -35,11 +37,12 @@ export default function LoginPage() {
       setMobileNumberValidationMessage("Please enter a valid 10-digit phone number.");
       return;
     }
-
+setButtonLoader(true)
     try {
       const res = await login(phone, countryCode);
       toast.success("OTP sent successfully via WhatsApp!");
       router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
+      setButtonLoader(false)
     } catch (err: any) {
       if (err?.response?.data?.message) {
         toast.error(err?.response?.data?.message);
@@ -47,6 +50,7 @@ export default function LoginPage() {
         toast.error("An error occurred. Please try again.");
         console.error("Login error:", err);
       }
+      setButtonLoader(false)
     }
   };
 
@@ -68,7 +72,7 @@ export default function LoginPage() {
                   <select
                     value={countryCode}
                     onChange={(e) => setCountryCode(e.target.value)}
-                    className="w-20  px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                    className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                     style={{ maxWidth: '80px' }}
                   >
                     {countryCodes.map((option) => (
@@ -91,12 +95,14 @@ export default function LoginPage() {
                 )}
               </div>
 
-              <button
+              <Button
                 onClick={sendOtp}
-                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200 font-semibold"
+                variant={"green"}
+                className="w-full  py-3 transition duration-200  font-semibold h-12"
+                loading={buttonLoader}
               >
                 Send OTP
-              </button>
+              </Button>
 
               <p className="text-sm text-gray-600 text-center">
                 Don’t have an account?{" "}

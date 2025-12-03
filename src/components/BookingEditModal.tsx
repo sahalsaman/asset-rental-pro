@@ -130,7 +130,7 @@ export default function BookingEditModal({ open, onClose, onSave, editData, unit
               name="unitId"
               value={formData.unitId as string || ""}
               onChange={handleUnitChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className="w-full h-12 border border-gray-300 rounded px-3 py-2"
               required={!unitData ? true : false}
             >
               <option value="">Select Unit</option>
@@ -223,7 +223,7 @@ export default function BookingEditModal({ open, onClose, onSave, editData, unit
               name="status"
               value={formData.status || ""}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className="w-full h-12 border border-gray-300 rounded px-3 py-2"
               required
               disabled={editData?.status === BookingStatus.CHECKED_OUT}
             >

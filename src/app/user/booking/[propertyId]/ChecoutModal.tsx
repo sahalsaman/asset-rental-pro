@@ -114,7 +114,7 @@ export default function CheckoutModal({ open, onClose, onSave, editData, unitDat
               name="unitId"
               value={formData.unitId as string || ""}
               onChange={handleUnitChange}
-              className="w-full border border-gray-300 rounded px-3 py-2"
+              className="h-12 w-full border border-gray-300 rounded px-3 py-2"
               required={!unitData ? true : false}
             >
               <option value="">Select Unit</option>
@@ -133,7 +133,7 @@ export default function CheckoutModal({ open, onClose, onSave, editData, unitDat
                 name="whatsappCountryCode" // ✅ added
                 value={formData.whatsappCountryCode || ""}
                 onChange={handleChange}
-                className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="h-12 w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                 style={{ maxWidth: '80px' }}
               >
                 {countryCodes.map((option) => (

@@ -30,6 +30,13 @@ export async function POST(request) {
 
   const existingUser = await UserModel.findOne({ phone });
   if (existingUser) {
+    if (existingUser.disabled) {
+      return NextResponse.json({ message: "User account disabled, please contact rentities team " }, { status: 403 });
+    }
+
+    if (existingUser.deleted) {
+      return NextResponse.json({ message: "User account deleted, please contact rentities team " }, { status: 403 });
+    }
     return NextResponse.json({ message: "Phone number already exist" }, { status: 409 });
   }
 
@@ -52,22 +59,19 @@ export async function POST(request) {
   const startDate = new Date();
   // const endDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
-  const subscription = {
-    plan: selected_plan.plan,
-    planId: selected_plan.id,
-    status: SubscritptionStatus.FREE,
-    startDate,
-    // endDate,
-    billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
-    unitPrice: selected_plan.amount,
-    paymentMethod: "free",
-  };
-
-
   const org = await OrganisationModel.create({
     name: organisationName,
     owner: newUser._id,
-    subscription,
+    subscription: {
+      plan: selected_plan.plan,
+      planId: selected_plan.id,
+      status: SubscritptionStatus.FREE,
+      startDate,
+      // endDate,
+      billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
+      unitPrice: selected_plan.amount,
+      paymentMethod: "free",
+    },
   });
 
   await UserModel.findByIdAndUpdate(newUser._id, { organisationId: org?._id })

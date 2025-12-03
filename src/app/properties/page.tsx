@@ -111,7 +111,7 @@ export default function PropertiesPage() {
       <div className="bg-white shadow-md rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between max-w-3xl mx-auto mt-[-50px] relative z-10">
         <div className="flex flex-wrap md:flex-nowrap gap-4 w-full">
           <select
-            className="px-4 py-2 border rounded-xl text-gray-600 md:max-w-40"
+            className=" px-4 py-2 border rounded-xl text-gray-600 md:max-w-40"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >

@@ -7,6 +7,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { countryCodes, defaultData } from "@/utils/data";
 import { app_config } from "../../../../app-config";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
 
@@ -17,8 +18,7 @@ export default function LoginPage() {
   const [countryCode, setCountryCode] = useState(defaultData.countryCodes); // Default to India
   const router = useRouter();
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
-  const [nameValidationMessage, setNameValidationMessage] = useState("");
-  const [organisationValidationMessage, setOrganisationValidationMessage] = useState("");
+  const [buttonLoader, setButtonLoader] = useState(false);
 
 
   const validatePhoneNumber = (phoneNumber: string) => {
@@ -40,11 +40,13 @@ export default function LoginPage() {
       setMobileNumberValidationMessage("Please enter a valid 10-digit phone number.");
       return;
     }
+    setButtonLoader(true);
     try {
       const res = await signUp(phone, countryCode, name, lastName, organisationName)
       console.log("res..", res);
       toast.success("OTP sent successfully via WhatsApp!");
       router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
+      setButtonLoader(false);
     } catch (err: any) {
       if (err?.response?.data?.message) {
         toast.error(err?.response?.data?.message);
@@ -52,7 +54,7 @@ export default function LoginPage() {
         toast.error("An error occurred. Please try again.");
         console.error("Login error:", err);
       }
-      console.error("Signup error:", err);
+      setButtonLoader(false);
     }
   };
 
@@ -115,7 +117,7 @@ export default function LoginPage() {
                     <select
                       value={countryCode}
                       onChange={(e) => setCountryCode(e.target.value)}
-                      className="w-20  px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                      className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                       style={{ maxWidth: '80px' }}
                     >
                       {countryCodes.map((option) => (
@@ -138,12 +140,14 @@ export default function LoginPage() {
                     <p className="text-red-500 text-sm mt-1">{mobileNumberValidationMessage}</p>
                   )}
                 </>
-                <button
-                  type="submit"
-                  className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200 font-semibold"
-                >
+              <Button
+                onClick={sendOtp}
+                variant={"green"}
+                className="w-full  py-3 transition duration-200  font-semibold h-12"
+                loading={buttonLoader}
+              >
                   Send OTP
-                </button>
+                </Button>
               </form>
 
 

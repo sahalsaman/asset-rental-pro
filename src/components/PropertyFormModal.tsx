@@ -305,7 +305,7 @@ const [formData, setFormData] = useState<IProperty>({
                   name="selctedSelfRecieveBankOrUpi"
                   value={formData.selctedSelfRecieveBankOrUpi || ""}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full h-12 border border-gray-300 rounded px-3 py-2"
                   required={formData?.is_paymentRecieveSelf}
                 >
                   <option value="">Select Bank/UPI*</option>
@@ -410,7 +410,7 @@ const [formData, setFormData] = useState<IProperty>({
             name="status"
             value={formData.status || ""}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             required
           >
             <option value="">Select a status</option>
@@ -427,7 +427,7 @@ const [formData, setFormData] = useState<IProperty>({
             name="category"
             value={formData.category || ""}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             required
           >
             <option value="">Select a category</option>
@@ -443,7 +443,7 @@ const [formData, setFormData] = useState<IProperty>({
             name="currency"
             value={formData.currency || "₹"}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded px-3 py-2"
+            className="w-full h-12 border border-gray-300 rounded px-3 py-2"
             required
           >
             {Object.entries(CurrencyType).map(([code, symbol]) => (

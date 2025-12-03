@@ -106,6 +106,8 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
 
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Verification failed");
+      console.log(data);
+      
       setUserId(data?.user?._id);
       setStep(2);
     } catch (err: any) {
@@ -163,7 +165,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
                   name="countryCode" // ✅ added
                   value={formData.countryCode || ""}
                   onChange={handleChange}
-                  className="w-20 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                  className="w-20 h-12 px-2 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                   style={{ maxWidth: '80px' }}
                 >
                   {countryCodes.map((option) => (
@@ -197,7 +199,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
                 name="verificationIdCard"
                 value={formData.verificationIdCard || ""}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full h-12 border rounded px-3 py-2"
               >
                 <option value="">Select ID Type</option>
                 <option value="Aadhar">Aadhar</option>
@@ -231,7 +233,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
                   name="unitId"
                   value={formData.unitId as string || ""}
                   onChange={handleUnitChange}
-                  className="w-full border rounded px-3 py-2"
+                  className="w-full h-12 border rounded px-3 py-2"
                   required
                 >
                   <option value="">Select Unit</option>
@@ -281,7 +283,7 @@ export default function BookingAddEditModal({ open, onClose, onSave, editData, u
                 name="status"
                 value={formData.status || ""}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
+                className="w-full h-12 border rounded px-3 py-2"
                 required
               >
                 {Object.values(BookingStatus).map((status) => (

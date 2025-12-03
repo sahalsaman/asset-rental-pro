@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { title: 'Properties', path: '/admin/properties' },
     { title: 'Users', path: '/admin/users' },
     { title: 'Enquies', path: '/admin/enquiries' },
-    { title: 'LMS', path: '/admin/lms' },
+    { title: 'Leads', path: '/admin/leads' },
   ]
 
   const fetchUser = async () => {
