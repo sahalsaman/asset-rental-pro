@@ -7,6 +7,7 @@ import DeleteConfirmModal from "../../../components/DeleteConfirmModal";
 import { apiFetch } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { FullscreenLoader } from "@/components/Loader";
+import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
@@ -14,6 +15,7 @@ export default function PropertiesPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
   const [organisation, setOrganisation] = useState<any | null>(null);
+  const current_property = localStorageServiceSelectedOptions.getItem()?.property
 
   const fetchProperties = async () => {
     const res = await apiFetch("/api/property");
@@ -53,8 +55,10 @@ export default function PropertiesPage() {
           <PropertyCard
             key={property?._id}
             property={property}
+            currentProperty={current_property}
             onEdit={(p: any) => { setSelectedProperty(p); setAddEditOpen(true); }}
             onDelete={(p: any) => { setSelectedProperty(p); setDeleteOpen(true); }}
+
           />
         )) : (
           <p className="text-gray-500">No properties.</p>
