@@ -2,7 +2,7 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
 import { BookingStatus, InvoiceStatus, RentAmountType, UnitStatus, SubscritptionStatus, SubscritptionPaymentStatus } from "@/utils/contants";
-import { sendInvoiceToWhatsAppWithPaymentUrl } from "@/utils/sendToWhatsApp";
+import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 import { NextResponse } from "next/server";
 import { OrganisationModel, SubscriptionPaymentModel } from "../../../../models/Organisation";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
@@ -13,14 +13,14 @@ export async function GET() {
   try {
     await connectMongoDB();
     // new invoice generating
-    await handleInvoice()
+    await generateInvoice()
     // send overdue message
     await sendOverdueMessage()
     // daily collected mount payout to organisation
 
     await handleCheckout()
 
-    await crateOrganisationSubscriptionPayment()
+    await generateSubscriptionPayment()
 
     console.log("cron job is working well.........", new Date());
 
@@ -33,7 +33,7 @@ export async function GET() {
 
 
 
-const handleInvoice = async () => {
+const generateInvoice = async () => {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -87,7 +87,7 @@ const handleInvoice = async () => {
       nextBillingDate,
       lastInvoiceId: newInvoice._id
     })
-    sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, dueDate);
+    sendInvoiceToWhatsApp(booking, new_amount, invoiceId, dueDate);
 
     return
   }
@@ -114,7 +114,7 @@ const sendOverdueMessage = async () => {
       }
       let booking = invoice?.bookingId
 
-      sendInvoiceToWhatsAppWithPaymentUrl(booking, invoice.amount, invoice.invoiceId, dueDate);
+      sendInvoiceToWhatsApp(booking, invoice.amount, invoice.invoiceId, dueDate);
 
     }
   }
@@ -173,10 +173,10 @@ const handleCheckout = async () => {
 }
 
 
-const crateOrganisationSubscriptionPayment = async () => {
+const generateSubscriptionPayment = async () => {
   try {
     const today = new Date();
-    if (today.getDate() !== 1) {
+    if (today.getDate() !== 4) {
       console.log("⏩ Not the 1st day of the month — skipping billing.");
       return;
     }

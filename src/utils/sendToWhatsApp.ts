@@ -95,7 +95,7 @@ export async function sendOTPText(
 }
 
 
-export async function sendInvoiceToWhatsAppWithPaymentUrl(booking: any, amount: number, invoiceId: string,
+export async function sendInvoiceToWhatsApp(booking: any, amount: number, invoiceId: string,
   dueDate: Date) {
   try {
     const formattedPhone = formatPhone("91" + booking?.whatsappNumber);  // Ensure correct format

@@ -4,7 +4,7 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
-import { sendInvoiceToWhatsAppWithPaymentUrl } from "@/utils/sendToWhatsApp";
+import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 import UnitModel from "../../../../models/Unit";
 import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
@@ -209,7 +209,7 @@ export async function POST(request) {
     if (invoices.length > 0) {
       const res = await InvoiceModel.insertMany(invoices);
       res?.map(i => {
-        sendInvoiceToWhatsAppWithPaymentUrl({...booking, userId: userData}, booking.amount, i.invoiceId, dueDate);
+        sendInvoiceToWhatsApp({...booking, userId: userData}, booking.amount, i.invoiceId, dueDate);
       })
     }
 
