@@ -8,16 +8,17 @@ import { Button } from './ui/button';
 
 interface Props {
   property: IProperty;
+  currentProperty: IProperty;
   onEdit: (property: IProperty) => void;
   onDelete: (property: IProperty) => void;
 }
 
-export default function PropertyCard({ property, onEdit, onDelete }: Props) {
+export default function PropertyCard({ property, currentProperty,onEdit, onDelete }: Props) {
 
   const router = useRouter();
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 border hover:shadow-md transition"
+    <div className="bg-white rounded-xl shadow p-4 border hover:shadow-md transition relative"
     >
       <div className='flex gap-2'>
         {property.images && property.images[0] && (
@@ -61,9 +62,9 @@ export default function PropertyCard({ property, onEdit, onDelete }: Props) {
               <ArrowRight size={18} />
             </button>
           </div> */}
-
         </div>
       </div>
+ {currentProperty._id===property._id?     <div className='bg-green-700 text-white w-fit absolute bottom-0 right-0 rounded-br-xl rounded-tl-xl px-4 py-1 text-sm font-bold'>Current</div>:""}
     </div>
   );
 }

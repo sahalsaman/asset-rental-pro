@@ -3,10 +3,6 @@ import { SubscriptionBillingCycle, SubscritptionPlan } from "./contants";
 
 export const countryCodes = [
   { code: "+91", name: "India" },
-  { code: "+1", name: "USA" },
-  { code: "+44", name: "UK" },
-  { code: "+81", name: "Japan" },
-  { code: "+86", name: "China" },
 ];
 
 export const defaultData = {

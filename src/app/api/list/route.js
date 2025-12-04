@@ -19,7 +19,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const page = searchParams.get("page");
     const propertyId = searchParams.get("propertyId");
-      const status = searchParams.get("status")
+    const status = searchParams.get("status")
 
     await connectMongoDB();
     let filter = {
@@ -27,8 +27,8 @@ export async function GET(request) {
       propertyId,
     };
 
-    if(status?.length){
-      filter.status=status
+    if (status?.length) {
+      filter.status = status
     }
 
 
@@ -37,7 +37,12 @@ export async function GET(request) {
       return NextResponse.json(bookings);
     } else if (page === "invoice") {
       const invoices = await InvoiceModel.find(filter)
-        .populate("bookingId")
+        .populate({
+          path: "bookingId",
+          populate: [
+            { path: "userId" },
+          ],
+        })
         .sort({ createdAt: -1 })
         .lean(false);
       return NextResponse.json(invoices);

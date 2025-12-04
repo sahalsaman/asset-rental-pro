@@ -78,10 +78,6 @@ export default function VerifyOTPPage() {
     setOtp(value);
   };
 
-  function startWhatsAppVerification() {
-    window.open('https://wa.me/919074793799?text=Hi Rentities', '_blank');
-  }
-
   return (
     <div className="bg-green-700 bg-gradient-to-br from-green-700 to-green-900 h-[100vh]">
       <div className="h-3/12 flex justify-center items-center ">
@@ -132,14 +128,6 @@ export default function VerifyOTPPage() {
                   loading={buttonLoader}
                 >
                   Verify OTP
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full py-5  text-gray-600"
-                  onClick={startWhatsAppVerification}
-                  disabled={buttonLoader}
-                >
-                  Send OTP via WhatsApp
                 </Button>
               </form>
 

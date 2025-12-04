@@ -8,6 +8,7 @@ import Image from "next/image";
 import { countryCodes, defaultData } from "@/utils/data";
 import { app_config } from "../../../../app-config";
 import { Button } from "@/components/ui/button";
+import IndianFlag from "../../../../public/indian-flag.png";
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
@@ -75,10 +76,14 @@ export default function LoginPage() {
                       placeholder="9876XXXXXX"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="flex-1 w-full px-4 py-2 pl-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
+                      className="flex-1 w-full px-4 py-2 pl-18 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
                       maxLength={10}
                     />
-                    <span className="absolute top-1/2 left-3 -translate-y-1/2 text-gray-900">+91</span>
+                    <div className="absolute top-1/2 left-4 -translate-y-1/2 text-gray-900">
+                      <span className="flex items-center gap-1">
+                        <Image src={IndianFlag} alt="Flag" width={20} /> +91
+                      </span>
+                    </div>
                   </div>
                 </div>
                 {mobileNumberValidationMessage && (

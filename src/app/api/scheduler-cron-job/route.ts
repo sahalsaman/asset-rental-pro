@@ -1,13 +1,11 @@
 import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import InvoiceModel from "@/../models/Invoice";
-import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus } from "@/utils/contants";
-import { sendInvoiceToWhatsAppWithPaymentUrl } from "@/utils/sendToWhatsApp";
-import { generateRazorpayLinkForInvoice, razorpayPayout } from "@/utils/razerPay";
+import { BookingStatus, InvoiceStatus, RentAmountType, UnitStatus, SubscritptionStatus, SubscritptionPaymentStatus } from "@/utils/contants";
+import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 import { NextResponse } from "next/server";
-import { OrganisationModel } from "../../../../models/Organisation";
+import { OrganisationModel, SubscriptionPaymentModel } from "../../../../models/Organisation";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
-import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
 import UnitModel from "../../../../models/Unit";
 
 export async function GET() {
@@ -15,15 +13,14 @@ export async function GET() {
   try {
     await connectMongoDB();
     // new invoice generating
-    await handleInvoice()
+    await generateInvoice()
     // send overdue message
     await sendOverdueMessage()
     // daily collected mount payout to organisation
-    // await payOutrazerpaytToOrganisation() // auto pay
 
     await handleCheckout()
 
-    await updateOrganisationSubscription()
+    await generateSubscriptionPayment()
 
     console.log("cron job is working well.........", new Date());
 
@@ -36,7 +33,7 @@ export async function GET() {
 
 
 
-const handleInvoice = async () => {
+const generateInvoice = async () => {
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -90,7 +87,7 @@ const handleInvoice = async () => {
       nextBillingDate,
       lastInvoiceId: newInvoice._id
     })
-    sendInvoiceToWhatsAppWithPaymentUrl(booking, new_amount, invoiceId, dueDate);
+    sendInvoiceToWhatsApp(booking, new_amount, invoiceId, dueDate);
 
     return
   }
@@ -99,12 +96,12 @@ const handleInvoice = async () => {
 
 const sendOverdueMessage = async () => {
   const invoices = await InvoiceModel.find({ disabled: false, status: InvoiceStatus.PENDING }).populate({
-        path: "bookingId",
-        populate: {
-          path: "userId",
-          model: "User",
-        },
-      }).populate('propertyId');
+    path: "bookingId",
+    populate: {
+      path: "userId",
+      model: "User",
+    },
+  }).populate('propertyId');
 
   if (invoices.length > 0) {
     for (const invoice of invoices) {
@@ -117,31 +114,14 @@ const sendOverdueMessage = async () => {
       }
       let booking = invoice?.bookingId
 
-      sendInvoiceToWhatsAppWithPaymentUrl(booking, invoice.amount, invoice.invoiceId, dueDate);
+      sendInvoiceToWhatsApp(booking, invoice.amount, invoice.invoiceId, dueDate);
 
     }
   }
   console.log("cron sendOverdueMessage working.........", new Date());
 }
 
-// const payOutrazerpaytToOrganisation = async () => {
-//   const organisations = await OrganisationModel.find({ pendingPayout: { $gt: 0 } });
-
-//   for (const org of organisations) {
-//     const payoutAmount = org.pendingPayout;
-
-//     razorpayPayout(payoutAmount, org)
-
-//     // Mark payout done
-//     await OrganisationModel.findByIdAndUpdate(org._id, {
-//       $set: { pendingPayout: 0 },
-//     });
-//   }
-//   console.log("cron payOutrazerpaytToOrganisation working.........", new Date());
-// }
-
 const handleCheckout = async () => {
-
 
   // 🕓 Get today's date (midnight)
   const today = new Date();
@@ -193,39 +173,76 @@ const handleCheckout = async () => {
 }
 
 
-
-const updateOrganisationSubscription = async () => {
+const generateSubscriptionPayment = async () => {
   try {
+    const today = new Date();
+    if (today.getDate() !== 4) {
+      console.log("⏩ Not the 1st day of the month — skipping billing.");
+      return;
+    }
+
+    console.log("🚀 Running Subscription Cron Job...");
+
     const organisations = await OrganisationModel.find({
       disabled: false,
       deleted: false,
-      "subscription.status": { $in: [SubscritptionStatus.ACTIVE] },
+      "subscription.status": SubscritptionStatus.ACTIVE,
     });
 
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth();
+
+    // Start & End of this month
+    const monthStart = new Date(currentYear, currentMonth, 1);
+    const monthEnd = new Date(currentYear, currentMonth + 1, 1);
+
     for (const org of organisations) {
-      const subscription = org.subscription;
+      const sub = org.subscription;
 
-      if (!subscription?.endDate) continue;
+      if (!sub) continue;
 
-      const currentDate = new Date();
-      const endDate = new Date(subscription.endDate);
+      // 1️⃣ Count invoices created this month
+      const noOfBookings = await InvoiceModel.countDocuments({
+        organisationId: org._id,
+        createdAt: { $gte: monthStart, $lt: monthEnd },
+        type: RentAmountType.RENT,
+      });
 
-      currentDate.setHours(0, 0, 0, 0);
-      endDate.setHours(0, 0, 0, 0);
+      // 2️⃣ Calculate prices
+      const unitPrice = sub.unitPrice;
+      const totalPrice = unitPrice * noOfBookings;
 
-      const diffTime = endDate.getTime() - currentDate.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      // 3️⃣ Create subscription payment entry
+      await SubscriptionPaymentModel.create({
+        organisationId: org._id,
+        plan: sub.plan,
+        status: SubscritptionPaymentStatus.PENDING,
+        startDate: monthStart,
+        endDate: monthEnd,
+        no_of_booking: noOfBookings,
+        plan_price: unitPrice,
+        total_price: totalPrice,
+        paymentMethod: sub.paymentMethod,
+      });
 
-      if (diffDays <= 0) {
-        org.subscription.status = SubscritptionStatus.EXPIRED;
-        org.subscription.trialCompleted = true;
-        await org.save();
-        console.log(`✅ Subscription expired for: ${org.name}`);
-      }
+      // 4️⃣ Update next billing date
+      await OrganisationModel.updateOne(
+        { _id: org._id },
+        {
+          $set: {
+            "subscription.lastPaymentDate": now,
+            "subscription.nextBillingDate": new Date(currentYear, currentMonth + 1, 1),
+            "subscription.numberOfBookings": 0,
+          },
+        }
+      );
+
+      console.log(`✅ Created subscription payment for org: ${org.name}`);
     }
 
-    console.log("🕒 Cron job executed at:", new Date().toLocaleString());
+    console.log("🕒 Cron executed at:", new Date().toLocaleString());
   } catch (error) {
-    console.error("❌ Error in updateOrganisationSubscription:", error);
+    console.error("❌ Cron Error:", error);
   }
-};
+}

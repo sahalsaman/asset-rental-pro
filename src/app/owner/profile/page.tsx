@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { UserRoles } from "@/utils/contants";
 import { IUser } from "@/app/types";
 import { Button } from "@/components/ui/button";
-import { Edit } from "lucide-react";
+import { ChevronRight, Edit } from "lucide-react";
 
 export default function PropertiesPage() {
   const [user, setUser] = useState<IUser | null>(null);
@@ -64,21 +64,21 @@ export default function PropertiesPage() {
         </div>
       </div>
       <div className="flex flex-col text-md m-4 md:mx-32">
-        <a className="p-4 border-b-1 border-b-gray-200" href='/privacy'
+        <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/privacy'
           target="_blank">
-          Privacy and policy
+          Privacy and policy <ChevronRight/>
         </a>
-        <a className="p-4 border-b-1 border-b-gray-200" href='/terms'
+        <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/terms'
           target="_blank">
-          Terms & Conditions
+          Terms & Conditions <ChevronRight/>
         </a>
-        <a className="p-4 border-b-1 border-b-gray-200" href='/#faq'
+        <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/#faq'
           target="_blank">
-          FAQ
+          FAQ <ChevronRight/>
         </a>
-        <a className="p-4 border-b-1 border-b-gray-200" href='/#contact'
+        <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/#contact'
           target="_blank">
-          Help & Support
+          Help & Support <ChevronRight/>
         </a>
         <a onClick={() => { logout(); }}
           className="p-4 border-b-1 border-b-gray-200 text-red-600 cursor-pointer">
