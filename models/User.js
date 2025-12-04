@@ -7,7 +7,7 @@ const UserSchema = new Schema(
     lastName: { type: String },
     countryCode: { type: String, required: true, default: "+91" },
     phone: { type: String, required: true, unique: true, index: true },
-    email: { type: String, unique: true, },
+    email: { type: String },
     otp: { type: String },
     otpExpireTime: { type: Date },
     otpVerified: { type: Boolean, required: true, default: false },
