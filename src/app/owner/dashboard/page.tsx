@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Users, DollarSign, Calendar, NotepadTextDashed, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed, Share, Crown, MessageCircleMore } from "lucide-react";
+import { Building2, Users, DollarSign, Calendar, NotepadTextDashed, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed, Share, Crown, MessageCircleMore, Lamp } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
@@ -124,7 +124,7 @@ export default function OwnerDashboard() {
 
       <div className="grid grid-cols-2  lg:grid-cols-3 gap-4">
         <DashboardCard title="Total Units" value={status?.total_units} icon={Building2} />
-        <DashboardCard title="Available Units" value={status?.available_units} icon={Bed} />
+        <DashboardCard title="Available Units" value={status?.available_units} icon={Lamp} />
         <DashboardCard title="Notice Period" value={status?.noticePeriod} icon={Paperclip} />
         <DashboardCard title="Enrollments" value={status?.enrollments} icon={Users} />
         <DashboardCard title="Monthly Target" value={`${current_property?.currency ?? ""}${status?.totalInvoiceAmount?.toLocaleString()}`} icon={Tickets} />
