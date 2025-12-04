@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { User, XIcon, Home, Building2, Store, Building, } from 'lucide-react'; // icons
+import { User, XIcon, Home, Building2, Store, Building, Lamp, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
@@ -30,7 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const mobileMenu = [
     { title: 'Dashboard', path: '/owner/dashboard', icon: <Home size={22} /> },
-    { title: 'Units/Rooms', path: '/owner/units', icon: <Store size={21} /> },
+    { title: 'Units/Rooms', path: '/owner/units', icon: <Lamp size={21} /> },
     { title: 'Properties', path: '/owner/properties', icon: <Building size={22} /> },
     { title: 'Organisation', path: '/owner/organisation', icon: <Building2 size={22} /> },
     // { title: 'Profile', path: '/owner/profile', icon: <UserCircle size={21} /> },

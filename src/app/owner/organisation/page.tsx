@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api";
 import { FullscreenLoader } from "@/components/Loader";
-import { Edit, Globe, MapPin } from "lucide-react";
+import { ArrowRight, BadgeIndianRupee, Building, ChevronRight, CircleDollarSign, Crown, Edit, Globe, Landmark, MapPin, Receipt } from "lucide-react";
 import { UserRoles } from "@/utils/contants";
 import { IUser } from "@/app/types";
 import { useRouter } from "next/navigation";
@@ -40,6 +40,30 @@ export default function PropertiesPage() {
   ];
   if (!organisation) return <FullscreenLoader />;
 
+  const ownerOptions = [
+    {
+      title: "Properties",
+      path: "/owner/properties",
+      icon: <Building className="w-6 h-6 md:w-8 md:h-8 min-w-6 min-h-6" />,
+    },
+    {
+      title: "Bank & UPI Details",
+      path: "/owner/bank-upi-list",
+      icon: <Landmark className="w-6 h-6 md:w-8 md:h-8 min-w-6 min-h-6" />,
+    },
+    {
+      title: "Subscription Plan",
+      path: "/owner/subscription-plan",
+      icon: <Crown className="w-6 h-6 md:w-8 md:h-8 min-w-6 min-h-6" />,
+    },
+    {
+      title: "Subscription Payments",
+      path: "/owner/subcription-payments",
+      icon: <BadgeIndianRupee className="w-6 h-6 md:w-8 md:h-8 min-w-6 min-h-6" />,
+    },
+  ];
+
+
   return (
     <div>
       <div className="flex flex-col justify-between items-start md:items-center gap-3 bg-slate-100 md:p-14 md:px-32 p-5 shadow-sm">
@@ -67,23 +91,20 @@ export default function PropertiesPage() {
 
 
         <div className="flex flex-col text-md">
-          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/properties')}>
-            Properties
-          </a> : ""}
-          {/* {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" >
-            Automated invoicing & payments <br /><span className="bg-green-700 text-white text-xs p-1 px-2 rounded-md font-semibold">Coming Soon..</span>
-          </a> : ""} */}
-          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/bank-upi-list')}>
-            Bank & UPI Details
-          </a> : ""}
-          {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subscription-plan')}>
-            Subscription
-          </a> : ""}
-           {user?.role === UserRoles.OWNER ? <a className="p-4 border-b-1 border-b-gray-200" onClick={() => router.push('/owner/subcription-payments')}>
-            Subscription Payments
-          </a> : ""}
-
+          {user?.role === UserRoles.OWNER &&
+            ownerOptions.map((item, idx) => (
+              <a
+                key={idx}
+                className="p-4 border-b border-b-gray-200 cursor-pointer flex items-center gap-3"
+                onClick={() => router.push(item.path)}
+              >
+                {item.icon && item.icon}
+                {item.title}
+              </a>
+            ))
+          }
         </div>
+
       </div>
       <EditOrganisationDialog
         open={orgModalOpen}

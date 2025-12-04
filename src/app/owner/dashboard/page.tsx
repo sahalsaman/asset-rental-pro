@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Users, DollarSign, Calendar, NotepadTextDashed, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed, Share } from "lucide-react";
+import { Building2, Users, DollarSign, Calendar, NotepadTextDashed, Megaphone, PlusIcon, BadgeDollarSign, QrCodeIcon, Headset, Tickets, Paperclip, Bed, Share, Crown, MessageCircleMore } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
@@ -106,13 +106,13 @@ export default function OwnerDashboard() {
   const options = [
     { title: 'Bookings', path: '/owner/bookings', icon: <Calendar className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
     { title: 'Invoices', path: '/owner/invoices', icon: <NotepadTextDashed className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
-    { title: 'Broadcast', path: '/owner/announcement', icon: <Megaphone className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
+    { title: 'Broadcast', path: '/owner/announcement', icon: <MessageCircleMore className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
     { title: 'Managers', path: '/owner/managers', icon: <Users className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
 
     { title: 'New Booking', path: 'BOOKING_FORM', icon: <PlusIcon className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
 
-    { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> }, { title: 'Subscription', path: '/owner/subscription-plan', icon: <DollarSign className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
-    { title: 'Support', path: '/#contact', icon: <Headset className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
+    { title: 'Booking QR', path: 'BOOKING_QR', icon: <QrCodeIcon className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> }, { title: 'Subscription', path: '/owner/subscription-plan', icon: <Crown className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
+    { title: 'Support', path: 'SUPPORT', icon: <Headset className="w-6 h-6 md:w-10 md:h-10 min-w-6 min-h-6" /> },
   ];
 
   if (loader) return <FullscreenLoader />;
@@ -134,7 +134,7 @@ export default function OwnerDashboard() {
       <div className="  grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-8 mt-8 md:mt-20">
         {options.map((card, idx) => (
           <div key={idx} className="flex flex-col justify-center items-center gap-1 md:gap-1.5 cursor-pointer hover:scale-105 transition-transform"
-            onClick={() => card.path === "BOOKING_FORM" ? setShowBookingModal(true) : card.path === "BOOKING_QR" ? openQR() : router.push(card.path)} >
+            onClick={() => card.path === "BOOKING_FORM" ? setShowBookingModal(true) : card.path === "BOOKING_QR" ? openQR() : card.path==="SUPPORT"? window.open('https://wa.link/61dd4n', '_blank'):router.push(card.path)} >
             <Button className="h-15 w-15 md:h-20 md:w-20  hover:shadow-lg " variant="green">
               {card.icon}
             </Button>
