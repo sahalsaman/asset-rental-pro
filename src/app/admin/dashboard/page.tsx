@@ -68,12 +68,12 @@ export default function OwnerDashboard() {
       <h1 className="text-2xl hidden md:block font-bold mb-6">Dashboard</h1>
 
       <div className="grid grid-cols-2  lg:grid-cols-3 gap-4">
-        <DashboardCard title="Total Organisation" value={status?.organisationCount} icon={Bed} />
-        <DashboardCard title="Total Vendors" value={status?.vendorCount} icon={Paperclip} />
-        <DashboardCard title="Total Users" value={status?.userCount} icon={Building2} />
-        <DashboardCard title="Total Properties" value={status?.propertyCount} icon={Users} />
-        <DashboardCard title="Total bookings" value={status?.bookingCount} icon={Users} />
-        <DashboardCard title="Subcription Payments" value={status?.subcriptionPaymentLastMonth} icon={Users} />
+        <DashboardCard title="Total Organisation" value={status?.organisationCount} icon={Bed} color={"black"}/>
+        <DashboardCard title="Total Vendors" value={status?.vendorCount} icon={Paperclip} color={"black"}/>
+        <DashboardCard title="Total Users" value={status?.userCount} icon={Building2} color={"black"}/>
+        <DashboardCard title="Total Properties" value={status?.propertyCount} icon={Users} color={"black"}/>
+        <DashboardCard title="Total bookings" value={status?.bookingCount} icon={Users} color={"black"}/>
+        <DashboardCard title="Subcription Payments" value={status?.subcriptionPaymentLastMonth} icon={Users} color={"black"}/>
       </div>
 
 
