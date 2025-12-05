@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { User,  } from 'lucide-react'; 
+import { Building, Building2, FormInput, Home, Lamp, NotepadText, Tags, User, Users,  } from 'lucide-react'; 
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
 import { app_config } from '../../../app-config';
@@ -21,6 +21,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { title: 'Enquies', path: '/admin/enquiries' },
     { title: 'Leads', path: '/admin/leads' },
   ]
+
+    const mobileMenu = [
+    { title: 'Dashboard', path: '/admin/dashboard', icon: <Home size={22} /> },
+    { title: 'Organisations', path: '/admin/organisations', icon: <Building2 size={22} /> },
+    { title: 'Users', path: '/admin/users', icon: <Users size={21} /> },
+    { title: 'Enquiries', path: '/admin/enquiries', icon: <NotepadText size={22} /> },
+    { title: 'Leads', path: '/admin/leads', icon: <Tags size={22} /> },
+  ];
 
   const fetchUser = async () => {
     try {
@@ -93,7 +101,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       </div>
       <main>{children}</main>
-
+     {/* Mobile Bottom Menu */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-evenly py-4 lg:hidden">
+        {mobileMenu.map((item, idx) => (
+          <button
+            key={idx}
+            onClick={() => router.push(item.path)}
+            className={`flex flex-col gap-1 items-center text-xs text-gray-500 p-2 rounded-xl ${pathname === item.path ? "bg-gray-100 " : ""
+              }`}
+          >
+            {item.icon}
+            <span>{item.title}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

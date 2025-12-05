@@ -192,7 +192,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
                 placeholder="eg: 3"
                 value={formData.noOfSlots || ""}
                 onChange={handleChange}
-                required
+                required={isHostelOrPG?true:false}
               />
             </>
           )}

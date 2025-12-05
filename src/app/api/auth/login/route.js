@@ -1,4 +1,5 @@
 import UserModel from "@/../models/User";
+import "@/../models"; 
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
 import { sendOTPText } from "@/utils/sendToWhatsApp";

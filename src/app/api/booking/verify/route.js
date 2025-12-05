@@ -45,7 +45,7 @@ export async function POST(request) {
     });
 
     return NextResponse.json(
-      { message: "User created", userData },
+      { message: "User created", user:userData },
       { status: 201 }
     );
   } catch (err) {
