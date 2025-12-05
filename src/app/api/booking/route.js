@@ -1,3 +1,4 @@
+import "@/../models"; 
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectMongoDB from "@/../database/db";
@@ -5,11 +6,11 @@ import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "@/utils/tokenHandler";
 import InvoiceModel from "@/../models/Invoice";
 import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
-import UnitModel from "../../../../models/Unit";
-import { BookingStatus, InvoiceStatus, RentAmountType, RentFrequency, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
+import UnitModel from "@/../models/Unit";
+import { BookingStatus, InvoiceStatus, RentAmountType, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
 import { OrganisationModel } from "../../../../models/Organisation";
-import UserModel from "../../../../models/User";
+import UserModel from "@/../models/User";
 
 // Helper to validate ObjectId
 function isValidObjectId(id) {
