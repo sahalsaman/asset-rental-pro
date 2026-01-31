@@ -26,9 +26,9 @@ export async function POST(request) {
 
     const body = await request.json();
 
-    const enquiry = await LeadModel.create(body);
+    const lead = await LeadModel.create(body);
 
-    return NextResponse.json(enquiry, { status: 201 });
+    return NextResponse.json(lead, { status: 201 });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

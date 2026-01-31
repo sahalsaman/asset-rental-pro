@@ -30,7 +30,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.524.0",
     "mongoose": "^8.16.1",
-    "next": "15.3.4",
+    "next": "^16.1.6",
     "next-auth": "^4.24.11",
     "qrcode.react": "^4.2.0",
     "razorpay": "^2.9.6",

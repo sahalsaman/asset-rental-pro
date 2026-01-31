@@ -151,7 +151,7 @@ export enum PaymentRecieverOptions {
   UPIID = "UPI ID",
 }
 
-export enum EnquiryStatus {
+export enum LeadStatus {
   NEW = "New",
   CONTACTED = "Contacted",
   PENDING = "Pending",
