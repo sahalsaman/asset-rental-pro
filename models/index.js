@@ -5,7 +5,6 @@ import "./Unit";
 import "./User";
 import "./Invoice";
 import "./Booking";  
-import "./Enquiry";   
 import "./Lead";    
 import "./Review";  
 
@@ -16,6 +15,5 @@ export * from "./Unit";
 export * from "./User";
 export * from "./Invoice";
 export * from "./Booking";
-export * from "./Enquiry";
 export * from "./Lead";
 export * from "./Review";
