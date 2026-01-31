@@ -64,7 +64,7 @@ export default function PropertyCard({ property, currentProperty,onEdit, onDelet
           </div> */}
         </div>
       </div>
- {currentProperty._id===property._id?     <div className='bg-green-700 text-white w-fit absolute bottom-0 right-0 rounded-br-xl rounded-tl-xl px-4 py-1 text-sm font-bold'>Current</div>:""}
+ {currentProperty._id===property._id?     <div className='bg-green-700 text-white w-fit absolute bottom-0 right-0 rounded-br-xl rounded-tl-xl px-4 py-1 text-sm font-bold'>Selected</div>:""}
     </div>
   );
 }

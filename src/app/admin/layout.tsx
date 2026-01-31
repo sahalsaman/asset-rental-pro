@@ -18,6 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { title: 'Organisations', path: '/admin/organisations' },
     { title: 'Properties', path: '/admin/properties' },
     { title: 'Users', path: '/admin/users' },
+    { title: 'Payments', path: '/admin/payments' },
     { title: 'Enquies', path: '/admin/enquiries' },
     { title: 'Leads', path: '/admin/leads' },
   ]

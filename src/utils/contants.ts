@@ -7,7 +7,7 @@ export enum UserRoles {
 
 
 export enum PropertyType {
-  SHOP_BUILDING = "Shop Building",
+  COMMERCIAL_BUILDING = "Cmmercial Building",
   HOTEL = "Hotel",
   LODGE_ROOM = "Lodge/Unit",
   PG_HOSTEL = "PG/Hostel",
@@ -77,10 +77,10 @@ export enum RentAmountType {
 
 export enum CurrencyType {
   INR = '₹',
-  AED = 'د.إ',
-  USD = '$',
-  EUR = '€',
-  GBP = '£',
+  // AED = 'د.إ',
+  // USD = '$',
+  // EUR = '€',
+  // GBP = '£',
 }
 
 export enum RentFrequency {

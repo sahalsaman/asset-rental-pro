@@ -7,7 +7,7 @@ export const app_config = {
     APP_LOGO_DARK_THEME:logo,
     PUBLIC_BASE_URL: "https://rentities.in",
     EMAIL:"hello@rentities.in",
-    PHONE_NUMBER:"+91 9947 9298 22",
-    WHATSAPP_NUMBER:"919947929822",
+    PHONE_NUMBER:"+91 8157 9298 22",
+    WHATSAPP_NUMBER:"918157929822",
     ADDRESS:"Webcos Technologies, Kozhikode, Kerala, India"
 }

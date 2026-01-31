@@ -64,7 +64,13 @@ const generateInvoice = async () => {
 
     const dueDate = calculateDueDate(booking?.frequency)
 
-    const invoiceId = `INV-${booking?.code}-${Date.now()}-RENT`;
+      const invoiceCount = await InvoiceModel.find({
+      organisationId: booking.organisationId,
+      bookingId: booking._id,
+      propertyId: booking.propertyId,
+    }).countDocuments();
+    
+    const invoiceId = `INV-${booking?.code}-${invoiceCount+1}-RENT`;
 
     let new_amount = booking.amount + carryForwarded
     const newInvoice = await InvoiceModel.create({
