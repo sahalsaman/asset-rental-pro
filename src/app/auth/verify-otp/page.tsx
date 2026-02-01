@@ -33,9 +33,9 @@ export default function VerifyOTPPage() {
 
     setButtonLoader(true);
     try {
-     await login(phone, countryCode);
-      toast.success("OTP sent successfully via WhatsApp!");
-    setButtonLoader(false);
+      await login(phone, countryCode);
+      toast.success("OTP sent successfully via Whatsapp!");
+      setButtonLoader(false);
     } catch (err: any) {
       if (err?.response?.data?.message) {
         toast.error(err?.response?.data?.message);
@@ -43,7 +43,7 @@ export default function VerifyOTPPage() {
         toast.error("An error occurred. Please try again.");
         console.error("Login error:", err);
       }
-    setButtonLoader(false);
+      setButtonLoader(false);
     }
   };
 
@@ -57,8 +57,7 @@ export default function VerifyOTPPage() {
       const res = await api.post("/auth/verify-otp", { phone, countryCode, otp });
       const role = res.data.role;
 
-      if (role === UserRoles.ADMIN) location.href = "/admin/dashboard";
-      else if (role === UserRoles.OWNER || role === UserRoles.MANAGER) location.href = "/owner/dashboard";
+      if (role === UserRoles.OWNER || role === UserRoles.MANAGER) location.href = "/owner/dashboard";
       else location.href = "/user/dashboard";
 
       toast.success("Logged in successfully!");
@@ -92,7 +91,7 @@ export default function VerifyOTPPage() {
                 <h2 className="text-3xl font-bold text-green-700 mb-2">Verify Your OTP</h2>
                 <p className="text-sm text-gray-600">
                   {countryCode && phone
-                    ? `We’ve sent an OTP to ${countryCode}${phone}`
+                    ? `We’ve sent an OTP via Whatsapp to ${countryCode}${phone}`
                     : "We’ve sent an OTP to your phone number"}
                 </p>
               </div>

@@ -7,6 +7,7 @@ const LeadSchema = new Schema(
     countryCode: { type: String, required: true, default: "+91" },
     phone: { type: String, required: true, unique: true, index: true },
     email: { type: String },
+    message: { type: String},
     address: { type: String},
     city: { type: String },
     state: { type: String},

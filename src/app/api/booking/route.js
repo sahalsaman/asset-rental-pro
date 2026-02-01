@@ -160,11 +160,7 @@ export async function POST(request) {
       userId: userData._id,
     });
 
-    
-
     const dueDate = calculateDueDate(booking?.frequency)
-    console.log("dueDate", dueDate, booking?.frequency, unit.frequency);
-
 
     // 2️⃣ Generate invoices for this booking
     const invoices = [];
@@ -210,7 +206,7 @@ export async function POST(request) {
     if (invoices.length > 0) {
       const res = await InvoiceModel.insertMany(invoices);
       res?.map(i => {
-        sendInvoiceToWhatsApp({...booking, userId: userData}, booking.amount, i.invoiceId, dueDate);
+        sendInvoiceToWhatsApp({...booking, code, userId: userData}, booking.amount, i.invoiceId, dueDate);
       })
     }
 

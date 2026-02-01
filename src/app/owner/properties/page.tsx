@@ -31,14 +31,14 @@ export default function PropertiesPage() {
 
   useEffect(() => {
     fetchProperties();
-      fetchOrganisation()
+    fetchOrganisation()
   }, []);
 
   const breadcrumbItems = [
     { label: "Home", href: "/owner" },
     { label: "Properties" },
   ];
-  if (!properties) return <FullscreenLoader />;
+  if (!properties.length) return <FullscreenLoader />;
 
   return (
     <div className=" p-5 md:pt-10 md:px-32 mb-10">

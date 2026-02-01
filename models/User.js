@@ -3,6 +3,11 @@ import mongoose, { Schema, Types } from 'mongoose';
 
 const UserSchema = new Schema(
   {
+    // for admin login
+    username: { type: String },
+    password: { type: String },
+    
+    // common fields
     firstName: { type: String, required: true },
     lastName: { type: String },
     countryCode: { type: String, required: true, default: "+91" },

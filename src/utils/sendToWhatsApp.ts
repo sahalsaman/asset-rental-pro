@@ -4,18 +4,12 @@ import { app_config } from '../../app-config';
 import crypto from 'crypto';
 
 const config = {
-  WHATSAPP_TOKEN: env?.WHATSAPP_TOKEN,
   WHATSAPP_PHONE_NUMBER_ID: env?.WHATSAPP_PHONE_NUMBER_ID,
   WHATSAPP_SYSTEM_USER_TOKEN: env.WHATSAPP_SYSTEM_USER_TOKEN
 }
 
 function formatPhone(phone: string): string {
   return phone.replace(/^\+/, '').replace(/\s|-/g, '');  // e.g., "+91 98765 43210" → "919876543210"
-}
-
-function generateShortCode(otp: string, phone: string): string {
-  const hash = crypto.createHash('md5').update(phone + otp).digest('hex');
-  return hash.substring(0, 10).toUpperCase(); // Max 10 chars
 }
 
 
@@ -28,57 +22,21 @@ export async function sendOTPText(
 
   try {
     const formattedPhone = formatPhone(`${countryCode}${phone}`);
-    const shortCode = generateShortCode(otp, formattedPhone);
-    const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
-    // const payload = {
-    //   messaging_product: "whatsapp",
-    //   to: formattedPhone,
-    //   type: "text",
-    //   text: {
-    //     preview_url: false,
-    //     body: `🔐 Hi ${userName || "User"},\n\nYour verification OTP is: *${otp}*\nIt expires in 5 minutes. Please do not share it.`,
-    //   },
-    // };
-    const payload = {
-      messaging_product: "whatsapp",
-      to: formattedPhone,
-      type: "template",
-      template: {
-        name: "otp",
-        language: { code: "en_US" },
-        components: [
-          {
-            type: "body",
-            parameters: [
-              { type: "text", text: otp }
-            ]
-          },
-          {
-            type: "button",
-            index: 0,
-            sub_type: "url",
-            parameters: [
-              { type: "text", text: shortCode }  // ← REQUIRED
-            ]
-          }
-        ]
-      }
-    };
-    // const payload = {
-    //   messaging_product: "whatsapp",
-    //   to: formattedPhone,
-    //   type: "template",
-    //   template: {
-    //     name: "hello_world",
-    //     language: { code: "en_US" },
-    //   }
-    // };
-    const headers = {
-      Authorization: `Bearer ${config.WHATSAPP_SYSTEM_USER_TOKEN}`,
-      "Content-Type": "application/json",
-    };
+    const url = `https://bot.wabis.in/api/v1/whatsapp/send/template`;
 
-    const response = await axios.post(url, payload, { headers });
+    const params = new URLSearchParams();
+    params.append("apiToken", config.WHATSAPP_SYSTEM_USER_TOKEN);
+    params.append("phone_number_id", config.WHATSAPP_PHONE_NUMBER_ID);
+    params.append("phone_number", formattedPhone);
+    params.append("template_id", "308500");
+    params.append("templateVariable-otp-1", otp);
+    params.append("templateVariable-otp-2", otp);
+
+    const response = await axios.post(url, params, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
 
     console.log("✅ WhatsApp OTP sent:", response.data);
     return {
@@ -98,8 +56,8 @@ export async function sendOTPText(
 export async function sendInvoiceToWhatsApp(booking: any, amount: number, invoiceId: string,
   dueDate: Date) {
   try {
-    const formattedPhone = formatPhone("91" + booking?.whatsappNumber);  // Ensure correct format
-    const url = `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+    const formattedPhone = formatPhone(`${booking?.userId.countryCode}${booking?.userId.phone}`);
+    const url = `https://bot.wabis.in/api/v1/whatsapp/send/template`;
 
     const dueDateStr = dueDate.toLocaleDateString("en-IN", {
       day: "2-digit",
@@ -107,53 +65,26 @@ export async function sendInvoiceToWhatsApp(booking: any, amount: number, invoic
       year: "numeric",
     });
 
-    const paymentLink = app_config.PUBLIC_BASE_URL + "/user/payment/" + booking?.code
+    const paymentLink = app_config.PUBLIC_BASE_URL + "/user/payment/" + booking.code
 
-    const response = await axios.post(
-      `https://graph.facebook.com/v20.0/${config.WHATSAPP_PHONE_NUMBER_ID}/messages`,
-      {
-        messaging_product: "whatsapp",
-        to: formattedPhone,
-        type: "template",
-        template: {
-          name: "invoice_reminder",
-          language: { code: "en" },
-          components: [
-            {
-              type: "header",
-              parameters: [
-                { type: "text", text: `${booking?.userId?.firstName} ${booking?.userId?.lastName}` || "Customer" }
-              ]
-            },
-            {
-              type: "body",
-              parameters: [
-                { type: "text", text: invoiceId },              // {{2}}
-                { type: "text", text: amount.toFixed(2) },       // {{3}}
-                { type: "text", text: dueDateStr },              // {{4}}
-                { type: "text", text: paymentLink },             // {{5}}
-                { type: "text", text: "Rentities" }              // {{6}} — your app or company name
-              ]
-            },
-            {
-              type: "button",
-              sub_type: "url",
-              index: "0",
-              parameters: [
-                { type: "text", text: paymentLink }  // Pay Now button URL
-              ]
-            }
-          ]
-        }
+    const params = new URLSearchParams();
+    params.append("apiToken", config.WHATSAPP_SYSTEM_USER_TOKEN);
+    params.append("phone_number_id", config.WHATSAPP_PHONE_NUMBER_ID);
+    params.append("phone_number", formattedPhone);
+    params.append("template_id", "308578");
+    params.append("templateVariable-tenantName-1", `${booking?.userId?.firstName} ${booking?.userId?.lastName}`);
+    params.append("templateVariable-InvoiceId-2", invoiceId);
+    params.append("templateVariable-amount-3", amount.toString());
+    params.append("templateVariable-dueDate-4", dueDateStr);
+    params.append("templateVariable-paymentUrl-5", paymentLink);
+    params.append("templateVariable-paymentUrl-6", booking?.code);
+    // params.append("templateVariable-6", propertyName);
+
+    const response = await axios.post(url, params, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${config?.WHATSAPP_SYSTEM_USER_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
+    });
 
     console.log("WhatsApp message sent successfully:", response.data);
     return { success: true, messageId: response.data.messages?.[0]?.id };

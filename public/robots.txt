@@ -1,3 +1,19 @@
 User-agent: *
 Allow: /
 Sitemap: https://rentities.in/sitemap.xml
+
+# Allow AI Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /

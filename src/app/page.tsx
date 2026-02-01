@@ -163,16 +163,29 @@ export default function Home() {
             >
               Simplify bookings, automate rent, and scale faster with our smart rental platform.
             </motion.p>
-            <Link href="/auth/signup">
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0 }}
-                className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition"
-              >
-                Start Free
-              </motion.button>
-            </Link>
+            <div className="flex flex-col md:flex-row gap-4">
+              <Link href="/auth/signup">
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0 }}
+                  className="bg-white text-green-700 font-semibold rounded-full px-8 py-3 hover:bg-green-100 transition"
+                >
+                  Start Free
+                </motion.button>
+              </Link>
+              <Link href="/doc/app-guidline">
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0 }}
+                  className="bg-green-700 border border-white text-white font-semibold rounded-full px-8 py-3 hover:bg-green-100 hover:text-green-700 transition"
+                >
+                  Setup Guide
+                </motion.button>
+              </Link>
+            </div>
+
           </div>
           <motion.div
             initial={{ opacity: 0, x: 50 }}
@@ -673,7 +686,7 @@ export default function Home() {
 
         </div>
       </footer>
-         <WhatsappButton />
+      <WhatsappButton />
     </main>
   );
 }

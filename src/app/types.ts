@@ -15,7 +15,7 @@ import {
   PaymentRecieverOptions,
   SubscritptionPaymentStatus,
   SubscritptionPlan,
-  EnquiryStatus
+  LeadStatus
 } from "@/utils/contants";
 
 // ✅ User Interface
@@ -256,19 +256,6 @@ export interface IAnnouncement {
   createdBy: string;
   disabled: boolean;
   deleted?: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-// ✅ Enquiry
-export interface IEnquiry {
-  _id?: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  message: string;
-  status: EnquiryStatus;
-  leadOperater?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

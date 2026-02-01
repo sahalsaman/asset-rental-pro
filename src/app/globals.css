@@ -133,5 +133,20 @@ select {
   @apply w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
 
-.auth-creen{
+/* Font variables are already set via next/font */
+.font-poppins {
+  font-family: var(--font-poppins), system-ui, sans-serif;
+}
+
+.font-montserrat {
+  font-family: var(--font-montserrat), system-ui, sans-serif;
+}
+
+/* Optional: your custom clip-path utilities */
+.clip-path-slide-1 {
+  clip-path: polygon(25% 0%, 100% 0, 100% 100%, 0% 100%);
+}
+
+.clip-path-slide-2 {
+  clip-path: polygon(25% 0%, 100% 0, 100% 100%, 0% 100%);
 }

@@ -9,10 +9,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import UnitCard from "@/components/UnitCard";
 import localStorageServiceSelectedOptions from "@/utils/localStorageHandler";
 import UnitAddEditModal from "@/components/UnitFormModal";
-import  { FullscreenLoader, } from "@/components/Loader";
+import { FullscreenLoader, } from "@/components/Loader";
 
 export default function UnitListPage() {
-     const property=localStorageServiceSelectedOptions.getItem()?.property
+  const property = localStorageServiceSelectedOptions.getItem()?.property
   const [units, setUnits] = useState<IUnit[]>([]);
   const [showUnitModal, setShowUnitModal] = useState(false);
   const [editUnitData, setEditUnitData] = useState<IUnit | null>(null);
@@ -38,7 +38,7 @@ export default function UnitListPage() {
     { label: property?.name || "Property" },
   ];
 
-  if (!units) return <FullscreenLoader />;
+  if (!units?.length) return <FullscreenLoader />;
 
   return (
     <div className="">
@@ -79,32 +79,32 @@ export default function UnitListPage() {
           </Button>
         </div>
         {/* Units Grid */}
-              {units.length === 0 ? (
-        <p className="text-gray-500 text-center">No units/space found. <br/>Add a unit/space to get started.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {units.map(unit => (
-            <UnitCard
-              key={unit._id}
-              unit={unit}
-              property={property}
-              onEdit={(unit) => {
-                setEditUnitData(unit);
-                setShowUnitModal(true);
-              }}
-              onDelete={(id) => {
-                setDeleteId(id);
-                setShowDelete(true);
-              }}
-              onBook={(unit) => {
-                setSelectedUnit(unit);
-                setShowBookingModal(true);
-              }}
-            />
-          ))}
-        </div>)}
+        {units.length === 0 ? (
+          <p className="text-gray-500 text-center">No units/space found. <br />Add a unit/space to get started.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {units.map(unit => (
+              <UnitCard
+                key={unit._id}
+                unit={unit}
+                property={property}
+                onEdit={(unit) => {
+                  setEditUnitData(unit);
+                  setShowUnitModal(true);
+                }}
+                onDelete={(id) => {
+                  setDeleteId(id);
+                  setShowDelete(true);
+                }}
+                onBook={(unit) => {
+                  setSelectedUnit(unit);
+                  setShowBookingModal(true);
+                }}
+              />
+            ))}
+          </div>)}
       </div>
-     <UnitAddEditModal
+      <UnitAddEditModal
         property={property}
         open={showUnitModal}
         onClose={() => {
