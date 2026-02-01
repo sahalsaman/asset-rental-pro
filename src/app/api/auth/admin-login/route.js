@@ -15,6 +15,10 @@ export async function POST(req) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
+  if (user.role != UserRoles.ADMIN) {
+    return NextResponse.json({ message: "User have not access" }, { status: 403 });
+  }
+
   if (user.disabled) {
     return NextResponse.json({ message: "User account disabled, please contact super admin " }, { status: 403 });
   }

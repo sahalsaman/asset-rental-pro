@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" style="">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>RENTITIES Cover Slide</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;family=Montserrat:wght@400;500;700&amp;display=swap"
+        rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            position: relative;
+            background-color: #ffffff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .decorative-shape-1 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 55%;
+            height: 100%;
+            background-color: #1a5f7a;
+            /* Deep Teal/Blue */
+            clip-path: polygon(25% 0%, 100% 0, 100% 100%, 0% 100%);
+            z-index: 1;
+        }
+
+        .decorative-shape-2 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 58%;
+            height: 100%;
+            background-color: #2c7da0;
+            /* Lighter Blue */
+            opacity: 0.3;
+            clip-path: polygon(25% 0%, 100% 0, 100% 100%, 0% 100%);
+            z-index: 0;
+            transform: translateX(-20px);
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            padding: 60px 80px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .text-content {
+            flex: 0 0 45%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .visual-content {
+            flex: 0 0 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: relative;
+        }
+
+        .logo-placeholder {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: #1a5f7a;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            color: #468faf;
+        }
+
+        .main-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            color: #576574;
+            margin-bottom: 3rem;
+            line-height: 1.4;
+            border-left: 4px solid #468faf;
+            padding-left: 20px;
+        }
+
+        .meta-info {
+            margin-top: auto;
+            display: flex;
+            gap: 30px;
+            font-size: 0.9rem;
+            color: #8395a7;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mockup-container {
+            width: 90%;
+            height: auto;
+            position: relative;
+            /* Simple shadow instead of complex effects */
+            filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.2));
+            transform: perspective(1000px) rotateY(-10deg) rotateX(5deg);
+        }
+
+        .mockup-frame {
+            background: #fff;
+            border-radius: 24px;
+            padding: 12px;
+            position: relative;
+        }
+
+        .mockup-screen {
+            background-color: #f0f4f8;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 9/16;
+            /* Mobile aspect ratio */
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #e2e8f0;
+        }
+
+        /* Abstract UI Elements for Mockup */
+        .ui-header {
+            height: 60px;
+            background-color: #1a5f7a;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .ui-card {
+            background: white;
+            border-radius: 12px;
+            margin: 15px;
+            padding: 15px;
+            height: 100px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .ui-row {
+            height: 40px;
+            background: white;
+            border-radius: 8px;
+            margin: 0 15px 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .accent-circle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: #ffffff;
+            opacity: 0.1;
+        }
+    </style>
+</head>
+
+<body style="">
+    <div class="slide-container">
+        <!-- Background Decorative Elements -->
+        <div class="decorative-shape-2"></div>
+        <div class="decorative-shape-1">
+            <div class="accent-circle" style="width: 300px; height: 300px; top: 10%; right: 10%;"></div>
+            <div class="accent-circle" style="width: 150px; height: 150px; bottom: 20%; right: 40%;"></div>
+        </div>
+        <div class="content-wrapper">
+            <!-- Left Side Text Content -->
+            <div class="text-content">
+                <div class="logo-placeholder">
+                    <i class="fa-solid fa-building-user logo-icon"></i>
+                    <p>RENTITIES</p>
+                </div>
+                <h1 class="main-title">
+                    Property Owner<br>
+                    <span style="color: #468faf;">App Guide</span>
+                </h1>
+                <p class="subtitle">
+                    Comprehensive Property Management Application Documentation for Property Owners
+                </p>
+                <div class="meta-info">
+                    <div class="meta-item">
+                        <i class="fa-regular fa-calendar"></i>
+                        <p>January 31, 2026</p>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fa-solid fa-code-branch"></i>
+                        <p>Version 1.0</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Side Visual Content -->
+            <div class="visual-content">
+                <div class="mockup-container">
+                    <div class="mockup-frame">
+                        <div class="mockup-screen">
+                            <div class="ui-header">
+                                <div
+                                    style="width: 20px; height: 20px; background: rgba(255,255,255,0.3); border-radius: 4px;">
+                                </div>
+                                <div
+                                    style="margin-left: auto; width: 20px; height: 20px; background: rgba(255,255,255,0.3); border-radius: 50%;">
+                                </div>
+                            </div>
+                            <div style="padding: 20px; display:flex; justify-content: space-between;">
+                                <div style="width: 48%; height: 80px; background: #e0f2fe; border-radius: 12px;"></div>
+                                <div style="width: 48%; height: 80px; background: #dcfce7; border-radius: 12px;"></div>
+                            </div>
+                            <div class="ui-card">
+                                <div
+                                    style="width: 60%; height: 10px; background: #e2e8f0; border-radius: 4px; margin-bottom: 10px;">
+                                </div>
+                                <div style="width: 40%; height: 10px; background: #f1f5f9; border-radius: 4px;"></div>
+                            </div>
+                            <div class="ui-row"></div>
+                            <div class="ui-row"></div>
+                            <div class="ui-row"></div>
+                            <div
+                                style="margin-top: auto; height: 60px; background: white; width: 100%; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; align-items: center;">
+                                <div style="width: 24px; height: 24px; background: #1a5f7a; border-radius: 6px;"></div>
+                                <div style="width: 24px; height: 24px; background: #cbd5e1; border-radius: 6px;"></div>
+                                <div style="width: 24px; height: 24px; background: #cbd5e1; border-radius: 6px;"></div>
+                                <div style="width: 24px; height: 24px; background: #cbd5e1; border-radius: 6px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
