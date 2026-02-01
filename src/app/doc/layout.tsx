@@ -1,7 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
-import "../../globals.css";
+import "../globals.css";
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import { Building2 } from "lucide-react";

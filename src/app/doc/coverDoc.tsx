@@ -13,13 +13,7 @@ export default function CoverSlidePage() {
         <div className="relative z-10 w-full flex flex-col lg:flex-row items-center px-8 py-16 lg:px-16">
           {/* Left - Text content */}
           <div className="w-full lg:w-1/2 lg:pr-12 text-center lg:text-left">
-            {/* Logo */}
-            <div className="flex items-center justify-center lg:justify-start gap-4 mb-8">
-              <Building2 className="text-[#1a5f7a]" size={48} />
-              <span className="text-3xl sm:text-4xl font-extrabold font-montserrat text-[#1a5f7a]">
-                RENTITIES
-              </span>
-            </div>
+
 
             {/* Main title */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black font-montserrat leading-tight text-[#2c3e50] mb-6">

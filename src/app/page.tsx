@@ -174,7 +174,7 @@ export default function Home() {
                   Start Free
                 </motion.button>
               </Link>
-              <Link href="/doc/app-guidline">
+              <Link href="/doc">
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

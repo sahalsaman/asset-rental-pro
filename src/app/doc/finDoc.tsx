@@ -24,10 +24,6 @@ export default function InvoicesFinancialsPage() {
               Track and manage invoices, payments, and property finances
             </p>
           </div>
-          <div className="flex items-center gap-2 text-[#1a5f7a] font-bold">
-            <Building2 size={24} />
-            <span className="hidden md:inline">RENTITIES</span>
-          </div>
         </div>
 
         {/* Content */}

@@ -23,10 +23,7 @@ export default function AdditionalFeaturesPage() {
               Essential tools designed to enhance daily operations
             </p>
           </div>
-          <div className="flex items-center gap-2 text-[#1a5f7a] font-bold">
-            <Building2 size={24} />
-            <span className="hidden md:inline">RENTITIES</span>
-          </div>
+
         </div>
 
         {/* Grid Content */}

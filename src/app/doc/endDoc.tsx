@@ -1,5 +1,6 @@
 // app/documentation/thank-you/page.tsx
 import { Building2, Mail, Globe, ArrowRight } from "lucide-react";
+import { app_config } from "../../../app-config";
 
 export default function ThankYouSlide() {
   return (
@@ -50,7 +51,7 @@ export default function ThankYouSlide() {
                     Email Support
                   </div>
                   <div className="text-base lg:text-xl font-semibold text-gray-800 break-all">
-                    support@rentities.app
+                    {app_config.SUPPORT_EMAIL}
                   </div>
                 </div>
               </div>
@@ -65,7 +66,7 @@ export default function ThankYouSlide() {
                     Visit Website
                   </div>
                   <div className="text-base lg:text-xl font-semibold text-gray-800">
-                    www.rentities.app
+                    {app_config.PUBLIC_URL}
                   </div>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { Building2, Check, X, Info } from "lucide-react";
+import { subscription_plans } from "@/utils/data";
 
 export default function SubscriptionPlansPage() {
   return (
@@ -16,68 +17,28 @@ export default function SubscriptionPlansPage() {
               Flexible pricing tiers scaled for your organization
             </p>
           </div>
-          <div className="flex items-center gap-2 text-[#1a5f7a] font-bold">
-            <Building2 size={24} />
-            <span className="hidden md:inline">RENTITIES</span>
-          </div>
+
         </div>
 
         {/* Billing Toggle */}
         <div className="flex items-center bg-gray-200 rounded-full p-1 justify-center mb-6 w-max mx-auto">
-          <ToggleOption label="Monthly" active={false} />
-          <ToggleOption label="Yearly (Save 20%)" active={true} />
+          <ToggleOption label="Monthly" active={true} />
+          <ToggleOption label="Yearly" active={false} />
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <PricingCard
-            name="Basic"
-            price={29}
-            period="/mo"
-            description="Essential tools for single property owners getting started."
-            features={[
-              { text: "Up to 5 Units", included: true },
-              { text: "Basic Dashboard", included: true },
-              { text: "Manual Bookings", included: true },
-              { text: "Tenant Invoicing", included: true },
-              { text: "Multi-property Support", included: false },
-              { text: "Manager Accounts", included: false },
-            ]}
-            button={{ label: "Start Basic", primary: false }}
-          />
+        <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {subscription_plans.map((i) =>
+            <PricingCard
+              name={i.name}
+              price={i.amount}
+              period="/mo"
+              description={i.description}
+              features={i.features}
+              button={{ label: i.buttonText, primary: i.highlight }}
+            />)}
 
-          <PricingCard
-            name="Professional"
-            price={79}
-            period="/mo"
-            description="Advanced features for growing portfolios and management."
-            features={[
-              { text: "Up to 50 Units", included: true },
-              { text: "Multi-Property Management", included: true },
-              { text: "3 Manager Seats", included: true },
-              { text: "Advanced Reports & Analytics", included: true },
-              { text: "Broadcast Messaging", included: true },
-              { text: "Priority Support", included: true },
-            ]}
-            button={{ label: "Upgrade to Pro", primary: true }}
-            featured
-          />
 
-          <PricingCard
-            name="Enterprise"
-            price={199}
-            period="/mo"
-            description="Maximum power for large scale property organizations."
-            features={[
-              { text: "Unlimited Units", included: true },
-              { text: "Unlimited Properties", included: true },
-              { text: "Unlimited Managers", included: true },
-              { text: "API Access", included: true },
-              { text: "White-label Options", included: true },
-              { text: "Dedicated Account Manager", included: true },
-            ]}
-            button={{ label: "Contact Sales", primary: false }}
-          />
         </div>
 
         {/* Organization Note */}
@@ -120,7 +81,7 @@ function PricingCard({
 }: any) {
   return (
     <div
-      className={`relative flex flex-col bg-white border rounded-2xl p-8 transition-transform w-full ${featured
+      className={`h-full relative flex flex-col bg-white border rounded-2xl p-8 transition-transform w-full ${featured
         ? "lg:scale-105 border-2 border-[#1a5f7a] shadow-xl z-10"
         : "hover:-translate-y-2 hover:shadow-lg"
         }`}
@@ -144,13 +105,11 @@ function PricingCard({
       <div className="flex-1 mb-6 space-y-3">
         {features.map((f: any, idx: number) => (
           <div key={idx} className="flex items-center text-sm text-gray-600">
-            {f.included ? (
-              <Check className="mr-2 text-green-500 flex-shrink-0" size={16} />
-            ) : (
-              <X className="mr-2 text-gray-300 flex-shrink-0" size={16} />
-            )}
-            <span className={f.included ? "" : "text-gray-400 line-through"}>
-              {f.text}
+
+            <Check className="mr-2 text-green-500 flex-shrink-0" size={16} />
+
+            <span >
+              {f}
             </span>
           </div>
         ))}
