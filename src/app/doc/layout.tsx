@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} ${montserrat.variable}`}>
       <body className="font-poppins antialiased bg-gray-50 text-gray-900">
-        <div className="sticky top-0 z-50 bg-[#1a5f7a] text-white shadow-md">
+        <div className="sticky top-0 z-50 bg-green-700 text-white shadow-md">
           <div className="max-w-screen-2xl mx-auto px-4 py-6 flex items-center justify-between">
             <div className="flex items-center gap-3 font-bold text-xl font-montserrat ml-6">
 

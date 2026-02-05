@@ -250,7 +250,7 @@ export default function Home() {
       </section>
 
 
-      <section id="about" className="py-12 md:py-24 px-6 bg-white ">
+      <section id="about" className="py-12 md:py-24 px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
           <motion.div
@@ -475,7 +475,7 @@ export default function Home() {
 
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 md:py-24 bg-white px-6">
+      <section id="contact" className="py-16 md:py-24 bg-white px-6 overflow-hidden">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-green-700 mb-4">Get in Touch</h2>
           <p className="text-lg text-gray-600 mb-12">

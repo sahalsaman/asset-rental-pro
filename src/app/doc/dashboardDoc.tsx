@@ -28,7 +28,7 @@ export default function DashboardOverviewPage() {
 
         {/* Header */}
         <div className="border-b border-gray-100 pb-6">
-          <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+          <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
             Dashboard Overview
           </h1>
           <p className="text-lg text-gray-600 mt-2">
@@ -67,10 +67,10 @@ export default function DashboardOverviewPage() {
               ].map((item, i) => (
                 <div
                   key={i}
-                  className="bg-gray-50 border-l-4 border-[#1a5f7a] p-5 rounded-r-lg shadow-sm hover:shadow transition-all"
+                  className="bg-gray-50 border-l-4 border-green-700 p-5 rounded-r-lg shadow-sm hover:shadow transition-all"
                 >
                   <div className="flex items-center gap-3 mb-2">
-                    <item.icon className="w-5 h-5 text-[#1a5f7a]" />
+                    <item.icon className="w-5 h-5 text-green-700" />
                     <h3 className="font-semibold font-montserrat text-gray-800 text-sm">{item.title}</h3>
                   </div>
                   <p className="text-sm text-gray-600 leading-relaxed text-justify">{item.desc}</p>
@@ -83,7 +83,7 @@ export default function DashboardOverviewPage() {
           <div className="flex-[1.5] order-1 xl:order-2">
             <div className="bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg flex flex-col max-w-2xl mx-auto xl:mx-0">
               {/* Dashboard Header */}
-              <div className="bg-[#10506a] text-white p-4 flex justify-between items-center">
+              <div className="bg-green-700 text-white p-4 flex justify-between items-center">
                 <div className="bg-white/20 px-3 py-1.5 rounded-lg flex items-center gap-2 font-medium text-sm">
                   <span>Sunset Apartments</span>
                   <ChevronDown size={14} />
@@ -105,7 +105,7 @@ export default function DashboardOverviewPage() {
                     <div
                       key={i}
                       className={`rounded-xl p-3 shadow-sm ${kpi.highlight
-                        ? 'bg-[#1a5f7a] text-white'
+                        ? 'bg-green-700 text-white'
                         : 'bg-white'
                         }`}
                     >
@@ -163,7 +163,7 @@ export default function DashboardOverviewPage() {
                 ].map((nav, i) => (
                   <div
                     key={i}
-                    className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${nav.active ? 'text-[#1a5f7a] font-semibold' : 'text-gray-500'
+                    className={`flex flex-col items-center gap-0.5 text-[10px] font-medium ${nav.active ? 'text-green-700 font-semibold' : 'text-gray-500'
                       }`}
                   >
                     <nav.icon size={18} />

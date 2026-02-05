@@ -20,7 +20,7 @@ export default function PropertyManagementPage() {
         {/* Header */}
         <div className="border-b border-gray-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
               Property Management
             </h1>
             <p className="text-lg text-gray-500 mt-2">
@@ -34,13 +34,13 @@ export default function PropertyManagementPage() {
           {/* Left – App Mockup */}
           <div className="w-full xl:w-[45%] relative flex justify-center items-center py-6">
             {/* Blobs */}
-            <div className="absolute w-72 h-72 bg-sky-200 rounded-full blur-3xl opacity-60 -top-6 -right-6" />
-            <div className="absolute w-52 h-52 bg-rose-200 rounded-full blur-3xl opacity-60 bottom-6 left-6" />
+            <div className="absolute w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-60 -top-6 -right-6" />
+            <div className="absolute w-52 h-52 bg-lime-200 rounded-full blur-3xl opacity-60 bottom-6 left-6" />
 
             {/* App Card */}
             <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-sm h-auto overflow-hidden flex flex-col z-10">
               {/* Header */}
-              <div className="bg-[#1a5f7a] text-white flex justify-between items-center px-5 py-4">
+              <div className="bg-green-700 text-white flex justify-between items-center px-5 py-4">
                 <p className="font-semibold text-sm">My Properties</p>
                 <span className="text-xs bg-white/20 px-3 py-1 rounded-full flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" /> Selected
@@ -54,7 +54,7 @@ export default function PropertyManagementPage() {
                   icon={<Building2 className="w-5 h-5" />}
                   title="Sunrise Apartments"
                   meta="12 Units • Downtown"
-                  color="bg-blue-500"
+                  color="bg-green-700"
                 />
 
                 <PropertyCard
@@ -71,7 +71,7 @@ export default function PropertyManagementPage() {
               </div>
 
               {/* Add Button */}
-              <div className="absolute bottom-5 right-5 w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer hover:scale-105 transition-transform">
+              <div className="absolute bottom-5 right-5 w-12 h-12 bg-green-700 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer hover:scale-105 transition-transform">
                 <Plus className="w-5 h-5" />
               </div>
             </div>
@@ -82,27 +82,27 @@ export default function PropertyManagementPage() {
             {/* Feature 1 */}
             <div className="mb-10">
               <h3 className="flex items-center gap-3 text-2xl font-bold font-montserrat text-gray-800 mb-4">
-                <ListChecks className="text-[#468faf] w-6 h-6" />
+                <ListChecks className="text-green-700 w-6 h-6" />
                 Property Listing & Selection
               </h3>
 
               <ul className="space-y-4 text-gray-600 text-base leading-relaxed">
                 <li className="flex items-start gap-2">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#1a5f7a] flex-shrink-0" />
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-700 flex-shrink-0" />
                   <span>
                     <strong>Centralized View:</strong> Access all real estate
                     assets from a single list view.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#1a5f7a] flex-shrink-0" />
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-700 flex-shrink-0" />
                   <span>
                     <strong>Current Selection:</strong> Active property remains
                     visible across the app for clarity.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#1a5f7a] flex-shrink-0" />
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-700 flex-shrink-0" />
                   <span>
                     <strong>Quick Editing:</strong> Update details, photos, and
                     status instantly.
@@ -114,20 +114,20 @@ export default function PropertyManagementPage() {
             {/* Feature 2 */}
             <div>
               <h3 className="flex items-center gap-3 text-2xl font-bold font-montserrat text-gray-800 mb-4">
-                <PlusCircle className="text-[#468faf] w-6 h-6" />
+                <PlusCircle className="text-green-700 w-6 h-6" />
                 Adding New Properties
               </h3>
 
               <ul className="space-y-4 text-gray-600 text-base leading-relaxed">
                 <li className="flex items-start gap-2">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#1a5f7a] flex-shrink-0" />
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-700 flex-shrink-0" />
                   <span>
                     <strong>Simple Onboarding:</strong> Add properties via a
                     streamlined popup form.
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#1a5f7a] flex-shrink-0" />
+                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-green-700 flex-shrink-0" />
                   <span>
                     <strong>Essential Details:</strong> Name, address, and
                     configuration to get started fast.
@@ -165,7 +165,7 @@ function PropertyCard({
   return (
     <div
       className={`flex items-center gap-4 p-4 rounded-xl border transition cursor-pointer hover:shadow-sm ${active
-        ? "border-sky-500 bg-sky-50"
+        ? "border-green-500 bg-green-50"
         : "border-gray-200 bg-white hover:bg-gray-50"
         }`}
     >
@@ -180,7 +180,7 @@ function PropertyCard({
         <p className="text-xs text-gray-500">{meta}</p>
       </div>
 
-      {active && <CheckCircle className="text-sky-500 ml-auto w-5 h-5 flex-shrink-0" />}
+      {active && <CheckCircle className="text-green-500 ml-auto w-5 h-5 flex-shrink-0" />}
     </div>
   );
 }

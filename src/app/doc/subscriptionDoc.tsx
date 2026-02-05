@@ -10,7 +10,7 @@ export default function SubscriptionPlansPage() {
         {/* Header */}
         <div className="border-b border-gray-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
               App Subscription Plans
             </h1>
             <p className="text-lg text-gray-500 mt-2">
@@ -61,8 +61,8 @@ function ToggleOption({ label, active }: { label: string; active: boolean }) {
   return (
     <div
       className={`px-6 py-2 rounded-full cursor-pointer text-sm font-medium transition-all ${active
-        ? "bg-[#1a5f7a] text-white shadow-md"
-        : "text-gray-500 hover:text-[#1a5f7a]"
+        ? "bg-green-700 text-white shadow-md"
+        : "text-gray-500 hover:text-green-700"
         }`}
     >
       {label}
@@ -82,7 +82,7 @@ function PricingCard({
   return (
     <div
       className={`h-full relative flex flex-col bg-white border rounded-2xl p-8 transition-transform w-full ${featured
-        ? "lg:scale-105 border-2 border-[#1a5f7a] shadow-xl z-10"
+        ? "lg:scale-105 border-2 border-green-700 shadow-xl z-10"
         : "hover:-translate-y-2 hover:shadow-lg"
         }`}
     >
@@ -94,7 +94,7 @@ function PricingCard({
       <h3 className="font-montserrat font-bold text-lg text-gray-800 text-center mb-2">
         {name}
       </h3>
-      <div className="text-center text-[#1a5f7a] mb-4">
+      <div className="text-center text-green-700 mb-4">
         <span className="text-xl font-semibold align-top">$</span>
         <span className="text-4xl font-extrabold font-montserrat mx-1">{price}</span>
         <span className="text-sm text-gray-500">{period}</span>
@@ -116,8 +116,8 @@ function PricingCard({
       </div>
       <button
         className={`w-full py-3 rounded-lg font-semibold text-sm transition-all ${button.primary
-          ? "bg-[#1a5f7a] text-white shadow-md hover:bg-[#164e63]"
-          : "border-2 border-gray-200 text-gray-600 hover:border-[#1a5f7a] hover:text-[#1a5f7a]"
+          ? "bg-green-700 text-white shadow-md hover:bg-[#164e63]"
+          : "border-2 border-gray-200 text-gray-600 hover:border-green-700 hover:text-green-700"
           }`}
       >
         {button.label}

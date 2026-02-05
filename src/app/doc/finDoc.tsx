@@ -17,7 +17,7 @@ export default function InvoicesFinancialsPage() {
         {/* Header */}
         <div className="border-b border-gray-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
               Invoices & Financials
             </h1>
             <p className="text-lg text-gray-500 mt-2">
@@ -128,7 +128,7 @@ export default function InvoicesFinancialsPage() {
             </div>
 
             {/* Tip Box */}
-            <div className="bg-[#1a5f7a] rounded-xl p-6 text-white">
+            <div className="bg-green-700 rounded-xl p-6 text-white">
               <h4 className="font-bold font-montserrat mb-2 flex items-center gap-2">
                 <Lightbulb className="text-yellow-300" size={16} />
                 Accounting Tip
@@ -152,7 +152,7 @@ function FeatureCard({ icon: Icon, title, children }: any) {
   return (
     <div className="bg-white border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
       <h3 className="flex items-center gap-3 font-montserrat font-bold text-lg text-gray-800 mb-4 border-b pb-3">
-        <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-sky-100 text-sky-600 text-sm">
+        <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-green-100 text-green-600 text-sm">
           <Icon size={16} />
         </span>
         {title}
