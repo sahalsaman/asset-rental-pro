@@ -3,11 +3,13 @@ import logo_green from "./public/logo green.png"
 
 export const app_config = {
     APP_NAME: "Rentities",
-    APP_LOGO:logo_green,
-    APP_LOGO_DARK_THEME:logo,
+    APP_LOGO: logo_green,
+    APP_LOGO_DARK_THEME: logo,
     PUBLIC_BASE_URL: "https://rentities.in",
-    EMAIL:"hello@rentities.in",
-    PHONE_NUMBER:"+91 8157 9298 22",
-    WHATSAPP_NUMBER:"918157929822",
-    ADDRESS:"Webcos Technologies, Kozhikode, Kerala, India"
+    PUBLIC_URL: "www.rentities.in",
+    EMAIL: "hello@rentities.in",
+    SUPPORT_EMAIL: "hello@rentities.in",
+    PHONE_NUMBER: "+91 8157 9298 22",
+    WHATSAPP_NUMBER: "918157929822",
+    ADDRESS: "Webcos Technologies, Kozhikode, Kerala, India"
 }

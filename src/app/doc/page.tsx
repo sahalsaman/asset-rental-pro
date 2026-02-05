@@ -97,7 +97,7 @@ export default function RentitiesDocumentation() {
                 className={`
                   flex items-center justify-between px-4 py-2.5 rounded-lg text-sm font-medium transition-colors
                   ${activeSection === item.id
-                    ? "bg-[#e0f2fe] text-[#1a5f7a]"
+                    ? "bg-green-200 text-green-700"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}
                 `}
               >

@@ -4,7 +4,7 @@ import { ArrowRight, Building2, Users, Menu, CheckCircle, Download, BookOpen, Ke
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import about from "../../public/arp aboout.png"
-import home_banner from "../../public/home_banner_image.png"
+import home_banner from "../../public/renties mobile view.png"
 import playstore from "../../public/playstore.svg"
 import appstore from "../../public/appstore.svg"
 import Image from "next/image";
@@ -143,8 +143,8 @@ export default function Home() {
       {/* Hero Section */}
       {/* For the hero section, you could animate the text elements individually on page load (not scroll)
           or use a parallax effect on the background image. */}
-      <section className={`relative bg-green-700 bg-gradient-to-br from-green-900 to-green-600 text-white overflow-hidden py-28 md:py-18 px-6 text-center md:text-left`}  >
-        <div className="max-w-6xl mx-auto z-10 flex justify-between items-center gap-10">
+      <section className={`relative bg-green-700 bg-gradient-to-br from-green-900 to-green-600 text-white overflow-hidden py-8 md:py-18 px-6 text-center md:text-left`}  >
+        <div className="max-w-6xl mx-auto z-10 flex flex-col-reverse md:flex-row justify-between items-center gap-10">
           <div className="">
             {/* Example: Initial fade-in for hero text on page load */}
             <motion.h1
@@ -153,17 +153,17 @@ export default function Home() {
               transition={{ duration: 0.4, delay: 0 }}
               className="text-4xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-up"
             >
-              Discover & Manage Your Rental Assets Effortlessly
+              Discover & Manage  <span className="text-lime-300">Your Rental Assets Effortlessly</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0 }}
-              className="text-lg md:text-xl mb-4 text-gray-100"
+              className="text-lg md:text-xl mb-4 text-gray-100 font-thin"
             >
               Simplify bookings, automate rent, and scale faster with our smart rental platform.
             </motion.p>
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex justify-center sm:justify-start gap-4">
               <Link href="/auth/signup">
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
@@ -174,7 +174,7 @@ export default function Home() {
                   Start Free
                 </motion.button>
               </Link>
-              <Link href="/doc/app-guidline">
+              <Link href="/doc">
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -191,9 +191,9 @@ export default function Home() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: 0 }}
-            className="hidden md:block w-full sm:min-w-[550px] max-w-[550px]"
+            className="flex justify-center items-center w-full sm:min-w-[550px] max-w-[450px]"
           >
-            <Image src={home_banner} alt="banner" className="w-full max-w-[550px] drop-shadow-2xl" />
+            <Image src={home_banner} alt="banner" className="w-full sm:max-w-[500px] max-w-[250px] drop-shadow-2xl" />
           </motion.div>
         </div>
       </section>
@@ -250,7 +250,7 @@ export default function Home() {
       </section>
 
 
-      <section id="about" className="py-12 md:py-24 px-6 bg-white ">
+      <section id="about" className="py-12 md:py-24 px-6 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto flex flex-col-reverse md:flex-row justify-between items-center gap-12">
           {/* Text Content */}
           <motion.div
@@ -475,7 +475,7 @@ export default function Home() {
 
 
       {/* Contact Section */}
-      <section id="contact" className="py-16 md:py-24 bg-white px-6">
+      <section id="contact" className="py-16 md:py-24 bg-white px-6 overflow-hidden">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-4xl font-bold text-green-700 mb-4">Get in Touch</h2>
           <p className="text-lg text-gray-600 mb-12">

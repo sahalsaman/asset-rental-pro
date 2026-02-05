@@ -16,17 +16,14 @@ export default function AdditionalFeaturesPage() {
         {/* Header */}
         <div className="border-b border-gray-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
               Additional Features
             </h1>
             <p className="text-lg text-gray-500 mt-2">
               Essential tools designed to enhance daily operations
             </p>
           </div>
-          <div className="flex items-center gap-2 text-[#1a5f7a] font-bold">
-            <Building2 size={24} />
-            <span className="hidden md:inline">RENTITIES</span>
-          </div>
+
         </div>
 
         {/* Grid Content */}

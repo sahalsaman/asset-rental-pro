@@ -10,7 +10,7 @@ export default function OrganizationManagementPage() {
         {/* Header */}
         <div className="border-b border-gray-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
               Organization Management
             </h1>
             <p className="text-lg text-gray-500 mt-2">
@@ -24,14 +24,14 @@ export default function OrganizationManagementPage() {
           {/* Left – Visual Mockup */}
           <div className="w-full xl:w-[45%] relative flex justify-center items-center py-6">
             {/* Blobs */}
-            <div className="absolute w-72 h-72 bg-sky-200 rounded-full blur-3xl opacity-60 -top-6 -right-6" />
-            <div className="absolute w-52 h-52 bg-gray-200 rounded-full blur-3xl opacity-60 bottom-6 left-6" />
+            <div className="absolute w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-60 -top-6 -right-6" />
+            <div className="absolute w-52 h-52 bg-lime-200 rounded-full blur-3xl opacity-60 bottom-6 left-6" />
 
             {/* Org Card */}
             <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-sm overflow-hidden z-10">
               {/* Header */}
-              <div className="bg-[#1a5f7a] text-white text-center p-6">
-                <div className="w-16 h-16 bg-white rounded-full mx-auto mb-3 flex items-center justify-center text-[#1a5f7a] text-2xl shadow">
+              <div className="bg-green-700 text-white text-center p-6">
+                <div className="w-16 h-16 bg-white rounded-full mx-auto mb-3 flex items-center justify-center text-green-700 text-2xl shadow">
                   <Building2 className="w-8 h-8" />
                 </div>
                 <p className="font-montserrat font-bold text-lg">
@@ -61,24 +61,24 @@ export default function OrganizationManagementPage() {
             {/* Feature 1 */}
             <div className="mb-10">
               <h3 className="flex items-center gap-3 text-2xl font-bold font-montserrat text-gray-800 mb-4">
-                <Map className="text-[#468faf] w-6 h-6" />
+                <Map className="text-green-700 w-6 h-6" />
                 Unified Organization Structure
               </h3>
               <ul className="space-y-4 text-gray-600 text-base leading-relaxed">
                 <li className="flex items-start gap-3">
-                  <CircleCheck className="text-[#2793be] mt-1 flex-shrink-0" size={20} />
+                  <CircleCheck className="text-green-400 mt-1 flex-shrink-0" size={20} />
                   <span>
                     <strong>Single Sign-On Access:</strong> Manage multiple properties under one organization without switching logins.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CircleCheck className="text-[#2793be] mt-1 flex-shrink-0" size={20} />
+                  <CircleCheck className="text-green-400 mt-1 flex-shrink-0" size={20} />
                   <span>
                     <strong>Centralized Dashboard:</strong> Aggregated views at organization level with property-wise control.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CircleCheck className="text-[#2793be] mt-1 flex-shrink-0" size={20} />
+                  <CircleCheck className="text-green-400 mt-1 flex-shrink-0" size={20} />
                   <span>
                     <strong>Team Management:</strong> Assign roles globally or per property.
                   </span>
@@ -89,18 +89,18 @@ export default function OrganizationManagementPage() {
             {/* Feature 2 */}
             <div>
               <h3 className="flex items-center gap-3 text-2xl font-bold font-montserrat text-gray-800 mb-4">
-                <Coins className="text-[#468faf] w-6 h-6" />
+                <Coins className="text-green-700 w-6 h-6" />
                 Financial & Subscription Control
               </h3>
               <ul className="space-y-4 text-gray-600 text-base leading-relaxed">
                 <li className="flex items-start gap-3">
-                  <CircleCheck className="text-[#2793be] mt-1 flex-shrink-0" size={20} />
+                  <CircleCheck className="text-green-400 mt-1 flex-shrink-0" size={20} />
                   <span>
                     <strong>Organization-Level Billing:</strong> One subscription covers all linked properties.
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CircleCheck className="text-[#2793be] mt-1 flex-shrink-0" size={20} />
+                  <CircleCheck className="text-green-400 mt-1 flex-shrink-0" size={20} />
                   <span>
                     <strong>Flexible Payouts:</strong> Configure different payment accounts per property.
                   </span>

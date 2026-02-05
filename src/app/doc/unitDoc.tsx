@@ -18,16 +18,12 @@ export default function UnitManagementPage() {
         {/* Header */}
         <div className="border-b border-gray-100 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-[#1a5f7a]">
+            <h1 className="text-3xl md:text-4xl font-bold font-montserrat text-green-700">
               Unit & Room Management
             </h1>
             <p className="text-lg text-gray-500 mt-2">
               Detailed inventory control for your properties
             </p>
-          </div>
-          <div className="flex items-center gap-2 text-[#1a5f7a] font-bold">
-            <Building2 size={24} />
-            <span className="hidden md:inline">RENTITIES</span>
           </div>
         </div>
 
@@ -36,13 +32,13 @@ export default function UnitManagementPage() {
           {/* Left – App Mockup */}
           <div className="w-full xl:w-[45%] relative flex justify-center items-center py-6">
             {/* Blobs */}
-            <div className="absolute w-72 h-72 bg-cyan-200 rounded-full blur-3xl opacity-60 -top-10 -left-10" />
-            <div className="absolute w-52 h-52 bg-sky-200 rounded-full blur-3xl opacity-60 bottom-10 right-10" />
+            <div className="absolute w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-60 -top-10 -left-10" />
+            <div className="absolute w-52 h-52 bg-lime-200 rounded-full blur-3xl opacity-60 bottom-10 right-10" />
 
             {/* App */}
             <div className="relative bg-white rounded-2xl shadow-2xl border-8 border-slate-700 w-full max-w-sm overflow-hidden z-10">
               {/* Header */}
-              <div className="bg-[#1a5f7a] text-white px-5 py-4 flex justify-between items-center">
+              <div className="bg-green-700 text-white px-5 py-4 flex justify-between items-center">
                 <p className="font-semibold text-sm">Sunrise Apartments</p>
                 <Filter size={16} />
               </div>
@@ -75,7 +71,7 @@ export default function UnitManagementPage() {
                 <div className="bg-white w-full rounded-t-2xl p-5 animate-slideUp">
                   <div className="w-10 h-1 bg-gray-300 rounded mx-auto mb-4" />
 
-                  <h4 className="text-[#1a5f7a] font-semibold mb-4">
+                  <h4 className="text-green-700 font-semibold mb-4">
                     Add New Unit
                   </h4>
 
@@ -97,7 +93,7 @@ export default function UnitManagementPage() {
                     <Toggle />
                   </div>
 
-                  <button className="mt-4 w-full bg-[#1a5f7a] text-white py-2 rounded-lg text-sm font-medium">
+                  <button className="mt-4 w-full bg-green-700 text-white py-2 rounded-lg text-sm font-medium">
                     Create Unit
                   </button>
                 </div>
@@ -110,7 +106,7 @@ export default function UnitManagementPage() {
             {/* Feature 1 */}
             <div className="mb-10">
               <h3 className="flex items-center gap-3 text-2xl font-bold font-montserrat text-gray-800 mb-4">
-                <DoorOpen className="text-[#468faf]" size={24} />
+                <DoorOpen className="text-green-700" size={24} />
                 Comprehensive Unit Control
               </h3>
 
@@ -133,7 +129,7 @@ export default function UnitManagementPage() {
             {/* Feature 2 */}
             <div>
               <h3 className="flex items-center gap-3 text-2xl font-bold font-montserrat text-gray-800 mb-4">
-                <PlusCircle className="text-[#468faf]" size={24} />
+                <PlusCircle className="text-green-700" size={24} />
                 Efficient Creation Tools
               </h3>
 
@@ -155,8 +151,8 @@ export default function UnitManagementPage() {
               <div className="mt-6 bg-sky-50 border-l-4 border-sky-500 p-4 rounded-r-lg">
                 <p className="text-sky-700 text-sm flex items-center">
                   <Lightbulb className="mr-2" size={16} />
-                  <strong>Tip:</strong> Use bulk creation for hotels or large
-                  apartments to save hours of setup time.
+                  <span>  <strong>Tip:</strong> Use bulk creation for hotels or large
+                    apartments to save hours of setup time.</span>
                 </p>
               </div>
             </div>
@@ -187,7 +183,7 @@ function UnitCard({
       </div>
 
       <div className="text-right">
-        <p className="text-sm font-bold text-[#1a5f7a]">{price}</p>
+        <p className="text-sm font-bold text-green-700">{price}</p>
         <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded text-gray-600">
           {status}
         </span>
