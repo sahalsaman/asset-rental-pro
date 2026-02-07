@@ -95,8 +95,8 @@ export default function PropertyDetailPage() {
             <X className="h-10 w-10 text-gray-700" />
           </button>
         </div>
-        <Link href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
-        <Link href="/auth/signup">
+        <Link href="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+        <Link href="/signup">
           <button className="bg-green-700 text-white w-full py-2 rounded-xl">Get Started</button>
         </Link>
       </div>
@@ -184,8 +184,8 @@ export default function PropertyDetailPage() {
                         className="p-5 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition"
                       >
                         <div className="flex justify-between items-center">
-                        <h4 className="text-lg font-bold text-gray-800 mb-2">{unit.name}</h4>
-                             <span className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[unit?.status ?? ""] || "bg-gray-100 text-gray-800"}`} >
+                          <h4 className="text-lg font-bold text-gray-800 mb-2">{unit.name}</h4>
+                          <span className={`px-2 py-1 rounded-md text-xs font-medium ${statusColorMap[unit?.status ?? ""] || "bg-gray-100 text-gray-800"}`} >
                             {unit.status}
                           </span>
                         </div>

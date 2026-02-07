@@ -30,6 +30,7 @@ export default function SubscriptionPlansPage() {
         <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {subscription_plans.map((i) =>
             <PricingCard
+              key={i.name}
               name={i.name}
               price={i.amount}
               period="/mo"

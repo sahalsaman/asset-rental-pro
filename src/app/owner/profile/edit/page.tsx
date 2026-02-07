@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
     // OTP Functions
     const handleSendOtp = async (e: React.FormEvent) => {
-          e.preventDefault();
+        e.preventDefault();
         if (!newPhone) return toast.error("Please enter a valid phone number");
 
         const body = {
@@ -105,7 +105,7 @@ export default function ProfilePage() {
             if (res.ok) {
                 toast.success("Phone number updated successfully!");
                 setChangePhoneDialog(false);
-                router.push('/auth/login');
+                router.push('/login');
                 router
             } else {
                 toast.error("Invalid OTP");
@@ -128,7 +128,7 @@ export default function ProfilePage() {
             });
             if (res.ok) {
                 toast.success("Account deleted successfully!");
-                router.push('/auth/login');
+                router.push('/login');
             } else {
                 toast.error("Failed to delete account");
             }
@@ -205,9 +205,9 @@ export default function ProfilePage() {
                     Change Phone number
                 </Button>
             </form>
-                <Button onClick={deleteAcccount} variant="destructive" className="w-full mt-6">
-                    Delete Account
-                </Button>
+            <Button onClick={deleteAcccount} variant="destructive" className="w-full mt-6">
+                Delete Account
+            </Button>
             {/* 📱 Change Phone Dialog */}
             <Dialog open={changePhoneDialog} onOpenChange={setChangePhoneDialog}>
                 <DialogContent>

@@ -21,7 +21,7 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
 
   if (res.status === 401) {
     if (typeof window !== "undefined") {
-      window.location.href = "/auth/login";
+      window.location.href = "/login";
     }
   }
 

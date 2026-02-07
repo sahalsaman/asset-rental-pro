@@ -30,7 +30,7 @@ export default function PropertiesPage() {
         method: 'POST',
         credentials: 'include',
       });
-      router.push('/auth/login');
+      router.push('/login');
     } catch (error) {
       console.error('Error during logout:', error);
     }
@@ -66,19 +66,19 @@ export default function PropertiesPage() {
       <div className="flex flex-col text-md m-4 md:mx-32">
         <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/privacy'
           target="_blank">
-          Privacy and policy <ChevronRight/>
+          Privacy and policy <ChevronRight />
         </a>
         <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/terms'
           target="_blank">
-          Terms & Conditions <ChevronRight/>
+          Terms & Conditions <ChevronRight />
         </a>
         <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/#faq'
           target="_blank">
-          FAQ <ChevronRight/>
+          FAQ <ChevronRight />
         </a>
         <a className="p-4 border-b-1 border-b-gray-200 flex justify-between items-center" href='/#contact'
           target="_blank">
-          Help & Support <ChevronRight/>
+          Help & Support <ChevronRight />
         </a>
         <a onClick={() => { logout(); }}
           className="p-4 border-b-1 border-b-gray-200 text-red-600 cursor-pointer">

@@ -30,7 +30,7 @@ export default function PropertiesPage() {
         method: 'POST',
         credentials: 'include',
       });
-      router.push('/auth/login');
+      router.push('/login');
     } catch (error) {
       console.error('Error during logout:', error);
     }

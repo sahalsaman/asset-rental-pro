@@ -2,9 +2,6 @@
 import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
 import "../globals.css";
-import { Toaster } from "react-hot-toast";
-import { Analytics } from "@vercel/analytics/react";
-import { Building2 } from "lucide-react";
 
 // Define fonts with CSS variables
 const poppins = Poppins({
@@ -22,33 +19,29 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "RENTITIES Owner App Documentation",
+  title: "Rentities | Owner App Guide",
   description: "Property Owner App Guide",
 };
 
-export default function RootLayout({
+export default function DocLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable} ${montserrat.variable}`}>
-      <body className="font-poppins antialiased bg-gray-50 text-gray-900">
-        <div className="sticky top-0 z-50 bg-green-700 text-white shadow-md">
-          <div className="max-w-screen-2xl mx-auto px-4 py-6 flex items-center justify-between">
-            <div className="flex items-center gap-3 font-bold text-xl font-montserrat ml-6">
 
-              RENTITIES Documentation
-            </div>
-            <div className="text-sm opacity-80 hidden md:block">
-              Owner App Guide • Version 1.0
-            </div>
-          </div>
+    <div className={`${poppins.variable} ${montserrat.variable} font-poppins antialiased bg-gray-50 text-gray-900`}>
+      <div className="sticky top-0 z-50 bg-green-700 text-white shadow-md">
+        <div className="max-w-screen-2xl mx-auto px-4 py-6 flex items-center justify-between">
+          <h2 className="flex items-center gap-3 font-bold text-xl font-montserrat ml-6">
+            Rentities Guide
+          </h2>
+          <p className="text-sm opacity-80 hidden md:block">
+            Owner App Guide • Version 1.0
+          </p>
         </div>
-        <Toaster position="top-right" />
-        {children}
-        <Analytics />
-      </body>
-    </html>
+      </div>
+      {children}
+    </div>
   );
 }

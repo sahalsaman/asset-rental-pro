@@ -69,8 +69,8 @@ export default function PropertiesPage() {
         <Link className="border-b pb-8" href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
         <Link className="border-b pb-8" href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
         <Link className="border-b pb-8" href="#contact" onClick={() => setMenuOpen(false)}>Contact</Link>
-        <Link className="border-b pb-8" href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
-        <Link href="/auth/signup">
+        <Link className="border-b pb-8" href="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+        <Link href="/signup">
           <button className="bg-green-700 text-white w-full py-2 rounded-xl">Get Started</button>
         </Link>
       </div>
@@ -90,10 +90,10 @@ export default function PropertiesPage() {
           <Link href="#downloads">Downloads</Link>
           <Link href="#faq">FAQ</Link>
           <Link href="#contact">Contact</Link>
-          <Link href="/auth/signup">
+          <Link href="/signup">
             <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm">Get Started</button>
           </Link>
-          <Link href="/auth/login">Login</Link>
+          <Link href="/login">Login</Link>
         </nav>
         <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
           <Menu className="h-6 w-6 text-green-700" />
@@ -146,7 +146,7 @@ export default function PropertiesPage() {
 
           {loading ? (
             <p className="text-gray-500 text-center">Loading properties...</p>
-          ) : properties?.length  ?   (
+          ) : properties?.length ? (
             <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
               {properties?.map((p: any, i) => (
                 <PropertyPublicCard
@@ -159,13 +159,13 @@ export default function PropertiesPage() {
                 />
               ))}
             </div>
-          ):(
+          ) : (
             <p className="text-center">No property available</p>
           )}
         </div>
       </section>
 
-         <PropertyTypeSlider />
+      <PropertyTypeSlider />
     </main>
   );
 }

@@ -105,8 +105,8 @@ export default function Home() {
         <Link className="border-b pb-6" href="#downloads" onClick={() => setMenuOpen(false)}>Downloads</Link>
         <Link className="border-b pb-6" href="#faq" onClick={() => setMenuOpen(false)}>FAQ</Link>
         <Link className="border-b pb-6" href="#contact" onClick={() => setMenuOpen(false)}>Contact</Link>
-        <Link className="border-b pb-6" href="/auth/login" onClick={() => setMenuOpen(false)}>Login</Link>
-        <Link href="/auth/signup">
+        <Link className="border-b pb-6" href="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+        <Link href="/signup">
           <button className="bg-green-700 text-white w-full py-3 text-lg rounded-xl">Get Started</button>
         </Link>
       </div>)
@@ -130,10 +130,10 @@ export default function Home() {
           <Link href="#downloads">Downloads</Link>
           <Link href="#faq">FAQ</Link>
           <Link href="#contact">Contact</Link>
-          <Link href="/auth/signup">
+          <Link href="/signup">
             <button className="bg-green-700 px-4 py-3 rounded-xl text-white text-sm ">Get Started</button>
           </Link>
-          <Link href="/auth/login">Login</Link>
+          <Link href="/login">Login</Link>
         </nav>
         <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
           <Menu className="h-6 w-6 text-green-700" />
@@ -164,7 +164,7 @@ export default function Home() {
               Simplify bookings, automate rent, and scale faster with our smart rental platform.
             </motion.p>
             <div className="flex justify-center sm:justify-start gap-4">
-              <Link href="/auth/signup">
+              <Link href="/signup">
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -618,7 +618,7 @@ export default function Home() {
           >
             Join thousands of landlords and managers simplifying their workflows and maximizing their profit today.
           </motion.p>
-          <Link href="/auth/signup">
+          <Link href="/signup">
             <motion.button
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
