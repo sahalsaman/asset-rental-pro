@@ -42,7 +42,7 @@ export default function LoginPage() {
     try {
       const res = await login(phone, countryCode);
       toast.success("OTP sent successfully via Whatsapp!");
-      router.push(`/auth/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
+      router.push(`/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
       setButtonLoader(false)
     } catch (err: any) {
       if (err?.response?.data?.message) {

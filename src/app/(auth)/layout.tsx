@@ -12,6 +12,30 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
 
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const res = await apiFetch("/api/me", { preventRedirect: true });
+        if (res.ok) {
+          const data = await res.json();
+          const role = data.role;
+
+          if (role === UserRoles.ADMIN) {
+            router.replace("/admin/dashboard");
+          } else if (role === UserRoles.OWNER || role === UserRoles.MANAGER) {
+            router.replace("/owner/dashboard");
+          } else if (role === UserRoles.USER) {
+            router.replace("/user/dashboard");
+          }
+        }
+      } catch (error) {
+        // If 401 or network error, just stay on auth pages
+        console.log("User not logged in or error checking session");
+      }
+    };
+    checkUser();
+  }, [router]);
+
   const isLoginPage = pathname === "/login";
   const isSignupPage = pathname === "/signup";
   const isOtpPage = pathname === "/verify-otp";

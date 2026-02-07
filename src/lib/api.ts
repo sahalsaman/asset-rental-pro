@@ -13,13 +13,14 @@ export const getSession = () => api.get('/auth/session');
 
 export const logout = () => api.post('/auth/logout');
 
-export async function apiFetch(url: string, options: RequestInit = {}) {
+export async function apiFetch(url: string, options: RequestInit & { preventRedirect?: boolean } = {}) {
+  const { preventRedirect, ...fetchOptions } = options;
   const res = await fetch(url, {
-    ...options,
+    ...fetchOptions,
     credentials: "include", // send cookies
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 && !preventRedirect) {
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }
