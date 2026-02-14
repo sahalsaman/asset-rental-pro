@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import { OrganisationModel } from "@/../models/Organisation";
+import { BusinessModel } from "@/../models/Business";
 import { env } from "../../../../environment";
 import { subscription_plans } from "@/utils/data";
 import { getTokenValue } from "@/utils/tokenHandler";
@@ -12,11 +12,11 @@ export async function GET(req) {
   await connectMongoDB();
   const user = getTokenValue(req);
 
-  if (!user?.organisationId)
+  if (!user?.businessId)
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-  const org = await OrganisationModel.findById(user.organisationId);
-  return NextResponse.json(org?.subscription || { message: "Not Activated" });
+  const business = await BusinessModel.findById(user.businessId);
+  return NextResponse.json(business?.subscription || { message: "Not Activated" });
 }
 
 // 🔹 Update subscription
@@ -25,7 +25,7 @@ export async function PUT(req) {
     await connectMongoDB();
     const user = getTokenValue(req);
 
-    if (!user?.organisationId)
+    if (!user?.businessId)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const { plan } = await req.json();
@@ -37,15 +37,15 @@ export async function PUT(req) {
     const subscription = {
       plan: selected_plan.name,
       planId: selected_plan.id,
-      status: selected_plan=="arp_subscription_trial"?SubscritptionStatus.FREE:SubscritptionStatus.ACTIVE,
+      status: selected_plan == "arp_subscription_trial" ? SubscritptionStatus.FREE : SubscritptionStatus.ACTIVE,
       startDate,
       billingCycle: selected_plan.billingCycle || SubscriptionBillingCycle.MONTHLY,
       unitPrice: selected_plan.amount,
       paymentMethod: TransactionType.RAZORPAY,
     };
 
-    await OrganisationModel.findByIdAndUpdate(
-      user.organisationId,
+    await BusinessModel.findByIdAndUpdate(
+      user.businessId,
       { subscription },
       { new: true }
     );

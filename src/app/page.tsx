@@ -326,7 +326,7 @@ export default function Home() {
 
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-12 md:py-24 px-6 bg-slate-50 text-center">
+      {/* <section id="pricing" className="py-12 md:py-24 px-6 bg-slate-50 text-center">
         <h2 className="text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
         <p className="text-xl text-gray-600 mb-12">No hidden fees. Scale your portfolio with a plan that fits your needs.</p>
 
@@ -349,7 +349,6 @@ export default function Home() {
               <h3 className="text-2xl font-bold text-green-700 mb-4">{plan.name}</h3>
               <p className="text-5xl font-extrabold mb-2">{plan.price}</p>
               <p className="text-gray-500 mb-6">{plan.period}</p>
-              {/* <p className="text-gray-600 mb-6">{plan.description}</p> */}
 
               <ul className="space-y-3 text-left mb-8">
                 {plan.features.map((feature: any, i: any) => (
@@ -360,24 +359,18 @@ export default function Home() {
                 ))}
               </ul>
 
-              {/* <Link href={plan.buttonLink}>
-              <button
-                className={`${plan.buttonStyle} font-semibold w-full py-3 rounded-xl`}
-              >
-                {plan.buttonText}
-              </button>
-            </Link> */}
+            
             </motion.div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Downloads Section */}
       <section id="downloads" className="py-12 md:py-24 px-6 bg-white text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl font-bold mb-6">Download Our Mobile App</h2>
+          <h2 className="text-4xl font-bold mb-6">Our Application</h2>
           <p className="text-xl text-gray-600 mb-12">
-            Manage your properties on the go! Our native mobile app for iOS and Android keeps you connected to your portfolio and tenants 24/7.
+            Manage your properties from anywhere! Our application for iOS, Android, and Desktop keeps you connected to your portfolio and tenants 24/7.
           </p>
 
           <motion.div
@@ -385,10 +378,22 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col md:flex-row justify-center items-center gap-4"
+            className="flex flex-col md:flex-row justify-center items-center gap-6"
           >
-            <Image src={playstore} alt="Play Store" width={220} className=" cursor-pointer" />
-            <Image src={appstore} alt="App Store" width={220} className=" cursor-pointer" />
+            <a
+              href="#"
+              className="flex items-center gap-3 bg-black text-white px-4 py-2 rounded-lg border border-gray-700 shadow-xl group hover:scale-105 transition-transform"
+              style={{ width: "200px", height: "66px" }}
+            >
+              <Download className="w-8 h-8 text-white group-hover:text-gray-200 transition-colors mb-1" />
+              <div className="text-left flex flex-col justify-center h-full">
+                <span className="text-[10px] font-medium text-gray-300 uppercase tracking-wider leading-tight">Download for</span>
+                <span className="text-xl font-bold leading-none tracking-wide font-sans">Desktop</span>
+              </div>
+            </a>
+
+            <Image src={playstore} alt="Play Store" width={200} className="cursor-pointer hover:scale-105 transition-transform" />
+            <Image src={appstore} alt="App Store" width={200} className="cursor-pointer hover:scale-105 transition-transform" />
           </motion.div>
         </div>
       </section>

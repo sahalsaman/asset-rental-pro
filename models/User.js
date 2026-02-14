@@ -6,7 +6,7 @@ const UserSchema = new Schema(
     // for admin login
     username: { type: String },
     password: { type: String },
-    
+
     // common fields
     firstName: { type: String, required: true },
     lastName: { type: String },
@@ -24,7 +24,7 @@ const UserSchema = new Schema(
     },
     // owner or manager of the properties
     properties: [{ type: Types.ObjectId, ref: "Property" }],
-    organisationId: {type: Types.ObjectId,ref: "Organisation",},
+    businessId: { type: Types.ObjectId, ref: "Business", },
 
     // tenant details
     address: { type: String },
@@ -37,6 +37,7 @@ const UserSchema = new Schema(
     verificationIdCard: { type: String },
     verificationIdCardNumber: { type: String },
 
+    logedIn: { type: Boolean, default: false },
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
     remark: { type: String },

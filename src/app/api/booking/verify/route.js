@@ -17,7 +17,7 @@ export async function POST(request) {
     const body = await request.json();
 
     // const user = getTokenValue(request);
-    // if (!user?.organisationId) {
+    // if (!user?.businessId) {
     //   return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     // }
 
@@ -38,14 +38,14 @@ export async function POST(request) {
       );
     }
 
-    
+
 
     const userData = await UserModel.create({
       ...body,
     });
 
     return NextResponse.json(
-      { message: "User created", user:userData },
+      { message: "User created", user: userData },
       { status: 201 }
     );
   } catch (err) {
@@ -63,7 +63,7 @@ export async function PUT(request) {
     const body = await request.json();
 
     // const user = getTokenValue(request);
-    // if (!user?.organisationId) {
+    // if (!user?.businessId) {
     //   return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     // }
 

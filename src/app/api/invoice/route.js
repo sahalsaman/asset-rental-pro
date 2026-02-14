@@ -20,12 +20,12 @@ export async function GET(request) {
     const unitId = searchParams.get("unitId");
 
     const user = getTokenValue(request);
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     let filter = {
-      organisationId: user?.organisationId,
+      businessId: user?.businessId,
       disabled: false,
       deleted: false
     };

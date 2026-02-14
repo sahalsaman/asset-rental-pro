@@ -3,7 +3,7 @@ import { RentFrequency, UnitStatus } from '@/utils/contants';
 
 const UnitSchema = new Schema(
   {
-    organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
+    businessId: { type: Types.ObjectId, ref: "Business", required: true },
     propertyId: { type: Types.ObjectId, ref: "Property", required: true },
     name: String,
     type: String, // Example: 2BHK, 4 Bed

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import connectMongoDB from "@/../database/db";
-import { OrganisationModel, SubscriptionPaymentModel } from "@/../models/Organisation";
+import { BusinessModel, SubscriptionPaymentModel } from "@/../models/Business";
 import { env } from "../../../../../environment";
 import { subscription_plans } from "@/utils/data";
 import { SubscriptionBillingCycle, SubscritptionStatus } from "@/utils/contants";
@@ -13,7 +13,7 @@ export async function PUT(req) {
       razorpay_order_id,
       razorpay_payment_id,
       razorpay_signature,
-      organisationId,
+      businessId,
       plan,
     } = await req.json();
 
@@ -35,10 +35,10 @@ export async function PUT(req) {
       endDate.setFullYear(endDate.getFullYear() + 1);
     else endDate.setMonth(endDate.getMonth() + 1);
 
-    const org = await OrganisationModel.findById(organisationId);
-    if (!org) return NextResponse.json({ message: "Organisation not found" }, { status: 404 });
+    const business = await BusinessModel.findById(businessId);
+    if (!business) return NextResponse.json({ message: "Business not found" }, { status: 404 });
 
-    org.subscription = {
+    business.subscription = {
       plan: selected_plan.name,
       status: SubscritptionStatus.ACTIVE,
       startDate,
@@ -51,11 +51,11 @@ export async function PUT(req) {
       trialCompleted: true,
     };
 
-    await org.save();
+    await business.save();
 
     await SubscriptionPaymentModel.create({
-      organisationId,
-      subscriptionId: organisationId,
+      businessId,
+      subscriptionId: businessId,
       plan: selected_plan.name,
       status: SubscritptionStatus.ACTIVE,
       startDate,
@@ -79,8 +79,8 @@ export async function PUT(req) {
       paymentMethod: "razorpay",
     };
 
-    await OrganisationModel.findByIdAndUpdate(
-      organisationId,
+    await BusinessModel.findByIdAndUpdate(
+      businessId,
       { subscription },
       { new: true }
     );

@@ -15,7 +15,7 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 
 export default function UserBookingPayPage() {
   const [booking, setBooking] = useState<any | null>(null);
-  const [orgAccount, setOrgAccount] = useState<any | null>(null);
+  const [businessAccount, setBusinessAccount] = useState<any | null>(null);
   const [loader, setLoader] = useState(true);
   const router = useRouter();
   const params = useParams();
@@ -38,13 +38,13 @@ export default function UserBookingPayPage() {
     }
   };
 
-  const fetchOrgAccountDetail = async () => {
+  const fetchBusinessAccountDetail = async () => {
     try {
       setLoader(true);
       const res = await apiFetch(`/api/public?id=${booking?.propertyId?.selctedSelfRecieveBankOrUpi}&&type=ac`);
       if (!res.ok) throw new Error("Failed to fetch booking");
       const data = await res.json();
-      setOrgAccount(data);
+      setBusinessAccount(data);
       setUserSelfPayPopup(true);
     } catch (err) {
       console.error("Error fetching booking:", err);
@@ -124,7 +124,7 @@ export default function UserBookingPayPage() {
   const handlePayOnline = async (invoiceId: string, amount: number) => {
 
     if (booking?.propertyId?.is_paymentRecieveSelf) {
-      fetchOrgAccountDetail();
+      fetchBusinessAccountDetail();
     } else {
       payThroughRazerpay(invoiceId, amount);
     }
@@ -260,7 +260,7 @@ export default function UserBookingPayPage() {
                             {item.type}
                           </p>
                           <p className="text-xs">
-                            {item.paymentGateway || "Manual"}
+                            {item.paymentGateway || "In Hand"}
                           </p>
                         </div>
                       </div>
@@ -288,45 +288,45 @@ export default function UserBookingPayPage() {
               Please transfer the due amount to the following account:
             </p>
             <div className="bg-gray-100 p-4 rounded-md">
-              {orgAccount?.accountHolderName && (
+              {businessAccount?.accountHolderName && (
                 <p className="text-gray-600 text-sm">
-                  <b>Holder Name:</b> {orgAccount?.accountHolderName}
+                  <b>Holder Name:</b> {businessAccount?.accountHolderName}
                 </p>
               )}
 
-              {orgAccount?.value && (
+              {businessAccount?.value && (
                 <p className="text-gray-600 text-sm">
                   <b>
-                    {orgAccount?.paymentRecieverOption === PaymentRecieverOptions.BANK
+                    {businessAccount?.paymentRecieverOption === PaymentRecieverOptions.BANK
                       ? "A/C No"
-                      : orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE
+                      : businessAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE
                         ? "UPI Phone"
-                        : orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIQR
+                        : businessAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIQR
                           ? "UPI QR"
                           : "UPI ID"}
                     :
                   </b>{" "}
-                  {orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE
-                    ? orgAccount?.upiPhoneCountryCode
+                  {businessAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIPHONE
+                    ? businessAccount?.upiPhoneCountryCode
                     : ""}{" "}
-                  {orgAccount?.paymentRecieverOption != PaymentRecieverOptions.UPIQR ? orgAccount?.value : ""}
+                  {businessAccount?.paymentRecieverOption != PaymentRecieverOptions.UPIQR ? businessAccount?.value : ""}
                 </p>
               )}
 
               {/* Generate QR Code dynamically for UPI QR */}
-              {orgAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIQR && (
+              {businessAccount?.paymentRecieverOption === PaymentRecieverOptions.UPIQR && (
                 <div className="mt-2 flex flex-col items-center">
                   <img
-                    src={orgAccount?.value}
+                    src={businessAccount?.value}
                     alt="Generated QR Code"
                     className="w-40 h-40 object-contain "
                   />
                 </div>
               )}
 
-              {orgAccount?.ifsc && (
+              {businessAccount?.ifsc && (
                 <p className="text-gray-600 text-sm">
-                  <b>IFSC:</b> {orgAccount?.ifsc}
+                  <b>IFSC:</b> {businessAccount?.ifsc}
                 </p>
               )}
               <p className="mt-4 text-xs">

@@ -64,7 +64,7 @@ export default function ManagerManagementPage() {
                 </span>
                 <span>
                   <strong>Seamless Onboarding:</strong> Managers join with guided
-                  setup linked to your organization.
+                  setup linked to your business.
                 </span>
               </FeatureCard>
 

@@ -10,11 +10,11 @@ export async function GET(req) {
   try {
     await connectMongoDB();
     const user = getTokenValue(req);
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const banks = await SelfRecieveBankOrUpiModel.find({ organisation: user?.organisationId }).sort({ isPrimary: -1 });
+    const banks = await SelfRecieveBankOrUpiModel.find({ business: user?.businessId }).sort({ isPrimary: -1 });
     return NextResponse.json(banks);
   } catch (error) {
     console.error("GET /banks error:", error);
@@ -26,7 +26,7 @@ export async function POST(req) {
   try {
     await connectMongoDB();
     const user = getTokenValue(req);
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -34,14 +34,14 @@ export async function POST(req) {
 
     if (body.paymentRecieverOption == PaymentRecieverOptions.UPIQR) {
       const image = await uploadToImgbb(body?.qrImage, env.IMAGE_UPI_QR)
-      body.value=image.url
-      body.image=image
+      body.value = image.url
+      body.image = image
     }
 
 
     const newBank = await SelfRecieveBankOrUpiModel.create({
       ...body,
-      organisation: user.organisationId,
+      business: user.businessId,
     });
 
     return NextResponse.json(newBank, { status: 201 });

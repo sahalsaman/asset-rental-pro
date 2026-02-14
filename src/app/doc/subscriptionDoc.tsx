@@ -14,7 +14,7 @@ export default function SubscriptionPlansPage() {
               App Subscription Plans
             </h1>
             <p className="text-lg text-gray-500 mt-2">
-              Flexible pricing tiers scaled for your organization
+              Flexible pricing tiers scaled for your business
             </p>
           </div>
 
@@ -42,12 +42,12 @@ export default function SubscriptionPlansPage() {
 
         </div>
 
-        {/* Organization Note */}
+        {/* Business Note */}
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg px-5 py-4 flex items-start gap-4 text-blue-800 max-w-3xl mx-auto">
           <Info className="mt-0.5" size={24} />
           <div className="text-sm">
-            <strong>Organization-Level Billing:</strong> Subscriptions are applied
-            to your entire organization. Upgrading creates a single invoice
+            <strong>Business-Level Billing:</strong> Subscriptions are applied
+            to your entire business. Upgrading creates a single invoice
             covering all properties and units managed under your account.
           </div>
         </div>

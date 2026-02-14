@@ -13,7 +13,7 @@ interface Props {
   onDelete: (property: IProperty) => void;
 }
 
-export default function PropertyCard({ property, currentProperty,onEdit, onDelete }: Props) {
+export default function PropertyCard({ property, currentProperty, onEdit, onDelete }: Props) {
 
   const router = useRouter();
 
@@ -57,14 +57,14 @@ export default function PropertyCard({ property, currentProperty,onEdit, onDelet
           {/* <div className='flex justify-end  '>
           
             <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-              onClick={() => router.push(`/owner/properties/${property._id}`)}
+              onClick={() => router.push(`/business/properties/${property._id}`)}
             >  <span className="text-sm">View Details</span>
               <ArrowRight size={18} />
             </button>
           </div> */}
         </div>
       </div>
- {currentProperty._id===property._id?     <div className='bg-green-700 text-white w-fit absolute bottom-0 right-0 rounded-br-xl rounded-tl-xl px-4 py-1 text-sm font-bold'>Selected</div>:""}
+      {currentProperty._id === property._id ? <div className='bg-green-700 text-white w-fit absolute bottom-0 right-0 rounded-br-xl rounded-tl-xl px-4 py-1 text-sm font-bold'>Selected</div> : ""}
     </div>
   );
 }

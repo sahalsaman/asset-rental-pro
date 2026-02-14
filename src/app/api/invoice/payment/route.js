@@ -25,7 +25,7 @@ export async function POST(req) {
       currency: "INR",
       receipt: invoice.invoiceId,
       notes: {
-        organisationId: invoice.organisationId,
+        businessId: invoice.businessId,
         propertyId: invoice.propertyId,
         bookingId: invoice.bookingId,
         unitId: invoice.unitId.toString(),

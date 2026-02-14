@@ -31,7 +31,7 @@ export interface IUser {
   otpVerified?: boolean;
   role: UserRoles;
   properties?: string[]; // Property IDs
-  organisationId?: string;
+  businessId?: string;
   address: string;
   image?: {
     id?: string;
@@ -48,8 +48,8 @@ export interface IUser {
   updatedAt?: Date;
 }
 
-// ✅ Organisation Subscription
-export interface IOrgSubscription {
+// ✅ Business Subscription
+export interface IBusinessSubscription {
   plan: SubscritptionPlan;
   planId: string;
   status: SubscritptionStatus;
@@ -84,15 +84,15 @@ export interface IVendorRazorpayAccount {
   fundAccountId?: string;
 }
 
-// ✅ Organisation Interface
-export interface IOrganisation {
+// ✅ Business Interface
+export interface IBusiness {
   _id?: string;
   name: string;
   address?: string;
   logo?: string;
   owner: string; // userId
   website?: string;
-  subscription?: IOrgSubscription;
+  subscription?: IBusinessSubscription;
   vendorRazerpayAccount?: IVendorRazorpayAccount;
   selctedSelfRecieveBankOrUpi?: string;
   is_paymentRecieveSelf?: boolean;
@@ -106,7 +106,7 @@ export interface IOrganisation {
 // ✅ Subscription Payment
 export interface ISubscriptionPayment {
   _id?: string;
-  organisationId?: any;
+  businessId?: any;
   plan: string;
   status: SubscritptionPaymentStatus;
   startDate: Date;
@@ -126,7 +126,7 @@ export interface ISubscriptionPayment {
 // ✅ Property
 export interface IProperty {
   _id?: string;
-  organisationId?: any;
+  businessId?: any;
   name: string;
   description?: string;
   amenities?: string[];
@@ -157,7 +157,7 @@ export interface IProperty {
 // ✅ Unit
 export interface IUnit {
   _id?: string;
-  organisationId?: any;
+  businessId?: any;
   propertyId?: any;
   name?: string;
   type?: string;
@@ -179,7 +179,7 @@ export interface IUnit {
 // ✅ Booking
 export interface IBooking {
   _id?: string;
-  organisationId?: any;
+  businessId?: any;
   propertyId?: any;
   unitId: any;
   code: string;
@@ -201,7 +201,7 @@ export interface IBooking {
 // ✅ Invoice
 export interface IInvoice {
   _id?: string;
-  organisationId?: any;
+  businessId?: any;
   bookingId: any;
   propertyId?: any;
   unitId: any;
@@ -214,7 +214,7 @@ export interface IInvoice {
   dueDate: Date;
   paymentGateway?: TransactionType;
   paymentId?: string;
-  paidAt?: Date ;
+  paidAt?: Date;
   disabled: boolean;
   deleted?: boolean;
   createdAt?: Date;
@@ -224,7 +224,7 @@ export interface IInvoice {
 // ✅ Self Receive Bank / UPI
 export interface ISelfRecieveBankOrUpi {
   _id?: string;
-  organisation: string;
+  business: string;
   paymentRecieverOption: PaymentRecieverOptions;
   accountHolderName: string;
   value: string; // accountNo or upiId or qrcode_link
@@ -247,7 +247,7 @@ export interface ISelfRecieveBankOrUpi {
 // ✅ Announcement
 export interface IAnnouncement {
   _id?: string;
-  organisationId?: any;
+  businessId?: any;
   propertyId?: string;
   title: string;
   message: string;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
-import {  SubscriptionPaymentModel } from "@/../models/Organisation";
+import { SubscriptionPaymentModel } from "@/../models/Business";
 
 export async function GET(req) {
   try {
@@ -8,9 +8,9 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
 
     const propertyId = searchParams.get("propertyId");
-    const year = Number(searchParams.get("year"))?? new Date().getFullYear();
+    const year = Number(searchParams.get("year")) ?? new Date().getFullYear();
 
-    if (!propertyId ||!year) {
+    if (!propertyId || !year) {
       return NextResponse.json(
         { error: "Missing propertyId OR year" },
         { status: 400 }
@@ -25,7 +25,7 @@ export async function GET(req) {
     await connectMongoDB();
 
     const data = await SubscriptionPaymentModel.find({
-      organisationId: propertyId,
+      businessId: propertyId,
       startDate: { $gte: start, $lt: end },
     }).sort({ startDate: -1 });
 

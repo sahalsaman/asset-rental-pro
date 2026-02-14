@@ -152,3 +152,14 @@ select {
 .clip-path-slide-2 {
   clip-path: polygon(25% 0%, 100% 0, 100% 100%, 0% 100%);
 }
+
+.mobile-footer {
+  margin-bottom: 0px;
+}
+
+@media (max-width: 768px) {
+  .mobile-footer {
+    margin-bottom: 75px;
+    padding-bottom: 5px;
+  }
+}

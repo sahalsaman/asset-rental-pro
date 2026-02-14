@@ -35,25 +35,25 @@ export default function PropertyFormModal({
   initialData,
   onSave
 }: PropertyFormModalProps) {
-const [formData, setFormData] = useState<IProperty>({
-  organisationId: '', // optional now, but safe to include
-  name: '',
-  description: '',
-  address: '',
-  city: '',
-  category: PropertyType.FLAT_APARTMENT,
-  status: PropertyStatus.ACTIVE,
-  state: '',
-  country: '',
-  zipCode: '',
-  images: [],
-  services: [],
-  amenities: [],
-  currency: CurrencyType.INR,
-  disabled: false,
-  is_paymentRecieveSelf: true,
-  selctedSelfRecieveBankOrUpi: ''
-});
+  const [formData, setFormData] = useState<IProperty>({
+    businessId: '', // optional now, but safe to include
+    name: '',
+    description: '',
+    address: '',
+    city: '',
+    category: PropertyType.FLAT_APARTMENT,
+    status: PropertyStatus.ACTIVE,
+    state: '',
+    country: '',
+    zipCode: '',
+    images: [],
+    services: [],
+    amenities: [],
+    currency: CurrencyType.INR,
+    disabled: false,
+    is_paymentRecieveSelf: true,
+    selctedSelfRecieveBankOrUpi: ''
+  });
 
   const [banksList, setBanksList] = useState([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -72,7 +72,7 @@ const [formData, setFormData] = useState<IProperty>({
     if (initialData) {
       setFormData(initialData);
       setExistingImages(initialData?.images as any ?? []);
-      
+
     } else {
       setFormData(prev => ({
         ...prev,
@@ -101,7 +101,7 @@ const [formData, setFormData] = useState<IProperty>({
   function resetForm() {
     setFormData(
       {
-        organisationId: '', 
+        businessId: '',
         name: '',
         description: '',
         address: '',
@@ -181,7 +181,7 @@ const [formData, setFormData] = useState<IProperty>({
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    if (files.length + imageFiles.length+(existingImages.length??0) > 6) {
+    if (files.length + imageFiles.length + (existingImages.length ?? 0) > 6) {
       toast.error("You can upload a maximum of 6 images.");
       return;
     }
@@ -234,9 +234,9 @@ const [formData, setFormData] = useState<IProperty>({
               className="mt-1"
             />
 
-            {(imageFiles.length > 0 || (existingImages?.length ?? 0) > 0)  && (
+            {(imageFiles.length > 0 || (existingImages?.length ?? 0) > 0) && (
               <div className="grid grid-cols-3 gap-3 mt-4">
-                {existingImages.map((image:any, i) => (
+                {existingImages.map((image: any, i) => (
                   <div
                     key={`existing-${i}`}
                     className="relative w-full h-24 border rounded-lg overflow-hidden group"
@@ -326,7 +326,7 @@ const [formData, setFormData] = useState<IProperty>({
                 {/* Add Bank Button */}
                 <button
                   type="button"
-                  onClick={() => router.push("/owner/bank-upi-list")}
+                  onClick={() => router.push("/business/bank-upi-list")}
                   className="px-3 py-1 bg-green-700 text-xs text-white rounded hover:bg-green-800"
                 >
                   Add Bank/UPI
@@ -378,31 +378,31 @@ const [formData, setFormData] = useState<IProperty>({
             required
           />
           <Label>Amenities</Label>
-                <MultiSelect
-  options={propertyAmenities.map((a) => ({
-    label: a.name,
-    value: a.value,
-  }))}
-  value={formData.amenities ?? []} // ✅ fallback
-  onChange={(val) =>
-    setFormData((prev) => ({ ...prev, amenities: val }))
-  }
-  placeholder="Select amenities"
-/>
+          <MultiSelect
+            options={propertyAmenities.map((a) => ({
+              label: a.name,
+              value: a.value,
+            }))}
+            value={formData.amenities ?? []} // ✅ fallback
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, amenities: val }))
+            }
+            placeholder="Select amenities"
+          />
           <Label>Services</Label>
 
 
-<MultiSelect
-  options={propertyServices.map((s) => ({
-    label: s.name,
-    value: s.value,
-  }))}
-  value={formData.services ?? []} // ✅ fallback
-  onChange={(val) =>
-    setFormData((prev) => ({ ...prev, services: val }))
-  }
-  placeholder="Select services"
-/>
+          <MultiSelect
+            options={propertyServices.map((s) => ({
+              label: s.name,
+              value: s.value,
+            }))}
+            value={formData.services ?? []} // ✅ fallback
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, services: val }))
+            }
+            placeholder="Select services"
+          />
 
 
           <Label>Status*</Label>

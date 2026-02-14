@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [organisationName, setOrganisationName] = useState("");
+  const [businessName, setBusinessName] = useState("");
   const [countryCode, setCountryCode] = useState(defaultData.countryCodes); // Default to India
   const router = useRouter();
   const [mobileNumberValidationMessage, setMobileNumberValidationMessage] = useState("");
@@ -43,7 +43,7 @@ export default function LoginPage() {
     }
     setButtonLoader(true);
     try {
-      const res = await signUp(phone, countryCode, name, lastName, organisationName)
+      const res = await signUp(phone, countryCode, name, lastName, businessName)
       console.log("res..", res);
       toast.success("OTP sent successfully via Whatsapp!");
       router.push(`/verify-otp?phone=${phone}&countryCode=${encodeURIComponent(countryCode)}`);
@@ -105,13 +105,13 @@ export default function LoginPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1 pl-1">
-              Organisation Name*
+              Business Name*
             </label>
             <input
               type="text"
               placeholder="e.g. Hilite Residency"
-              value={organisationName}
-              onChange={(e) => setOrganisationName(e.target.value)}
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
               className="w-full px-4 py-3 bg-green-50/50 border border-green-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-600/20 focus:border-green-600 transition-all"
               required
             />

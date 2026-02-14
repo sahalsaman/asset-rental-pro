@@ -27,8 +27,8 @@ export async function POST(req) {
   updatedUser = await UserModel.findByIdAndUpdate(user._id, { phone: newPhone, countryCode: newCountryCode },
     { new: true })
 
-  const org = await OrganisationModel.findById(user.organisationId);
-  user.organisationId = org;
+  const business = await BusinessModel.findById(user.businessId);
+  user.businessId = business;
   const token = setTokenValue(updatedUser);
 
   return new NextResponse(JSON.stringify({ message: "successfully updated", role: user.role }), {

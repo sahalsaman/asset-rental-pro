@@ -4,31 +4,36 @@ import connectMongoDB from "@/../database/db";
 import BookingModel from "@/../models/Booking";
 import { getTokenValue } from "../../../utils/tokenHandler"
 import InvoiceModel from "../../../../models/Invoice";
-import { InvoiceStatus } from "@/utils/contants";
-
+import { UserRoles } from "@/utils/contants";
 
 export async function GET(request) {
   try {
-
     const user = getTokenValue(request);
 
-    if (!user.organisationId) {
+    if (!user || (user.role !== UserRoles.ADMIN && !user.businessId)) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-    const organisationId = user.organisationId;
+
     const { searchParams } = new URL(request.url);
     const page = searchParams.get("page");
     const propertyId = searchParams.get("propertyId");
-    const status = searchParams.get("status")
+    const status = searchParams.get("status");
 
     await connectMongoDB();
-    let filter = {
-      organisationId,
-      propertyId,
-    };
 
-    if (status?.length) {
-      filter.status = status
+    let filter = { deleted: false };
+
+    // Only filter by businessId if the user is not an Admin
+    if (user.role !== UserRoles.ADMIN) {
+      filter.businessId = user.businessId;
+    }
+
+    if (propertyId) {
+      filter.propertyId = propertyId;
+    }
+
+    if (status) {
+      filter.status = status;
     }
 
 

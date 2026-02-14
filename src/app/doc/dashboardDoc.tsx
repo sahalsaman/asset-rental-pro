@@ -62,7 +62,7 @@ export default function DashboardOverviewPage() {
                 {
                   icon: BarChart3,
                   title: "Navigation Footer",
-                  desc: "Persistent bottom navigation to switch between Dashboard, Unit/Rooms, Property Settings, and Organization details."
+                  desc: "Persistent bottom navigation to switch between Dashboard, Unit/Rooms, Property Settings, and Business details."
                 }
               ].map((item, i) => (
                 <div
@@ -159,7 +159,7 @@ export default function DashboardOverviewPage() {
                   { icon: ChartLine, label: 'Dashboard', active: true },
                   { icon: DoorClosed, label: 'Units', active: false },
                   { icon: BuildingIcon, label: 'Property', active: false },
-                  { icon: Map, label: 'Org', active: false }
+                  { icon: Map, label: 'Business', active: false }
                 ].map((nav, i) => (
                   <div
                     key={i}

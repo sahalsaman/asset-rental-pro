@@ -19,8 +19,8 @@ export default function PropertiesPage() {
 
   const propertyTypes = [
     { name: "Flat / Apartment" },
-    { name: "PG / Hostel / Lodge" },
-    { name: "House" },
+    { name: "PG / Hostel" },
+    { name: "Homestay" },
     { name: "Co-working" },
     { name: "Office Space" },
     { name: "Resort" },

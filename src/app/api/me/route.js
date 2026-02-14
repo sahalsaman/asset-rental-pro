@@ -6,7 +6,7 @@ import PropertyModel from "../../../../models/Property";
 import UnitModel from "../../../../models/Unit";
 import BookingModel from "../../../../models/Booking";
 import { SelfRecieveBankOrUpiModel } from "../../../../models/SelfRecieveBankOrUpi";
-import { OrganisationModel, SubscriptionPaymentModel } from "../../../../models/Organisation";
+import { BusinessModel, SubscriptionPaymentModel } from "../../../../models/Business";
 import AnnouncementModel from "../../../../models/Announcement";
 import { UserRoles } from "@/utils/contants";
 
@@ -16,7 +16,7 @@ export async function GET(request) {
 
     const user = getTokenValue(request);
 
-    if (!user?.organisationId) {
+    if (!user?.businessId && user?.role !== UserRoles.ADMIN) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -24,7 +24,7 @@ export async function GET(request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const userData = await UserModel.findById(user.id).populate('organisationId', 'name address contactEmail contactPhone');
+    const userData = await UserModel.findById(user.id).populate('businessId', 'name address contactEmail contactPhone');
 
     if (!userData) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -46,7 +46,7 @@ export async function PUT(request) {
 
     const user = getTokenValue(request);
 
-    if (!user?.organisationId || !user?.id) {
+    if (!user?.businessId || !user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -88,18 +88,18 @@ export async function DELETE(request) {
 
     const user = getTokenValue(request);
 
-    if (!user?.organisationId || !user?.id) {
+    if (!user?.businessId || !user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const deletedUser = await UserModel.findByIdAndUpdate(user.id, { deleted: true }, { new: true });
     if (user.role === UserRoles.OWNER) {
-      await OrganisationModel.updateMany({ ownerId: user.id }, { deleted: true });
-      await SubscriptionPaymentModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
-      await SelfRecieveBankOrUpiModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
-      await PropertyModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
-      await UnitModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
-      await BookingModel.updateMany({ organisationId: user.organisationId }, { deleted: true });
+      await BusinessModel.updateMany({ owner: user.id }, { deleted: true });
+      await SubscriptionPaymentModel.updateMany({ businessId: user.businessId }, { deleted: true });
+      await SelfRecieveBankOrUpiModel.updateMany({ businessId: user.businessId }, { deleted: true });
+      await PropertyModel.updateMany({ businessId: user.businessId }, { deleted: true });
+      await UnitModel.updateMany({ businessId: user.businessId }, { deleted: true });
+      await BookingModel.updateMany({ businessId: user.businessId }, { deleted: true });
       await AnnouncementModel.updateMany({ createdBy: user.id }, { deleted: true });
     }
 

@@ -97,7 +97,7 @@ export default function BookingCard({ booking, onEdit, onDelete }: BookingCardPr
 
         </div>
         <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-          onClick={() => router.push(`/owner/units/${booking.unitId}/${booking._id}`)}
+          onClick={() => router.push(`/business/units/${booking.unitId}/${booking._id}`)}
         >  <span className="text-sm">View Details</span>
           <ArrowRight size={18} />
         </button>

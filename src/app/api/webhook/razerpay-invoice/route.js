@@ -4,7 +4,7 @@ import connectMongoDB from "@/../database/db";
 import InvoiceModel from "@/../models/Invoice";
 import { InvoiceStatus } from "@/utils/contants";
 import { env } from "../../../../../environment";
-import { OrganisationModel } from "../../../../../models/Organisation";
+import { BusinessModel } from "../../../../../models/Business";
 
 export async function POST(req) {
   try {
@@ -34,11 +34,11 @@ export async function POST(req) {
 
     if (event === "payment_link.paid") {
       const invoiceId = payload.payment_link.entity.receipt;
-      const { organisationId } = notes;
+      const { businessId } = notes;
 
       // ✅ Update invoice as PAID
       await InvoiceModel.findOneAndUpdate(
-        { invoiceId, organisationId },
+        { invoiceId, businessId },
         {
           status: InvoiceStatus.PAID,
           balance: 0,
@@ -47,7 +47,7 @@ export async function POST(req) {
 
         }
       );
-      // await OrganisationModel.findByIdAndUpdate(organisationId, {
+      // await BusinessModel.findByIdAndUpdate(businessId, {
       //   $inc: { pendingPayout: payment.amount / 100 },
       // });
     }

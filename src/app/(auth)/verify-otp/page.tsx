@@ -57,7 +57,7 @@ export default function VerifyOTPPage() {
       const res = await api.post("/auth/verify-otp", { phone, countryCode, otp });
       const role = res.data.role;
 
-      if (role === UserRoles.OWNER || role === UserRoles.MANAGER) location.href = "/owner/dashboard";
+      if (role === UserRoles.OWNER || role === UserRoles.MANAGER) location.href = "/business/dashboard";
       else location.href = "/user/dashboard";
 
       toast.success("Logged in successfully!");

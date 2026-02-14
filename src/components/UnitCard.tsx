@@ -18,7 +18,7 @@ interface UnitCardProps {
 export default function UnitCard({ unit, property, onEdit, onDelete, onBook }: UnitCardProps) {
   const router = useRouter();
   return (
-    <Card className="shadow-md py-3" onClick={() => router.push(`/owner/units/${unit._id}`)}>
+    <Card className="shadow-md py-3" onClick={() => router.push(`/business/units/${unit._id}`)}>
 
       <CardContent className="px-3 ">
 
@@ -50,10 +50,10 @@ export default function UnitCard({ unit, property, onEdit, onDelete, onBook }: U
           {/* <Button variant="default" onClick={() => onBook(unit)}>
             Add Enrolment
           </Button> */}
-       
-        {unit.noOfSlots > 1 ? <p className="text-sm text-gray-500">Slots: {(unit?.currentBooking ?? 0)}/{unit.noOfSlots}</p>:<p></p>}
+
+          {unit.noOfSlots > 1 ? <p className="text-sm text-gray-500">Slots: {(unit?.currentBooking ?? 0)}/{unit.noOfSlots}</p> : <p></p>}
           <button className='hover:text-gray-700 transition flex items-center gap-1 cursor-pointer '
-            onClick={() => router.push(`/owner/properties/${property._id}/${unit._id}`)}
+            onClick={() => router.push(`/business/properties/${property._id}/${unit._id}`)}
           >  <span className="text-sm">View Details</span>
             <ArrowRight size={18} />
           </button>

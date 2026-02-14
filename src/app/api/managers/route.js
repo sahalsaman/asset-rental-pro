@@ -2,32 +2,32 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/../database/db";
 import UserModel from "@/../models/User";
-import { OrganisationModel } from "@/../models/Organisation";
+import { BusinessModel } from "@/../models/Business";
 import { getTokenValue } from "@/utils/tokenHandler";
 import { UserRoles } from "@/utils/contants";
 import PropertyModel from "../../../../models/Property";
 import { defaultData } from "@/utils/data";
 
-// 📍 GET all managers for current org
+// 📍 GET all managers for current business
 export async function GET(request) {
   try {
     await connectMongoDB();
     const user = getTokenValue(request);
 
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     if (user.role == UserRoles.MANAGER) {
-    return NextResponse.json({role:UserRoles.MANAGER});
+      return NextResponse.json({ role: UserRoles.MANAGER });
     }
 
     const managers = await UserModel.find({
-      organisationId: user.organisationId,
+      businessId: user.businessId,
       role: UserRoles.MANAGER,
     }).populate('properties');
 
-    return NextResponse.json({managers:managers,role:UserRoles.OWNER});
+    return NextResponse.json({ managers: managers, role: UserRoles.OWNER });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -40,11 +40,11 @@ export async function POST(request) {
     const body = await request.json();
     const user = getTokenValue(request);
 
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const organisationId = user.organisationId;
+    const businessId = user.businessId;
     const { firstName, lastName, phone, properties, countryCode } = body;
 
     if (!firstName || !phone) {
@@ -56,7 +56,7 @@ export async function POST(request) {
       lastName,
       phone,
       countryCode: countryCode || defaultData.countryCodes,
-      organisationId,
+      businessId,
       properties: properties || [],
       role: UserRoles.MANAGER,
     });
@@ -82,7 +82,7 @@ export async function PUT(request) {
     await connectMongoDB();
     const user = getTokenValue(request);
 
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -95,7 +95,7 @@ export async function PUT(request) {
 
     const existingManager = await UserModel.findOne({
       _id: managerId,
-      organisationId: user.organisationId,
+      businessId: user.businessId,
       role: UserRoles.MANAGER,
     });
 

@@ -8,12 +8,12 @@ export async function GET(request) {
     await connectMongoDB();
 
     const user = getTokenValue(request);
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const announcements = await AnnouncementModel.find({
-      organisationId: user.organisationId,
+      businessId: user.businessId,
     });
 
     return NextResponse.json(announcements, { status: 200 });
@@ -31,7 +31,7 @@ export async function POST(request) {
     await connectMongoDB();
 
     const user = getTokenValue(request);
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -39,7 +39,7 @@ export async function POST(request) {
 
     const newAnnouncement = new AnnouncementModel({
       ...body,
-      organisationId: user.organisationId,
+      businessId: user.businessId,
       createdBy: user.id,
     });
 

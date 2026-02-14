@@ -9,9 +9,8 @@ export enum UserRoles {
 export enum PropertyType {
   COMMERCIAL_BUILDING = "Cmmercial Building",
   HOTEL = "Hotel",
-  LODGE_ROOM = "Lodge/Unit",
   PG_HOSTEL = "PG/Hostel",
-  HOUSE = "House",
+  HOMESTAY = "Homestay",
   FLAT_APARTMENT = "Flat/Apartment",
   TURF = "Turf",
   CONFERENCE_HALL = "Conference Hall",
@@ -63,7 +62,7 @@ export enum InvoiceStatus {
 // 📌 Transaction Type
 export enum TransactionType {
   RAZORPAY = "razorpay",
-  MANUAL = "Manual",
+  MANUAL = "In Hand",
   CREDIT = "Credit",
   DEBIT = "Debit",
   UPI = "UPI",

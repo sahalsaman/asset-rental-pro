@@ -164,7 +164,7 @@ export const subscription_plans = [
 export const faq_data = [
   {
     q: "What types of rental assets can I manage?",
-    a: "You can manage virtually any type of rental property, including units, apartments, houses, entire hostels, and even commercial properties. Our system is flexible to support various unit configurations."
+    a: "You can manage virtually any type of rental property, including units, apartments, homestays, entire hostels, and even commercial properties. Our system is flexible to support various unit configurations."
   },
   {
     q: "How does the automated invoicing work?",

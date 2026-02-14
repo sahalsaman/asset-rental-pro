@@ -84,8 +84,8 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
   };
 
 
-  const isHostelOrPG = property?.category?.toLowerCase().includes("hostel") || property?.category?.toLowerCase().includes("pg") || property?.category?.toLowerCase().includes("Co-Working");
-  const isFlatOrApartment = property?.category?.toLowerCase().includes("flat") || property?.category?.toLowerCase().includes("apartment") || property?.category?.toLowerCase().includes("house");
+  const isHostelOrPG = property?.category?.toLowerCase().includes("hostel") || property?.category?.toLowerCase().includes("pg") || property?.category?.toLowerCase().includes("co-working");
+  const isFlatOrApartment = property?.category?.toLowerCase().includes("flat") || property?.category?.toLowerCase().includes("apartment") || property?.category?.toLowerCase().includes("homestay");
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -192,7 +192,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
                 placeholder="eg: 3"
                 value={formData.noOfSlots || ""}
                 onChange={handleChange}
-                required={isHostelOrPG?true:false}
+                required={isHostelOrPG ? true : false}
               />
             </>
           )}

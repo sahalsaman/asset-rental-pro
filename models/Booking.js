@@ -3,7 +3,7 @@ import { BookingStatus, RentFrequency } from '@/utils/contants';
 
 const BookingSchema = new Schema(
   {
-    organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
+    businessId: { type: Types.ObjectId, ref: "Business", required: true },
     propertyId: { type: Types.ObjectId, ref: "Property", required: true },
     unitId: { type: Types.ObjectId, ref: "Unit", required: true },
     code: { type: String, required: true, unique: true },
@@ -11,11 +11,13 @@ const BookingSchema = new Schema(
     checkIn: { type: Date },
     checkOut: { type: Date },
     amount: { type: Number, required: true },
-    advanceAmount: { type: Number},
+    advanceAmount: { type: Number },
     frequency: { type: String, enum: RentFrequency },
     status: { type: String, required: true, enum: BookingStatus, default: BookingStatus.CHECKED_IN },
     lastInvoiceId: { type: Types.ObjectId, ref: "Invoice" },
     nextBillingDate: { type: Date },
+    reservationForm: { type: String, default: "manual" },
+    channelId: { type: String },
     disabled: { type: Boolean, required: true, default: false },
     deleted: { type: Boolean, required: true, default: false },
   },

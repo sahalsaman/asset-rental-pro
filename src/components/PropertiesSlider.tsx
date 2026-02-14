@@ -16,46 +16,52 @@ import {
 
 const propertyTypes = [
   {
+    name: "Hotel",
+    icon: <Hotel className="w-10 h-10 text-green-600" />,
+    desc: "Comfortable shared spaces with flexible rental options.",
+    uri: ""
+  },
+  {
     name: "Flat / Apartment",
     icon: <Building2 className="w-10 h-10 text-green-600" />,
     desc: "Modern apartments with amenities and secure access.",
-    uri:""
+    uri: ""
   },
   {
-    name: "PG / Hostel / Lodge",
-    icon: <Hotel className="w-10 h-10 text-green-600" />,
-    desc: "Comfortable shared spaces with flexible rental options.",
-    uri:""
-  },
-  {
-    name: "House",
+    name: "Homestay",
     icon: <Home className="w-10 h-10 text-green-600" />,
-    desc: "Independent houses for families or individuals.",
-    uri:""
+    desc: "Independent Homestays for families or individuals.",
+    uri: ""
   },
   {
     name: "Co-working / Office Space",
     icon: <Briefcase className="w-10 h-10 text-green-600" />,
     desc: "Flexible office spaces for teams and freelancers.",
-    uri:""
+    uri: ""
   },
   {
     name: "Resort",
     icon: <Sun className="w-10 h-10 text-green-500" />,
     desc: "Relaxing resort stays for holidays and short trips.",
-    uri:""
+    uri: ""
+  },
+  {
+    name: "PG / Hostel",
+    icon: <Hotel className="w-10 h-10 text-green-600" />,
+    desc: "Comfortable shared spaces with flexible rental options.",
+    uri: ""
   },
   {
     name: "Turf",
     icon: <TreePine className="w-10 h-10 text-emerald-600" />,
     desc: "Book and manage sports turfs with hourly rentals.",
-    uri:""
+    uri: ""
   },
   {
     name: "Auditorium",
     icon: <Landmark className="w-10 h-10 text-green-600" />,
     desc: "Spacious venues for events, meetings, and programs.",
-    uri:""
+    uri: ""
   },
 ];
 

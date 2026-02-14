@@ -1,7 +1,7 @@
 import UserModel from "@/../models/User";
 import connectMongoDB from "@/../database/db";
 import { NextResponse } from "next/server";
-import { OrganisationModel } from "../../../../../models/Organisation";
+import { BusinessModel } from "../../../../../models/Business";
 import { SubscriptionBillingCycle, SubscritptionStatus, UserRoles } from "@/utils/contants";
 import { subscription_plans } from "@/utils/data";
 import { sendOTPText } from "@/utils/sendToWhatsApp";
@@ -10,7 +10,7 @@ export async function POST(request) {
   await connectMongoDB();
 
   const body = await request.json();
-  const { phone, countryCode, name, organisationName, lastName } = body;
+  const { phone, countryCode, name, businessName, lastName } = body;
 
   if (!name) {
     return NextResponse.json({ message: "User Name is required" }, { status: 400 });
@@ -24,8 +24,8 @@ export async function POST(request) {
     return NextResponse.json({ message: "Country code is required" }, { status: 400 });
   }
 
-  if (!organisationName) {
-    return NextResponse.json({ message: "Organisation Name is required" }, { status: 400 });
+  if (!businessName) {
+    return NextResponse.json({ message: "Business Name is required" }, { status: 400 });
   }
 
   const existingUser = await UserModel.findOne({ phone });
@@ -59,8 +59,8 @@ export async function POST(request) {
   const startDate = new Date();
   // const endDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
-  const org = await OrganisationModel.create({
-    name: organisationName,
+  const business = await BusinessModel.create({
+    name: businessName,
     owner: newUser._id,
     subscription: {
       plan: selected_plan.plan,
@@ -74,7 +74,7 @@ export async function POST(request) {
     },
   });
 
-  await UserModel.findByIdAndUpdate(newUser._id, { organisationId: org?._id })
+  await UserModel.findByIdAndUpdate(newUser._id, { businessId: business?._id })
 
   console.log(`✅ OTP for ${countryCode + phone}: ${otp}`);
   await sendOTPText(countryCode, phone, otp, newUser?.firstName + " " + newUser?.lastName)

@@ -4,7 +4,7 @@ import { PropertyStatus } from "@/utils/contants";
 
 const PropertySchema = new Schema(
   {
-    organisationId: { type: Types.ObjectId, ref: "Organisation", required: true },
+    businessId: { type: Types.ObjectId, ref: "Business", required: true },
     name: { type: String, required: true },
     description: String,
     amenities: [String],

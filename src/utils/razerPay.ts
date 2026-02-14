@@ -8,14 +8,14 @@ const razorpay = new Razorpay({
   key_secret: env.RAZORPAY_KEY_SECRET,
 });
 
-export async function generateRazorpayLinkForSubscription(amount: number, organisationId: string) {
+export async function generateRazorpayLinkForSubscription(amount: number, businessId: string) {
   try {
     const options = {
       amount: amount * 100,  // In paise (e.g., 5000 → 500000)
       currency: 'INR',
       receipt: `receipt_${Date.now()}`,
       notes: {
-        userId: organisationId,
+        userId: businessId,
         purpose: "Webcos ARP Suscription Payment"
       }
     };
@@ -35,7 +35,7 @@ export async function generateRazorpayLinkForInvoice(invoiceId: string, amount: 
       currency: 'INR',
       receipt: invoiceId,
       notes: {
-        organisationId: booking?.organisationId.toString(),
+        businessId: booking?.businessId.toString(),
         propertyId: booking.propertyId.toString(),
         purpose: "Property Rent/advance"
       },
@@ -56,13 +56,13 @@ export async function generateRazorpayLinkForInvoice(invoiceId: string, amount: 
 
 
 
-export async function razorpayPayout(payoutAmount: number, org: any) {
+export async function razorpayPayout(payoutAmount: number, business: any) {
   try {
     const response = await axios.post(
       "https://api.razorpay.com/v1/payouts",
       {
         account_number: env.YOUR_RAZORPAY_VIRTUAL_ACCOUNT,
-        fund_account_id: org.fundAccountId,
+        fund_account_id: business.fundAccountId,
         amount: payoutAmount * 100,
         currency: "INR",
         mode: "IMPS",
@@ -111,14 +111,14 @@ export async function createRazorpayFundAccount(owner: Owner) {
     });
 
     const fundAccount = await razorpay.fundAccount.create({
-      contact_id: contact.id, 
+      contact_id: contact.id,
       account_type: "bank_account",
       bank_account: {
         name: owner.bankAccountName,
         ifsc: owner.ifsc,
         account_number: owner.accountNumber,
       },
-    } as any); 
+    } as any);
 
 
     owner.fundAccountId = fundAccount.id;

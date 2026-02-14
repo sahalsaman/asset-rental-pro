@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
-   title: {
+  title: {
     default: "Rentities | Property Management App",
     template: "%s | Rentities",
   },
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     title: 'Rental Property Management - Maximize Rental Income',
     description: 'Professional rental property management application. From tenant screening to rent collection, we handle it all for landlords and property owners.',
     url: 'https://rentities.in',
-     siteName: "Rentities",
+    siteName: "Rentities",
     images: [
       {
         url: '../../public/logo green.png',
@@ -63,14 +63,14 @@ export const metadata: Metadata = {
     locale: 'en_US',
   },
   twitter: {
-       card: "summary_large_image",
+    card: "summary_large_image",
     title: "Rentities | Rent Collection & Property Management App",
     description:
       "Simplify rent collection and tenant management with Rentities. For landlords, PGs, and hostel owners.",
-    images: ["https://rentities.in/app-banner.webp"], 
+    images: ["https://rentities.in/app-banner.webp"],
     creator: "@webcos",
   },
-   icons: {
+  icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -111,7 +111,7 @@ export default function RootLayout({
                 ratingCount: "127",
               },
               publisher: {
-                "@type": "Organization",
+                "@type": "Business",
                 name: "WEBCOS",
                 url: "https://webcos.co",
                 logo: "https://rentities.in/logo green.png",
@@ -119,7 +119,7 @@ export default function RootLayout({
             }),
           }}
         />
-      
+
       </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

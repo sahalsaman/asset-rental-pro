@@ -23,7 +23,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           if (role === UserRoles.ADMIN) {
             router.replace("/admin/dashboard");
           } else if (role === UserRoles.OWNER || role === UserRoles.MANAGER) {
-            router.replace("/owner/dashboard");
+            router.replace("/business/dashboard");
           } else if (role === UserRoles.USER) {
             router.replace("/user/dashboard");
           }

@@ -3,7 +3,7 @@
 import { IProperty } from "@/app/types";
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
-import { FullscreenLoader } from "@/components/Loader";
+import { FullscreenLoader, DashboardSkeleton } from "@/components/Loader";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Building2 } from "lucide-react";
@@ -46,7 +46,7 @@ export default function UserByProperty() {
         fetchProperty();
     }, []);
 
-    if (loader) return <FullscreenLoader />;
+    if (loader) return <div className="min-h-screen flex items-center justify-center p-10"><DashboardSkeleton /></div>;
 
     if (!property)
         return (

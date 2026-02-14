@@ -1,4 +1,4 @@
-import "@/../models"; 
+import "@/../models";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectMongoDB from "@/../database/db";
@@ -9,7 +9,7 @@ import { sendInvoiceToWhatsApp } from "@/utils/sendToWhatsApp";
 import UnitModel from "@/../models/Unit";
 import { BookingStatus, InvoiceStatus, RentAmountType, UnitStatus, SubscritptionStatus, PropertyStatus } from "@/utils/contants";
 import { calculateDueDate, calculateNextBillingdate } from "@/utils/functions";
-import { OrganisationModel } from "../../../../models/Organisation";
+import { BusinessModel } from "../../../../models/Business";
 import UserModel from "@/../models/User";
 
 // Helper to validate ObjectId
@@ -25,7 +25,7 @@ export async function GET(request) {
     const bookingId = searchParams.get("bookingId");
 
     const user = getTokenValue(request);
-    if (!user?.organisationId) {
+    if (!user?.businessId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -40,7 +40,7 @@ export async function GET(request) {
     const unitId = searchParams.get("unitId");
 
     let filter = {
-      organisationId: user?.organisationId,
+      businessId: user?.businessId,
       disabled: false,
       deleted: false
     };
@@ -58,7 +58,7 @@ export async function GET(request) {
     }
 
     const bookings = await BookingModel.find(filter)
-    .populate("userId")
+      .populate("userId")
     // .populate("unit");
     return NextResponse.json(bookings);
   } catch (err) {
@@ -76,7 +76,7 @@ export async function POST(request) {
     const body = await request.json();
 
     const user = getTokenValue(request);
-    if (!user?.organisationId&&body.type!=="public") {
+    if (!user?.businessId && body.type !== "public") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -105,9 +105,9 @@ export async function POST(request) {
       return NextResponse.json({ message: "Unit already booked" }, { status: 404 });
     }
 
-    const organisation = await OrganisationModel.findById(unit.organisationId);
-    if (!organisation?.subscription || organisation?.subscription?.status === SubscritptionStatus.EXPIRED) {
-      return NextResponse.json({ message: "Organisation subscription expired" }, { status: 403 });
+    const business = await BusinessModel.findById(unit.businessId);
+    if (!business?.subscription || business?.subscription?.status === SubscritptionStatus.EXPIRED) {
+      return NextResponse.json({ message: "Business subscription expired" }, { status: 403 });
     }
 
     let nextBillingDate = null;
@@ -155,7 +155,7 @@ export async function POST(request) {
       propertyId: unit?.propertyId?._id,
       nextBillingDate,
       frequency: unit.frequency,
-      organisationId: unit.organisationId,
+      businessId: unit.businessId,
       code,
       userId: userData._id,
     });
@@ -170,7 +170,7 @@ export async function POST(request) {
 
       let invoiceId = `INV-${booking?.code}-01-ADV`
       invoices.push({
-        organisationId: unit.organisationId,
+        businessId: unit.businessId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
         unitId: booking.unitId,
@@ -189,7 +189,7 @@ export async function POST(request) {
       let invoiceId = `INV-${booking?.code}-02-RENT`
 
       invoices.push({
-        organisationId: unit.organisationId,
+        businessId: unit.businessId,
         bookingId: booking._id,
         propertyId: booking.propertyId,
         unitId: booking.unitId,
@@ -206,7 +206,7 @@ export async function POST(request) {
     if (invoices.length > 0) {
       const res = await InvoiceModel.insertMany(invoices);
       res?.map(i => {
-        sendInvoiceToWhatsApp({...booking, code, userId: userData}, booking.amount, i.invoiceId, dueDate);
+        sendInvoiceToWhatsApp({ ...booking, code, userId: userData }, booking.amount, i.invoiceId, dueDate);
       })
     }
 

@@ -6,7 +6,7 @@ import { Menu, X, ChevronRight } from "lucide-react";
 import CoverSlidePage from "./coverDoc";
 import AuthenticationFlowPage from "./authDoc";
 import DashboardOverviewPage from "./dashboardDoc";
-import OrganizationManagementPage from "./orgDoc";
+import BusinessManagementPage from "./orgDoc";
 import PropertyManagementPage from "./proDoc";
 import UnitManagementPage from "./unitDoc";
 import BookingsPage from "./bookingDoc";
@@ -14,14 +14,13 @@ import InvoicesFinancialsPage from "./finDoc";
 import AnnouncementsPage from "./announcementDoc";
 import ManagerManagementPage from "./managerDoc";
 import AdditionalFeaturesPage from "./AdditionalDoc";
-import SubscriptionPlansPage from "./subscriptionDoc";
 import ThankYouSlide from "./endDoc";
 
 const sections = [
   { id: "cover", label: "RENTITIES", page: 1 },
   { id: "auth", label: "Auth", page: 2 },
   { id: "dashboard", label: "Dashboard", page: 3 },
-  { id: "org", label: "Organization", page: 4 },
+  { id: "business", label: "Business", page: 4 },
   { id: "property", label: "Property", page: 5 },
   { id: "units", label: "Units", page: 6 },
   { id: "bookings", label: "Bookings", page: 7 },
@@ -29,7 +28,7 @@ const sections = [
   { id: "announcements", label: "Announce", page: 9 },
   { id: "managers", label: "Managers", page: 10 },
   { id: "additional", label: "Features", page: 11 },
-  { id: "plans", label: "Plans", page: 12 },
+  // { id: "plans", label: "Plans", page: 12 },
   { id: "thankyou", label: "End", page: 13 },
 ];
 
@@ -123,7 +122,7 @@ export default function RentitiesDocumentation() {
           <section id="cover" className="scroll-mt-24"><CoverSlidePage /></section>
           <section id="auth" className="scroll-mt-24"><AuthenticationFlowPage /></section>
           <section id="dashboard" className="scroll-mt-24"><DashboardOverviewPage /></section>
-          <section id="org" className="scroll-mt-24"><OrganizationManagementPage /></section>
+          <section id="business" className="scroll-mt-24"><BusinessManagementPage /></section>
           <section id="property" className="scroll-mt-24"><PropertyManagementPage /></section>
           <section id="units" className="scroll-mt-24"><UnitManagementPage /></section>
           <section id="bookings" className="scroll-mt-24"><BookingsPage /></section>
@@ -131,7 +130,7 @@ export default function RentitiesDocumentation() {
           <section id="announcements" className="scroll-mt-24"><AnnouncementsPage /></section>
           <section id="managers" className="scroll-mt-24"><ManagerManagementPage /></section>
           <section id="additional" className="scroll-mt-24"><AdditionalFeaturesPage /></section>
-          <section id="plans" className="scroll-mt-24"><SubscriptionPlansPage /></section>
+          {/* <section id="plans" className="scroll-mt-24"><SubscriptionPlansPage /></section> */}
           <section id="thankyou" className="scroll-mt-24"><ThankYouSlide /></section>
         </div>
       </main>

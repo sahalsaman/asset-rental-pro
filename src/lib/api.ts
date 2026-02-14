@@ -5,7 +5,7 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const signUp = (phone: string, countryCode: string, name: string, lastName: string, organisationName: string) => api.post('/auth/signup', { phone, countryCode, name, lastName, organisationName });
+export const signUp = (phone: string, countryCode: string, name: string, lastName: string, businessName: string) => api.post('/auth/signup', { phone, countryCode, name, lastName, businessName });
 
 export const login = (phone: string, countryCode: string) => api.post('/auth/login', { phone, countryCode });
 
@@ -22,7 +22,8 @@ export async function apiFetch(url: string, options: RequestInit & { preventRedi
 
   if (res.status === 401 && !preventRedirect) {
     if (typeof window !== "undefined") {
-      window.location.href = "/login";
+      const redirectPath = window.location.pathname.startsWith('/admin') ? '/admin-login' : '/login';
+      window.location.href = redirectPath;
     }
   }
 
