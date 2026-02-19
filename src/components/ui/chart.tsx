@@ -49,12 +49,16 @@ export const ChartTooltip = Tooltip
 
 export const ChartTooltipContent = React.forwardRef<
     HTMLDivElement,
+    React.ComponentProps<"div"> &
     TooltipProps<ValueType, NameType> & {
         hideLabel?: boolean
         hideIndicator?: boolean
         indicator?: "line" | "dot" | "dashed"
         nameKey?: string
         labelKey?: string
+        payload?: any[]
+        active?: boolean
+        label?: any
     }
 >(
     (

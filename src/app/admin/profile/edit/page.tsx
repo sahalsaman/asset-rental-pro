@@ -250,7 +250,7 @@ export default function ProfileEditPage() {
                                 >
                                     {countryCodes.map((option) => (
                                         <option key={option.code} value={option.code}>
-                                            {option.country} ({option.code})
+                                            {option.code}
                                         </option>
                                     ))}
                                 </select>
