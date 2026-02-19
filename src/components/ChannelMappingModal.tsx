@@ -37,7 +37,7 @@ export default function ChannelMappingModal({ isOpen, onClose, channel }: Channe
 
     const fetchProperties = async () => {
         try {
-            const res = await apiFetch("/api/property?status=ACTIVE");
+            const res = await apiFetch("/api/property?status=Active");
             if (res.ok) setProperties(await res.json());
         } catch (error) {
             toast.error("Failed to fetch properties");

@@ -45,6 +45,7 @@ export async function GET(request) {
       if (user.role === UserRoles.MANAGER) {
         const properties = await PropertyModel.find({
           managers: user.id,
+          ...filter
         })
         return NextResponse.json(properties);
       } else {
