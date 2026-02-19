@@ -160,10 +160,10 @@ export default function EnquiryPage() {
                           </span>
                         </div>
                         <div className="flex flex-col gap-0.5 ml-10">
-                          <div className="flex items-center gap-2 text-slate-400 text-xs font-bold">
+                          {e.email && <div className="flex items-center gap-2 text-slate-400 text-xs font-bold">
                             <Mail size={10} />
                             {e.email}
-                          </div>
+                          </div>}
                           {e.phone && (
                             <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold">
                               <Phone size={10} />

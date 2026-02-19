@@ -8,6 +8,7 @@ import "./Booking";
 import "./Lead";
 import "./Review";
 import "./Expense";
+import "./ChannelMapping"; // Added import for ChannelMapping
 
 // Re-export if needed
 export * from "./Property";
@@ -20,4 +21,5 @@ export * from "./Lead";
 export * from "./Review";
 export * from "./ChannelProvider";
 export * from "./ChannelAccount";
+export * from "./ChannelMapping"; // Added export for ChannelMapping
 export * from "./Expense";

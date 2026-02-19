@@ -17,23 +17,34 @@ interface Props {
   onClose: () => void;
   onSave: () => void;
   editData?: IUnit | null;
+  bulkType?: string | null;
 }
 
 
-export default function UnitAddEditModal({ property, open, onClose, onSave, editData }: Props) {
+export default function UnitAddEditModal({ property, open, onClose, onSave, editData, bulkType }: Props) {
   const [formData, setFormData] = useState<Partial<IUnit>>({});
   const [isMultipleUnit, setIsMultipleUnit] = useState(false);
+  const isBulk = !!bulkType;
+
   useEffect(() => {
     if (editData) {
       setFormData(editData);
+      setIsMultipleUnit(false);
+    } else if (bulkType) {
+      setFormData({
+        type: bulkType,
+        frequency: RentFrequency.MONTH,
+        status: UnitStatus.AVAILABLE,
+      });
       setIsMultipleUnit(false);
     } else {
       setFormData({
         frequency: RentFrequency.MONTH,
         status: UnitStatus.AVAILABLE,
       });
+      setIsMultipleUnit(false);
     }
-  }, [editData]);
+  }, [editData, bulkType, open]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -57,8 +68,13 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
   };
 
   const handleSaveUnit = async (data: Partial<IUnit>) => {
-    const method = editData ? "PUT" : "POST";
-    const url = editData ? `/api/unit?id=${editData._id}` : `/api/unit`;
+    const method = (editData || isBulk) ? "PUT" : "POST";
+    let url = `/api/unit`;
+    if (editData) {
+      url += `?id=${editData._id}`;
+    } else if (isBulk) {
+      url += `?bulkType=${encodeURIComponent(bulkType as string)}&propertyId=${property?._id}`;
+    }
 
     try {
       const res = await fetch(url, {
@@ -75,7 +91,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
         return;
       }
 
-      toast.success(editData ? "Unit updated successfully" : "Unit added successfully");
+      toast.success(editData ? "Unit updated successfully" : isBulk ? "Group updated successfully" : "Unit added successfully");
       onSave();
     } catch (err) {
       console.error("Error saving unit:", err);
@@ -91,20 +107,22 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{editData ? "Edit Unit" : "Add Unit"}</DialogTitle>
+          <DialogTitle>{editData ? "Edit Unit" : isBulk ? `Update All ${bulkType}` : "Add Unit"}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="multiple-unit"
-              checked={isMultipleUnit}
-              onCheckedChange={(checked) => setIsMultipleUnit(checked)}
-            />
-            <Label htmlFor="multiple-unit">Multiple Units (Same Details)</Label>
-          </div>
+          {!isBulk && (
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="multiple-unit"
+                checked={isMultipleUnit}
+                onCheckedChange={(checked) => setIsMultipleUnit(checked)}
+              />
+              <Label htmlFor="multiple-unit">Multiple Units (Same Details)</Label>
+            </div>
+          )}
 
           {/* Conditionally show Unit Number or Number of Units */}
-          {!isMultipleUnit ? (
+          {!isBulk && (!isMultipleUnit ? (
             <>
               <Label>Unit Number*</Label>
               <Input
@@ -127,7 +145,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
                 required
               />
             </>
-          )}
+          ))}
           <Label>Description</Label>
           <Textarea
             name="description"
@@ -228,7 +246,7 @@ export default function UnitAddEditModal({ property, open, onClose, onSave, edit
               Cancel
             </Button>
             <Button type="submit" className='w-full' variant="green">
-              {editData ? 'Update' : 'Submit'}
+              {editData ? 'Update' : isBulk ? 'Update All' : 'Submit'}
             </Button>
           </div>
         </form>

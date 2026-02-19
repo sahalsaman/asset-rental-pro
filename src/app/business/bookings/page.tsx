@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 
-export default function BookingsRedirect() {
+export default function BookingRedirect() {
     useEffect(() => {
         redirect("/business/bookings/overview");
     }, []);

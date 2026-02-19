@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Globe, Link as LinkIcon, Unlink } from "lucide-react";
+import { Globe, Settings, LayoutGrid, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api";
-import { FullscreenLoader, CardGridSkeleton } from "@/components/Loader";
+import { CardGridSkeleton } from "@/components/Loader";
 import toast from "react-hot-toast";
 import { Switch } from "@/components/ui/switch";
+import ChannelConfigModal from "@/components/ChannelConfigModal";
+import ChannelMappingModal from "@/components/ChannelMappingModal";
 
 // Helper to render icon dynamically
 const IconRenderer = ({ iconName, className }: { iconName: string; className?: string }) => {
@@ -20,6 +22,8 @@ export default function OwnerChannelPage() {
     const [channels, setChannels] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [processingId, setProcessingId] = useState<string | null>(null);
+    const [configChannel, setConfigChannel] = useState<any>(null);
+    const [mappingChannel, setMappingChannel] = useState<any>(null);
 
     const fetchChannels = async () => {
         setLoading(true);
@@ -58,14 +62,7 @@ export default function OwnerChannelPage() {
 
             if (res.ok) {
                 toast.success(action === 'connect' ? "Channel connected" : "Channel disconnected");
-
-                // Optimistic update or refetch
-                setChannels(prev => prev.map(c => {
-                    if (c._id === channel._id) {
-                        return { ...c, isConnected: !c.isConnected };
-                    }
-                    return c;
-                }));
+                fetchChannels();
             } else {
                 toast.error("Failed to update status");
             }
@@ -74,7 +71,29 @@ export default function OwnerChannelPage() {
         } finally {
             setProcessingId(null);
         }
-    }
+    };
+
+    const handleSync = async (channel: any) => {
+        setProcessingId(channel._id);
+        try {
+            const res = await apiFetch("/api/channel/sync", {
+                method: 'POST',
+                body: JSON.stringify({
+                    providerId: channel._id,
+                    action: 'pull-bookings'
+                })
+            });
+            if (res.ok) {
+                toast.success("Sync protocol initiated");
+            } else {
+                toast.error("Sync failed");
+            }
+        } catch (error) {
+            toast.error("Sync error");
+        } finally {
+            setProcessingId(null);
+        }
+    };
 
     if (loading && channels.length === 0) return <div className="p-6 md:p-10"><CardGridSkeleton count={4} /></div>;
 
@@ -102,7 +121,7 @@ export default function OwnerChannelPage() {
                         </div>
 
                         <h3 className="text-xl font-bold text-gray-900 mb-1">{channel.displayName}</h3>
-                        <p className="text-sm text-gray-500 mb-4 capitalize">{channel.authType.replace('_', ' ')} Connectivity</p>
+                        <p className="text-sm text-gray-500 mb-4 capitalize">{channel.authType?.replace('_', ' ')} Connectivity</p>
 
                         <div className="flex items-center gap-2 mt-auto">
                             <div className={`w-2 h-2 rounded-full ${channel.isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
@@ -110,15 +129,36 @@ export default function OwnerChannelPage() {
                                 {channel.isConnected ? 'Connected' : 'Not Connected'}
                             </span>
                         </div>
+
+                        {channel.isConnected && (
+                            <div className="grid grid-cols-3 gap-2 mt-6 pt-6 border-t border-gray-50">
+                                <Button variant="outline" size="sm" className="h-9 px-0 rounded-xl hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-100" onClick={() => setConfigChannel(channel)} title="Configure">
+                                    <Settings size={16} />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-9 px-0 rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100" onClick={() => setMappingChannel(channel)} title="Mapping">
+                                    <LayoutGrid size={16} />
+                                </Button>
+                                <Button variant="outline" size="sm" className="h-9 px-0 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100" onClick={() => handleSync(channel)} disabled={processingId === channel._id} title="Force Sync">
+                                    <Zap size={16} />
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 ))}
-
-                {channels.length === 0 && !loading && (
-                    <div className="col-span-full py-12 text-center text-gray-500">
-                        No active channels available. Please contact admin.
-                    </div>
-                )}
             </div>
+
+            <ChannelConfigModal
+                isOpen={!!configChannel}
+                onClose={() => setConfigChannel(null)}
+                channel={configChannel}
+                onSuccess={fetchChannels}
+            />
+
+            <ChannelMappingModal
+                isOpen={!!mappingChannel}
+                onClose={() => setMappingChannel(null)}
+                channel={mappingChannel}
+            />
         </div>
     );
 }

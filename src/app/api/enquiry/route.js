@@ -12,7 +12,7 @@ export async function GET(request) {
     if (user.role != UserRoles.ADMIN) {
       return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
-    const enquiries = await LeadModel.find().sort({ createdAt: -1 });
+    const enquiries = await LeadModel.find({ enquired: true }).sort({ createdAt: -1 });
 
     return NextResponse.json(enquiries, { status: 200 });
   } catch (err) {

@@ -64,7 +64,7 @@ export default function PropertiesPage() {
       icon: <Crown className="w-6 h-6 md:w-8 md:h-8 min-w-6 min-h-6" />,
     },
     {
-      title: "Subscription Payments",
+      title: "Subscription Bills",
       path: "/business/subcription-payments",
       icon: <BadgeIndianRupee className="w-6 h-6 md:w-8 md:h-8 min-w-6 min-h-6" />,
     },

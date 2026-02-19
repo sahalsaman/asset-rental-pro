@@ -101,9 +101,23 @@ export async function PUT(request) {
   const user = getTokenValue(request);
   if (!user?.id) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-  const id = new URL(request.url).searchParams.get("id");
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+  const bulkType = url.searchParams.get("bulkType");
+  const propertyId = url.searchParams.get("propertyId");
+
   const body = await request.json();
   await connectMongoDB();
+
+  if (bulkType && propertyId) {
+    // Bulk update units of the same type within a property
+    const result = await UnitModel.updateMany(
+      { type: bulkType, propertyId, businessId: user.businessId },
+      body
+    );
+    return NextResponse.json({ message: "Bulk update successful", modifiedCount: result.modifiedCount });
+  }
+
   const updated = await UnitModel.findOneAndUpdate({ _id: id, businessId: user.businessId }, body, { new: true });
   return NextResponse.json(updated);
 }

@@ -9,8 +9,6 @@ export const signUp = (phone: string, countryCode: string, name: string, lastNam
 
 export const login = (phone: string, countryCode: string) => api.post('/auth/login', { phone, countryCode });
 
-export const getSession = () => api.get('/auth/session');
-
 export const logout = () => api.post('/auth/logout');
 
 export async function apiFetch(url: string, options: RequestInit & { preventRedirect?: boolean } = {}) {

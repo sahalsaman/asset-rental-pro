@@ -31,6 +31,14 @@ const ChannelProviderSchema = new mongoose.Schema(
             putAPI: String,
             deleteAPI: String,
         },
+        syncType: {
+            type: String,
+            enum: ["pull", "push", "both"],
+            default: "both",
+        },
+        webhookUrl: {
+            type: String, // Base webhook URL for this provider
+        },
         isActive: {
             type: Boolean,
             default: true,

@@ -1,7 +1,7 @@
 'use client';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { User, XIcon, Home, Building2, Store, Building, Lamp, Calendar, NotepadTextDashed, MessageCircleMore, Users, PlusIcon, QrCodeIcon, ReceiptIndianRupee, Crown, ChartBar, TrendingUp, TrendingDown, SettingsIcon, Star, Stars, LayoutDashboard, } from 'lucide-react'; // icons
+import { User, XIcon, Home, Building2, Store, Building, Lamp, Calendar, NotepadTextDashed, MessageCircleMore, Users, PlusIcon, QrCodeIcon, ReceiptIndianRupee, Crown, ChartBar, TrendingUp, TrendingDown, SettingsIcon, Star, Stars, LayoutDashboard, Globe, } from 'lucide-react'; // icons
 import localStorageServiceSelectedOptions from '@/utils/localStorageHandler';
 import Image from 'next/image';
 import { apiFetch } from '@/lib/api';
@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const options = [
     { title: 'Profile', path: '/business/profile', icon: <User size={26} /> },
-    { title: 'Business', path: '/business/business', icon: <SettingsIcon size={26} /> },
+    { title: 'Business', path: '/business/settings', icon: <SettingsIcon size={26} /> },
     { title: 'Dashboard', path: '/business/dashboard', icon: <LayoutDashboard size={26} /> },
     { title: 'Properties', path: '/business/properties', icon: <Building size={26} /> },
     { title: 'Units/Rooms', path: '/business/units', icon: <Lamp size={26} /> },
@@ -32,6 +32,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { title: 'Broadcast', path: '/business/announcement', icon: <MessageCircleMore size={26} /> },
     { title: 'Managers', path: '/business/managers', icon: <Users size={26} /> },
     { title: 'Reviews', path: '/business/review-management', icon: <Stars size={26} /> },
+    { title: 'Website', path: '/business/website-management', icon: <Globe size={26} /> },
   ];
 
   const mobileMenu = [
@@ -203,7 +204,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {business?.subscription?.status === SubscritptionStatus.FREE ? 'Your subscription is free' : business?.subscription?.status === SubscritptionStatus.EXPIRED ? 'Your subscription has expired. Please renew to continue using our services.' : business?.subscription?.status === SubscritptionStatus.CANCELLED ? 'Your subscription has been cancelled. Please contact support for more information.' : ''}
       </div> : ""}
       <div className="flex-1 flex overflow-hidden" >
-        <div className='lg:flex hidden py-6 border-r border-gray-200 flex-col overflow-y-auto shrink-0 '>
+        <div className='lg:flex hidden border-r border-gray-200 flex-col overflow-y-auto shrink-0 '>
           {options.map((item, idx) => (
             <button
               key={idx}

@@ -39,7 +39,7 @@ export default function SubscriptionPayments() {
   return (
     <div className="p-5 md:pt-10 md:px-16 mb-10">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Subscription Payments</h1>
+        <h1 className="text-2xl font-bold">Subscription Bills</h1>
       </div>
 
       {/* Filters */}

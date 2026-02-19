@@ -178,18 +178,14 @@ export default function UsersPage() {
                             {user.role}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                          <ShieldCheck size={12} className="text-slate-300" />
-                          {user.businessId ? "Partner Employee" : "Independent"}
-                        </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2 font-bold text-slate-700 text-xs">
+                        {user.email && <div className="flex items-center gap-2 font-bold text-slate-700 text-xs">
                           <Mail size={12} className="text-slate-300" />
                           {user.email}
-                        </div>
+                        </div>}
                         {user.phone && (
                           <div className="flex items-center gap-2 font-bold text-slate-400 text-[11px]">
                             <Phone size={10} className="text-slate-300" />

@@ -32,7 +32,8 @@ export async function GET(request) {
             return {
                 ...provider,
                 isConnected: !!account && account.status === 'connected',
-                accountId: account ? account._id : null
+                accountId: account ? account._id : null,
+                credentials: account ? account.credentials : {}
             };
         });
 
@@ -69,6 +70,17 @@ export async function POST(request) {
             await ChannelAccountModel.findOneAndUpdate(
                 { businessId: user.businessId, providerId },
                 { status: 'disconnected', isActive: false }
+            );
+        } else if (action === 'update-credentials') {
+            const { credentials } = body;
+            await ChannelAccountModel.findOneAndUpdate(
+                { businessId: user.businessId, providerId },
+                {
+                    credentials,
+                    status: 'connected',
+                    isActive: true
+                },
+                { upsert: true, new: true }
             );
         }
 

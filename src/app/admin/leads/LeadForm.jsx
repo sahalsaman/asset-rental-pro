@@ -165,7 +165,8 @@ export default function LeadForm({ open, onClose, editData, refresh }) {
                                             name="countryCode"
                                             value={form.countryCode || ""}
                                             onChange={handleChange}
-                                            className="h-11 px-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-sm font-bold bg-slate-50"
+                                            className="h-11 px-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-sm font-bold bg-slate-50 "
+                                            style={{ width: "70px" }}
                                         >
                                             {countryCodes.map((option) => (
                                                 <option key={option.code} value={option.code}>

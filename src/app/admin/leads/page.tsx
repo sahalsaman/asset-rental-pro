@@ -158,10 +158,10 @@ export default function LeadsPage() {
                           <span className="font-black text-slate-900 tracking-tight text-base leading-tight">
                             {l.name}
                           </span>
-                          <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold mt-0.5">
+                          {l.email && <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold mt-0.5">
                             <Mail size={10} className="text-slate-300" />
-                            {l.email || "No Email"}
-                          </div>
+                            {l.email}
+                          </div>}
                         </div>
                       </div>
                     </TableCell>

@@ -31,6 +31,8 @@ export default function ChannelFormModal({ isOpen, onClose, onSuccess, initialDa
         displayName: "",
         icon: "",
         authType: "api_key",
+        syncType: "both",
+        webhookUrl: "",
         isActive: true
     });
 
@@ -41,6 +43,8 @@ export default function ChannelFormModal({ isOpen, onClose, onSuccess, initialDa
                 displayName: initialData.displayName || "",
                 icon: initialData.icon || "",
                 authType: initialData.authType || "api_key",
+                syncType: initialData.syncType || "both",
+                webhookUrl: initialData.webhookUrl || "",
                 isActive: initialData.isActive ?? true
             });
         } else {
@@ -49,6 +53,8 @@ export default function ChannelFormModal({ isOpen, onClose, onSuccess, initialDa
                 displayName: "",
                 icon: "",
                 authType: "api_key",
+                syncType: "both",
+                webhookUrl: "",
                 isActive: true
             });
         }
@@ -154,6 +160,33 @@ export default function ChannelFormModal({ isOpen, onClose, onSuccess, initialDa
                             onChange={handleChange}
                             className="h-12 rounded-2xl border-slate-200 focus:ring-indigo-500/20 font-medium"
                         />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="syncType" className="text-xs font-black uppercase tracking-widest text-slate-400">Sync Direction</Label>
+                            <Select onValueChange={(v) => setFormData(p => ({ ...p, syncType: v }))} value={formData.syncType}>
+                                <SelectTrigger className="h-12 rounded-2xl border-slate-200">
+                                    <SelectValue placeholder="Select Sync Type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="pull">Pull Only (Bookings)</SelectItem>
+                                    <SelectItem value="push">Push Only (Availability)</SelectItem>
+                                    <SelectItem value="both">Both (Full Sync)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="webhookUrl" className="text-xs font-black uppercase tracking-widest text-slate-400">Webhook Base URL</Label>
+                            <Input
+                                id="webhookUrl"
+                                name="webhookUrl"
+                                placeholder="https://api.provider.com/hooks"
+                                value={formData.webhookUrl}
+                                onChange={handleChange}
+                                className="h-12 rounded-2xl border-slate-200"
+                            />
+                        </div>
                     </div>
 
                     <div className="space-y-4 pt-2">
